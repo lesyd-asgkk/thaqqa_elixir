@@ -1,26 +1,24 @@
 defmodule Thaqqa.Regex_Khhyl do
   alias Thaqqa.Regex_Khhyl.AST, as: AST
 
-  def normalize(list) when is_list(list), do: normalize_sub(list, [], :syllable)
+  def normalize(list) when is_list(list), do: normalize_sub(list, [], :sentence)
 
   def normalize_sub([], acum_all, _), do: Enum.reverse(acum_all)
 
   # S()系統→Glyph群→Glyphの順に分解。
 
   # 1層目
-  def normalize_sub(list, acum_all, :syllable = current_layer) when is_list(list) do
+  def normalize_sub(list, acum_all, :sentence = current_layer) when is_list(list) do
     [head | tail] = list
-    next_layer = :glyph_group
+    next_layer = :syllable
 
     case head do
       h when h in ["S", "V", "C", "Cd", "Vd", "P", "Pd", "L", "X", "R"] ->
         normalize_branckets(:"#{h}", nil, acum_all, tail, next_layer, current_layer)
 
-      "(" ->
-        normalize_branckets(:branket, nil, acum_all, list, current_layer, current_layer)
-
-      "(?:" ->
-        normalize_branckets(:branket, :no_match, acum_all, tail, current_layer, current_layer, 1)
+      h when h in ["(?:", "(", "(?=", "(?<=", "(?!", "(?<!"] ->
+        name = String.slice(head, 1..-1)
+        normalize_branckets(:branket, name, acum_all, tail, current_layer, current_layer, 1)
 
       ")" ->
         raise "unclosed Branket found: )"
@@ -53,7 +51,7 @@ defmodule Thaqqa.Regex_Khhyl do
   end
 
   # 2層目
-  def normalize_sub(list, acum_all, :glyph_group = current_layer) when is_list(list) do
+  def normalize_sub(list, acum_all, :syllable = current_layer) when is_list(list) do
     [head | tail] = list
 
     next_layer = :glyph
@@ -62,11 +60,9 @@ defmodule Thaqqa.Regex_Khhyl do
       h when h in ["init", "mid", "fin", "sol", "null"] ->
         normalize_sub(tail, [AST.new(:token, head) | acum_all], current_layer)
 
-      "(" ->
-        normalize_branckets(:branket, nil, acum_all, list, current_layer, current_layer)
-
-      "(?:" ->
-        normalize_branckets(:branket, :no_match, acum_all, tail, current_layer, current_layer, 1)
+      h when h in ["(?:", "(", "(?=", "(?<=", "(?!", "(?<!"] ->
+        name = String.slice(head, 1..-1)
+        normalize_branckets(:branket, name, acum_all, tail, current_layer, current_layer, 1)
 
       ")" ->
         raise "unclosed Branket found: )"
@@ -91,7 +87,7 @@ defmodule Thaqqa.Regex_Khhyl do
             )
 
           Regex.match?(~r/\{.*?}/, head) ->
-            normalize_sub(tail, [AST.new(:token, head) | acum_all], current_layer)
+            raise "Quantifier {...} is not supported in glyph group layer."
 
           true ->
             # next_layer。(:glyphの場合は未実装)
