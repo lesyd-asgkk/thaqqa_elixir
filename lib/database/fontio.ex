@@ -20,8 +20,16 @@ defmodule Thaqqa.FontIO do
     # FontManager.add_static_table (%Thaqqa.DataTable{name: "TestFont", table_list: []})
   end
 
-  def import(json, false) do
-  end
+  '''
+    def import(filename, false) do
+      {:ok, json} = File.read(@root_file <> filename)
+      {:ok, data} = Jason.decode(json)
+
+      Enum.map(data, fn {k, v} ->
+        FontManager.add_font(import_table(k, v))
+      end)
+    end
+  '''
 
   defp import_table(name, struct) do
     table = DataTable.new(name, nil)

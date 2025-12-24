@@ -10,10 +10,7 @@ defmodule Thaqqa.FontManager do
   end
 
   def get_font(name) do
-    case :ets.lookup(@fonts, name) do
-      [{^name, font}] -> font
-      [] -> nil
-    end
+    GenServer.call(__MODULE__, {:get_font, name})
   end
 
   def add_font(font) do
@@ -21,26 +18,23 @@ defmodule Thaqqa.FontManager do
   end
 
   def delete_font(name) do
-    :ets.delete(@fonts, name)
+    GenServer.call(__MODULE__, {:delete_font, name})
   end
 
   def edit_font(name, new_font) do
-    :ets.insert(@fonts, {name, new_font})
+    GenServer.call(__MODULE__, {:edit_font, {name, new_font}})
   end
 
   def get_static_table_all() do
-    :ets.tab2list(@static_tables)
+    GenServer.call(__MODULE__, {:get_static_table_all})
   end
 
   def get_static_table(name) do
-    case :ets.lookup(@static_tables, name) do
-      [{^name, table}] -> table
-      [] -> nil
-    end
+    GenServer.call(__MODULE__, {:get_static_table, name})
   end
 
   def add_static_table(table) do
-    :ets.insert(@static_tables, {table.name, table})
+    GenServer.call(__MODULE__, {:add_static_table, table})
   end
 
   def delete_static_table(name) do
@@ -62,5 +56,45 @@ defmodule Thaqqa.FontManager do
   def handle_call({:add_font, %Thaqqa.Font{name: name} = font}, _from, state) do
     :ets.insert(@fonts, {name, font})
     {:reply, :ok, state}
+  end
+
+  def handle_call({:delete_font, name}, _from, state) do
+    :ets.delete(@fonts, name)
+    {:reply, :ok, state}
+  end
+
+  def handle_call({:get_font, name}, _form, state) do
+    reply =
+      case :ets.lookup(@fonts, name) do
+        [{^name, font}] -> font
+        [] -> nil
+      end
+
+    {:reply, reply, state}
+  end
+
+  def handle_call({:edit_font, {name, new_font}}, _form, state) do
+    :ets.insert(@fonts, {name, new_font})
+    {:reply, :ok, state}
+  end
+
+  def handle_call({:add_static_table, table}, _from, state) do
+    :ets.insert(@static_tables, {table.name, table})
+    {:reply, :ok, state}
+  end
+
+  def handle_call({:get_static_table_all}, _from, state) do
+    reply = :ets.tab2list(@static_tables)
+    {:reply, reply, state}
+  end
+
+  def handle_call({:get_static_table, name}, _from, state) do
+    reply =
+      case :ets.lookup(@static_tables, name) do
+        [{^name, table}] -> table
+        [] -> nil
+      end
+
+    {:reply, reply, state}
   end
 end
