@@ -38,11 +38,11 @@ defmodule Thaqqa.FontManager do
   end
 
   def delete_static_table(name) do
-    :ets.delete(@static_tables, name)
+    GenServer.call(__MODULE__, {:delete_static_table, name})
   end
 
   def edit_static_table(name, new_table) do
-    :ets.insert(@static_tables, {name, new_table})
+    GenServer.call(__MODULE__, {:edit_static_table, {name, new_table}})
   end
 
   ## 以下はCallbacks
@@ -96,5 +96,15 @@ defmodule Thaqqa.FontManager do
       end
 
     {:reply, reply, state}
+  end
+
+  def handle_call({:delete_static_table, name}, _from, state) do
+    :ets.delete(@static_tables, name)
+    {:reply, :ok, state}
+  end
+
+  def handle_call({:edit_static_table, {name, new_table}}, _from, state) do
+    :ets.insert(@static_tables, {name, new_table})
+    {:reply, :ok, state}
   end
 end
