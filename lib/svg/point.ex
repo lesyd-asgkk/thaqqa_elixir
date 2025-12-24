@@ -45,54 +45,54 @@ defmodule SVG.Point do
             sf: nil
 
   # SVG.Pointを作る関数群
-  def new_null(), do: %SVG.Point{command: :None}
+  def new_null(), do: %__MODULE__{command: :None}
 
-  def new_m_relative(x, y), do: %SVG.Point{command: :m, x: x, y: y}
+  def new_m_relative(x, y), do: %__MODULE__{command: :m, x: x, y: y}
 
-  def new_m_absolute(x, y), do: %SVG.Point{command: :M, x: x, y: y}
+  def new_m_absolute(x, y), do: %__MODULE__{command: :M, x: x, y: y}
 
-  def new_l_relative(x, y), do: %SVG.Point{command: :l, x: x, y: y}
+  def new_l_relative(x, y), do: %__MODULE__{command: :l, x: x, y: y}
 
-  def new_l_absolute(x, y), do: %SVG.Point{command: :L, x: x, y: y}
+  def new_l_absolute(x, y), do: %__MODULE__{command: :L, x: x, y: y}
 
-  def new_h_relative(x), do: %SVG.Point{command: :h, x: x}
+  def new_h_relative(x), do: %__MODULE__{command: :h, x: x}
 
-  def new_h_absolute(x), do: %SVG.Point{command: :H, x: x}
+  def new_h_absolute(x), do: %__MODULE__{command: :H, x: x}
 
-  def new_v_relative(y), do: %SVG.Point{command: :v, y: y}
+  def new_v_relative(y), do: %__MODULE__{command: :v, y: y}
 
-  def new_v_absolute(y), do: %SVG.Point{command: :V, y: y}
+  def new_v_absolute(y), do: %__MODULE__{command: :V, y: y}
 
   def new_c_relative(x, y, x1, y1, x2, y2),
-    do: %SVG.Point{command: :c, x: x, y: y, x1: x1, y1: y1, x2: x2, y2: y2}
+    do: %__MODULE__{command: :c, x: x, y: y, x1: x1, y1: y1, x2: x2, y2: y2}
 
   def new_c_absolute(x, y, x1, y1, x2, y2),
-    do: %SVG.Point{command: :C, x: x, y: y, x1: x1, y1: y1, x2: x2, y2: y2}
+    do: %__MODULE__{command: :C, x: x, y: y, x1: x1, y1: y1, x2: x2, y2: y2}
 
-  def new_s_relative(x, y, x2, y2), do: %SVG.Point{command: :s, x: x, y: y, x2: x2, y2: y2}
+  def new_s_relative(x, y, x2, y2), do: %__MODULE__{command: :s, x: x, y: y, x2: x2, y2: y2}
 
-  def new_s_absolute(x, y, x2, y2), do: %SVG.Point{command: :S, x: x, y: y, x2: x2, y2: y2}
+  def new_s_absolute(x, y, x2, y2), do: %__MODULE__{command: :S, x: x, y: y, x2: x2, y2: y2}
 
-  def new_q_relative(x, y, x1, y1), do: %SVG.Point{command: :q, x: x, y: y, x1: x1, y1: y1}
+  def new_q_relative(x, y, x1, y1), do: %__MODULE__{command: :q, x: x, y: y, x1: x1, y1: y1}
 
-  def new_q_absolute(x, y, x1, y1), do: %SVG.Point{command: :Q, x: x, y: y, x1: x1, y1: y1}
+  def new_q_absolute(x, y, x1, y1), do: %__MODULE__{command: :Q, x: x, y: y, x1: x1, y1: y1}
 
-  def new_t_relative(x, y), do: %SVG.Point{command: :t, x: x, y: y}
+  def new_t_relative(x, y), do: %__MODULE__{command: :t, x: x, y: y}
 
-  def new_t_absolute(x, y), do: %SVG.Point{command: :T, x: x, y: y}
+  def new_t_absolute(x, y), do: %__MODULE__{command: :T, x: x, y: y}
 
   def new_a_relative(x, y, rx, ry, angle, laf, sf),
-    do: %SVG.Point{command: :a, x: x, y: y, rx: rx, ry: ry, angle: angle, laf: laf, sf: sf}
+    do: %__MODULE__{command: :a, x: x, y: y, rx: rx, ry: ry, angle: angle, laf: laf, sf: sf}
 
   def new_a_absolute(x, y, rx, ry, angle, laf, sf),
-    do: %SVG.Point{command: :A, x: x, y: y, rx: rx, ry: ry, angle: angle, laf: laf, sf: sf}
+    do: %__MODULE__{command: :A, x: x, y: y, rx: rx, ry: ry, angle: angle, laf: laf, sf: sf}
 
-  def new_z_relative(), do: %SVG.Point{command: :z}
+  def new_z_relative(), do: %__MODULE__{command: :z}
 
-  def new_z_absolute(), do: %SVG.Point{command: :Z}
+  def new_z_absolute(), do: %__MODULE__{command: :Z}
 
   # Commandチェック用の関数群
-  def has_legal_command?(%SVG.Point{command: command}), do: is_legal_command?(command)
+  def has_legal_command?(%__MODULE__{command: command}), do: is_legal_command?(command)
 
   def is_legal_command?(command) do
     Enum.member?(
@@ -101,10 +101,10 @@ defmodule SVG.Point do
     )
   end
 
-  def has_none?(%SVG.Point{command: command}), do: is_none?(command)
-  def has_z_command?(%SVG.Point{command: command}), do: is_z_command?(command)
-  def has_relative_command?(%SVG.Point{command: command}), do: is_relative_command?(command)
-  def has_absolute_command?(%SVG.Point{command: command}), do: is_absolute_command?(command)
+  def has_none?(%__MODULE__{command: command}), do: is_none?(command)
+  def has_z_command?(%__MODULE__{command: command}), do: is_z_command?(command)
+  def has_relative_command?(%__MODULE__{command: command}), do: is_relative_command?(command)
+  def has_absolute_command?(%__MODULE__{command: command}), do: is_absolute_command?(command)
 
   def is_none?(command), do: command == :None
   def is_z_command?(command), do: Enum.member?([:z, :Z], command)
@@ -116,42 +116,42 @@ defmodule SVG.Point do
     do: Enum.member?([:M, :L, :H, :V, :C, :S, :Q, :T, :A, :Z], command)
 
   # 絶対値と相対値の交換用
-  def to_absolute!(%SVG.Point{} = p0, x, y), do: to_absolute!(p0, %{x: x, y: y})
+  def to_absolute!(%__MODULE__{} = p0, x, y), do: to_absolute!(p0, %{x: x, y: y})
 
-  def to_absolute!(%SVG.Point{} = p0, %{x: _x, y: _y} = coord) do
+  def to_absolute!(%__MODULE__{} = p0, %{x: _x, y: _y} = coord) do
     case to_absolute(p0, coord) do
       {:ok, point} -> point
       {:error, msg} -> raise msg
     end
   end
 
-  def to_absolute(%SVG.Point{} = p0, x, y), do: to_absolute(p0, %{x: x, y: y})
+  def to_absolute(%__MODULE__{} = p0, x, y), do: to_absolute(p0, %{x: x, y: y})
 
-  def to_absolute(%SVG.Point{command: command} = p0, %{x: x, y: y}) do
+  def to_absolute(%__MODULE__{command: command} = p0, %{x: x, y: y}) do
     if is_legal_command?(command) do
       if is_relative_command?(command),
-        do: {:ok, %SVG.Point{add_position(p0, x, y) | command: to_absolute_command(command)}},
+        do: {:ok, %__MODULE__{add_position(p0, x, y) | command: to_absolute_command(command)}},
         else: {:ok, p0}
     else
       raise_command_error(command)
     end
   end
 
-  def to_relative!(%SVG.Point{} = p0, x, y), do: to_relative!(p0, %{x: x, y: y})
+  def to_relative!(%__MODULE__{} = p0, x, y), do: to_relative!(p0, %{x: x, y: y})
 
-  def to_relative!(%SVG.Point{} = p0, %{x: _x, y: _y} = coord) do
+  def to_relative!(%__MODULE__{} = p0, %{x: _x, y: _y} = coord) do
     case to_relative(p0, coord) do
       {:ok, point} -> point
       {:error, msg} -> raise msg
     end
   end
 
-  def to_relative(%SVG.Point{} = p0, x, y), do: to_relative(p0, %{x: x, y: y})
+  def to_relative(%__MODULE__{} = p0, x, y), do: to_relative(p0, %{x: x, y: y})
 
-  def to_relative(%SVG.Point{command: command} = p0, %{x: x, y: y}) do
+  def to_relative(%__MODULE__{command: command} = p0, %{x: x, y: y}) do
     if is_legal_command?(command) do
       if is_absolute_command?(command),
-        do: {:ok, %SVG.Point{add_position(p0, -x, -y) | command: to_relative_command(command)}},
+        do: {:ok, %__MODULE__{add_position(p0, -x, -y) | command: to_relative_command(command)}},
         else: {:ok, p0}
     else
       raise_command_error(command)
@@ -165,8 +165,8 @@ defmodule SVG.Point do
     do: to_string(command) |> String.downcase() |> String.to_atom()
 
   # 値を操作する場合に用いる関数群
-  def add_position(%SVG.Point{} = point, dx, dy) do
-    %SVG.Point{
+  def add_position(%__MODULE__{} = point, dx, dy) do
+    %__MODULE__{
       point
       | x: add(point.x, dx),
         y: add(point.y, dy),
@@ -183,8 +183,8 @@ defmodule SVG.Point do
   defp add(v, d), do: v + d
 
   # 値を操作する場合に用いる関数群
-  def multiply_position(%SVG.Point{} = point, dx, dy) do
-    %SVG.Point{
+  def multiply_position(%__MODULE__{} = point, dx, dy) do
+    %__MODULE__{
       point
       | x: mul(point.x, dx),
         y: mul(point.y, dy),
@@ -200,7 +200,7 @@ defmodule SVG.Point do
   defp mul(nil, _d), do: nil
   defp mul(v, d), do: v * d
 
-  def round_values(%SVG.Point{} = point, precision) do
+  def round_values(%__MODULE__{} = point, precision) do
     factor = :math.pow(10, precision)
 
     fn_round = fn val ->
@@ -211,7 +211,7 @@ defmodule SVG.Point do
       end
     end
 
-    %SVG.Point{
+    %__MODULE__{
       point
       | x: fn_round.(point.x),
         y: fn_round.(point.y),
@@ -224,34 +224,34 @@ defmodule SVG.Point do
     }
   end
 
-  def export_as_string!(%SVG.Point{} = point) do
+  def export_as_string!(%__MODULE__{} = point) do
     case export_as_string(point) do
       {:ok, str} -> str
       {:error, msg} -> raise msg
     end
   end
 
-  def export_as_string(%SVG.Point{command: command} = point) do
+  def export_as_string(%__MODULE__{command: command} = point) do
     if is_legal_command?(command),
       do: {:ok, export_as_string_internal(point)},
       else: raise_command_error(command)
   end
 
   def export_as_string(_ = object),
-    do: SVG.Error.message("Invalid Object found, not a SVG.Point: #{inspect(object)}")
+    do: SVG.Error.message("Invalid Object found, not a __MODULE__: #{inspect(object)}")
 
-  defp export_as_string_internal(%SVG.Point{command: :m, x: x, y: y}), do: "m #{x},#{y}"
-  defp export_as_string_internal(%SVG.Point{command: :M, x: x, y: y}), do: "M #{x},#{y}"
-  defp export_as_string_internal(%SVG.Point{command: :l, x: x, y: y}), do: "l #{x},#{y}"
-  defp export_as_string_internal(%SVG.Point{command: :L, x: x, y: y}), do: "L #{x},#{y}"
-  defp export_as_string_internal(%SVG.Point{command: :h, x: x}), do: "h #{x}"
-  defp export_as_string_internal(%SVG.Point{command: :H, x: x}), do: "H #{x}"
-  defp export_as_string_internal(%SVG.Point{command: :v, y: y}), do: "v #{y}"
-  defp export_as_string_internal(%SVG.Point{command: :V, y: y}), do: "V #{y}"
-  defp export_as_string_internal(%SVG.Point{command: :z}), do: "z"
-  defp export_as_string_internal(%SVG.Point{command: :Z}), do: "Z"
+  defp export_as_string_internal(%__MODULE__{command: :m, x: x, y: y}), do: "m #{x},#{y}"
+  defp export_as_string_internal(%__MODULE__{command: :M, x: x, y: y}), do: "M #{x},#{y}"
+  defp export_as_string_internal(%__MODULE__{command: :l, x: x, y: y}), do: "l #{x},#{y}"
+  defp export_as_string_internal(%__MODULE__{command: :L, x: x, y: y}), do: "L #{x},#{y}"
+  defp export_as_string_internal(%__MODULE__{command: :h, x: x}), do: "h #{x}"
+  defp export_as_string_internal(%__MODULE__{command: :H, x: x}), do: "H #{x}"
+  defp export_as_string_internal(%__MODULE__{command: :v, y: y}), do: "v #{y}"
+  defp export_as_string_internal(%__MODULE__{command: :V, y: y}), do: "V #{y}"
+  defp export_as_string_internal(%__MODULE__{command: :z}), do: "z"
+  defp export_as_string_internal(%__MODULE__{command: :Z}), do: "Z"
 
-  defp export_as_string_internal(%SVG.Point{
+  defp export_as_string_internal(%__MODULE__{
          command: :c,
          x1: x1,
          y1: y1,
@@ -262,7 +262,7 @@ defmodule SVG.Point do
        }),
        do: "c #{x1},#{y1} #{x2},#{y2} #{x},#{y}"
 
-  defp export_as_string_internal(%SVG.Point{
+  defp export_as_string_internal(%__MODULE__{
          command: :C,
          x1: x1,
          y1: y1,
@@ -273,23 +273,23 @@ defmodule SVG.Point do
        }),
        do: "C #{x1},#{y1} #{x2},#{y2} #{x},#{y}"
 
-  defp export_as_string_internal(%SVG.Point{command: :s, x2: x2, y2: y2, x: x, y: y}),
+  defp export_as_string_internal(%__MODULE__{command: :s, x2: x2, y2: y2, x: x, y: y}),
     do: "s #{x2},#{y2} #{x},#{y}"
 
-  defp export_as_string_internal(%SVG.Point{command: :S, x2: x2, y2: y2, x: x, y: y}),
+  defp export_as_string_internal(%__MODULE__{command: :S, x2: x2, y2: y2, x: x, y: y}),
     do: "S #{x2},#{y2} #{x},#{y}"
 
-  defp export_as_string_internal(%SVG.Point{command: :q, x1: x1, y1: y1, x: x, y: y}),
+  defp export_as_string_internal(%__MODULE__{command: :q, x1: x1, y1: y1, x: x, y: y}),
     do: "q #{x1},#{y1} #{x},#{y}"
 
-  defp export_as_string_internal(%SVG.Point{command: :Q, x1: x1, y1: y1, x: x, y: y}),
+  defp export_as_string_internal(%__MODULE__{command: :Q, x1: x1, y1: y1, x: x, y: y}),
     do: "Q #{x1},#{y1} #{x},#{y}"
 
-  defp export_as_string_internal(%SVG.Point{command: :t, x: x, y: y}), do: "t #{x},#{y}"
+  defp export_as_string_internal(%__MODULE__{command: :t, x: x, y: y}), do: "t #{x},#{y}"
 
-  defp export_as_string_internal(%SVG.Point{command: :T, x: x, y: y}), do: "T #{x},#{y}"
+  defp export_as_string_internal(%__MODULE__{command: :T, x: x, y: y}), do: "T #{x},#{y}"
 
-  defp export_as_string_internal(%SVG.Point{
+  defp export_as_string_internal(%__MODULE__{
          command: :a,
          x: x,
          y: y,
@@ -301,7 +301,7 @@ defmodule SVG.Point do
        }),
        do: "a #{rx} #{ry} #{angle} #{laf} #{sf} #{x} #{y}"
 
-  defp export_as_string_internal(%SVG.Point{
+  defp export_as_string_internal(%__MODULE__{
          command: :A,
          x: x,
          y: y,

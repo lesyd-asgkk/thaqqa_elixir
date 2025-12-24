@@ -8,13 +8,13 @@ defmodule SVG.Path do
   defstruct points: []
 
   def new(points) when is_list(points) do
-    %SVG.Path{points: points}
+    %__MODULE__{points: points}
   end
 
-  def round_values(%SVG.Path{points: points}, decimal_places)
+  def round_values(%__MODULE__{points: points}, decimal_places)
       when is_integer(decimal_places) and decimal_places >= 0 do
     rounded_points = Enum.map(points, fn point -> Point.round_values(point, decimal_places) end)
-    %SVG.Path{points: rounded_points}
+    %__MODULE__{points: rounded_points}
   end
 
   def parse_string!(string) when is_binary(string) do
@@ -66,9 +66,10 @@ defmodule SVG.Path do
     end
   end
 
-  defp to_point([], acum, _prev), do: Enum.reverse(acum)
   defp to_point([], acum), do: Enum.reverse(acum)
   defp to_point(list, acum), do: to_point(list, acum, :None)
+
+  defp to_point([], acum, _prev), do: Enum.reverse(acum)
 
   defp to_point(list, acum, prev) do
     [head | tail] = list
@@ -152,14 +153,14 @@ defmodule SVG.Path do
   end
 
   # クソ長path用
-  def export_as_string_mass!(%SVG.Path{points: points}) do
+  def export_as_string_mass!(%__MODULE__{points: points}) do
     points
     |> Task.async_stream(&Point.export_as_string!/1, ordered: true)
     |> Enum.map(fn {:ok, s} -> s end)
     |> Enum.join(" ")
   end
 
-  def export_as_string_mass(%SVG.Path{points: points}) do
+  def export_as_string_mass(%__MODULE__{points: points}) do
     points
     |> Task.async_stream(&Point.export_as_string/1, ordered: true)
     |> Enum.reduce_while({:ok, []}, fn
@@ -189,7 +190,7 @@ defmodule SVG.Path do
   end
 
   # path -> string
-  def export_as_string(%SVG.Path{points: points}) do
+  def export_as_string(%__MODULE__{points: points}) do
     try do
       {:ok,
        Enum.map(points, &Point.export_as_string!(&1))
@@ -202,7 +203,7 @@ defmodule SVG.Path do
   def export_as_string(obj), do: SVG.Error.message("Invalid object found: #{obj}")
 
   # 重複mの処理
-  def defragment_m(%SVG.Path{points: points}) do
+  def defragment_m(%__MODULE__{points: points}) do
     points
     |> Enum.reduce([], fn point, acc ->
       case acc do
@@ -219,32 +220,21 @@ defmodule SVG.Path do
     |> new()
   end
 
-  def to_relative(%SVG.Path{points: points} = path),
+  def to_relative(%__MODULE__{points: points} = path),
     do: gather_sub(path, [], List.duplicate(:rel, length(points)))
 
-  def to_absolute(%SVG.Path{points: points} = path),
+  def to_absolute(%__MODULE__{points: points} = path),
     do: gather_sub(path, [], List.duplicate(:abs, length(points)))
 
-  def get_border(%SVG.Path{points: points} = path),
+  def get_border(%__MODULE__{points: points} = path),
     do: gather_sub(path, nil, List.duplicate(:border, length(points)))
 
-  defp gather_sub(%SVG.Path{points: points}, acum, mode),
+  defp gather_sub(%__MODULE__{points: points}, acum, mode),
     do:
       gather_sub(
         points,
         acum,
         mode,
-        %{left: :inf, top: :inf, right: :neg_inf, bottom: :neg_inf},
-        %{x: 0.0, y: 0.0},
-        %{x: nil, y: nil}
-      )
-
-  defp gather_sub(%SVG.Path{points: points}, mode),
-    do:
-      gather_sub(
-        points,
-        if(mode == :border, do: nil, else: []),
-        List.duplicate(mode, length(points)),
         %{left: :inf, top: :inf, right: :neg_inf, bottom: :neg_inf},
         %{x: 0.0, y: 0.0},
         %{x: nil, y: nil}
@@ -258,7 +248,7 @@ defmodule SVG.Path do
       bottom: normalize_float(b)
     }
 
-  defp gather_sub([], acum, [], _, _, _), do: %SVG.Path{points: Enum.reverse(acum)}
+  defp gather_sub([], acum, [], _, _, _), do: %__MODULE__{points: Enum.reverse(acum)}
 
   defp gather_sub(
          points,
@@ -337,7 +327,7 @@ defmodule SVG.Path do
   defp _min(a, b), do: min(a, b)
 
   # extract abs or rel.
-  def extract_abs_or_rel(%SVG.Path{points: points}) do
+  def extract_abs_or_rel(%__MODULE__{points: points}) do
     points
     |> Enum.map(fn point ->
       case Point.is_relative_command?(point.command) do
@@ -347,8 +337,8 @@ defmodule SVG.Path do
     end)
   end
 
-  def set_start_position(%SVG.Path{points: points}, x, y) do
-    %SVG.Path{
+  def set_start_position(%__MODULE__{points: points}, x, y) do
+    %__MODULE__{
       points: [
         Point.new_m_absolute(x, y)
         | Enum.map(points, fn point ->
@@ -361,21 +351,29 @@ defmodule SVG.Path do
     }
   end
 
-  def merge_path_3(%SVG.Path{} = path1, %SVG.Path{} = path2, %SVG.Path{} = path3, x0, y0, x1, y1),
-    do:
-      merge_path_2(path1, path2, x0, y0)
-      |> merge_path_2(path3, x1, y1)
+  def merge_path_3(
+        %__MODULE__{} = path1,
+        %__MODULE__{} = path2,
+        %__MODULE__{} = path3,
+        x0,
+        y0,
+        x1,
+        y1
+      ),
+      do:
+        merge_path_2(path1, path2, x0, y0)
+        |> merge_path_2(path3, x1, y1)
 
-  def merge_path_2(%SVG.Path{} = path1, %SVG.Path{} = path2, x0, y0),
+  def merge_path_2(%__MODULE__{} = path1, %__MODULE__{} = path2, x0, y0),
     do: concat_path(path1, set_start_position(path2, x0, y0))
 
-  def concat_path(%SVG.Path{points: points1}, %SVG.Path{points: points2}),
-    do: %SVG.Path{points: points1 ++ points2}
+  def concat_path(%__MODULE__{points: points1}, %__MODULE__{points: points2}),
+    do: %__MODULE__{points: points1 ++ points2}
 
-  def rescale(%SVG.Path{points: points}, x, y) do
-    # default_relorabs = extract_abs_or_rel(%SVG.Path{points: points})
+  def rescale(%__MODULE__{points: points}, x, y) do
+    # default_relorabs = extract_abs_or_rel(%__MODULE__{points: points})
     # path = to_absolute(path)
     points = Enum.map(points, fn point -> Point.multiply_position(point, x, y) end)
-    %SVG.Path{points: points}
+    %__MODULE__{points: points}
   end
 end
