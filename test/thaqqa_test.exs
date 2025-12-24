@@ -11,7 +11,6 @@ defmodule ThaqqaTest do
 
     IO.inspect(testobj, label: "testobj")
     IO.inspect(Regex.match?(testobj, "S(null,,a0,)"), label: "testobj")
-    # assert testobj == "m -10.0,-10.0 l 30.0,30.0 v -50.0 l 80.0,230.0 z"
 
     {:ok, _pid} = Thaqqa.FontManager.start_link([])
 

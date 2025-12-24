@@ -10,7 +10,7 @@ defmodule Thaqqa.Column do
 end
 
 defmodule Thaqqa.Data do
-  defstruct [:parent, :value_list]
+  defstruct [:value_list]
 
   def set_val(%__MODULE__{value_list: v} = data, key, val) do
     %{data | value_list: Map.put(v, key, val)}
@@ -35,6 +35,22 @@ defmodule Thaqqa.DataTable do
 
   def get_column(%__MODULE__{column_list: cols}, column_name),
     do: Enum.find(cols, fn %Column{name: name} -> name == column_name end)
+
+  def add_column!(
+        %__MODULE__{column_list: cols, data_list: datas} = table,
+        column_name,
+        type,
+        desc \\ "",
+        order \\ 0,
+        subtype \\ "",
+        val_init \\ nil,
+        dev \\ false
+      ) do
+    case add_column(table, column_name, type, desc, order, subtype, val_init, dev) do
+      {:ok, val} -> val
+      {:error, msg} -> raise msg
+    end
+  end
 
   def add_column(
         %__MODULE__{column_list: cols, data_list: datas} = table,

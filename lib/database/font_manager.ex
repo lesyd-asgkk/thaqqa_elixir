@@ -29,7 +29,7 @@ defmodule Thaqqa.FontManager do
   end
 
   def get_static_table_all() do
-    :ets.lookup(@static_tables)
+    :ets.tab2list(@static_tables)
   end
 
   def get_static_table(name) do

@@ -20,27 +20,36 @@ defmodule Thaqqa.FontIO do
     # FontManager.add_static_table (%Thaqqa.DataTable{name: "TestFont", table_list: []})
   end
 
+  def import(json, false) do
+  end
+
   defp import_table(name, struct) do
     table = DataTable.new(name, nil)
 
-    Enum.map(struct, fn {k, v} ->
-      if k == "columnList" do
-        DataTable.add_column(
-          table,
-          Map.get(v, "name"),
-          Map.get(v, "type"),
-          Map.get(v, "desc", ""),
-          Map.get(v, "order"),
-          Map.get(v, "subtype"),
-          Map.get(v, "dev")
-        )
-      else
-        Enum.map(v, fn {_, v_} -> DataTable.add_data(table, v_) end)
-      end
-    end)
-  end
-
-  def import(json, false) do
+    table_ =
+      Enum.reduce(struct, table, fn {k, v}, ans ->
+        if k == "columnList" do
+          Enum.reduce(v, ans, fn {_, v_}, ans_ ->
+            DataTable.add_column!(
+              ans_,
+              Map.get(v_, "name"),
+              Map.get(v_, "type"),
+              Map.get(v_, "desc", ""),
+              Map.get(v_, "order"),
+              Map.get(v_, "subtype"),
+              Map.get(v_, "dev")
+            )
+          end)
+        else
+          if is_map(v) do
+            Enum.reduce(v, ans, fn {_, v_}, ans_ ->
+              DataTable.add_data(ans_, v_)
+            end)
+          else
+            ans
+          end
+        end
+      end)
   end
 
   def export(fonts) do
