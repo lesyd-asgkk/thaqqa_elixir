@@ -8,7 +8,7 @@ defmodule Thaqqa.FontIO do
   @root_file "data/root.json"
   @font_folder "data/font/"
 
-  def import(true) do
+  def import() do
     # json → structs
     {:ok, json} = File.read(@root_file)
     {:ok, data} = Jason.decode(json)
@@ -20,16 +20,21 @@ defmodule Thaqqa.FontIO do
     # FontManager.add_static_table (%Thaqqa.DataTable{name: "TestFont", table_list: []})
   end
 
-  '''
-    def import(filename, false) do
-      {:ok, json} = File.read(@root_file <> filename)
-      {:ok, data} = Jason.decode(json)
+  def import(filename) do
+    {:ok, json} = File.read(@font_folder <> filename <> ".json")
+    {:ok, data} = Jason.decode(json)
 
+    table =
       Enum.map(data, fn {k, v} ->
-        FontManager.add_font(import_table(k, v))
+        import_table(k, v)
       end)
-    end
-  '''
+
+    name = Map.get(data, "FONTDATA") |> Map.get("data") |> Map.get("0") |> Map.get("Fontname")
+
+    if name == nil,
+      do: {:error, "Cannot load font: Fontname is not found"},
+      else: FontManager.add_font(Font.new(filename, name, table))
+  end
 
   defp import_table(name, struct) do
     table = DataTable.new(name, nil)
@@ -38,14 +43,15 @@ defmodule Thaqqa.FontIO do
       Enum.reduce(struct, table, fn {k, v}, ans ->
         if k == "columnList" do
           Enum.reduce(v, ans, fn {_, v_}, ans_ ->
+            # todo:name,typeに不備がある場合は即エラー処理にする
             DataTable.add_column!(
               ans_,
               Map.get(v_, "name"),
               Map.get(v_, "type"),
               Map.get(v_, "desc", ""),
-              Map.get(v_, "order"),
-              Map.get(v_, "subtype"),
-              Map.get(v_, "dev")
+              Map.get(v_, "order", 0),
+              Map.get(v_, "subtype", ""),
+              Map.get(v_, "dev", false)
             )
           end)
         else

@@ -240,7 +240,9 @@ end
 defmodule Thaqqa.Font do
   alias Thaqqa.FontManager, as: FontManager
 
-  defstruct [:name, table_list: []]
+  defstruct [:filename, :name, table_list: []]
+
+  def new(filename, name, t), do: %__MODULE__{table_list: t, name: name, filename: filename}
 
   def get_table(%__MODULE__{table_list: tables}, table_name) do
     Enum.find(tables, fn table -> table.name == table_name end)

@@ -14,8 +14,16 @@ defmodule ThaqqaTest do
 
     {:ok, _pid} = Thaqqa.FontManager.start_link([])
 
-    Thaqqa.FontIO.import(true)
-    IO.inspect(Thaqqa.FontManager.get_static_table_all(), label: "font")
+    Thaqqa.FontIO.import()
+    Thaqqa.FontIO.import("default")
+
+    # Thaqqa.FontManager.get_font("Default")
+    table =
+      Thaqqa.FontManager.get_static_table("VOWEL")
+      # |> Thaqqa.Font.get_table("VOWEL")
+      |> Thaqqa.DataTable.get_data(&(&1 |> Thaqqa.Data.get_val("Name") == "a"))
+
+    IO.inspect(table, label: "font")
 
     # Supervisor.start_link(Thaqqa.FontManager, strategy: :one_for_one)
   end

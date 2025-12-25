@@ -313,8 +313,8 @@ defmodule SVG.Point do
        }),
        do: "A #{rx} #{ry} #{angle} #{laf} #{sf} #{x} #{y}"
 
-  # def list_relative(), do: [:m, :l, :h, :v, :c, :s, :q, :t, :a, :z] ←将来的にマクロとして実装
-  # def list_absolute(), do: [:M, :L, :H, :V, :C, :S, :Q, :T, :A, :Z]
+  defmacro list_relative(), do: [:m, :l, :h, :v, :c, :s, :q, :t, :a, :z]
+  defmacro list_absolute(), do: [:M, :L, :H, :V, :C, :S, :Q, :T, :A, :Z]
 
   defp raise_command_error(command),
     do: SVG.Error.message("Invalid SVG.Point command found:", command)

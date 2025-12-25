@@ -71,6 +71,13 @@
         "order": 402,
         "subtype": "n>=0",
         "dev": false
+      },
+      "Fontname": {
+        "name": "Fontname",
+        "type": "char",
+        "order": 403,
+        "subtype": "",
+        "dev": false
       }
     },
     "data": {
@@ -84,7 +91,8 @@
         "TopGapH": 10,
         "VersionMajor": 0,
         "VersionMinor": 0,
-        "VersionPatch": 0
+        "VersionPatch": 0,
+        "Fontname":"SanSerif"
       }
     }
   },
