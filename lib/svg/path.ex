@@ -41,28 +41,62 @@ defmodule SVG.Path do
       # 空データも削除する
       |> Enum.filter(fn x -> x not in [" ", ""] end)
 
-    try do
-      points =
-        Enum.map(str_b, &to_token(&1))
-        |> to_point([])
+    case parse_token(str_b) do
+      {:ok, list} ->
+        parse_point(list)
 
-      {:ok, %SVG.Path{points: points}}
-    catch
-      e -> SVG.Error.message(e)
+      {:error, msg} ->
+        {:error, msg}
+    end
+  end
+
+  defp parse_point(list) do
+    to_point(list)
+    |> Enum.reduce_while({:ok, []}, fn
+      {:ok, str}, {:ok, acc} ->
+        {:cont, {:ok, [str | acc]}}
+
+      {:error, reason}, _acc ->
+        {:halt, {:error, reason}}
+    end)
+    |> case do
+      {:ok, list} ->
+        {:ok, Enum.reverse(list)}
+
+      {:error, reason} ->
+        {:error, reason}
+    end
+  end
+
+  defp parse_token(str_b) do
+    Enum.map(str_b, &to_token/1)
+    |> Enum.reduce_while({:ok, []}, fn
+      {:ok, str}, {:ok, acc} ->
+        {:cont, {:ok, [str | acc]}}
+
+      {:error, reason}, _acc ->
+        {:halt, {:error, reason}}
+    end)
+    |> case do
+      {:ok, list} ->
+        {:ok, Enum.reverse(list)}
+
+      {:error, reason} ->
+        {:error, reason}
     end
   end
 
   defp to_token(value) do
     case Float.parse(value) do
       {num, _} ->
-        num
+        {:ok, num}
 
       _ ->
         v = String.to_atom(value)
 
         if Point.is_legal_command?(v),
-          do: v,
-          else: throw("Invalid Value found: #{value}")
+          do: {:ok, v},
+          else: SVG.Error.invalid_value(value)
     end
   end
 
@@ -71,84 +105,88 @@ defmodule SVG.Path do
 
   defp to_point([], acum, _prev), do: Enum.reverse(acum)
 
-  defp to_point(list, acum, prev) do
+  defp to_point(list, acum \\ [], prev \\ :None) do
     [head | tail] = list
 
     case head do
       h when h in [:t, :T, :l, :L] ->
         [val_0, val_1 | rest] = tail
-        point = %Point{command: head, x: val_0, y: val_1}
+        point = {:ok, %Point{command: head, x: val_0, y: val_1}}
         to_point(rest, [point | acum], head)
 
       :m ->
         [val_0, val_1 | rest] = tail
-        point = %Point{command: head, x: val_0, y: val_1}
+        point = {:ok, %Point{command: head, x: val_0, y: val_1}}
         to_point(rest, [point | acum], :l)
 
       :M ->
         [val_0, val_1 | rest] = tail
-        point = %Point{command: head, x: val_0, y: val_1}
+        point = {:ok, %Point{command: head, x: val_0, y: val_1}}
         to_point(rest, [point | acum], :L)
 
       h when h in [:z, :Z] ->
-        point = %Point{command: head}
+        point = {:ok, %Point{command: head}}
         to_point(tail, [point | acum], :None)
 
       h when h in [:v, :V] ->
         [val_0 | rest] = tail
-        point = %Point{command: head, y: val_0}
+        point = {:ok, %Point{command: head, y: val_0}}
         to_point(rest, [point | acum], head)
 
       h when h in [:h, :H] ->
         [val_0 | rest] = tail
-        point = %Point{command: head, x: val_0}
+        point = {:ok, %Point{command: head, x: val_0}}
         to_point(rest, [point | acum], head)
 
       h when h in [:s, :S] ->
         [val_0, val_1, val_2, val_3 | rest] = tail
-        point = %Point{command: head, x: val_2, y: val_3, x2: val_0, y2: val_1}
+        point = {:ok, %Point{command: head, x: val_2, y: val_3, x2: val_0, y2: val_1}}
         to_point(rest, [point | acum], head)
 
       h when h in [:q, :Q] ->
         [val_0, val_1, val_2, val_3 | rest] = tail
-        point = %Point{command: head, x: val_2, y: val_3, x1: val_0, y1: val_1}
+        point = {:ok, %Point{command: head, x: val_2, y: val_3, x1: val_0, y1: val_1}}
         to_point(rest, [point | acum], head)
 
       h when h in [:c, :C] ->
         [val_0, val_1, val_2, val_3, val_4, val_5 | rest] = tail
 
-        point = %Point{
-          command: head,
-          x: val_4,
-          y: val_5,
-          x1: val_0,
-          y1: val_1,
-          x2: val_2,
-          y2: val_3
-        }
+        point =
+          {:ok,
+           %Point{
+             command: head,
+             x: val_4,
+             y: val_5,
+             x1: val_0,
+             y1: val_1,
+             x2: val_2,
+             y2: val_3
+           }}
 
         to_point(rest, [point | acum], head)
 
       h when h in [:a, :A] ->
         [val_0, val_1, val_2, val_3, val_4, val_5, val_6 | rest] = tail
 
-        point = %Point{
-          command: head,
-          x: val_5,
-          y: val_6,
-          rx: val_0,
-          ry: val_1,
-          angle: val_2,
-          laf: val_3,
-          sf: val_4
-        }
+        point =
+          {:ok,
+           %Point{
+             command: head,
+             x: val_5,
+             y: val_6,
+             rx: val_0,
+             ry: val_1,
+             angle: val_2,
+             laf: val_3,
+             sf: val_4
+           }}
 
         to_point(rest, [point | acum], head)
 
       _ ->
         if prev != :None and is_number(head),
           do: to_point([prev | list], acum, :None),
-          else: throw("Invalid command found: #{head}")
+          else: SVG.Error.invalid_command(head)
     end
   end
 
@@ -191,16 +229,22 @@ defmodule SVG.Path do
 
   # path -> string
   def export_as_string(%__MODULE__{points: points}) do
-    try do
-      {:ok,
-       Enum.map(points, &Point.export_as_string!(&1))
-       |> Enum.join(" ")}
-    catch
-      e -> {:error, e}
+    Enum.map(points, &Point.export_as_string/1)
+    |> Enum.reduce_while({:ok, []}, fn
+      {:ok, str}, {:ok, acc} ->
+        {:cont, {:ok, [str | acc]}}
+
+      {:error, reason}, _acc ->
+        {:halt, {:error, reason}}
+    end)
+    |> case do
+      {:ok, list} ->
+        {:ok, Enum.join(Enum.reverse(list), " ")}
+
+      {:error, reason} ->
+        {:error, reason}
     end
   end
-
-  def export_as_string(obj), do: SVG.Error.message("Invalid object found: #{obj}")
 
   # 重複mの処理
   def defragment_m(%__MODULE__{points: points}) do

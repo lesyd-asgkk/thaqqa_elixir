@@ -1,6 +1,6 @@
-defmodule Svg do
+defmodule SVG do
   @moduledoc """
-  Documentation for `Svg`.
+  Documentation for `SVG`.
   """
 
   @doc """
@@ -8,7 +8,7 @@ defmodule Svg do
 
   ## Examples
 
-      iex> Svg.hello()
+      iex> SVG.hello()
       :world
 
   """

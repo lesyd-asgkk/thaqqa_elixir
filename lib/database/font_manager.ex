@@ -107,4 +107,6 @@ defmodule Thaqqa.FontManager do
     :ets.insert(@static_tables, {name, new_table})
     {:reply, :ok, state}
   end
+
+  def handle_info(_, state), do: {:noreply, state}
 end

@@ -133,7 +133,7 @@ defmodule SVG.Point do
         do: {:ok, %__MODULE__{add_position(p0, x, y) | command: to_absolute_command(command)}},
         else: {:ok, p0}
     else
-      raise_command_error(command)
+      SVG.Error.invalid_command(command)
     end
   end
 
@@ -154,7 +154,7 @@ defmodule SVG.Point do
         do: {:ok, %__MODULE__{add_position(p0, -x, -y) | command: to_relative_command(command)}},
         else: {:ok, p0}
     else
-      raise_command_error(command)
+      SVG.Error.invalid_command(command)
     end
   end
 
@@ -234,11 +234,11 @@ defmodule SVG.Point do
   def export_as_string(%__MODULE__{command: command} = point) do
     if is_legal_command?(command),
       do: {:ok, export_as_string_internal(point)},
-      else: raise_command_error(command)
+      else: SVG.Error.invalid_command(command)
   end
 
   def export_as_string(_ = object),
-    do: SVG.Error.message("Invalid Object found, not a __MODULE__: #{inspect(object)}")
+    do: SVG.Error.invalid_object(object)
 
   defp export_as_string_internal(%__MODULE__{command: :m, x: x, y: y}), do: "m #{x},#{y}"
   defp export_as_string_internal(%__MODULE__{command: :M, x: x, y: y}), do: "M #{x},#{y}"
@@ -315,9 +315,6 @@ defmodule SVG.Point do
 
   defmacro list_relative(), do: [:m, :l, :h, :v, :c, :s, :q, :t, :a, :z]
   defmacro list_absolute(), do: [:M, :L, :H, :V, :C, :S, :Q, :T, :A, :Z]
-
-  defp raise_command_error(command),
-    do: SVG.Error.message("Invalid SVG.Point command found:", command)
 end
 
 defimpl Inspect, for: SVG.Point do

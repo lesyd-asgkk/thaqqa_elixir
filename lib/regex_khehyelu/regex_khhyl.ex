@@ -1,8 +1,9 @@
 defmodule Thaqqa.Regex_Khhyl.AST do
-  defstruct type: nil, value: nil, layer: nil, children: []
+  # , include: nil
+  defstruct type: nil, value: nil, layer: nil, children: [], range: nil
 
-  def new(type, layer, value \\ nil, children \\ []) do
-    %__MODULE__{type: type, value: value, layer: layer, children: children}
+  def new(type, layer, range, value \\ nil, children \\ []) do
+    %__MODULE__{type: type, value: value, layer: layer, children: children, range: range}
   end
 
   def has_astarisk_for_form?(%__MODULE__{value: val, children: children}) do
@@ -12,39 +13,79 @@ end
 
 defmodule Thaqqa.Regex_Khhyl do
   alias Thaqqa.Regex_Khhyl.AST, as: AST
+  import Thaqqa.Regex_Khhyl.Error
 
-  def convert(string) when is_binary(string) do
-    string
-    |> tokenize()
-    |> normalize()
-    |> translate()
+  def convert!(string) when is_binary(string) do
+    case convert(string) do
+      {:ok, val} -> val
+      {:error, msg} -> raise msg
+    end
   end
 
-  def translate(ast) when is_list(ast), do: Enum.map_join(ast, "", &translate_sub/1)
+  def convert(string) when is_binary(string) do
+    case string |> tokenize() |> normalize() do
+      {:ok, val} -> translate(val)
+      {:error, msg} -> {:error, msg}
+    end
+  end
 
-  def translate(%AST{} = ast), do: translate_sub(ast)
+  def translate!(ast) when is_list(ast) do
+    case translate(ast) do
+      {:ok, val} -> val
+      {:error, msg} -> raise msg
+    end
+  end
+
+  def translate(ast) when is_list(ast) do
+    Enum.map(ast, &translate/1)
+    |> Enum.reduce_while({:ok, []}, fn
+      {:ok, str}, {:ok, acc} ->
+        {:cont, {:ok, [str | acc]}}
+
+      {:error, reason}, _acc ->
+        {:halt, {:error, reason}}
+    end)
+    |> case do
+      {:ok, list} ->
+        {:ok, Enum.join(Enum.reverse(list), " ")}
+
+      {:error, reason} ->
+        {:error, reason}
+    end
+  end
+
+  def translate(%AST{} = ast) do
+    t = translate_sub(ast)
+
+    case t do
+      {:error, msg} -> t
+      _ -> {:ok, t}
+    end
+  end
+
+  def translate_sub(%AST{type: :script, value: val}),
+    # 暫定的な処置。todo:scriptパーサ (テーブル実装後になります)
+    do: "[" <> val <> "]"
 
   def translate_sub(%AST{type: :finite, value: val}), do: val
 
   def translate_sub(%AST{type: :brancket, value: val, children: children}),
     do: "(" <> val <> Enum.map_join(children, "", &translate_sub/1) <> ")"
 
-  def translate_sub(%AST{type: :script, value: val}),
-    # 暫定的な処置。todo:scriptパーサ (テーブル実装後になります)
-    do: "[" <> val <> "]"
-
   # S(*), C(*)のようなvariantをこっちで実装する。
   # *を取り出す方法……？
 
-  def translate_sub(%AST{type: :S, children: children} = ast) when length(children) == 1 do
+  def translate_sub(%AST{type: :S = type, children: children, range: range} = ast)
+      when length(children) == 1 do
     if AST.has_astarisk_for_form?(ast) do
       convert("S((?:init|mid|fin|sol|null),*,*,*)")
     else
-      raise "S() with no variant '*' is not supported."
+      Thaqqa.Regex_Khhyl.Error.invalid_astarisk(type, range)
     end
   end
 
-  def translate_sub(%AST{type: :S, children: children}) when length(children) == 3 do
+  def translate_sub(%AST{type: :S = type, children: children, range: range})
+      when length(children) == 3 do
     if AST.has_astarisk_for_form?(Enum.at(children, 2)) do
       tail = [Enum.at(children, 1), Enum.at(children, 2)]
 
@@ -53,44 +94,60 @@ defmodule Thaqqa.Regex_Khhyl do
         children: children ++ tail ++ tail
       })
     else
-      raise "S() with no variant '*' is not supported."
+      Thaqqa.Regex_Khhyl.Error.invalid_astarisk(type, range)
     end
   end
 
-  def translate_sub(%AST{type: :V, children: children} = ast) when length(children) == 1 do
+  def translate_sub(%AST{type: :V = type, children: children, range: range} = ast)
+      when length(children) == 1 do
     if AST.has_astarisk_for_form?(ast) do
       convert("V((?:init|mid|fin|sol|null),*)")
     else
-      raise "V() with no variant '*' is not supported."
+      Thaqqa.Regex_Khhyl.Error.invalid_astarisk(type, range)
     end
   end
 
-  def translate_sub(%AST{type: :Vd, children: children} = ast) when length(children) == 1 do
+  def translate_sub(%AST{type: :Vd = type, children: children, range: range} = ast)
+      when length(children) == 1 do
     if AST.has_astarisk_for_form?(ast) do
       convert("Vd((?:init|mid|fin|sol|null),*)")
     else
-      raise "Vd() with no variant '*' is not supported."
+      Thaqqa.Regex_Khhyl.Error.invalid_astarisk(type, range)
     end
   end
 
-  def translate_sub(%AST{type: :C, children: children} = ast) when length(children) == 1 do
+  def translate_sub(%AST{type: :C = type, children: children, range: range} = ast)
+      when length(children) == 1 do
     if AST.has_astarisk_for_form?(ast) do
       convert("C((?:onset|coda|null),*)")
     else
-      raise "C() with no variant '*' is not supported."
+      Thaqqa.Regex_Khhyl.Error.invalid_astarisk(type, range)
     end
   end
 
-  def translate_sub(%AST{type: :Cd, children: children} = ast) when length(children) == 1 do
+  def translate_sub(%AST{type: :Cd = type, children: children, range: range} = ast)
+      when length(children) == 1 do
     if AST.has_astarisk_for_form?(ast) do
       convert("Cd((?:onset|coda|null),*)")
     else
-      raise "Cd() with no variant '*' is not supported."
+      Thaqqa.Regex_Khhyl.Error.invalid_astarisk(type, range)
     end
   end
 
+  def translate_sub(%AST{type: :S = t, children: children}) when length(children) == 7 do
+    if AST.has_astarisk_for_form?(Enum.at(children, 0)) do
+      [_, tail] = children
+      translate_brancket_sub("#{Atom.to_string(t)}\\((?:init|mid|fin|sol|null)", tail)
+    end
+
+    translate_brancket_sub("#{Atom.to_string(t)}\\(", children)
+  end
+
+  def translate_sub(%AST{type: :S = t, range: range}),
+    do: Thaqqa.Regex_Khhyl.Error.invalid_argument_num(t, range)
+
   def translate_sub(%AST{type: t, children: children})
-      when t in [:S, :V, :Vd] do
+      when t in [:V, :Vd] and length(children) == 3 do
     if AST.has_astarisk_for_form?(Enum.at(children, 0)) do
       [_, tail] = children
       translate_brancket_sub("#{Atom.to_string(t)}\\((?:init|mid|fin|sol|null)", tail)
@@ -100,7 +157,7 @@ defmodule Thaqqa.Regex_Khhyl do
   end
 
   def translate_sub(%AST{type: t, children: children})
-      when t in [:C, :Cd] do
+      when t in [:C, :Cd] and length(children) == 3 do
     if AST.has_astarisk_for_form?(Enum.at(children, 0)) do
       [_, tail] = children
       translate_brancket_sub("#{Atom.to_string(t)}\\((?:onset|coda|null)", tail)
@@ -109,15 +166,33 @@ defmodule Thaqqa.Regex_Khhyl do
     translate_brancket_sub("#{Atom.to_string(t)}\\(", children)
   end
 
-  def translate_sub(%AST{type: :L, children: children}),
+  def translate_sub(%AST{type: t, range: range})
+      when t in [:C, :Cd, :V, :Vd],
+      do: Thaqqa.Regex_Khhyl.Error.invalid_argument_num(t, range)
+
+  def translate_sub(%AST{type: :L, children: children}) when length(children) == 0,
     do: convert("(:?S(*)|V(*)|C(*)|P(*)|Vd(*)|Cd(*)|Pd(*))")
+
+  def translate_sub(%AST{type: :L = t, range: range}),
+    do: Thaqqa.Regex_Khhyl.Error.invalid_argument_num(t, range)
 
   def translate_sub(%AST{type: :R, value: val}),
     do: "R\\(#{val}\\)"
 
   def translate_sub(%AST{type: t, children: children})
-      when t in [:P, :Pd, :X],
+      when length(children) == 1
+      when t in [:P, :Pd],
       do: translate_brancket_sub("#{Atom.to_string(t)}\\(", children)
+
+  def translate_sub(%AST{type: t, range: range})
+      when t in [:P, :Pd],
+      do: Thaqqa.Regex_Khhyl.Error.invalid_argument_num(t, range)
+
+  def translate_sub(%AST{type: :X = t, children: children}) when length(children) == 3,
+    do: translate_brancket_sub("#{Atom.to_string(t)}\\(", children)
+
+  def translate_sub(%AST{type: :X = t, range: range}),
+    do: Thaqqa.Regex_Khhyl.Error.invalid_argument_num(t, range)
 
   def translate_brancket_sub(val, children),
     do: val <> Enum.map_join(children, "", &translate_sub/1) <> "\\)"
@@ -159,7 +234,21 @@ defmodule Thaqqa.Regex_Khhyl do
   def translate_sub(%AST{children: children}),
     do: Enum.map_join(children, "", &translate_sub/1)
 
-  def normalize(list) when is_list(list), do: normalize_sub(list, [], :sentence)
+  def normalize!(list) when is_list(list) do
+    case normalize(list) do
+      {:ok, val} -> val
+      {:error, msg} -> raise msg
+    end
+  end
+
+  def normalize(list) when is_list(list) do
+    t = normalize_sub(list, [], :sentence)
+
+    case t do
+      {:error, msg} -> t
+      _ -> {:ok, t}
+    end
+  end
 
   def normalize_sub([], acum_all, _), do: Enum.reverse(acum_all)
 
@@ -183,10 +272,14 @@ defmodule Thaqqa.Regex_Khhyl do
         normalize_branckets(:brancket, name, acum_all, tail, current_layer, current_layer, 1)
 
       ")" ->
-        raise "unclosed Branket found: )"
+        Thaqqa.Regex_Khhyl.Error.unclosed_brancket_backward("#{Enum.join(list, "")}")
 
       h when h in ["^", "$", "*", "+", "?", "|", "*?", "+?", "??"] ->
-        normalize_sub(tail, [AST.new(:finite, current_layer, head) | acum_all], current_layer)
+        normalize_sub(
+          tail,
+          [AST.new(:finite, current_layer, head, head) | acum_all],
+          current_layer
+        )
 
       _ ->
         cond do
@@ -204,10 +297,18 @@ defmodule Thaqqa.Regex_Khhyl do
             )
 
           Regex.match?(~r/\{.*?}/, head) ->
-            normalize_sub(tail, [AST.new(:finite, head) | acum_all], current_layer)
+            normalize_sub(
+              tail,
+              [AST.new(:finite, current_layer, head, head) | acum_all],
+              current_layer
+            )
 
           true ->
-            normalize_sub(tail, [AST.new(:finite, head) | acum_all], current_layer)
+            normalize_sub(
+              tail,
+              [AST.new(:finite, current_layer, head, head) | acum_all],
+              current_layer
+            )
         end
     end
   end
@@ -221,17 +322,25 @@ defmodule Thaqqa.Regex_Khhyl do
     case head do
       # 形状指定用
       h when h in ["init", "mid", "fin", "sol", "onset", "coda", "null"] ->
-        normalize_sub(tail, [AST.new(:finite, current_layer, head) | acum_all], current_layer)
+        normalize_sub(
+          tail,
+          [AST.new(:finite, current_layer, head, head) | acum_all],
+          current_layer
+        )
 
       h when h in ["(?:", "(", "(?=", "(?<=", "(?!", "(?<!"] ->
         name = String.slice(head, 1..-1//1)
         normalize_branckets(:brancket, name, acum_all, tail, current_layer, current_layer, 1)
 
       ")" ->
-        raise "unclosed Branket found: )"
+        Thaqqa.Regex_Khhyl.Error.unclosed_brancket_backward("#{Enum.join(list, "")}")
 
       "," ->
-        normalize_sub(tail, [AST.new(:finite, current_layer, head) | acum_all], current_layer)
+        normalize_sub(
+          tail,
+          [AST.new(:finite, current_layer, head, head) | acum_all],
+          current_layer
+        )
 
       _ ->
         cond do
@@ -248,8 +357,8 @@ defmodule Thaqqa.Regex_Khhyl do
               1
             )
 
-          Regex.match?(~r/\{.*?}/, head) ->
-            raise "Quantifier {...} is not supported in glyph group layer."
+          # Regex.match?(~r/\{.*?}/, head) ->
+          #  "Quantifier {...} is not supported in glyph group layer."
 
           true ->
             # next_layer。(:glyphの場合は未実装)
@@ -276,10 +385,14 @@ defmodule Thaqqa.Regex_Khhyl do
         normalize_branckets(:brancket, name, acum_all, tail, current_layer, current_layer, 1)
 
       ")" ->
-        raise "unclosed Branket found: )"
+        Thaqqa.Regex_Khhyl.Error.unclosed_brancket_backward("#{Enum.join(list, "")}")
 
       "-" ->
-        normalize_sub(tail, [AST.new(:finite, current_layer, head) | acum_all], current_layer)
+        normalize_sub(
+          tail,
+          [AST.new(:finite, current_layer, head, head) | acum_all],
+          current_layer
+        )
 
       _ ->
         cond do
@@ -297,11 +410,19 @@ defmodule Thaqqa.Regex_Khhyl do
             )
 
           Regex.match?(~r/\{.*?}/, head) ->
-            normalize_sub(tail, [AST.new(:finite, current_layer, head) | acum_all], current_layer)
+            normalize_sub(
+              tail,
+              [AST.new(:finite, current_layer, head, head) | acum_all],
+              current_layer
+            )
 
           true ->
             # next_layer。(:glyphの場合は未実装)
-            normalize_sub(list, [AST.new(:glyph, current_layer, nil) | acum_all], next_layer)
+            normalize_sub(
+              list,
+              [AST.new(:glyph, current_layer, head, nil) | acum_all],
+              next_layer
+            )
         end
     end
   end
@@ -317,14 +438,14 @@ defmodule Thaqqa.Regex_Khhyl do
       h when h in ["-+", "-*", "-?", "-+?", "-*?", "-??"] ->
         normalize_sub(
           tail,
-          [AST.new(:token, current_layer, head) | acum_all],
+          [AST.new(:token, current_layer, head, head) | acum_all],
           current_layer
         )
 
       h when h in ["*", "+", "?", "*?", "+?", "??", "_", "."] ->
         normalize_sub(
           tail,
-          [AST.new(:token, current_layer, head) | acum_all],
+          [AST.new(:token, current_layer, head, head) | acum_all],
           current_layer
         )
 
@@ -333,7 +454,10 @@ defmodule Thaqqa.Regex_Khhyl do
         normalize_branckets(:brancket, name, acum_all, tail, current_layer, current_layer, 1)
 
       ")" ->
-        raise "unclosed Branket found: )"
+        Thaqqa.Regex_Khhyl.Error.unclosed_brancket_backward("#{Enum.join(list, "")}")
+
+      "]" ->
+        Thaqqa.Regex_Khhyl.Error.unclosed_brancket_backward("#{Enum.join(list, "")}")
 
       _ ->
         cond do
@@ -355,12 +479,20 @@ defmodule Thaqqa.Regex_Khhyl do
 
             normalize_sub(
               tail,
-              [AST.new(:script, current_layer, script) | acum_all],
+              [AST.new(:script, current_layer, head, script) | acum_all],
               current_layer
             )
 
+          # ↑のように閉じていない場合の処置。
+          Regex.match?(~r/^\[.*$/, head) ->
+            Thaqqa.Regex_Khhyl.Error.unclosed_brancket_forward(head)
+
           true ->
-            normalize_sub(tail, [AST.new(:finite, current_layer, head) | acum_all], current_layer)
+            normalize_sub(
+              tail,
+              [AST.new(:finite, current_layer, head, head) | acum_all],
+              current_layer
+            )
         end
     end
   end
@@ -390,6 +522,21 @@ defmodule Thaqqa.Regex_Khhyl do
          token,
          br_val,
          acum_all,
+         [],
+         next_layer,
+         current_layer,
+         branket_nest,
+         acum
+       ),
+       do:
+         Thaqqa.Regex_Khhyl.Error.unclosed_brancket_forward(
+           "#{Atom.to_string(token)}(#{br_val} #{Enum.reverse(acum) |> Enum.join("")} )"
+         )
+
+  defp normalize_branckets(
+         token,
+         br_val,
+         acum_all,
          list,
          next_layer,
          current_layer,
@@ -397,8 +544,6 @@ defmodule Thaqqa.Regex_Khhyl do
          acum
        )
        when is_list(list) do
-    if list == [], do: raise("unclosed Branket found: (")
-
     [head | tail] = list
 
     case head do
@@ -423,26 +568,19 @@ defmodule Thaqqa.Regex_Khhyl do
 
             normalize_sub(
               tail,
-              [AST.new(token, current_layer, text, []) | acum_all],
+              [AST.new(token, current_layer, "R(#{text})", text, []) | acum_all],
               current_layer
             )
           else
             children = normalize_sub(Enum.reverse(acum), [], next_layer)
+            text = "#{Atom.to_string(token)}(#{br_val} #{Enum.reverse(acum) |> Enum.join("")} )"
 
             normalize_sub(
               tail,
-              [AST.new(token, current_layer, br_val, children) | acum_all],
+              [AST.new(token, current_layer, text, br_val, children) | acum_all],
               current_layer
             )
           end
-
-          children = normalize_sub(Enum.reverse(acum), [], next_layer)
-
-          normalize_sub(
-            tail,
-            [AST.new(token, current_layer, br_val, children) | acum_all],
-            current_layer
-          )
         else
           normalize_branckets(
             token,
@@ -478,10 +616,11 @@ defmodule Thaqqa.Regex_Khhyl do
          acum
        ) do
     children = normalize_sub(Enum.reverse(acum), [], :glyph_group)
+    text = Enum.reverse(acum) |> Enum.join("")
 
     normalize_sub(
       [],
-      [AST.new(:glyph_group, :syllable, :glyph_group, children) | acum_all],
+      [AST.new(:glyph_group, :syllable, text, nil, children) | acum_all],
       :syllable
     )
   end
@@ -497,10 +636,11 @@ defmodule Thaqqa.Regex_Khhyl do
     case head do
       "," ->
         children = normalize_sub(Enum.reverse(acum), [], :glyph_group)
+        text = Enum.reverse(acum) |> Enum.join("")
 
         normalize_sub(
           list,
-          [AST.new(:glyph_group, :syllable, :glyph_group, children) | acum_all],
+          [AST.new(:glyph_group, :syllable, text, nil, children) | acum_all],
           :syllable
         )
 

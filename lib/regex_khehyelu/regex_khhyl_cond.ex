@@ -1,92 +1,148 @@
 defmodule Thaqqa.Regex_Khhyl.Cond.AST do
   defstruct type: nil, value: nil, children: []
+
+  def get_val(%__MODULE__{value: value}), do: value
+
+  def is_ast?(%__MODULE__{}), do: true
+  def is_ast?(_), do: false
 end
 
 defmodule Thaqqa.Regex_Khhyl.Cond do
   alias Thaqqa.Regex_Khhyl.Cond.AST, as: AST
+  import Thaqqa.Regex_Khhyl.Error
 
-  # letterは%{a: ...}のような形。
+  alias Thaqqa.Data, as: Data
 
-  def convert(string, letter) when is_binary(string) do
-    string
-    |> tokenize()
-    |> normalize()
-    |> translate(letter)
+  def convert!(string, %Data{} = letter_data) when is_binary(string) do
+    case convert(string, letter_data) do
+      {:ok, val} -> val
+      {:error, msg} -> raise msg
+    end
   end
 
-  def translate(ast, letter) when is_list(ast), do: translate_sub(ast, letter, [])
+  def convert(string, %Data{} = letter_data) when is_binary(string) do
+    case string |> tokenize() |> normalize() do
+      {:ok, val} -> translate(val, letter_data)
+      {:error, msg} -> {:error, msg}
+    end
+  end
+
+  def translate!(ast, %Data{} = letter_data) when is_list(ast) do
+    case translate(ast, letter_data) do
+      {:ok, val} -> val
+      {:error, msg} -> raise msg
+    end
+  end
+
+  def translate(ast, %Data{} = letter_data) when is_list(ast) do
+    t = translate_sub(ast, letter_data, [])
+
+    case t do
+      {:error, msg} -> t
+      _ -> {:ok, t}
+    end
+  end
 
   def translate_sub([], _letter, stack) when is_list(stack) and length(stack) == 1,
     do: Enum.at(stack, 0)
 
   def translate_sub([], _letter, stack) when is_list(stack) and length(stack) != 1,
-    do: raise("Invalid stack at end: #{inspect(stack)}")
+    do: Thaqqa.Regex_Khhyl.Error.invalid_stack_at_end(stack)
 
-  def translate_sub(ast, letter, stack) when is_list(ast) do
-    [head, tail] = ast
-    stack = [translate_sub(head, letter, stack), stack]
-    [first, second, third | rest] = stack
+  def translate_sub(ast, %Data{} = letter_data, stack) when is_list(ast) do
+    [head | tail] = ast
+    stack = [translate_sub(head, letter_data, []) | stack]
 
-    cond do
-      third == nil && second == "!" ->
-        stack = [!first | rest]
-        translate_sub(tail, letter, stack)
+    first = Enum.at(stack, 0, nil)
+    second = Enum.at(stack, 1, nil)
+    third = Enum.at(stack, 2, nil)
+    rest = Enum.slice(stack, 3..-1//1)
 
-      third != nil && second == "&&" ->
-        stack = [first && third | rest]
-        translate_sub(tail, letter, stack)
+    first = if AST.is_ast?(first), do: AST.get_val(first), else: first
+    second = if AST.is_ast?(second), do: AST.get_val(second), else: second
+    third = if AST.is_ast?(third), do: AST.get_val(third), else: third
 
-      third != nil && second == "||" ->
-        stack = [first || third | rest]
-        translate_sub(tail, letter, stack)
+    if third == nil do
+      case second do
+        "!" ->
+          stack = [!first | rest]
+          translate_sub(tail, letter_data, stack)
 
-      third != nil && second == "==" ->
-        stack = [first == third | rest]
-        translate_sub(tail, letter, stack)
+        _ ->
+          translate_sub(tail, letter_data, stack)
+      end
+    else
+      case second do
+        "&&" ->
+          stack = [first && third | rest]
+          translate_sub(tail, letter_data, stack)
 
-      third != nil && second == "!=" ->
-        stack = [first != third | rest]
-        translate_sub(tail, letter, stack)
+        "||" ->
+          stack = [first || third | rest]
+          translate_sub(tail, letter_data, stack)
 
-      third != nil && second == ">=" ->
-        stack = [first >= third | rest]
-        translate_sub(tail, letter, stack)
+        "==" ->
+          stack = [first == third | rest]
+          translate_sub(tail, letter_data, stack)
 
-      third != nil && second == "<=" ->
-        stack = [first <= third | rest]
-        translate_sub(tail, letter, stack)
+        "!=" ->
+          stack = [first != third | rest]
+          translate_sub(tail, letter_data, stack)
 
-      third != nil && second == ">" ->
-        stack = [first > third | rest]
-        translate_sub(tail, letter, stack)
+        ">=" ->
+          stack = [first >= third | rest]
+          translate_sub(tail, letter_data, stack)
 
-      third != nil && second == "<" ->
-        stack = [first < third | rest]
-        translate_sub(tail, letter, stack)
+        "<=" ->
+          stack = [first <= third | rest]
+          translate_sub(tail, letter_data, stack)
 
-      third != nil ->
-        raise "Too many elements in stack: #{inspect(stack)}"
+        ">" ->
+          stack = [first > third | rest]
+          translate_sub(tail, letter_data, stack)
 
-      true ->
-        translate_sub(tail, letter, stack)
+        "<" ->
+          stack = [first < third | rest]
+          translate_sub(tail, letter_data, stack)
+
+        _ ->
+          Thaqqa.Regex_Khhyl.Error.too_many_elements_in_stack(stack)
+      end
     end
   end
 
-  def translate_sub(%AST{type: type, value: val, children: children}, letter, _stack)
-      when is_map(letter) do
+  def translate_sub(
+        %AST{type: type, value: val, children: children},
+        %Data{} = letter_data,
+        _stack
+      ) do
     cond do
       type == :brancket ->
-        translate_sub(children, letter, nil)
+        translate_sub(children, letter_data, [])
 
       type == :underbar ->
-        Map.get(letter, val, nil)
+        Data.get_val(letter_data, val)
 
       true ->
         val
     end
   end
 
-  def normalize(list) when is_list(list), do: normalize_sub(list, [])
+  def normalize!(list) when is_list(list) do
+    case normalize(list) do
+      {:ok, val} -> val
+      {:error, msg} -> raise msg
+    end
+  end
+
+  def normalize(list) when is_list(list) do
+    t = normalize_sub(list, [])
+
+    case t do
+      {:error, msg} -> t
+      _ -> {:ok, t}
+    end
+  end
 
   def normalize_sub([], acum), do: Enum.reverse(acum)
 
@@ -96,18 +152,32 @@ defmodule Thaqqa.Regex_Khhyl.Cond do
         normalize_brancket_sub(tail, acum, 0, [])
 
       head == ")" ->
-        raise "Unmatched closing parenthesis"
+        Thaqqa.Regex_Khhyl.Error.unclosed_brancket_backward([head | tail] |> Enum.join(""))
 
-      head == "._" ->
+      head == "_." ->
         [tail1 | tail2] = tail
         normalize_sub(tail2, [%AST{type: :underbar, value: tail1} | acum])
 
-      true ->
+      head in ["!", "||", "&&", "==", "<=", ">=", ">", "<"] ->
         normalize_sub(tail, [%AST{type: :operator, value: head} | acum])
+
+      head in ["true", "false"] ->
+        normalize_sub(tail, [%AST{type: :bool, value: head} | acum])
+
+      true ->
+        cond do
+          Regex.match?(~r/^\"([A-Za-z]*)\"/, head) ->
+            name = String.slice(head, 1..-2//1)
+            normalize_sub(tail, [%AST{type: :string, value: name} | acum])
+
+          true ->
+            normalize_sub(tail, [%AST{type: :number, value: head} | acum])
+        end
     end
   end
 
-  def normalize_brancket_sub([], _acum_all, _level, _acum), do: raise("Unclosed brancket")
+  def normalize_brancket_sub([], _acum_all, _level, acum),
+    do: Thaqqa.Regex_Khhyl.Error.unclosed_brancket(Enum.reverse(acum) |> Enum.join(""))
 
   def normalize_brancket_sub([head | tail], acum_all, level, acum) when is_list(tail) do
     cond do
@@ -129,8 +199,10 @@ defmodule Thaqqa.Regex_Khhyl.Cond do
   end
 
   def tokenize(string) when is_binary(string) do
-    String.split(
-      string,
+    string
+    |> String.split(~r/ /)
+    |> Enum.join("")
+    |> String.split(
       ~r/(\(|\)|\|\||&&|==|!=|>=|<=|>|<|!|_.)/,
       include_captures: true
     )
