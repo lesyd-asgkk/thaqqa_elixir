@@ -14,6 +14,9 @@ defmodule Thaqqa.DataTable do
   def new(name, parent),
     do: %__MODULE__{name: name, parent: parent, desc: "", column_list: [], data_list: []}
 
+  def get_column(%__MODULE__{column_list: cols}),
+    do: cols
+
   def get_column(%__MODULE__{column_list: cols}, column_name),
     do: Enum.find(cols, fn %Column{name: name} -> name == column_name end)
 
@@ -49,10 +52,10 @@ defmodule Thaqqa.DataTable do
       val_init =
         val_init ||
           case type do
-            "char" -> ""
-            "float" -> 0.0
-            "INTEGER" -> 0
-            "bool" -> false
+            :string -> ""
+            :float -> 0.0
+            :int -> 0
+            :bool -> false
             _ -> nil
           end
 
@@ -168,16 +171,16 @@ defmodule Thaqqa.DataTable do
                                                     acc ->
         if Map.has_key?(acc, name) do
           # 事前にコンパイルしておく
-          if type == "char" and subtype == "PARSED",
+          if type == :string and subtype == :pre_compiled,
             do: Map.put(acc, name, Map.get(acc, name) |> Regex.compile!()),
             else: acc
         else
           val_init =
             case type do
-              "char" -> ""
-              "float" -> 0.0
-              "INTEGER" -> 0
-              "bool" -> false
+              :string -> ""
+              :float -> 0.0
+              :int -> 0
+              :bool -> false
               _ -> nil
             end
 

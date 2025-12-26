@@ -35,10 +35,14 @@ defmodule ThaqqaTest do
       |> Thaqqa.Regex_Khhyl.Cond.normalize!()
       |> Thaqqa.Regex_Khhyl.Cond.translate(data_of_a)
 
-    # IO.inspect(testobj, label: "testobj")
-    # IO.inspect(data_of_a, label: "data_of_a")
+    data_of_regex =
+      Thaqqa.FontRegistry.get_static_table("GSUB")
+      |> Thaqqa.DataTable.get_column()
 
-    # IO.inspect(table, label: "font")
+    # |> Enum.at(0)
+
+    IO.inspect(testobj, label: "testobj")
+    IO.inspect(data_of_regex, label: "data_of_a")
 
     # Supervisor.start_link(Thaqqa.FontRegistry, strategy: :one_for_one)
   end

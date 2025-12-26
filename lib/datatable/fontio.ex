@@ -47,10 +47,10 @@ defmodule Thaqqa.FontIO do
             DataTable.add_column!(
               ans_,
               Map.get(v_, "name"),
-              Map.get(v_, "type"),
+              Map.get(v_, "type") |> String.to_atom(),
               Map.get(v_, "desc", ""),
               Map.get(v_, "order", 0),
-              Map.get(v_, "subtype", ""),
+              Map.get(v_, "subtype", "none") |> String.to_atom(),
               Map.get(v_, "dev", false)
             )
           end)
