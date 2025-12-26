@@ -1,6 +1,8 @@
 defmodule Thaqqa.Regex_Khhyl.Error do
   defexception [:type, :detail, :meta]
 
+  def message(msg), do: msg
+
   def unclosed_brancket_forward(range),
     do:
       {:error,

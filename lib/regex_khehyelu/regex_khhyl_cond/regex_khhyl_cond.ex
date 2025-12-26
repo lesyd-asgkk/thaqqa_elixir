@@ -9,7 +9,7 @@ end
 
 defmodule Thaqqa.Regex_Khhyl.Cond do
   alias Thaqqa.Regex_Khhyl.Cond.AST, as: AST
-  import Thaqqa.Regex_Khhyl.Error
+  alias Thaqqa.Regex_Khhyl.Error, as: Error
 
   alias Thaqqa.Data, as: Data
 
@@ -47,7 +47,7 @@ defmodule Thaqqa.Regex_Khhyl.Cond do
     do: Enum.at(stack, 0)
 
   def translate_sub([], _letter, stack) when is_list(stack) and length(stack) != 1,
-    do: Thaqqa.Regex_Khhyl.Error.invalid_stack_at_end(stack)
+    do: Error.invalid_stack_at_end(stack)
 
   def translate_sub(ast, %Data{} = letter_data, stack) when is_list(ast) do
     [head | tail] = ast
@@ -106,7 +106,7 @@ defmodule Thaqqa.Regex_Khhyl.Cond do
           translate_sub(tail, letter_data, stack)
 
         _ ->
-          Thaqqa.Regex_Khhyl.Error.too_many_elements_in_stack(stack)
+          Error.too_many_elements_in_stack(stack)
       end
     end
   end
@@ -152,7 +152,7 @@ defmodule Thaqqa.Regex_Khhyl.Cond do
         normalize_brancket_sub(tail, acum, 0, [])
 
       head == ")" ->
-        Thaqqa.Regex_Khhyl.Error.unclosed_brancket_backward([head | tail] |> Enum.join(""))
+        Error.unclosed_brancket_backward([head | tail] |> Enum.join(""))
 
       head == "_." ->
         [tail1 | tail2] = tail
@@ -177,7 +177,7 @@ defmodule Thaqqa.Regex_Khhyl.Cond do
   end
 
   def normalize_brancket_sub([], _acum_all, _level, acum),
-    do: Thaqqa.Regex_Khhyl.Error.unclosed_brancket(Enum.reverse(acum) |> Enum.join(""))
+    do: Error.unclosed_brancket_forward(Enum.reverse(acum) |> Enum.join(""))
 
   def normalize_brancket_sub([head | tail], acum_all, level, acum) when is_list(tail) do
     cond do

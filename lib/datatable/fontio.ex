@@ -1,7 +1,7 @@
 defmodule Thaqqa.FontIO do
   # jsonはファイルへのpath
 
-  alias Thaqqa.FontManager, as: FontManager
+  alias Thaqqa.FontRegistry, as: FontRegistry
   alias Thaqqa.Font, as: Font
   alias Thaqqa.DataTable, as: DataTable
 
@@ -14,10 +14,10 @@ defmodule Thaqqa.FontIO do
     {:ok, data} = Jason.decode(json)
 
     Enum.map(data, fn {k, v} ->
-      FontManager.add_static_table(import_table(k, v))
+      FontRegistry.add_static_table(import_table(k, v))
     end)
 
-    # FontManager.add_static_table (%Thaqqa.DataTable{name: "TestFont", table_list: []})
+    # FontRegistry.add_static_table (%Thaqqa.DataTable{name: "TestFont", table_list: []})
   end
 
   def import(filename) do
@@ -33,7 +33,7 @@ defmodule Thaqqa.FontIO do
 
     if name == nil,
       do: {:error, "Cannot load font: Fontname is not found"},
-      else: FontManager.add_font(Font.new(filename, name, table))
+      else: FontRegistry.add_font(Font.new(filename, name, table))
   end
 
   defp import_table(name, struct) do

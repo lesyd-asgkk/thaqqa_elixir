@@ -10,25 +10,23 @@ defmodule ThaqqaTest do
       )
 
     # |> SVG.Path.export_as_string()
-
-    # Thaqqa.Regex_Khhyl.tokenize("(^|P(*)))S(null,(+),,)($|P(*))")
-    # |> Thaqqa.Regex_Khhyl.normalize()
-
-    # |> Thaqqa.Regex_Khhyl.translate()
+    # ^|L()P(*))S(null,,(+),)($|P(*)
+    testobj =
+      Thaqqa.Regex_Khhyl.compile_as_string("P(*)")
 
     # |> Regex.compile!()
 
-    # IO.inspect(Regex.match?(testobj, "S(null,,a0,)"), label: "testobj")
+    IO.inspect(testobj, label: "testobj")
 
-    {:ok, _pid} = Thaqqa.FontManager.start_link([])
+    {:ok, _pid} = Thaqqa.FontRegistry.start_link([])
 
     Thaqqa.FontIO.import()
     Thaqqa.FontIO.import("default")
 
-    Thaqqa.FontManager.get_font("Default")
+    Thaqqa.FontRegistry.get_font("Default")
 
     data_of_a =
-      Thaqqa.FontManager.get_static_table("VOWEL")
+      Thaqqa.FontRegistry.get_static_table("VOWEL")
       |> Thaqqa.DataTable.get_data(&(&1 |> Thaqqa.Data.get_val("Name") == "a"))
       |> Enum.at(0)
 
@@ -37,11 +35,11 @@ defmodule ThaqqaTest do
       |> Thaqqa.Regex_Khhyl.Cond.normalize!()
       |> Thaqqa.Regex_Khhyl.Cond.translate(data_of_a)
 
-    IO.inspect(testobj, label: "testobj")
+    # IO.inspect(testobj, label: "testobj")
     # IO.inspect(data_of_a, label: "data_of_a")
 
     # IO.inspect(table, label: "font")
 
-    # Supervisor.start_link(Thaqqa.FontManager, strategy: :one_for_one)
+    # Supervisor.start_link(Thaqqa.FontRegistry, strategy: :one_for_one)
   end
 end

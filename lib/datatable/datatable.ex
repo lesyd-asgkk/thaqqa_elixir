@@ -1,26 +1,7 @@
-defmodule Thaqqa.Column do
-  defstruct [:name, :type, :desc, :order, :subtype, :dev]
-
-  def is_available_type(type) do
-    case type do
-      h when h in ["char", "float", "INTEGER", "bool"] -> true
-      _ -> false
-    end
-  end
-end
-
-defmodule Thaqqa.Data do
-  defstruct [:value_list]
-
-  def set_val(%__MODULE__{value_list: v} = data, key, val) do
-    %{data | value_list: Map.put(v, key, val)}
-  end
-
-  def get_val(%__MODULE__{value_list: v}, key), do: Map.get(v, key)
-end
-
 defmodule Thaqqa.DataTable do
+  alias Thaqqa.FontRegistry, as: FontRegistry
   alias Thaqqa.Column, as: Column
+  alias Thaqqa.Data, as: Data
 
   defstruct [
     :name,
@@ -75,7 +56,7 @@ defmodule Thaqqa.DataTable do
             _ -> nil
           end
 
-      Enum.map(datas, fn data -> Thaqqa.Data.set_val(data, column_name, val_init) end)
+      Enum.map(datas, fn data -> Data.set_val(data, column_name, val_init) end)
 
       ans = %{
         table
@@ -141,8 +122,8 @@ defmodule Thaqqa.DataTable do
       # データのキーも変更する
       new_datas =
         Enum.map(table.data_list, fn data ->
-          val = Thaqqa.Data.get_val(data, column_name)
-          data = Thaqqa.Data.set_val(data, new_name, val)
+          val = Data.get_val(data, column_name)
+          data = Data.set_val(data, new_name, val)
           %{data | value_list: Map.delete(data.value_list, column_name)}
         end)
 
@@ -159,7 +140,7 @@ defmodule Thaqqa.DataTable do
   def get_least_available_id(%__MODULE__{data_list: datas}) do
     existing_ids =
       Enum.map(datas, fn data ->
-        Thaqqa.Data.get_val(data, "ID")
+        Data.get_val(data, "ID")
       end)
       |> Enum.filter(&is_integer/1)
       |> Enum.sort()
@@ -179,9 +160,17 @@ defmodule Thaqqa.DataTable do
 
   def add_data(%__MODULE__{data_list: datas} = table, value_list) do
     value_list =
-      Enum.reduce(table.column_list, value_list, fn %Column{name: name, type: type}, acc ->
+      Enum.reduce(table.column_list, value_list, fn %Column{
+                                                      name: name,
+                                                      type: type,
+                                                      subtype: subtype
+                                                    },
+                                                    acc ->
         if Map.has_key?(acc, name) do
-          acc
+          # 事前にコンパイルしておく
+          if type == "char" and subtype == "PARSED",
+            do: Map.put(acc, name, Map.get(acc, name) |> Regex.compile!()),
+            else: acc
         else
           val_init =
             case type do
@@ -204,7 +193,7 @@ defmodule Thaqqa.DataTable do
         Map.put(value_list, "ID", least_id)
       end
 
-    new_data = %Thaqqa.Data{value_list: value_list}
+    new_data = %Data{value_list: value_list}
     %{table | data_list: datas ++ [new_data]}
   end
 
@@ -217,7 +206,7 @@ defmodule Thaqqa.DataTable do
     new_datas =
       Enum.map(datas, fn data ->
         if filter_fun.(data) do
-          %Thaqqa.Data{data | value_list: Map.merge(data.value_list, new_value_list)}
+          %Data{data | value_list: Map.merge(data.value_list, new_value_list)}
         else
           data
         end
@@ -227,52 +216,12 @@ defmodule Thaqqa.DataTable do
   end
 
   def update_fontmanager(%__MODULE__{name: name, parent: nil} = table) do
-    Thaqqa.FontManager.edit_static_table(name, table)
+    Thaqqa.FontRegistry.edit_static_table(name, table)
     table
   end
 
   def update_fontmanager(%__MODULE__{name: name, parent: parent} = table) do
-    Thaqqa.FontManager.edit_static_table(name, table)
+    Thaqqa.FontRegistry.edit_static_table(name, table)
     table
-  end
-end
-
-defmodule Thaqqa.Font do
-  alias Thaqqa.FontManager, as: FontManager
-
-  defstruct [:filename, :name, table_list: []]
-
-  def new(filename, name, t), do: %__MODULE__{table_list: t, name: name, filename: filename}
-
-  def get_table(%__MODULE__{table_list: tables}, table_name) do
-    Enum.find(tables, fn table -> table.name == table_name end)
-  end
-
-  def add_table(%__MODULE__{table_list: tables} = font, table) do
-    %{font | table_list: tables ++ [table]}
-  end
-
-  def delete_table(%__MODULE__{table_list: tables} = font, table_name) do
-    new_tables = Enum.filter(tables, fn table -> table.name != table_name end)
-    %{font | table_list: new_tables}
-  end
-
-  def edit_table(%__MODULE__{table_list: tables} = font, table_name, new_name) do
-    if new_name == table_name do
-      font
-    else
-      new_tables =
-        Enum.map(tables, fn
-          table when table.name == table_name -> %{table | name: new_name}
-          table -> table
-        end)
-
-      %{font | table_list: new_tables}
-    end
-  end
-
-  def update_fontmanager(%__MODULE__{name: name} = font) do
-    FontManager.edit_font(name, font)
-    font
   end
 end

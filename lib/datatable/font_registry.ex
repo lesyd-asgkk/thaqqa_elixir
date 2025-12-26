@@ -1,4 +1,4 @@
-defmodule Thaqqa.FontManager do
+defmodule Thaqqa.FontRegistry do
   use GenServer
   import Thaqqa.Font
   @fonts :fonts
