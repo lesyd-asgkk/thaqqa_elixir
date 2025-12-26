@@ -1,6 +1,8 @@
 defmodule Thaqqa.Data do
   defstruct [:value_list]
 
+  def new(value_list: v) when is_map(v), do: %__MODULE__{value_list: v}
+
   def set_val(%__MODULE__{value_list: v} = data, key, val),
     do: %{data | value_list: Map.put(v, key, val)}
 

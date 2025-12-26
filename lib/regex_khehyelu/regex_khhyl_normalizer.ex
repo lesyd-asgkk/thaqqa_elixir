@@ -2,6 +2,12 @@ defmodule Thaqqa.Regex_Khhyl.Normalizer do
   alias Thaqqa.Regex_Khhyl.AST, as: AST
   import Thaqqa.Regex_Khhyl.Error
 
+  # 文章全体→Syllable(というか「一文字」)→Glyph群→Glyphの順に分解。
+  # 括弧は同じ階層の別にnormalize対象として扱う
+  # *などの記号は階層毎によって処理を変えている
+  # 都合の悪い記号を吐いたり括弧が閉じてなかったらエラー
+  # todo:{}系統のエラーを作る (括弧が閉じていない、中身が不正etc)
+
   def normalize!(list) when is_list(list) do
     case normalize(list) do
       {:ok, val} -> val
@@ -19,8 +25,6 @@ defmodule Thaqqa.Regex_Khhyl.Normalizer do
   end
 
   def normalize_sub([], acum_all, _), do: Enum.reverse(acum_all)
-
-  # S()系統→Glyph群→Glyphの順に分解。
 
   # 1層目
   def normalize_sub(list, acum_all, :sentence = current_layer) when is_list(list) do

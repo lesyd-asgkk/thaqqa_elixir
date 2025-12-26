@@ -14,8 +14,8 @@ defmodule Thaqqa.DataTable do
   def new(name, parent),
     do: %__MODULE__{name: name, parent: parent, desc: "", column_list: [], data_list: []}
 
-  def get_column(%__MODULE__{column_list: cols}),
-    do: cols
+  def get_column(%__MODULE__{column_list: columns}, filter_fun \\ fn _ -> true end),
+    do: Enum.filter(columns, filter_fun)
 
   def get_column(%__MODULE__{column_list: cols}, column_name),
     do: Enum.find(cols, fn %Column{name: name} -> name == column_name end)
@@ -36,6 +36,7 @@ defmodule Thaqqa.DataTable do
     end
   end
 
+  # todo:column_nameが重複する場合は作成拒否する
   def add_column(
         %__MODULE__{column_list: cols, data_list: datas} = table,
         column_name,
@@ -160,6 +161,8 @@ defmodule Thaqqa.DataTable do
       true -> find_least_missing(tail, candidate)
     end
   end
+
+  # todo:subtypeが:nameの項目の値が重複する場合(空文字を除く)は作成拒否する
 
   def add_data(%__MODULE__{data_list: datas} = table, value_list) do
     value_list =

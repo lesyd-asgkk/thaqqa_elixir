@@ -3,16 +3,25 @@ defmodule Thaqqa.Regex_Khhyl.Error do
 
   def message(msg), do: msg
 
+  # (の方のエラー（括弧が閉じていない）
   def unclosed_brancket_forward(range),
     do:
       {:error,
-       %__MODULE__{type: :invalid, detail: :unclosed_brancket, meta: %{range: range, rest: nil}}}
+       %__MODULE__{
+         type: :invalid,
+         detail: :unclosed_brancket,
+         meta: %{direction: :forward, range: range}
+       }}
 
-  # )の方のエラー　
-  def unclosed_brancket_backward(rest),
+  # )の方のエラー　（括弧が過剰に「閉じている」
+  def unclosed_brancket_backward(range),
     do:
       {:error,
-       %__MODULE__{type: :invalid, detail: :unclosed_brancket, meta: %{range: nil, rest: rest}}}
+       %__MODULE__{
+         type: :invalid,
+         detail: :unclosed_brancket,
+         meta: %{direction: :backward, range: range}
+       }}
 
   def invalid_stack_at_end(stack),
     do: {:error, %__MODULE__{type: :invalid, detail: :stack_at_end, meta: %{stack: stack}}}
