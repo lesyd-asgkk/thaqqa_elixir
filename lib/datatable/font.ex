@@ -1,5 +1,5 @@
 defmodule Thaqqa.Font do
-  alias Thaqqa.FontManager, as: FontManager
+  alias Thaqqa.FontRegistry, as: FontRegistry
 
   defstruct [:filename, :name, table_list: []]
 
@@ -32,8 +32,8 @@ defmodule Thaqqa.Font do
     end
   end
 
-  def update_fontmanager(%__MODULE__{name: name} = font) do
-    FontManager.edit_font(name, font)
+  def update_fontregistry(%__MODULE__{name: name} = font) do
+    FontRegistry.edit_font(name, font)
     font
   end
 end

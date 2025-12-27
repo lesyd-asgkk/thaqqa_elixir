@@ -37,7 +37,9 @@ defmodule ThaqqaTest do
 
     data_of_regex =
       Thaqqa.FontRegistry.get_static_table("GSUB")
-      |> Thaqqa.DataTable.get_column()
+      |> Thaqqa.DataTable.update_fontregistry()
+
+    # |> Thaqqa.DataTable.get_column()
 
     # |> Enum.at(0)
 

@@ -57,7 +57,7 @@ defmodule Thaqqa.FontIO do
         else
           if is_map(v) do
             Enum.reduce(v, ans, fn {_, v_}, ans_ ->
-              DataTable.add_data(ans_, v_)
+              DataTable.add_data!(ans_, v_)
             end)
           else
             ans
