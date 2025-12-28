@@ -4,22 +4,22 @@ defmodule Thaqqa.FontRegistry.Error do
   def message(msg), do: msg
 
   # 名義衝突
-  def nominal_conflict_column(name),
+  def nominal_conflict_column(name, op),
     do:
       {:error,
        %__MODULE__{
          type: :conflict,
          detail: :column,
-         meta: %{column_name: name}
+         meta: %{column_name: name, operation: op}
        }}
 
-  def nominal_conflict(column, name),
+  def nominal_conflict(column, name, op),
     do:
       {:error,
        %__MODULE__{
          type: :conflict,
          detail: :data,
-         meta: %{column_name: column, data_name: name}
+         meta: %{column_name: name, operation: op}
        }}
 
   def invalid_datatype(type),

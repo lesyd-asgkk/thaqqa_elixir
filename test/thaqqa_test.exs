@@ -36,15 +36,17 @@ defmodule ThaqqaTest do
       |> Thaqqa.Regex_Khhyl.Cond.translate(data_of_a)
 
     data_of_regex =
-      Thaqqa.FontRegistry.get_static_table("GSUB")
-      |> Thaqqa.DataTable.update_fontregistry()
+      Thaqqa.FontRegistry.get_static_table("VOWEL")
+      |> Thaqqa.DataTable.edit_data(&(&1 |> Thaqqa.Data.get_val("Name") == "a"), %{ID: 0})
+
+    # |> Thaqqa.DataTable.update_fontregistry()
 
     # |> Thaqqa.DataTable.get_column()
 
     # |> Enum.at(0)
 
     IO.inspect(testobj, label: "testobj")
-    IO.inspect(data_of_regex, label: "data_of_a")
+    assert data_of_regex == Thaqqa.FontRegistry.get_static_table("VOWEL")
 
     # Supervisor.start_link(Thaqqa.FontRegistry, strategy: :one_for_one)
   end
