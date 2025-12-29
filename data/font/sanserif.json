@@ -8441,8 +8441,8 @@
       }
     }
   },
-  "F_GSUB": {
-    "name": "F_GSUB",
+  "UniqueGSUB": {
+    "name": "UniqueGSUB",
     "columnList": {
       "ID": {
         "name": "ID",

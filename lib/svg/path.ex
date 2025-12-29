@@ -1,22 +1,35 @@
 defmodule SVG.Path do
-  alias SVG.Point, as: Point
+  alias SVG.Command, as: Command
 
   @moduledoc """
   Documentation for `SVG.Path`.
+
+  As its name told, it presents path of SVG.
+  It contains List of %SVG.Command{} as commands.
+
+
   """
-  # List of %Point{}
-  defstruct points: []
+  defstruct commands: []
 
-  def new(points) when is_list(points) do
-    %__MODULE__{points: points}
+  def new(commands) when is_list(commands) do
+    %__MODULE__{commands: commands}
   end
 
-  def round_values(%__MODULE__{points: points}, decimal_places)
+  def round_values(%__MODULE__{commands: commands}, decimal_places)
       when is_integer(decimal_places) and decimal_places >= 0 do
-    rounded_points = Enum.map(points, fn point -> Point.round_values(point, decimal_places) end)
-    %__MODULE__{points: rounded_points}
+    rounded_commands =
+      Enum.map(commands, fn command -> Command.round_values(command, decimal_places) end)
+
+    %__MODULE__{commands: rounded_commands}
   end
 
+  @doc """
+  Parses binary into Path Instance.
+  If error occurs, it raises message.
+
+  parameter - string(binary)
+  returns: %Path
+  """
   def parse_string!(string) when is_binary(string) do
     case parse_string(string) do
       {:ok, path} -> path
@@ -24,7 +37,10 @@ defmodule SVG.Path do
     end
   end
 
-  # string -> path
+  @doc """
+  Parses binary into Path Instance.
+  Returns {:ok,val} or {:error,msg}
+  """
   def parse_string(string) when is_binary(string) do
     str_b =
       String.split(
@@ -43,15 +59,15 @@ defmodule SVG.Path do
 
     case parse_token(str_b) do
       {:ok, list} ->
-        parse_point(list)
+        parse_command(list)
 
       {:error, msg} ->
         {:error, msg}
     end
   end
 
-  defp parse_point(list) do
-    to_point(list)
+  defp parse_command(list) do
+    to_command(list)
     |> Enum.reduce_while({:ok, []}, fn
       {:ok, str}, {:ok, acc} ->
         {:cont, {:ok, [str | acc]}}
@@ -94,66 +110,66 @@ defmodule SVG.Path do
       _ ->
         v = String.to_atom(value)
 
-        if Point.is_legal_command?(v),
+        if Command.is_legal_command?(v),
           do: {:ok, v},
           else: SVG.Error.invalid_value(value)
     end
   end
 
-  defp to_point([], acum), do: Enum.reverse(acum)
-  defp to_point(list, acum), do: to_point(list, acum, :None)
+  defp to_command([], acum), do: Enum.reverse(acum)
+  defp to_command(list, acum), do: to_command(list, acum, :None)
 
-  defp to_point([], acum, _prev), do: Enum.reverse(acum)
+  defp to_command([], acum, _prev), do: Enum.reverse(acum)
 
-  defp to_point(list, acum \\ [], prev \\ :None) do
+  defp to_command(list, acum \\ [], prev \\ :None) do
     [head | tail] = list
 
     case head do
       h when h in [:t, :T, :l, :L] ->
         [val_0, val_1 | rest] = tail
-        point = {:ok, %Point{command: head, x: val_0, y: val_1}}
-        to_point(rest, [point | acum], head)
+        command = {:ok, %Command{command: head, x: val_0, y: val_1}}
+        to_command(rest, [command | acum], head)
 
       :m ->
         [val_0, val_1 | rest] = tail
-        point = {:ok, %Point{command: head, x: val_0, y: val_1}}
-        to_point(rest, [point | acum], :l)
+        command = {:ok, %Command{command: head, x: val_0, y: val_1}}
+        to_command(rest, [command | acum], :l)
 
       :M ->
         [val_0, val_1 | rest] = tail
-        point = {:ok, %Point{command: head, x: val_0, y: val_1}}
-        to_point(rest, [point | acum], :L)
+        command = {:ok, %Command{command: head, x: val_0, y: val_1}}
+        to_command(rest, [command | acum], :L)
 
       h when h in [:z, :Z] ->
-        point = {:ok, %Point{command: head}}
-        to_point(tail, [point | acum], :None)
+        command = {:ok, %Command{command: head}}
+        to_command(tail, [command | acum], :None)
 
       h when h in [:v, :V] ->
         [val_0 | rest] = tail
-        point = {:ok, %Point{command: head, y: val_0}}
-        to_point(rest, [point | acum], head)
+        command = {:ok, %Command{command: head, y: val_0}}
+        to_command(rest, [command | acum], head)
 
       h when h in [:h, :H] ->
         [val_0 | rest] = tail
-        point = {:ok, %Point{command: head, x: val_0}}
-        to_point(rest, [point | acum], head)
+        command = {:ok, %Command{command: head, x: val_0}}
+        to_command(rest, [command | acum], head)
 
       h when h in [:s, :S] ->
         [val_0, val_1, val_2, val_3 | rest] = tail
-        point = {:ok, %Point{command: head, x: val_2, y: val_3, x2: val_0, y2: val_1}}
-        to_point(rest, [point | acum], head)
+        command = {:ok, %Command{command: head, x: val_2, y: val_3, x2: val_0, y2: val_1}}
+        to_command(rest, [command | acum], head)
 
       h when h in [:q, :Q] ->
         [val_0, val_1, val_2, val_3 | rest] = tail
-        point = {:ok, %Point{command: head, x: val_2, y: val_3, x1: val_0, y1: val_1}}
-        to_point(rest, [point | acum], head)
+        command = {:ok, %Command{command: head, x: val_2, y: val_3, x1: val_0, y1: val_1}}
+        to_command(rest, [command | acum], head)
 
       h when h in [:c, :C] ->
         [val_0, val_1, val_2, val_3, val_4, val_5 | rest] = tail
 
-        point =
+        command =
           {:ok,
-           %Point{
+           %Command{
              command: head,
              x: val_4,
              y: val_5,
@@ -163,14 +179,14 @@ defmodule SVG.Path do
              y2: val_3
            }}
 
-        to_point(rest, [point | acum], head)
+        to_command(rest, [command | acum], head)
 
       h when h in [:a, :A] ->
         [val_0, val_1, val_2, val_3, val_4, val_5, val_6 | rest] = tail
 
-        point =
+        command =
           {:ok,
-           %Point{
+           %Command{
              command: head,
              x: val_5,
              y: val_6,
@@ -181,26 +197,33 @@ defmodule SVG.Path do
              sf: val_4
            }}
 
-        to_point(rest, [point | acum], head)
+        to_command(rest, [command | acum], head)
 
       _ ->
         if prev != :None and is_number(head),
-          do: to_point([prev | list], acum, :None),
+          do: to_command([prev | list], acum, :None),
           else: SVG.Error.invalid_command(head)
     end
   end
 
-  # クソ長path用
-  def export_as_string_mass!(%__MODULE__{points: points}) do
-    points
-    |> Task.async_stream(&Point.export_as_string!/1, ordered: true)
+  @doc """
+  Converts Path to binary (using async_stream)
+  If error occurs, it raises message
+  """
+  def export_as_string_mass!(%__MODULE__{commands: commands}) do
+    commands
+    |> Task.async_stream(&Command.export_as_string!/1, ordered: true)
     |> Enum.map(fn {:ok, s} -> s end)
     |> Enum.join(" ")
   end
 
-  def export_as_string_mass(%__MODULE__{points: points}) do
-    points
-    |> Task.async_stream(&Point.export_as_string/1, ordered: true)
+  @doc """
+  Converts Path to binary (using async_stream)
+  Returns {:ok,val} or {:error,msg}
+  """
+  def export_as_string_mass(%__MODULE__{commands: commands}) do
+    commands
+    |> Task.async_stream(&Command.export_as_string/1, ordered: true)
     |> Enum.reduce_while({:ok, []}, fn
       {:ok, {:ok, str}}, {:ok, acc} ->
         {:cont, {:ok, [str | acc]}}
@@ -220,6 +243,10 @@ defmodule SVG.Path do
     end
   end
 
+  @doc """
+  Converts Path to binary.
+  If error occurs, it raises message
+  """
   def export_as_string!(arg) do
     case export_as_string(arg) do
       {:ok, str} -> str
@@ -227,9 +254,12 @@ defmodule SVG.Path do
     end
   end
 
-  # path -> string
-  def export_as_string(%__MODULE__{points: points}) do
-    Enum.map(points, &Point.export_as_string/1)
+  @doc """
+  Converts Path to binary.
+  Returns {:ok,val} or {:error,msg}
+  """
+  def export_as_string(%__MODULE__{commands: commands}) do
+    Enum.map(commands, &Command.export_as_string/1)
     |> Enum.reduce_while({:ok, []}, fn
       {:ok, str}, {:ok, acc} ->
         {:cont, {:ok, [str | acc]}}
@@ -246,37 +276,49 @@ defmodule SVG.Path do
     end
   end
 
-  # 重複mの処理
-  def defragment_m(%__MODULE__{points: points}) do
-    points
-    |> Enum.reduce([], fn point, acc ->
+  @doc """
+  Defragments m commands: Compress sequential m/M commands to one m/M command.
+  """
+  def defragment_m(%__MODULE__{commands: commands}) do
+    commands
+    |> Enum.reduce([], fn command, acc ->
       case acc do
         [%{command: c, x: x, y: y} = _prev | rest]
-        when c == point.command and c in [:m, :M] ->
+        when c == command.command and c in [:m, :M] ->
           # 連続する m / M を合算
-          [Point.add_position(point, x, y) | rest]
+          [Command.add_position(command, x, y) | rest]
 
         _ ->
-          [point | acc]
+          [command | acc]
       end
     end)
     |> Enum.reverse()
     |> new()
   end
 
-  def to_relative(%__MODULE__{points: points} = path),
-    do: gather_sub(path, [], List.duplicate(:rel, length(points)))
+  @doc """
+  Converts every command to relative one.
+  """
+  def to_relative(%__MODULE__{commands: commands} = path),
+    do: gather_sub(path, [], List.duplicate(:relative, length(commands)))
 
-  def to_absolute(%__MODULE__{points: points} = path),
-    do: gather_sub(path, [], List.duplicate(:abs, length(points)))
+  @doc """
+  Converts every command to absolute one.
+  """
+  def to_absolute(%__MODULE__{commands: commands} = path),
+    do: gather_sub(path, [], List.duplicate(:absolute, length(commands)))
 
-  def get_border(%__MODULE__{points: points} = path),
-    do: gather_sub(path, nil, List.duplicate(:border, length(points)))
+  @doc """
+  Gets border of path according to commands point. (Not actual border when they contains curve)
+  Return type: %{left: l, top: t, right: r, bottom: b}
+  """
+  def get_border(%__MODULE__{commands: commands} = path),
+    do: gather_sub(path, nil, List.duplicate(:border, length(commands)))
 
-  defp gather_sub(%__MODULE__{points: points}, acum, mode),
+  defp gather_sub(%__MODULE__{commands: commands}, acum, mode),
     do:
       gather_sub(
-        points,
+        commands,
         acum,
         mode,
         %{left: :inf, top: :inf, right: :neg_inf, bottom: :neg_inf},
@@ -292,17 +334,17 @@ defmodule SVG.Path do
       bottom: normalize_float(b)
     }
 
-  defp gather_sub([], acum, [], _, _, _), do: %__MODULE__{points: Enum.reverse(acum)}
+  defp gather_sub([], acum, [], _, _, _), do: %__MODULE__{commands: Enum.reverse(acum)}
 
   defp gather_sub(
-         points,
+         commands,
          acum,
          mode,
          %{left: _l, top: _t, right: _r, bottom: _b} = border,
          %{x: x0, y: y0} = _current_pos,
          %{x: x1, y: y1} = _subpath_start_pos
        ) do
-    [head | rest] = points
+    [head | rest] = commands
     [mode_head | mode_rest] = mode
 
     {current_pos, subpath_start_pos, border} =
@@ -325,20 +367,20 @@ defmodule SVG.Path do
       :border ->
         gather_sub(rest, nil, mode_rest, border, current_pos, subpath_start_pos)
 
-      :abs ->
+      :absolute ->
         gather_sub(
           rest,
-          [Point.to_absolute!(head, x0, y0) | acum],
+          [Command.to_absolute!(head, x0, y0) | acum],
           mode_rest,
           border,
           current_pos,
           subpath_start_pos
         )
 
-      :rel ->
+      :relative ->
         gather_sub(
           rest,
-          [Point.to_relative!(head, x0, y0) | acum],
+          [Command.to_relative!(head, x0, y0) | acum],
           mode_rest,
           border,
           current_pos,
@@ -348,7 +390,7 @@ defmodule SVG.Path do
   end
 
   defp calc_next_coord(command, curr, next),
-    do: if(Point.is_relative_command?(command), do: add(curr, next), else: next || curr)
+    do: if(Command.is_relative_command?(command), do: add(curr, next), else: next || curr)
 
   defp add(nil, d), do: d
   defp add(v, nil), do: v
@@ -370,54 +412,94 @@ defmodule SVG.Path do
   defp _min(a, :inf), do: a
   defp _min(a, b), do: min(a, b)
 
-  # extract abs or rel.
-  def extract_abs_or_rel(%__MODULE__{points: points}) do
-    points
-    |> Enum.map(fn point ->
-      case Point.is_relative_command?(point.command) do
-        true -> :rel
-        false -> :abs
+  @doc """
+  extracts each of commands are :absolute or :relative.
+  """
+  def extract_abs_or_rel(%__MODULE__{commands: commands}) do
+    commands
+    |> Enum.map(fn command ->
+      case Command.is_relative_command?(command.command) do
+        true -> :relative
+        false -> :absolute
       end
     end)
   end
 
-  def set_start_position(%__MODULE__{points: points}, x, y) do
+  @doc """
+  Sets start position (as M command) and shifts locate of path.
+  """
+  def set_start_position(%__MODULE__{commands: commands}, x, y) do
     %__MODULE__{
-      points: [
-        Point.new_m_absolute(x, y)
-        | Enum.map(points, fn point ->
-            case Point.is_relative_command?(point.command) do
-              true -> point
-              false -> Point.add_position(point, x, y)
+      commands: [
+        Command.new_m_absolute(x, y)
+        | Enum.map(commands, fn command ->
+            case Command.is_relative_command?(command.command) do
+              true -> command
+              false -> Command.add_position(command, x, y)
             end
           end)
       ]
     }
   end
 
+  @doc """
+    Merges three pathes into one path.
+    x0,y0,x1,y1 specifies offset of path1 or path2。
+  """
   def merge_path_3(
+        %__MODULE__{} = path0,
         %__MODULE__{} = path1,
         %__MODULE__{} = path2,
-        %__MODULE__{} = path3,
         x0,
         y0,
         x1,
         y1
       ),
+      do: merge_path_3(path0, path1, path2, %{x: x0, y: y0}, %{x: x1, y: y1})
+
+  def merge_path_3(
+        %__MODULE__{} = path0,
+        %__MODULE__{} = path1,
+        %__MODULE__{} = path2,
+        %{x: x0, y: y0},
+        %{x: x1, y: y1}
+      ),
       do:
-        merge_path_2(path1, path2, x0, y0)
-        |> merge_path_2(path3, x1, y1)
+        merge_path_2(path0, path1, x0, y0)
+        |> merge_path_2(path2, x1, y1)
 
-  def merge_path_2(%__MODULE__{} = path1, %__MODULE__{} = path2, x0, y0),
-    do: concat_path(path1, set_start_position(path2, x0, y0))
+  @doc """
+    Merges two pathes into one path.
+    x0,y0 specifies offset of path1
+  """
+  def merge_path_2(%__MODULE__{} = path0, %__MODULE__{} = path1, x0, y0),
+    do: merge_path_2(path0, path1, %{x: x0, y: y0})
 
-  def concat_path(%__MODULE__{points: points1}, %__MODULE__{points: points2}),
-    do: %__MODULE__{points: points1 ++ points2}
+  def merge_path_2(%__MODULE__{} = path0, %__MODULE__{} = path1, %{x: x0, y: y0}),
+    do: concat_path(path0, set_start_position(path1, x0, y0))
 
-  def rescale(%__MODULE__{points: points}, x, y) do
-    # default_relorabs = extract_abs_or_rel(%__MODULE__{points: points})
+  @doc """
+      simply concats two path.
+  """
+  def concat_path(%__MODULE__{commands: commands0}, %__MODULE__{commands: commands1}),
+    do: %__MODULE__{commands: commands0 ++ commands1}
+
+  @doc """
+      simply concats list of paths into one path.
+  """
+  def concat_path(list) when is_list(list),
+    do: %__MODULE__{commands: Enum.reduce(list, [], fn l, acc -> acc ++ l end)}
+
+  @doc """
+  rescales Path by given multiplier x,y.
+  """
+
+  def rescale(%__MODULE__{} = path, x, y), do: rescale(path, %{x: x, y: y})
+
+  def rescale(%__MODULE__{commands: commands}, %{x: x, y: y}) do
+    # default_relorabs = extract_abs_or_rel(%__MODULE__{commands: commands})
     # path = to_absolute(path)
-    points = Enum.map(points, fn point -> Point.multiply_position(point, x, y) end)
-    %__MODULE__{points: points}
+    commands = Enum.map(commands, fn command -> Command.multiply_position(command, x, y) end)
+    %__MODULE__{commands: commands}
   end
 end

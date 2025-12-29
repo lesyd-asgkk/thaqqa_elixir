@@ -1,25 +1,25 @@
-defmodule SVG.Point do
+defmodule SVG.Command do
   @moduledoc """
   En
-  Documentation for `SVG.Point`.
+  Documentation for `SVG.Command`.
   ## Structure Definition
 
-      %SVG.Point{
+      %SVG.Command{
   command: (Atom:CommandType) x: float? y: float? x1: float? y1: float?
   x2: float? y2: float?
   rx: float? ry: float? angle: float? laf: bool sf: bool
   }
-  x,y is always the endSVG.Point.
+  x,y is always the endSVG.Command.
 
   CommandType contains:
     :m :M :l :L :h :H :v :V :c :C :s :S :q :Q :t :T :a :A :z :Z :None(used for null data).
   otherwize throws error.
 
-  use new_*/1 functions to create SVG.Point.
+  use new_*/1 functions to create SVG.Command.
 
   　日
-  SVG.Pointの作成、操作、文字列出力を行うモジュール。
-  %SVG.Point{
+  SVG.Commandの作成、操作、文字列出力を行うモジュール。
+  %SVG.Command{
   command: (Atom:CommandType) x: float? y: float? x1: float? y1: float?
   x2: float? y2: float?
   rx: float? ry: float? angle: float? laf: bool sf: bool
@@ -44,56 +44,126 @@ defmodule SVG.Point do
             laf: nil,
             sf: nil
 
-  # SVG.Pointを作る関数群
+  # SVG.Commandを作る関数群
+
+  @doc """
+  Returns Null Command
+  """
   def new_null(), do: %__MODULE__{command: :None}
 
+  @doc """
+  Creates m Command
+  """
   def new_m_relative(x, y), do: %__MODULE__{command: :m, x: x, y: y}
 
+  @doc """
+  Creates M Command
+  """
   def new_m_absolute(x, y), do: %__MODULE__{command: :M, x: x, y: y}
 
+  @doc """
+  Creates l Command
+  """
   def new_l_relative(x, y), do: %__MODULE__{command: :l, x: x, y: y}
 
+  @doc """
+  Creates L Command
+  """
   def new_l_absolute(x, y), do: %__MODULE__{command: :L, x: x, y: y}
 
+  @doc """
+  Creates h Command
+  """
   def new_h_relative(x), do: %__MODULE__{command: :h, x: x}
 
+  @doc """
+  Creates H Command
+  """
   def new_h_absolute(x), do: %__MODULE__{command: :H, x: x}
 
+  @doc """
+  Creates v Command
+  """
   def new_v_relative(y), do: %__MODULE__{command: :v, y: y}
 
+  @doc """
+  Creates V Command
+  """
   def new_v_absolute(y), do: %__MODULE__{command: :V, y: y}
 
+  @doc """
+  Creates c Command
+  """
   def new_c_relative(x, y, x1, y1, x2, y2),
     do: %__MODULE__{command: :c, x: x, y: y, x1: x1, y1: y1, x2: x2, y2: y2}
 
+  @doc """
+  Creates C Command
+  """
   def new_c_absolute(x, y, x1, y1, x2, y2),
     do: %__MODULE__{command: :C, x: x, y: y, x1: x1, y1: y1, x2: x2, y2: y2}
 
+  @doc """
+  Creates s Command
+  """
   def new_s_relative(x, y, x2, y2), do: %__MODULE__{command: :s, x: x, y: y, x2: x2, y2: y2}
 
+  @doc """
+  Creates S Command
+  """
   def new_s_absolute(x, y, x2, y2), do: %__MODULE__{command: :S, x: x, y: y, x2: x2, y2: y2}
 
+  @doc """
+  Creates q Command
+  """
   def new_q_relative(x, y, x1, y1), do: %__MODULE__{command: :q, x: x, y: y, x1: x1, y1: y1}
 
+  @doc """
+  Creates Q Command
+  """
   def new_q_absolute(x, y, x1, y1), do: %__MODULE__{command: :Q, x: x, y: y, x1: x1, y1: y1}
 
+  @doc """
+  Creates t Command
+  """
   def new_t_relative(x, y), do: %__MODULE__{command: :t, x: x, y: y}
 
+  @doc """
+  Creates T Command
+  """
   def new_t_absolute(x, y), do: %__MODULE__{command: :T, x: x, y: y}
 
+  @doc """
+  Creates a Command
+  """
   def new_a_relative(x, y, rx, ry, angle, laf, sf),
     do: %__MODULE__{command: :a, x: x, y: y, rx: rx, ry: ry, angle: angle, laf: laf, sf: sf}
 
+  @doc """
+  Creates A Command
+  """
   def new_a_absolute(x, y, rx, ry, angle, laf, sf),
     do: %__MODULE__{command: :A, x: x, y: y, rx: rx, ry: ry, angle: angle, laf: laf, sf: sf}
 
+  @doc """
+  Returns z Command
+  """
   def new_z_relative(), do: %__MODULE__{command: :z}
 
+  @doc """
+  Returns Z Command
+  """
   def new_z_absolute(), do: %__MODULE__{command: :Z}
 
   # Commandチェック用の関数群
+  @doc """
+  Returns the Command has legal command or not
+  """
   def has_legal_command?(%__MODULE__{command: command}), do: is_legal_command?(command)
 
+  @doc """
+  Returns legal command or not
+  """
   def is_legal_command?(command) do
     Enum.member?(
       [:m, :M, :l, :L, :h, :H, :v, :V, :c, :C, :s, :S, :q, :Q, :t, :T, :a, :A, :z, :Z, :None],
@@ -101,21 +171,53 @@ defmodule SVG.Point do
     )
   end
 
+  @doc """
+  Returns the Command has none command or not
+  """
   def has_none?(%__MODULE__{command: command}), do: is_none?(command)
+
+  @doc """
+  Returns the Command has z command or not
+  """
   def has_z_command?(%__MODULE__{command: command}), do: is_z_command?(command)
+
+  @doc """
+  Returns the Command has relative command or not
+  """
   def has_relative_command?(%__MODULE__{command: command}), do: is_relative_command?(command)
+
+  @doc """
+  Returns the Command has absolute command or not
+  """
   def has_absolute_command?(%__MODULE__{command: command}), do: is_absolute_command?(command)
 
+  @doc """
+  Returns none command or not
+  """
   def is_none?(command), do: command == :None
+
+  @doc """
+  Returns z command or not
+  """
   def is_z_command?(command), do: Enum.member?([:z, :Z], command)
 
+  @doc """
+  Returns relative command or not
+  """
   def is_relative_command?(command),
     do: Enum.member?([:m, :l, :h, :v, :c, :s, :q, :t, :a, :z], command)
 
+  @doc """
+  Returns absolute command or not
+  """
   def is_absolute_command?(command),
     do: Enum.member?([:M, :L, :H, :V, :C, :S, :Q, :T, :A, :Z], command)
 
   # 絶対値と相対値の交換用
+  @doc """
+  Convert relative command to absolute one according to specified position.
+  If error occurs,  it raises message
+  """
   def to_absolute!(%__MODULE__{} = p0, x, y), do: to_absolute!(p0, %{x: x, y: y})
 
   def to_absolute!(%__MODULE__{} = p0, %{x: _x, y: _y} = coord) do
@@ -125,6 +227,10 @@ defmodule SVG.Point do
     end
   end
 
+  @doc """
+  Convert relative command to absolute one according to specified position
+  Returns {:ok,val} or {:error,msg}
+  """
   def to_absolute(%__MODULE__{} = p0, x, y), do: to_absolute(p0, %{x: x, y: y})
 
   def to_absolute(%__MODULE__{command: command} = p0, %{x: x, y: y}) do
@@ -137,6 +243,10 @@ defmodule SVG.Point do
     end
   end
 
+  @doc """
+  Convert absolute command to relative one according to specified position
+  If error occurs, it raises message
+  """
   def to_relative!(%__MODULE__{} = p0, x, y), do: to_relative!(p0, %{x: x, y: y})
 
   def to_relative!(%__MODULE__{} = p0, %{x: _x, y: _y} = coord) do
@@ -146,6 +256,10 @@ defmodule SVG.Point do
     end
   end
 
+  @doc """
+  Convert absolute command to relative one according to specified position
+  Returns {:ok,val} or {:error,msg}
+  """
   def to_relative(%__MODULE__{} = p0, x, y), do: to_relative(p0, %{x: x, y: y})
 
   def to_relative(%__MODULE__{command: command} = p0, %{x: x, y: y}) do
@@ -165,6 +279,9 @@ defmodule SVG.Point do
     do: to_string(command) |> String.downcase() |> String.to_atom()
 
   # 値を操作する場合に用いる関数群
+  @doc """
+  adds values of position with null exception handling
+  """
   def add_position(%__MODULE__{} = point, dx, dy) do
     %__MODULE__{
       point
@@ -183,6 +300,9 @@ defmodule SVG.Point do
   defp add(v, d), do: v + d
 
   # 値を操作する場合に用いる関数群
+  @doc """
+  multiplies values of position with null exception handling
+  """
   def multiply_position(%__MODULE__{} = point, dx, dy) do
     %__MODULE__{
       point
@@ -224,12 +344,21 @@ defmodule SVG.Point do
     }
   end
 
+  @doc """
+  Converts Command to binary.
+  If error occurs, it raises message
+  """
   def export_as_string!(%__MODULE__{} = point) do
     case export_as_string(point) do
       {:ok, str} -> str
       {:error, msg} -> raise msg
     end
   end
+
+  @doc """
+  Converts Command to binary.
+  Returns {:ok,val} or {:error,msg}
+  """
 
   def export_as_string(%__MODULE__{command: command} = point) do
     if is_legal_command?(command),
@@ -313,11 +442,19 @@ defmodule SVG.Point do
        }),
        do: "A #{rx} #{ry} #{angle} #{laf} #{sf} #{x} #{y}"
 
+  @doc """
+  list of relative commands
+  """
+
   defmacro list_relative(), do: [:m, :l, :h, :v, :c, :s, :q, :t, :a, :z]
+
+  @doc """
+  list of absolute commands
+  """
   defmacro list_absolute(), do: [:M, :L, :H, :V, :C, :S, :Q, :T, :A, :Z]
 end
 
-defimpl Inspect, for: SVG.Point do
+defimpl Inspect, for: SVG.Command do
   import Inspect.Algebra
 
   def inspect(point, opts) do

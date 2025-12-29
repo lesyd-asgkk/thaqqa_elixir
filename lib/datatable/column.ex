@@ -20,9 +20,9 @@ defmodule Thaqqa.Column do
   # :nameは重複不可(※空文字に限って重複可)
   # :idは編集不可
 
-  # :bool ならば :none
+  # :bool ならば :none(特に判定しない)
 
-  # :float ならば :none
+  # :float ならば :none(特にvariant無し)
 
   def is_available_type(type) when is_binary(type), do: type in ["string", "float", "int", "bool"]
   def is_available_type(type) when is_atom(type), do: type in [:string, :float, :int, :bool]

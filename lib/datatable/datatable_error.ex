@@ -13,13 +13,14 @@ defmodule Thaqqa.FontRegistry.Error do
          meta: %{column_name: name, operation: op}
        }}
 
-  def nominal_conflict(column, name, op),
+  # ユニーク行での衝突（※""は例外とする)
+  def unique_column_conflict(column, name, op),
     do:
       {:error,
        %__MODULE__{
          type: :conflict,
          detail: :data,
-         meta: %{column_name: name, operation: op}
+         meta: %{column_name: column, name: name, operation: op}
        }}
 
   def invalid_datatype(type),
@@ -51,22 +52,22 @@ defmodule Thaqqa.FontRegistry.Error do
        }}
 
   # 主にID用
-  def edit_locked(subtype, column),
+  def edit_locked(column, subtype),
     do:
       {:error,
        %__MODULE__{
          type: :locked,
          detail: :subtype,
-         meta: %{column_name: column, data_name: subtype}
+         meta: %{column_name: column, subtype: subtype}
        }}
 
   # precompile用
-  def edit_denied(subtype, column),
+  def edit_denied(column, subtype),
     do:
       {:error,
        %__MODULE__{
          type: :denied,
          detail: :subtype,
-         meta: %{column_name: column, data_name: subtype}
+         meta: %{column_name: column, subtype: subtype}
        }}
 end

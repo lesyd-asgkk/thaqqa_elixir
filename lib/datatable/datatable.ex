@@ -38,6 +38,44 @@ defmodule Thaqqa.DataTable do
     end
   end
 
+  # :alig_x0,:alig_x1,:alig_y0は -1,0,1のみを取る
+  # :non_negativeは0以上、:naturalは1以上
+
+  def is_value_range_valid?(val, :int, subtype) do
+    if !is_integer(val) do
+      false
+    else
+      case subtype do
+        h when h in [:alig_x0, :alig_x1, :alig_y0] -> val in [-1, 0, 1]
+        :non_negative -> val >= 0
+        :natural -> val >= 1
+        _ -> true
+      end
+    end
+  end
+
+  def is_value_range_valid?(val, :string, subtype) do
+    if !is_binary(val) do
+      false
+    else
+      case subtype do
+        :language -> val in ["universal", "khehyelu", "samlhta"]
+        :writing_direction -> val in ["universal", "vertical", "horizontal"]
+        :gpos -> val in ["internal", "external", "kerning", "diacritical"]
+        _ -> true
+      end
+    end
+  end
+
+  def is_value_range_valid?(val, type, subtype) when type in [:float, :bool] do
+    case type do
+      :float -> is_float(val) || is_integer(val)
+      :bool -> is_boolean(val)
+    end
+  end
+
+  # column系統
+
   def get_column(%__MODULE__{column_list: columns}, filter_fun \\ fn _ -> true end),
     do: Enum.filter(columns, filter_fun)
 
@@ -125,7 +163,6 @@ defmodule Thaqqa.DataTable do
         new_subtype \\ nil,
         new_dev \\ nil
       ) do
-    # 名前重複処理
     if get_column(table, fn %Column{name: name} -> name == column_name end) != [] do
       Error.nominal_conflict_column(column_name, :edit)
     else
@@ -161,9 +198,7 @@ defmodule Thaqqa.DataTable do
     end
   end
 
-  def get_data(%__MODULE__{data_list: datas}, filter_fun \\ fn _ -> true end) do
-    Enum.filter(datas, filter_fun)
-  end
+  # data系統
 
   def get_least_available_id(%__MODULE__{data_list: datas}) do
     existing_ids =
@@ -196,11 +231,96 @@ defmodule Thaqqa.DataTable do
     end
   end
 
-  # todo:subtypeが:nameの項目の値が重複する場合(空文字を除く)は作成拒否する
-  # editでも同様。さらにeditでは問答無用でidへの編集を弾く
-  # ※precompileの編集拒否はwrapper module側(LetterEditorとか)で行う
+  defp id_validation(%__MODULE__{} = table, data_alt, op) do
+    column_list =
+      get_column(table, fn %Column{subtype: st} -> st == :id end)
+      |> Enum.map(fn %Column{name: name} -> name end)
+
+    Enum.reduce(data_alt, [], fn {k, v}, acc ->
+      k_str = if is_atom(k), do: Atom.to_string(k), else: k
+
+      if k_str in column_list,
+        do: [Error.edit_locked(k_str, :id) | acc],
+        else: [{:ok, nil} | acc]
+    end)
+    |> Enum.reduce_while({:ok, []}, fn
+      {:ok, str}, {:ok, acc} ->
+        {:cont, {:ok, acc}}
+
+      {:error, reason}, _acc ->
+        {:halt, {:error, reason}}
+    end)
+    |> case do
+      {:error, reason} -> {:error, reason}
+      {:ok, _} -> {:ok, nil}
+    end
+  end
+
+  # nameでのvalidation。uniqueのがよいかも？　（空文字はokとする)
+  defp unique_validation(%__MODULE__{} = table, data_alt, op) do
+    column_list =
+      get_column(table, fn %Column{subtype: st} -> st in [:name, :id] end)
+      |> Enum.map(fn %Column{name: name} -> name end)
+
+    Enum.reduce(data_alt, [], fn {k, v}, acc ->
+      k_str = if is_atom(k), do: Atom.to_string(k), else: k
+
+      if k_str in column_list do
+        if get_data(
+             table,
+             &(&1 |> Thaqqa.Data.get_val(k_str) == v and (v != "" and v != nil))
+           ) != [],
+           do: [Error.unique_column_conflict(k_str, v, op) | acc],
+           else: [{:ok, nil} | acc]
+      else
+        [{:ok, nil} | acc]
+      end
+    end)
+    |> Enum.reduce_while({:ok, []}, fn
+      {:ok, str}, {:ok, acc} ->
+        {:cont, {:ok, acc}}
+
+      {:error, reason}, _acc ->
+        {:halt, {:error, reason}}
+    end)
+    |> case do
+      {:error, reason} -> {:error, reason}
+      {:ok, _} -> {:ok, nil}
+    end
+  end
+
+  defp validate_data(table, new_value_map, column_list, :add) do
+    case validate_value_map(new_value_map, column_list) do
+      {:error, msg} ->
+        {:error, msg}
+
+      {:ok, _} ->
+        unique_validation(table, new_value_map, :add)
+    end
+  end
+
+  defp validate_data(table, new_value_map, column_list, :edit) do
+    case validate_value_map(new_value_map, column_list) do
+      {:error, msg} ->
+        {:error, msg}
+
+      {:ok, _} ->
+        case id_validation(table, new_value_map, :edit) do
+          {:error, msg} ->
+            {:error, msg}
+
+          {:ok, _} ->
+            unique_validation(table, new_value_map, :edit)
+        end
+    end
+  end
+
+  def get_data(%__MODULE__{data_list: datas}, filter_fun \\ fn _ -> true end) do
+    Enum.filter(datas, filter_fun)
+  end
 
   defp validate_value_map(value_map, column_list) when is_map(value_map) do
+    # ※precompileの編集拒否はwrapper module側(LetterEditorとか)で行う
     Enum.reduce(column_list, [], fn %Column{
                                       name: name,
                                       type: type,
@@ -213,6 +333,9 @@ defmodule Thaqqa.DataTable do
         cond do
           !is_value_valid?(Map.get(value_map, name), type) ->
             [Error.invalid_value_type(Map.get(value_map, name), type) | acc]
+
+          !is_value_range_valid?(Map.get(value_map, name), type, subtype) ->
+            [Error.invalid_value_range(Map.get(value_map, name), type, subtype) | acc]
 
           true ->
             [{:ok, nil} | acc]
@@ -253,7 +376,8 @@ defmodule Thaqqa.DataTable do
     end)
   end
 
-  def add_data!(%__MODULE__{} = table, value_map) when is_map(value_map) do
+  def add_data!(%__MODULE__{column_list: column_list} = table, value_map)
+      when is_map(value_map) do
     case add_data(table, value_map) do
       {:error, msg} -> raise msg
       {:ok, v} -> v
@@ -262,12 +386,12 @@ defmodule Thaqqa.DataTable do
 
   def add_data(%__MODULE__{data_list: datas, column_list: column_list} = table, value_map)
       when is_map(value_map) do
-    case validate_value_map(value_map, column_list) do
+    case validate_data(table, value_map, column_list, :add) do
       {:error, msg} ->
         {:error, msg}
 
       {:ok, v} ->
-        value_map = v |> modify_value_map(table) |> attach_id(table)
+        value_map = value_map |> modify_value_map(table) |> attach_id(table)
         new_data = %Data{value_list: value_map}
         {:ok, %{table | data_list: datas ++ [new_data]}}
     end
@@ -285,33 +409,12 @@ defmodule Thaqqa.DataTable do
     end
   end
 
-  defp has_id_colmun?(%__MODULE__{} = table, data_alt) do
-    column_list =
-      get_column(table, fn %Column{subtype: st} -> st == :id end)
-      |> Enum.map(fn %Column{name: name} -> name end)
-
-    if Enum.any?(data_alt, fn {k, v} -> Atom.to_string(k) in column_list end),
-      # 仮。厳密に指定できるようにしておく
-      do: Error.edit_locked(:subtype, "ID"),
-      else: {:ok, nil}
-  end
-
-  # todo  問答無用でID相手への編集の拒否(IDの変更前と変更後を確認した上で、変更がされていたら即errorを返す)
   def edit_data(
         %__MODULE__{data_list: datas, column_list: column_list} = table,
         filter_fun,
         new_value_map
       ) do
-    validation =
-      case validate_value_map(new_value_map, column_list) do
-        {:error, msg} ->
-          {:error, msg}
-
-        {:ok, _} ->
-          has_id_colmun?(table, new_value_map)
-      end
-
-    case validation do
+    case validate_data(table, new_value_map, column_list, :edit) do
       {:error, msg} ->
         {:error, msg}
 
@@ -319,9 +422,6 @@ defmodule Thaqqa.DataTable do
         new_datas =
           Enum.map(datas, fn data ->
             if filter_fun.(data) do
-              # if !has_id_colmun?(table, new_value_map),
-              # do: Error.edit_locked(:subtype),
-              # else:
               %Data{data | value_list: Map.merge(data.value_list, new_value_map)}
             else
               data

@@ -2754,8 +2754,8 @@
         "subtype": "id",
         "dev": true
       },
-      "Language": {
-        "name": "Language",
+      "WritingDirection": {
+        "name": "WritingDirection",
         "type": "string",
         "order": 1,
         "subtype": "writing_direction",
@@ -2796,7 +2796,7 @@
     "data": {
       "0": {
         "ID": 0,
-        "Language": "universal",
+        "WritingDirection": "universal",
         "Order": 10,
         "Priority": 1,
         "Name": "S(fin,(t_-*),(.)0(-*),(t_-*))",
@@ -2805,7 +2805,7 @@
       },
       "1": {
         "ID": 1,
-        "Language": "universal",
+        "WritingDirection": "universal",
         "Order": 10,
         "Priority": 3,
         "Name": "S(fin,(*),(.)0(-*),(t_-*))",
@@ -2814,7 +2814,7 @@
       },
       "2": {
         "ID": 2,
-        "Language": "universal",
+        "WritingDirection": "universal",
         "Order": 10,
         "Priority": 2,
         "Name": "S(fin,(t_-*),(.)0(-*),(*))",
@@ -2823,7 +2823,7 @@
       },
       "3": {
         "ID": 3,
-        "Language": "universal",
+        "WritingDirection": "universal",
         "Order": 10,
         "Priority": 0,
         "Name": "S(mid,(t_-*),(.)0(-*),(*))",
@@ -2832,7 +2832,7 @@
       },
       "4": {
         "ID": 4,
-        "Language": "h",
+        "WritingDirection": "horizontal",
         "Order": 5,
         "Priority": 27,
         "Name": "S(null,(*),(br|omit)_,(*))",
@@ -2841,7 +2841,7 @@
       },
       "5": {
         "ID": 5,
-        "Language": "h",
+        "WritingDirection": "horizontal",
         "Order": 5,
         "Priority": 26,
         "Name": "S(null,,(br|omit)_,(*))",
@@ -2850,7 +2850,7 @@
       },
       "6": {
         "ID": 6,
-        "Language": "h",
+        "WritingDirection": "horizontal",
         "Order": 5,
         "Priority": 25,
         "Name": "S(null,(*),iold_(-*),(*))",
@@ -2859,7 +2859,7 @@
       },
       "7": {
         "ID": 7,
-        "Language": "h",
+        "WritingDirection": "horizontal",
         "Order": 5,
         "Priority": 24,
         "Name": "S(null,,iold_(-*),(*))",
@@ -2868,7 +2868,7 @@
       },
       "8": {
         "ID": 8,
-        "Language": "h",
+        "WritingDirection": "horizontal",
         "Order": 5,
         "Priority": 23,
         "Name": "S(null,(*),iold_(-*),)",
@@ -2877,7 +2877,7 @@
       },
       "9": {
         "ID": 9,
-        "Language": "h",
+        "WritingDirection": "horizontal",
         "Order": 5,
         "Priority": 2,
         "Name": "S(null,(*),eold_(-*),(*))",
@@ -2886,7 +2886,7 @@
       },
       "10": {
         "ID": 10,
-        "Language": "h",
+        "WritingDirection": "horizontal",
         "Order": 5,
         "Priority": 21,
         "Name": "S(null,,eold_(-*),(*))",
@@ -2895,7 +2895,7 @@
       },
       "11": {
         "ID": 11,
-        "Language": "h",
+        "WritingDirection": "horizontal",
         "Order": 5,
         "Priority": 20,
         "Name": "S(null,(*),eold_(-*),)",
@@ -2904,7 +2904,7 @@
       },
       "12": {
         "ID": 12,
-        "Language": "h",
+        "WritingDirection": "horizontal",
         "Order": 5,
         "Priority": 19,
         "Name": "S(null,(*),v_(-*),(*))",
@@ -2913,7 +2913,7 @@
       },
       "13": {
         "ID": 13,
-        "Language": "h",
+        "WritingDirection": "horizontal",
         "Order": 5,
         "Priority": 18,
         "Name": "S(null,,v_(-*),(*))",
@@ -2922,7 +2922,7 @@
       },
       "14": {
         "ID": 14,
-        "Language": "h",
+        "WritingDirection": "horizontal",
         "Order": 5,
         "Priority": 17,
         "Name": "S(null,(*),v_(-*),)",
@@ -2931,7 +2931,7 @@
       },
       "15": {
         "ID": 15,
-        "Language": "h",
+        "WritingDirection": "horizontal",
         "Order": 5,
         "Priority": 16,
         "Name": "S(null,(*),u_(-*),(*))",
@@ -2940,7 +2940,7 @@
       },
       "16": {
         "ID": 16,
-        "Language": "h",
+        "WritingDirection": "horizontal",
         "Order": 5,
         "Priority": 15,
         "Name": "S(null,,u_(-*),(*))",
@@ -2949,7 +2949,7 @@
       },
       "17": {
         "ID": 17,
-        "Language": "h",
+        "WritingDirection": "horizontal",
         "Order": 5,
         "Priority": 14,
         "Name": "S(null,(*),u_(-*),)",
@@ -2958,7 +2958,7 @@
       },
       "18": {
         "ID": 18,
-        "Language": "h",
+        "WritingDirection": "horizontal",
         "Order": 5,
         "Priority": 13,
         "Name": "S(null,(*),o_(-*),(*))",
@@ -2967,7 +2967,7 @@
       },
       "19": {
         "ID": 19,
-        "Language": "h",
+        "WritingDirection": "horizontal",
         "Order": 5,
         "Priority": 12,
         "Name": "S(null,,o_(-*),(*))",
@@ -2976,7 +2976,7 @@
       },
       "20": {
         "ID": 20,
-        "Language": "h",
+        "WritingDirection": "horizontal",
         "Order": 5,
         "Priority": 11,
         "Name": "S(null,(*),o_(-*),)",
@@ -2985,7 +2985,7 @@
       },
       "21": {
         "ID": 21,
-        "Language": "h",
+        "WritingDirection": "horizontal",
         "Order": 5,
         "Priority": 10,
         "Name": "S(null,(*),i_(-*),(*))",
@@ -2994,7 +2994,7 @@
       },
       "22": {
         "ID": 22,
-        "Language": "h",
+        "WritingDirection": "horizontal",
         "Order": 5,
         "Priority": 9,
         "Name": "S(null,,i_(-*),(*))",
@@ -3003,7 +3003,7 @@
       },
       "23": {
         "ID": 23,
-        "Language": "h",
+        "WritingDirection": "horizontal",
         "Order": 5,
         "Priority": 8,
         "Name": "S(null,(*),i_(-*),)",
@@ -3012,7 +3012,7 @@
       },
       "24": {
         "ID": 24,
-        "Language": "h",
+        "WritingDirection": "horizontal",
         "Order": 5,
         "Priority": 7,
         "Name": "S(null,(*),e_(-*),(*))",
@@ -3021,7 +3021,7 @@
       },
       "25": {
         "ID": 25,
-        "Language": "h",
+        "WritingDirection": "horizontal",
         "Order": 5,
         "Priority": 6,
         "Name": "S(null,,e_(-*),(*))",
@@ -3030,7 +3030,7 @@
       },
       "26": {
         "ID": 26,
-        "Language": "h",
+        "WritingDirection": "horizontal",
         "Order": 5,
         "Priority": 5,
         "Name": "S(null,(*),e_(-*),)",
@@ -3039,7 +3039,7 @@
       },
       "27": {
         "ID": 27,
-        "Language": "h",
+        "WritingDirection": "horizontal",
         "Order": 5,
         "Priority": 4,
         "Name": "S(null,(*),(?:a|abig)_(-*),(*))",
@@ -3048,7 +3048,7 @@
       },
       "28": {
         "ID": 28,
-        "Language": "h",
+        "WritingDirection": "horizontal",
         "Order": 5,
         "Priority": 3,
         "Name": "S(null,,(?:a|abig)_(-*),(*))",
@@ -3057,7 +3057,7 @@
       },
       "29": {
         "ID": 29,
-        "Language": "h",
+        "WritingDirection": "horizontal",
         "Order": 5,
         "Priority": 2,
         "Name": "S(null,(*),(?:a|abig)_(-*),)",
@@ -3066,7 +3066,7 @@
       },
       "30": {
         "ID": 30,
-        "Language": "h",
+        "WritingDirection": "horizontal",
         "Order": 5,
         "Priority": 0,
         "Name": "S(null,,a_(-*),)",
@@ -3075,7 +3075,7 @@
       },
       "31": {
         "ID": 31,
-        "Language": "h",
+        "WritingDirection": "horizontal",
         "Order": 5,
         "Priority": 1,
         "Name": "S(null,,(.)_(-*),)",
@@ -3084,7 +3084,7 @@
       },
       "32": {
         "ID": 32,
-        "Language": "v",
+        "WritingDirection": "vertical",
         "Order": 0,
         "Priority": 5,
         "Name": "S(null,(*),(+),(*))",
@@ -3093,7 +3093,7 @@
       },
       "33": {
         "ID": 33,
-        "Language": "v",
+        "WritingDirection": "vertical",
         "Order": 0,
         "Priority": 4,
         "Name": "S(null,(*),(+),(*))($|P(*))",
@@ -3102,7 +3102,7 @@
       },
       "34": {
         "ID": 34,
-        "Language": "v",
+        "WritingDirection": "vertical",
         "Order": 0,
         "Priority": 3,
         "Name": "(^|P(*))S(null,(*),(+),(*))",
@@ -3111,7 +3111,7 @@
       },
       "35": {
         "ID": 35,
-        "Language": "v",
+        "WritingDirection": "vertical",
         "Order": 0,
         "Priority": 2,
         "Name": "(^|P(*))S(null,(+),(+),(+))($|P(*))",
@@ -3120,7 +3120,7 @@
       },
       "36": {
         "ID": 36,
-        "Language": "v",
+        "WritingDirection": "vertical",
         "Order": 0,
         "Priority": 2,
         "Name": "(^|P(*))S(null,,(+),(+))($|P(*))",
@@ -3129,7 +3129,7 @@
       },
       "37": {
         "ID": 37,
-        "Language": "v",
+        "WritingDirection": "vertical",
         "Order": 0,
         "Priority": 1,
         "Name": "(^|P(*))S(null,(+),(+),)($|P(*))",
@@ -3138,7 +3138,7 @@
       },
       "38": {
         "ID": 38,
-        "Language": "v",
+        "WritingDirection": "vertical",
         "Order": 0,
         "Priority": 0,
         "Name": "(^|P(*))S(null,,(+),)($|P(*))",
@@ -3147,7 +3147,7 @@
       },
       "39": {
         "ID": 39,
-        "Language": "v",
+        "WritingDirection": "vertical",
         "Order": 20,
         "Priority": -1,
         "Name": "S(*,,hyphen_-*,)",
@@ -3156,7 +3156,7 @@
       },
       "40": {
         "ID": 40,
-        "Language": "v",
+        "WritingDirection": "vertical",
         "Order": 20,
         "Priority": 0,
         "Name": "S(init,,a(_-*),)S((*),(*),a(_-*),(*))",
@@ -3165,7 +3165,7 @@
       },
       "41": {
         "ID": 41,
-        "Language": "v",
+        "WritingDirection": "vertical",
         "Order": 20,
         "Priority": 1,
         "Name": "S(init,,a(_-*),)S((*),(*),(*),(*))",
@@ -3174,7 +3174,7 @@
       },
       "42": {
         "ID": 42,
-        "Language": "v",
+        "WritingDirection": "vertical",
         "Order": 20,
         "Priority": 2,
         "Name": "S(init,,(*),)S((*),(*),a(_-*),(*))",
@@ -3183,7 +3183,7 @@
       },
       "43": {
         "ID": 43,
-        "Language": "v",
+        "WritingDirection": "vertical",
         "Order": 20,
         "Priority": 3,
         "Name": "S((*),(*),a(_-*),(*))S(fin,,a(_-*),(*))",
@@ -3192,7 +3192,7 @@
       },
       "44": {
         "ID": 44,
-        "Language": "v",
+        "WritingDirection": "vertical",
         "Order": 20,
         "Priority": 4,
         "Name": "S((*),(*),a(_-*),(*))S(fin,,(*),(*))",
@@ -3201,7 +3201,7 @@
       },
       "45": {
         "ID": 45,
-        "Language": "v",
+        "WritingDirection": "vertical",
         "Order": 20,
         "Priority": 5,
         "Name": "S(init,(+),(*),(*))S((*),,([_.isVowel]_-*),(*))",
@@ -3210,7 +3210,7 @@
       },
       "46": {
         "ID": 46,
-        "Language": "v",
+        "WritingDirection": "vertical",
         "Order": 20,
         "Priority": 6,
         "Name": "S((*),(*),(*),(+))S(fin,,(*),(*))",
@@ -3219,7 +3219,7 @@
       },
       "47": {
         "ID": 47,
-        "Language": "v",
+        "WritingDirection": "vertical",
         "Order": 20,
         "Priority": 7,
         "Name": "S((*),(x_),a(_-*),(*))",
@@ -3228,7 +3228,7 @@
       },
       "48": {
         "ID": 48,
-        "Language": "universal",
+        "WritingDirection": "universal",
         "Order": 10,
         "Priority": 3,
         "Name": "S(fin,(*),(e|o|v|eold|iold)(_-*),t0(-*))",
@@ -3237,7 +3237,7 @@
       },
       "49": {
         "ID": 49,
-        "Language": "v",
+        "WritingDirection": "vertical",
         "Order": 0,
         "Priority": 0,
         "Name": "(^|P(*))S(null,,(+),)($|P(*))",
@@ -3246,7 +3246,7 @@
       },
       "50": {
         "ID": 50,
-        "Language": "v",
+        "WritingDirection": "vertical",
         "Order": 0,
         "Priority": 6,
         "Name": "S(null,,(+),)",
@@ -3255,7 +3255,7 @@
       },
       "51": {
         "ID": 51,
-        "Language": "v",
+        "WritingDirection": "vertical",
         "Order": 0,
         "Priority": 2,
         "Name": "(^|P(*))S(null,,(+),(+))($|P(*))",
@@ -3264,7 +3264,7 @@
       },
       "52": {
         "ID": 52,
-        "Language": "v",
+        "WritingDirection": "vertical",
         "Order": 0,
         "Priority": 1,
         "Name": "(^|P(*))S(null,(+),(+),)($|P(*))",
@@ -3273,7 +3273,7 @@
       },
       "53": {
         "ID": 53,
-        "Language": "v",
+        "WritingDirection": "vertical",
         "Order": 0,
         "Priority": 2,
         "Name": "(^|P(*))S(null,(+),(+),(+))($|P(*))",
@@ -3282,7 +3282,7 @@
       },
       "54": {
         "ID": 54,
-        "Language": "v",
+        "WritingDirection": "vertical",
         "Order": 0,
         "Priority": 6,
         "Name": "S(null,,(+),)",
@@ -3291,7 +3291,7 @@
       },
       "55": {
         "ID": 55,
-        "Language": "v",
+        "WritingDirection": "vertical",
         "Order": 0,
         "Priority": 6,
         "Name": "S(null,,(+),)",
@@ -3300,7 +3300,7 @@
       },
       "56": {
         "ID": 56,
-        "Language": "h",
+        "WritingDirection": "horizontal",
         "Order": 1,
         "Priority": 0,
         "Name": "P((exclamation|comma|question)0)",
@@ -3309,7 +3309,7 @@
       },
       "57": {
         "ID": 57,
-        "Language": "h",
+        "WritingDirection": "horizontal",
         "Order": 1,
         "Priority": 0,
         "Name": "P((zero|one|two|three|four|five|six|seven|eight|nine)0)",
@@ -3318,7 +3318,7 @@
       },
       "58": {
         "ID": 58,
-        "Language": "h",
+        "WritingDirection": "horizontal",
         "Order": 1,
         "Priority": 0,
         "Name": "P((plus|minus|multi|div|power|equal)0)",
@@ -3327,7 +3327,7 @@
       },
       "59": {
         "ID": 59,
-        "Language": "v",
+        "WritingDirection": "vertical",
         "Order": 20,
         "Priority": 4,
         "Name": "S((*),(*),(*),(+))S(fin,,a(_-*),(*))",
@@ -3336,7 +3336,7 @@
       },
       "60": {
         "ID": 60,
-        "Language": "v",
+        "WritingDirection": "vertical",
         "Order": 20,
         "Priority": 2,
         "Name": "(S(*,*,*,*))S(mid,,a(_-*),(+))",
@@ -3345,7 +3345,7 @@
       },
       "61": {
         "ID": 61,
-        "Language": "v",
+        "WritingDirection": "vertical",
         "Order": 20,
         "Priority": 2,
         "Name": "(S(*,*,[_.Name!=\"a\"]_-*,*))S(mid,,a(_-*),)",
@@ -3354,7 +3354,7 @@
       },
       "62": {
         "ID": 62,
-        "Language": "h",
+        "WritingDirection": "horizontal",
         "Order": 5,
         "Priority": 0,
         "Name": "S(null,,(br|hyphen)_(-*),)",
@@ -3363,7 +3363,7 @@
       },
       "63": {
         "ID": 63,
-        "Language": "h",
+        "WritingDirection": "horizontal",
         "Order": 5,
         "Priority": 30,
         "Name": "(S(*,,hyphen_,)|V(*,hyphen_))",
@@ -3372,7 +3372,7 @@
       },
       "64": {
         "ID": 64,
-        "Language": "v",
+        "WritingDirection": "vertical",
         "Order": 20,
         "Priority": -2,
         "Name": "S((*),,a(_-*),)",
@@ -3381,7 +3381,7 @@
       },
       "65": {
         "ID": 65,
-        "Language": "v",
+        "WritingDirection": "vertical",
         "Order": 0,
         "Priority": 13,
         "Name": "S(init,,(br_-*),)S(mid,,(+),)S(fin,,(br_-*),*)",
@@ -3390,7 +3390,7 @@
       },
       "66": {
         "ID": 66,
-        "Language": "v",
+        "WritingDirection": "vertical",
         "Order": 0,
         "Priority": 10,
         "Name": "S(init,,(br_-*),)S(mid,(+),(+),(+))S(fin,,(br_-*),*)",
@@ -3399,7 +3399,7 @@
       },
       "67": {
         "ID": 67,
-        "Language": "v",
+        "WritingDirection": "vertical",
         "Order": 0,
         "Priority": 10,
         "Name": "S(init,,(br_-*),)S(mid,(+),(+),(+))S(fin,,(br_-*),*)",
@@ -3408,7 +3408,7 @@
       },
       "68": {
         "ID": 68,
-        "Language": "v",
+        "WritingDirection": "vertical",
         "Order": 0,
         "Priority": 13,
         "Name": "S(init,,(br_-*),)S(mid,,(+),)S(fin,,(br_-*),*)",
@@ -3417,7 +3417,7 @@
       },
       "69": {
         "ID": 69,
-        "Language": "v",
+        "WritingDirection": "vertical",
         "Order": 0,
         "Priority": 11,
         "Name": "S(init,,(br_-*),)S(mid,(+),(+),)S(fin,,(br_-*),*)",
@@ -3426,7 +3426,7 @@
       },
       "70": {
         "ID": 70,
-        "Language": "v",
+        "WritingDirection": "vertical",
         "Order": 0,
         "Priority": 11,
         "Name": "S(init,,(br_-*),)S(mid,(+),(+),)S(fin,,(br_-*),*)",
@@ -3435,7 +3435,7 @@
       },
       "71": {
         "ID": 71,
-        "Language": "v",
+        "WritingDirection": "vertical",
         "Order": 0,
         "Priority": 12,
         "Name": "S(init,,(br_-*),)S(mid,,(+),(+))S(fin,,(br_-*),*)",
@@ -3444,7 +3444,7 @@
       },
       "72": {
         "ID": 72,
-        "Language": "v",
+        "WritingDirection": "vertical",
         "Order": 0,
         "Priority": 12,
         "Name": "S(init,,(br_-*),)S(mid,,(+),(+))S(fin,,(br_-*),*)",
@@ -3453,7 +3453,7 @@
       },
       "73": {
         "ID": 73,
-        "Language": "v",
+        "WritingDirection": "vertical",
         "Order": 0,
         "Priority": 14,
         "Name": "S(init,,(br_-*),)S(mid,(*),(*),(*))",
@@ -3462,7 +3462,7 @@
       },
       "74": {
         "ID": 74,
-        "Language": "v",
+        "WritingDirection": "vertical",
         "Order": 0,
         "Priority": 14,
         "Name": "S(init,,(br_-*),)S(mid,(*),(*),(*))",
@@ -3471,7 +3471,7 @@
       },
       "75": {
         "ID": 75,
-        "Language": "v",
+        "WritingDirection": "vertical",
         "Order": 0,
         "Priority": 15,
         "Name": "S(mid,(*),(*),(*))S(fin,,(br_-*),)",
@@ -3480,7 +3480,7 @@
       },
       "76": {
         "ID": 76,
-        "Language": "v",
+        "WritingDirection": "vertical",
         "Order": 0,
         "Priority": 15,
         "Name": "S(mid,(*),(*),(*))S(fin,,(br_-*),)",
@@ -3489,7 +3489,7 @@
       },
       "77": {
         "ID": 77,
-        "Language": "h",
+        "WritingDirection": "horizontal",
         "Order": 1,
         "Priority": 0,
         "Name": "P((zero|one|two|three|four|five|six|seven|eight|nine)2)",

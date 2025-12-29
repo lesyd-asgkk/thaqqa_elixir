@@ -37,7 +37,8 @@ defmodule ThaqqaTest do
 
     data_of_regex =
       Thaqqa.FontRegistry.get_static_table("VOWEL")
-      |> Thaqqa.DataTable.edit_data(&(&1 |> Thaqqa.Data.get_val("Name") == "a"), %{ID: 0})
+
+    # |> Thaqqa.DataTable.edit_data(&(&1 |> Thaqqa.Data.get_val("Name") == "a"), %{ID: 1})
 
     # |> Thaqqa.DataTable.update_fontregistry()
 
