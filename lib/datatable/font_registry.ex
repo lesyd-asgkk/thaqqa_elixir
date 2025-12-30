@@ -108,5 +108,7 @@ defmodule Thaqqa.FontRegistry do
     {:reply, :ok, state}
   end
 
+  def handle_info(:timeout, state), do: {:noreply, state}
+
   def handle_info(_, state), do: {:noreply, state}
 end

@@ -36,7 +36,9 @@ defmodule ThaqqaTest do
       |> Thaqqa.Regex_Khhyl.Cond.translate(data_of_a)
 
     data_of_regex =
-      Thaqqa.FontRegistry.get_static_table("VOWEL")
+      Thaqqa.LetterRegister.get_letter(&(&1 |> Thaqqa.Data.get_val("Name") == "a"))
+
+    #  Thaqqa.FontRegistry.get_static_table("VOWEL")
 
     # |> Thaqqa.DataTable.edit_data(&(&1 |> Thaqqa.Data.get_val("Name") == "a"), %{ID: 1})
 

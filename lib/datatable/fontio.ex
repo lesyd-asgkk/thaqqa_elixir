@@ -1,13 +1,15 @@
 defmodule Thaqqa.FontIO do
   # jsonはファイルへのpath
+  # ※impureな関数の塊
+  # ファイルについては↓を変更すること
+
+  @root_file "data/root.json"
+  @font_folder "data/font/"
 
   alias Thaqqa.FontRegistry, as: FontRegistry
   alias Thaqqa.Font, as: Font
   alias Thaqqa.Column, as: Column
   alias Thaqqa.DataTable, as: DataTable
-
-  @root_file "data/root.json"
-  @font_folder "data/font/"
 
   def import() do
     # json → structs
@@ -23,8 +25,10 @@ defmodule Thaqqa.FontIO do
             {:halt, table_}
 
           {:ok, value} ->
-            FontRegistry.add_static_table(value)
-            {:cont, nil}
+            case FontRegistry.add_static_table(value) do
+              :ok -> {:cont, nil}
+              {:error, msg} -> {:halt, {:error, msg}}
+            end
         end
       end)
 
@@ -56,12 +60,9 @@ defmodule Thaqqa.FontIO do
       _ ->
         name = Map.get(data, "FONTDATA") |> Map.get("data") |> Map.get("0") |> Map.get("Fontname")
 
-        if name == nil do
-          {:error, "Cannot load font: Fontname is not found"}
-        else
-          FontRegistry.add_font(Font.new(filename, name, table))
-          {:ok, nil}
-        end
+        if name == nil,
+          do: {:error, "Cannot load font: Fontname is not found"},
+          else: FontRegistry.add_font(Font.new(filename, name, table))
     end
   end
 

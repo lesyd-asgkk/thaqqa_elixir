@@ -262,7 +262,8 @@ defmodule Thaqqa.DataTable do
   end
 
   # nameでのvalidation。uniqueのがよいかも？　（空文字はokとする)
-  defp unique_validation(%__MODULE__{} = table, data_alt, op) do
+  # unique_column_conflictはtablenameを反映させるようにする
+  def unique_validation(%__MODULE__{} = table, data_alt, op) do
     column_list =
       get_column(table, fn %Column{subtype: st} -> st in [:name, :id] end)
       |> Enum.map(fn %Column{name: name} -> name end)
@@ -320,12 +321,11 @@ defmodule Thaqqa.DataTable do
     end
   end
 
-  def get_data(%__MODULE__{data_list: datas}, filter_fun \\ fn _ -> true end) do
-    Enum.filter(datas, filter_fun)
-  end
+  def get_data(%__MODULE__{data_list: datas}, filter_fun \\ fn _ -> true end),
+    do: Enum.filter(datas, filter_fun)
 
   defp validate_value_map(value_map, column_list) when is_map(value_map) do
-    # ※precompileの編集拒否はwrapper module側(LetterEditorとか)で行う
+    # ※volatilityの編集拒否はwrapper module側(LetterEditorとか)で行う
     Enum.reduce(column_list, [], fn %Column{
                                       name: name,
                                       type: type,
