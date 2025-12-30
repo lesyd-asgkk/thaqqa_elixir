@@ -17,7 +17,9 @@ defmodule Thaqqa.DataTable do
     do: %__MODULE__{name: name, parent: parent, desc: "", column_list: [], data_list: []}
 
   # 初期値設定のため
-  defp init_val(val, type, subtype \\ nil) do
+  defp init_val(val, type), do: init_val(val, type, :none)
+
+  defp init_val(val, type, subtype) do
     val ||
       case type do
         :string -> ""
@@ -35,6 +37,7 @@ defmodule Thaqqa.DataTable do
       :float -> is_float(val) || is_integer(val)
       :int -> is_integer(val)
       :bool -> is_boolean(val)
+      :volatilty -> true
     end
   end
 
@@ -53,6 +56,8 @@ defmodule Thaqqa.DataTable do
       end
     end
   end
+
+  def is_value_range_valid?(val, :volatility, _subtype), do: true
 
   def is_value_range_valid?(val, :string, subtype) do
     if !is_binary(val) do
@@ -366,9 +371,10 @@ defmodule Thaqqa.DataTable do
                                                  acc ->
       if Map.has_key?(acc, name) do
         # 事前にコンパイルしておく
-        if type == :string and subtype == :pre_compiled,
-          do: Map.put(acc, name, Map.get(acc, name) |> Regex.compile!()),
-          else: acc
+        # if type == :string and subtype == :pre_compiled,
+        # do: Map.put(acc, name, Map.get(acc, name) |> Regex.compile!()),
+        # else:
+        acc
       else
         val_init = init_val(nil, type, subtype)
         Map.put(acc, name, val_init)
@@ -420,7 +426,7 @@ defmodule Thaqqa.DataTable do
 
       {:ok, _} ->
         new_datas =
-          Enum.map(datas, fn data ->
+          Enum.map(datas, fn %Data{} = data ->
             if filter_fun.(data) do
               %Data{data | value_list: Map.merge(data.value_list, new_value_map)}
             else

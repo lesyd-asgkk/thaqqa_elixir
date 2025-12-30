@@ -67,7 +67,7 @@ defmodule SVG.Path do
   end
 
   defp parse_command(list) do
-    to_command(list)
+    to_command(list, [], :None)
     |> Enum.reduce_while({:ok, []}, fn
       {:ok, str}, {:ok, acc} ->
         {:cont, {:ok, [str | acc]}}
@@ -116,12 +116,11 @@ defmodule SVG.Path do
     end
   end
 
-  defp to_command([], acum), do: Enum.reverse(acum)
   defp to_command(list, acum), do: to_command(list, acum, :None)
 
   defp to_command([], acum, _prev), do: Enum.reverse(acum)
 
-  defp to_command(list, acum \\ [], prev \\ :None) do
+  defp to_command(list, acum, prev) do
     [head | tail] = list
 
     case head do

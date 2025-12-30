@@ -16,7 +16,7 @@ defmodule Thaqqa.Column do
   # :gposはinternal,external,kerning,diacriticalのみを,
   # :languageはuniversal,khehyelu,samlhta(それぞれ共通、東果、汽陸)、
   # :writing_directionはuniversal,vertical,horizontal(それぞれ共通、縦、横)のみを取る
-  # :precompileは直接編集不可（正規表現の事前処理用）
+  #
   # :nameは重複不可(※空文字に限って重複可)
   # :idは編集不可
 
@@ -24,6 +24,12 @@ defmodule Thaqqa.Column do
 
   # :float ならば :none(特にvariant無し)
 
-  def is_available_type(type) when is_binary(type), do: type in ["string", "float", "int", "bool"]
-  def is_available_type(type) when is_atom(type), do: type in [:string, :float, :int, :bool]
+  # :volatizie：例外的に全ての値を受け付ける。内部データとして扱われるのみ、jsonとして特別保存はされない（デフォルトの状態では）
+  # :path :regexの２種類（いずれも直接編集不可）
+
+  def is_available_type(type) when is_binary(type),
+    do: type in ["string", "float", "int", "bool", "volatilty"]
+
+  def is_available_type(type) when is_atom(type),
+    do: type in [:string, :float, :int, :bool, :volatilty]
 end

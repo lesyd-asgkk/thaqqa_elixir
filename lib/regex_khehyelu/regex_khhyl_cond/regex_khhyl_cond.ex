@@ -38,7 +38,7 @@ defmodule Thaqqa.Regex_Khhyl.Cond do
     t = translate_sub(ast, letter_data, [])
 
     case t do
-      {:error, msg} -> t
+      {:error, _msg} -> t
       _ -> {:ok, t}
     end
   end
@@ -139,7 +139,7 @@ defmodule Thaqqa.Regex_Khhyl.Cond do
     t = normalize_sub(list, [])
 
     case t do
-      {:error, msg} -> t
+      {:error, _msg} -> t
       _ -> {:ok, t}
     end
   end

@@ -3,6 +3,7 @@ defmodule Thaqqa.FontIO do
 
   alias Thaqqa.FontRegistry, as: FontRegistry
   alias Thaqqa.Font, as: Font
+  alias Thaqqa.Column, as: Column
   alias Thaqqa.DataTable, as: DataTable
 
   @root_file "data/root.json"
@@ -39,31 +40,35 @@ defmodule Thaqqa.FontIO do
   defp import_table(name, struct) do
     table = DataTable.new(name, nil)
 
-    table_ =
-      Enum.reduce(struct, table, fn {k, v}, ans ->
-        if k == "columnList" do
+    Enum.reduce(struct, table, fn {k, v}, ans ->
+      if k == "columnList" do
+        Enum.reduce(v, ans, fn {_, v_}, ans_ ->
+          # todo:name,typeに不備がある場合は即エラー処理にする
+          DataTable.add_column!(
+            ans_,
+            Map.get(v_, "name"),
+            Map.get(v_, "type") |> String.to_atom(),
+            Map.get(v_, "desc", ""),
+            Map.get(v_, "order", 0),
+            Map.get(v_, "subtype", "none") |> String.to_atom(),
+            Map.get(v_, "dev", false)
+          )
+        end)
+      else
+        if is_map(v) do
+          # volatilityとなっている値は追加しません
+          column_volatility =
+            DataTable.get_column(table, fn %Column{type: st} -> st == :volatility end)
+            |> Enum.map(fn %Column{name: name} -> name end)
+
           Enum.reduce(v, ans, fn {_, v_}, ans_ ->
-            # todo:name,typeに不備がある場合は即エラー処理にする
-            DataTable.add_column!(
-              ans_,
-              Map.get(v_, "name"),
-              Map.get(v_, "type") |> String.to_atom(),
-              Map.get(v_, "desc", ""),
-              Map.get(v_, "order", 0),
-              Map.get(v_, "subtype", "none") |> String.to_atom(),
-              Map.get(v_, "dev", false)
-            )
+            ans_ |> Map.drop(column_volatility) |> DataTable.add_data!(v_)
           end)
         else
-          if is_map(v) do
-            Enum.reduce(v, ans, fn {_, v_}, ans_ ->
-              DataTable.add_data!(ans_, v_)
-            end)
-          else
-            ans
-          end
+          ans
         end
-      end)
+      end
+    end)
   end
 
   def export(fonts) do

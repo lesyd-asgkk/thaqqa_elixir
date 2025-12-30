@@ -26,9 +26,6 @@ defmodule Thaqqa.Regex_Khhyl.Error do
   def invalid_stack_at_end(stack),
     do: {:error, %__MODULE__{type: :invalid, detail: :stack_at_end, meta: %{stack: stack}}}
 
-  def too_many_elements_in_stack(stack),
-    do: {:error, %__MODULE__{type: :invalid, detail: :too_many_elements, meta: %{stack: stack}}}
-
   def invalid_argument_num(type, range),
     do:
       {:error,

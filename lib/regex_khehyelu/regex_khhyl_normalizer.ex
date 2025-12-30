@@ -44,7 +44,7 @@ defmodule Thaqqa.Regex_Khhyl.Normalizer do
         normalize_branckets(:brancket, name, acum_all, tail, current_layer, current_layer, 1)
 
       ")" ->
-        Thaqqa.Regex_Khhyl.Error.unclosed_brancket_backward("#{Enum.join(list, "")}")
+        Error.unclosed_brancket_backward("#{Enum.join(list, "")}")
 
       h when h in ["^", "$", "*", "+", "?", "|", "*?", "+?", "??"] ->
         normalize_sub(
@@ -108,10 +108,7 @@ defmodule Thaqqa.Regex_Khhyl.Normalizer do
         )
 
       _ ->
-        normalize_glyph_group(
-          acum_all,
-          list
-        )
+        normalize_glyph_group(acum_all, list, [])
     end
   end
 
@@ -129,7 +126,7 @@ defmodule Thaqqa.Regex_Khhyl.Normalizer do
         normalize_branckets(:brancket, name, acum_all, tail, current_layer, current_layer, 1)
 
       ")" ->
-        Thaqqa.Regex_Khhyl.Error.unclosed_brancket_backward("#{Enum.join(list, "")}")
+        Error.unclosed_brancket_backward("#{Enum.join(list, "")}")
 
       "-" ->
         normalize_sub(
@@ -198,10 +195,10 @@ defmodule Thaqqa.Regex_Khhyl.Normalizer do
         normalize_branckets(:brancket, name, acum_all, tail, current_layer, current_layer, 1)
 
       ")" ->
-        Thaqqa.Regex_Khhyl.Error.unclosed_brancket_backward("#{Enum.join(list, "")}")
+        Error.unclosed_brancket_backward("#{Enum.join(list, "")}")
 
       "]" ->
-        Thaqqa.Regex_Khhyl.Error.unclosed_brancket_backward("#{Enum.join(list, "")}")
+        Error.unclosed_brancket_backward("#{Enum.join(list, "")}")
 
       _ ->
         cond do
@@ -229,7 +226,7 @@ defmodule Thaqqa.Regex_Khhyl.Normalizer do
 
           # ↑のように閉じていない場合の処置。
           Regex.match?(~r/^\[.*$/, head) ->
-            Thaqqa.Regex_Khhyl.Error.unclosed_brancket_forward(head)
+            Error.unclosed_brancket_forward(head)
 
           true ->
             normalize_sub(
@@ -265,15 +262,15 @@ defmodule Thaqqa.Regex_Khhyl.Normalizer do
   defp normalize_branckets(
          token,
          br_val,
-         acum_all,
+         _acum_all,
          [],
-         next_layer,
-         current_layer,
-         branket_nest,
+         _next_layer,
+         _current_layer,
+         _branket_nest,
          acum
        ),
        do:
-         Thaqqa.Regex_Khhyl.Error.unclosed_brancket_forward(
+         Error.unclosed_brancket_forward(
            "#{Atom.to_string(token)}(#{br_val} #{Enum.reverse(acum) |> Enum.join("")} )"
          )
 
@@ -356,7 +353,7 @@ defmodule Thaqqa.Regex_Khhyl.Normalizer do
 
   defp normalize_glyph_group(
          acum_all,
-         [] = _list,
+         [],
          acum
        ) do
     children = normalize_sub(Enum.reverse(acum), [], :glyph_group)
@@ -369,12 +366,7 @@ defmodule Thaqqa.Regex_Khhyl.Normalizer do
     )
   end
 
-  defp normalize_glyph_group(
-         acum_all,
-         list,
-         acum \\ []
-       )
-       when is_list(list) do
+  defp normalize_glyph_group(acum_all, list, acum) when is_list(list) do
     [head | tail] = list
 
     case head do

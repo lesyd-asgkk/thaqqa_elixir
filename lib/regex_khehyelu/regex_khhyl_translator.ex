@@ -33,7 +33,7 @@ defmodule Thaqqa.Regex_Khhyl.Translator do
     t = translate_sub(ast)
 
     case t do
-      {:error, msg} -> t
+      {:error, _msg} -> t
       _ -> {:ok, t}
     end
   end

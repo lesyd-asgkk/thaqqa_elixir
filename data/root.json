@@ -1164,8 +1164,8 @@
         "Order": 0,
         "Priority": -1,
         "Name": "R(A)",
-        "NameAlt": "V(null,abig0)",
-        "PreCompile": "R\\(A\\)"
+        "NameAlt": "V(null,abig0)"
+        
       },
       "1": {
         "ID": 1,
@@ -1173,8 +1173,8 @@
         "Order": 0,
         "Priority": -1,
         "Name": "R(a)",
-        "NameAlt": "V(null,a0)",
-        "PreCompile": "R\\(a\\)"
+        "NameAlt": "V(null,a0)"
+        
       },
       "2": {
         "ID": 2,
@@ -1182,8 +1182,8 @@
         "Order": 0,
         "Priority": -1,
         "Name": "R(e)",
-        "NameAlt": "V(null,e0)",
-        "PreCompile": "R\\(e\\)"
+        "NameAlt": "V(null,e0)"
+        
       },
       "3": {
         "ID": 3,
@@ -1191,8 +1191,8 @@
         "Order": 0,
         "Priority": -1,
         "Name": "R(i)",
-        "NameAlt": "V(null,i0)",
-        "PreCompile": "R\\(i\\)"
+        "NameAlt": "V(null,i0)"
+        
       },
       "4": {
         "ID": 4,
@@ -1200,8 +1200,8 @@
         "Order": 0,
         "Priority": -1,
         "Name": "R(o)",
-        "NameAlt": "V(null,o0)",
-        "PreCompile": "R\\(o\\)"
+        "NameAlt": "V(null,o0)"
+        
       },
       "5": {
         "ID": 5,
@@ -1209,8 +1209,8 @@
         "Order": 0,
         "Priority": -1,
         "Name": "R(u)",
-        "NameAlt": "V(null,u0)",
-        "PreCompile": "R\\(u\\)"
+        "NameAlt": "V(null,u0)"
+        
       },
       "6": {
         "ID": 6,
@@ -1218,8 +1218,8 @@
         "Order": 0,
         "Priority": -1,
         "Name": "(R(v)|R(ö))",
-        "NameAlt": "V(null,v0)",
-        "PreCompile": "(R\\(v\\)|R\\(ö\\))"
+        "NameAlt": "V(null,v0)"
+        
       },
       "7": {
         "ID": 7,
@@ -1227,8 +1227,8 @@
         "Order": 0,
         "Priority": -1,
         "Name": "(R(E)|R(ë))",
-        "NameAlt": "V(null,eold0)",
-        "PreCompile": "(R\\(E\\)|R\\(ë\\))"
+        "NameAlt": "V(null,eold0)"
+        
       },
       "8": {
         "ID": 8,
@@ -1236,8 +1236,8 @@
         "Order": 0,
         "Priority": -1,
         "Name": "(R(I)|R(ï))",
-        "NameAlt": "V(null,iold0)",
-        "PreCompile": "(R\\(I\\)|R\\(ï\\))"
+        "NameAlt": "V(null,iold0)"
+        
       },
       "9": {
         "ID": 9,
@@ -1245,8 +1245,8 @@
         "Order": 0,
         "Priority": -1,
         "Name": "R(t)",
-        "NameAlt": "C(null,t0)",
-        "PreCompile": "R\\(t\\)"
+        "NameAlt": "C(null,t0)"
+        
       },
       "10": {
         "ID": 10,
@@ -1254,8 +1254,8 @@
         "Order": 0,
         "Priority": -1,
         "Name": "R(k)",
-        "NameAlt": "C(null,k0)",
-        "PreCompile": "R\\(k\\)"
+        "NameAlt": "C(null,k0)"
+        
       },
       "11": {
         "ID": 11,
@@ -1263,8 +1263,8 @@
         "Order": 0,
         "Priority": -1,
         "Name": "R(q)",
-        "NameAlt": "C(null,q0)",
-        "PreCompile": "R\\(q\\)"
+        "NameAlt": "C(null,q0)"
+        
       },
       "12": {
         "ID": 12,
@@ -1272,8 +1272,8 @@
         "Order": 0,
         "Priority": -1,
         "Name": "R(')",
-        "NameAlt": "C(null,c0)",
-        "PreCompile": "R\\('\\)"
+        "NameAlt": "C(null,c0)"
+        
       },
       "13": {
         "ID": 13,
@@ -1281,8 +1281,8 @@
         "Order": 80,
         "Priority": 6,
         "Name": "R(n)",
-        "NameAlt": "V(null,v0)",
-        "PreCompile": "R\\(n\\)"
+        "NameAlt": "V(null,v0)"
+        
       },
       "14": {
         "ID": 14,
@@ -1290,8 +1290,8 @@
         "Order": 0,
         "Priority": -2,
         "Name": "R(t)R(h)",
-        "NameAlt": "C(null,th0)",
-        "PreCompile": "R\\(t\\)R\\(h\\)"
+        "NameAlt": "C(null,th0)"
+        
       },
       "15": {
         "ID": 15,
@@ -1299,8 +1299,8 @@
         "Order": 0,
         "Priority": -1,
         "Name": "R(s)",
-        "NameAlt": "C(null,s0)",
-        "PreCompile": "R\\(s\\)"
+        "NameAlt": "C(null,s0)"
+        
       },
       "16": {
         "ID": 16,
@@ -1308,8 +1308,8 @@
         "Order": 0,
         "Priority": -2,
         "Name": "R(h)R(y)",
-        "NameAlt": "C(null,hy0)",
-        "PreCompile": "R\\(h\\)R\\(y\\)"
+        "NameAlt": "C(null,hy0)"
+        
       },
       "17": {
         "ID": 17,
@@ -1317,8 +1317,8 @@
         "Order": 0,
         "Priority": -2,
         "Name": "R(k)R(h)",
-        "NameAlt": "C(null,kh0)",
-        "PreCompile": "R\\(k\\)R\\(h\\)"
+        "NameAlt": "C(null,kh0)"
+        
       },
       "18": {
         "ID": 18,
@@ -1326,8 +1326,8 @@
         "Order": 0,
         "Priority": -2,
         "Name": "R(q)R(h)",
-        "NameAlt": "C(null,qh0)",
-        "PreCompile": "R\\(q\\)R\\(h\\)"
+        "NameAlt": "C(null,qh0)"
+        
       },
       "19": {
         "ID": 19,
@@ -1335,8 +1335,8 @@
         "Order": 0,
         "Priority": -1,
         "Name": "R(h)",
-        "NameAlt": "C(null,h0)",
-        "PreCompile": "R\\(h\\)"
+        "NameAlt": "C(null,h0)"
+        
       },
       "20": {
         "ID": 20,
@@ -1344,8 +1344,8 @@
         "Order": 0,
         "Priority": -2,
         "Name": "R(d)R(h)",
-        "NameAlt": "C(null,th0-d0)",
-        "PreCompile": "R\\(d\\)R\\(h\\)"
+        "NameAlt": "C(null,th0-d0)"
+        
       },
       "21": {
         "ID": 21,
@@ -1353,8 +1353,8 @@
         "Order": 0,
         "Priority": -1,
         "Name": "R(z)",
-        "NameAlt": "C(null,s0-d0)",
-        "PreCompile": "R\\(z\\)"
+        "NameAlt": "C(null,s0-d0)"
+        
       },
       "22": {
         "ID": 22,
@@ -1362,8 +1362,8 @@
         "Order": 0,
         "Priority": -2,
         "Name": "R(z)R(h)",
-        "NameAlt": "C(null,hy0-d0)",
-        "PreCompile": "R\\(z\\)R\\(h\\)"
+        "NameAlt": "C(null,hy0-d0)"
+        
       },
       "23": {
         "ID": 23,
@@ -1371,8 +1371,8 @@
         "Order": 0,
         "Priority": -2,
         "Name": "R(g)R(h)",
-        "NameAlt": "C(null,kh0-d0)",
-        "PreCompile": "R\\(g\\)R\\(h\\)"
+        "NameAlt": "C(null,kh0-d0)"
+        
       },
       "24": {
         "ID": 24,
@@ -1380,8 +1380,8 @@
         "Order": 0,
         "Priority": -2,
         "Name": "R(r)R(h)",
-        "NameAlt": "C(null,qh0-d0)",
-        "PreCompile": "R\\(r\\)R\\(h\\)"
+        "NameAlt": "C(null,qh0-d0)"
+        
       },
       "25": {
         "ID": 25,
@@ -1389,8 +1389,8 @@
         "Order": 0,
         "Priority": -1,
         "Name": "R(c)",
-        "NameAlt": "C(null,h0-d0)",
-        "PreCompile": "R\\(c\\)"
+        "NameAlt": "C(null,h0-d0)"
+        
       },
       "26": {
         "ID": 26,
@@ -1398,8 +1398,8 @@
         "Order": 80,
         "Priority": 0,
         "Name": "R(l)",
-        "NameAlt": "V(null,v0)C(null,l0)",
-        "PreCompile": "R\\(l\\)"
+        "NameAlt": "V(null,v0)C(null,l0)"
+        
       },
       "27": {
         "ID": 27,
@@ -1407,8 +1407,8 @@
         "Order": 0,
         "Priority": -1,
         "Name": "R(r)",
-        "NameAlt": "C(null,r0)",
-        "PreCompile": "R\\(r\\)"
+        "NameAlt": "C(null,r0)"
+        
       },
       "28": {
         "ID": 28,
@@ -1416,8 +1416,8 @@
         "Order": 0,
         "Priority": -2,
         "Name": "R(t)R(l)",
-        "NameAlt": "C(null,tl0)",
-        "PreCompile": "R\\(t\\)R\\(l\\)"
+        "NameAlt": "C(null,tl0)"
+        
       },
       "29": {
         "ID": 29,
@@ -1425,8 +1425,8 @@
         "Order": 0,
         "Priority": -1,
         "Name": "R(y)",
-        "NameAlt": "C(null,y0)",
-        "PreCompile": "R\\(y\\)"
+        "NameAlt": "C(null,y0)"
+        
       },
       "30": {
         "ID": 30,
@@ -1434,8 +1434,8 @@
         "Order": 0,
         "Priority": -1,
         "Name": "R(w)",
-        "NameAlt": "C(null,w0)",
-        "PreCompile": "R\\(w\\)"
+        "NameAlt": "C(null,w0)"
+        
       },
       "31": {
         "ID": 31,
@@ -1443,8 +1443,8 @@
         "Order": 0,
         "Priority": -1,
         "Name": "R(g)",
-        "NameAlt": "C(null,k0-d0)",
-        "PreCompile": "R\\(g\\)"
+        "NameAlt": "C(null,k0-d0)"
+        
       },
       "32": {
         "ID": 32,
@@ -1452,8 +1452,8 @@
         "Order": 10,
         "Priority": 0,
         "Name": "(V(*,a_)){2}(V(*,[_.Name!='a']_)|Vd(*)|Cd(*)|C(*)|P(*)|$)",
-        "NameAlt": "$1C(null,c0)$2",
-        "PreCompile": "(V\\((?:init|mid|fin|sol|null),a\\d+\\)){2}(V\\((?:init|mid|fin|sol|null),(?:abig|e|i|o|u|v|omit|eold|iold|br|hyphen)\\d+\\)|Vd\\((?:onset|coda|null),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|Cd\\((?:onset|coda|null),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|C\\((?:onset|coda|null),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|P\\((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|$)"
+        "NameAlt": "$1C(null,c0)$2"
+        
       },
       "33": {
         "ID": 33,
@@ -1461,8 +1461,8 @@
         "Order": 10,
         "Priority": 0,
         "Name": "(V(*,e_)){2}(V(*,[_.Name!='e']_)|Vd(*)|Cd(*)|C(*)|P(*)|$)",
-        "NameAlt": "$1C(null,c0)$2",
-        "PreCompile": "(V\\((?:init|mid|fin|sol|null),e\\d+\\)){2}(V\\((?:init|mid|fin|sol|null),(?:a|abig|i|o|u|v|omit|eold|iold|br|hyphen)\\d+\\)|Vd\\((?:onset|coda|null),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|Cd\\((?:onset|coda|null),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|C\\((?:onset|coda|null),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|P\\((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|$)"
+        "NameAlt": "$1C(null,c0)$2"
+        
       },
       "34": {
         "ID": 34,
@@ -1470,8 +1470,8 @@
         "Order": 10,
         "Priority": 0,
         "Name": "(V(*,i_)){2}(V(*,[_.Name!='i']_)|Vd(*)|Cd(*)|C(*)|P(*)|$)",
-        "NameAlt": "$1C(null,c0)$2",
-        "PreCompile": "(V\\((?:init|mid|fin|sol|null),i\\d+\\)){2}(V\\((?:init|mid|fin|sol|null),(?:a|abig|e|o|u|v|omit|eold|iold|br|hyphen)\\d+\\)|Vd\\((?:onset|coda|null),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|Cd\\((?:onset|coda|null),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|C\\((?:onset|coda|null),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|P\\((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|$)"
+        "NameAlt": "$1C(null,c0)$2"
+        
       },
       "35": {
         "ID": 35,
@@ -1479,8 +1479,8 @@
         "Order": 10,
         "Priority": 0,
         "Name": "(V(*,o_)){2}(V(*,[_.Name!='o']_)|Vd(*)|Cd(*)|C(*)|P(*)|$)",
-        "NameAlt": "$1C(null,c0)$2",
-        "PreCompile": "(V\\((?:init|mid|fin|sol|null),o\\d+\\)){2}(V\\((?:init|mid|fin|sol|null),(?:a|abig|e|i|u|v|omit|eold|iold|br|hyphen)\\d+\\)|Vd\\((?:onset|coda|null),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|Cd\\((?:onset|coda|null),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|C\\((?:onset|coda|null),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|P\\((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|$)"
+        "NameAlt": "$1C(null,c0)$2"
+        
       },
       "36": {
         "ID": 36,
@@ -1488,8 +1488,8 @@
         "Order": 10,
         "Priority": 0,
         "Name": "(V(*,u_)){2}(V(*,[_.Name!='u']_)|Vd(*)|Cd(*)|C(*)|P(*)|$)",
-        "NameAlt": "$1C(null,c0)$2",
-        "PreCompile": "(V\\((?:init|mid|fin|sol|null),u\\d+\\)){2}(V\\((?:init|mid|fin|sol|null),(?:a|abig|e|i|o|v|omit|eold|iold|br|hyphen)\\d+\\)|Vd\\((?:onset|coda|null),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|Cd\\((?:onset|coda|null),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|C\\((?:onset|coda|null),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|P\\((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|$)"
+        "NameAlt": "$1C(null,c0)$2"
+        
       },
       "37": {
         "ID": 37,
@@ -1497,8 +1497,8 @@
         "Order": 10,
         "Priority": 0,
         "Name": "(V(*,v_)){2}(V(*,[_.Name!='v']_)|Vd(*)|Cd(*)|C(*)|P(*)|$)",
-        "NameAlt": "$1C(null,c0)$2",
-        "PreCompile": "(V\\((?:init|mid|fin|sol|null),v\\d+\\)){2}(V\\((?:init|mid|fin|sol|null),(?:a|abig|e|i|o|u|omit|eold|iold|br|hyphen)\\d+\\)|Vd\\((?:onset|coda|null),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|Cd\\((?:onset|coda|null),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|C\\((?:onset|coda|null),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|P\\((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|$)"
+        "NameAlt": "$1C(null,c0)$2"
+        
       },
       "38": {
         "ID": 38,
@@ -1506,8 +1506,8 @@
         "Order": 10,
         "Priority": 0,
         "Name": "(V(*,eold_)){2}(V(*,[_.Name!='eold']_)|Vd(*)|Cd(*)|C(*)|P(*)|$)",
-        "NameAlt": "$1C(null,c0)$2",
-        "PreCompile": "(V\\((?:init|mid|fin|sol|null),eold\\d+\\)){2}(V\\((?:init|mid|fin|sol|null),(?:a|abig|e|i|o|u|v|omit|iold|br|hyphen)\\d+\\)|Vd\\((?:onset|coda|null),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|Cd\\((?:onset|coda|null),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|C\\((?:onset|coda|null),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|P\\((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|$)"
+        "NameAlt": "$1C(null,c0)$2"
+        
       },
       "39": {
         "ID": 39,
@@ -1515,8 +1515,8 @@
         "Order": 10,
         "Priority": 0,
         "Name": "(V(*,iold_)){2}(V(*,[_.Name!='iold']_)|Vd(*)|Cd(*)|C(*)|P(*)|$)",
-        "NameAlt": "$1C(null,c0)$2",
-        "PreCompile": "(V\\((?:init|mid|fin|sol|null),iold\\d+\\)){2}(V\\((?:init|mid|fin|sol|null),(?:a|abig|e|i|o|u|v|omit|eold|br|hyphen)\\d+\\)|Vd\\((?:onset|coda|null),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|Cd\\((?:onset|coda|null),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|C\\((?:onset|coda|null),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|P\\((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|$)"
+        "NameAlt": "$1C(null,c0)$2"
+        
       },
       "40": {
         "ID": 40,
@@ -1524,8 +1524,8 @@
         "Order": 10,
         "Priority": 0,
         "Name": "(V(*,abig_)){2}(V(*,[_.Name!='abig']_)|Vd(*)|Cd(*)|C(*)|P(*)|$)",
-        "NameAlt": "$1C(null,c0)$2",
-        "PreCompile": "(V\\((?:init|mid|fin|sol|null),abig\\d+\\)){2}(V\\((?:init|mid|fin|sol|null),(?:a|e|i|o|u|v|omit|eold|iold|br|hyphen)\\d+\\)|Vd\\((?:onset|coda|null),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|Cd\\((?:onset|coda|null),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|C\\((?:onset|coda|null),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|P\\((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|$)"
+        "NameAlt": "$1C(null,c0)$2"
+        
       },
       "41": {
         "ID": 41,
@@ -1533,8 +1533,8 @@
         "Order": 10,
         "Priority": 0,
         "Name": "(C(*,[_.Name!='c']_))C(*,c_)(C(*,[_.Name!='c']_))",
-        "NameAlt": "$1$2",
-        "PreCompile": "(C\\((?:onset|coda|null),(?:t|k|q|n|ng|th|s|hy|kh|qh|h|l|tl|r|w|y|x)\\d+\\))C\\((?:onset|coda|null),c\\d+\\)(C\\((?:onset|coda|null),(?:t|k|q|n|ng|th|s|hy|kh|qh|h|l|tl|r|w|y|x)\\d+\\))"
+        "NameAlt": "$1$2"
+        
       },
       "42": {
         "ID": 42,
@@ -1542,8 +1542,8 @@
         "Order": 0,
         "Priority": -1,
         "Name": "R(p)",
-        "NameAlt": "C(null,t0-hd0)",
-        "PreCompile": "R\\(p\\)"
+        "NameAlt": "C(null,t0-hd0)"
+        
       },
       "43": {
         "ID": 43,
@@ -1551,8 +1551,8 @@
         "Order": 0,
         "Priority": -2,
         "Name": "R(h)R(p)",
-        "NameAlt": "C(null,th0-hd0-sw0)",
-        "PreCompile": "R\\(h\\)R\\(p\\)"
+        "NameAlt": "C(null,th0-hd0-sw0)"
+        
       },
       "44": {
         "ID": 44,
@@ -1560,8 +1560,8 @@
         "Order": 0,
         "Priority": -3,
         "Name": "R(h)R(p)R(y)",
-        "NameAlt": "C(null,th0-hd0-sy0)",
-        "PreCompile": "R\\(h\\)R\\(p\\)R\\(y\\)"
+        "NameAlt": "C(null,th0-hd0-sy0)"
+        
       },
       "45": {
         "ID": 45,
@@ -1569,8 +1569,8 @@
         "Order": 0,
         "Priority": -1,
         "Name": "R(b)",
-        "NameAlt": "C(null,t0-d0-hd0)",
-        "PreCompile": "R\\(b\\)"
+        "NameAlt": "C(null,t0-d0-hd0)"
+        
       },
       "46": {
         "ID": 46,
@@ -1578,8 +1578,8 @@
         "Order": 0,
         "Priority": -2,
         "Name": "R(t)R(s)",
-        "NameAlt": "C(null,tl0)",
-        "PreCompile": "R\\(t\\)R\\(s\\)"
+        "NameAlt": "C(null,tl0)"
+        
       },
       "47": {
         "ID": 47,
@@ -1587,8 +1587,8 @@
         "Order": 0,
         "Priority": -2,
         "Name": "R(h)R(t)",
-        "NameAlt": "C(null,tl0-hd0)",
-        "PreCompile": "R\\(h\\)R\\(t\\)"
+        "NameAlt": "C(null,tl0-hd0)"
+        
       },
       "48": {
         "ID": 48,
@@ -1596,8 +1596,8 @@
         "Order": 0,
         "Priority": -2,
         "Name": "R(c)R(h)",
-        "NameAlt": "C(null,tl0-hd0-sy0)",
-        "PreCompile": "R\\(c\\)R\\(h\\)"
+        "NameAlt": "C(null,tl0-hd0-sy0)"
+        
       },
       "49": {
         "ID": 49,
@@ -1605,8 +1605,8 @@
         "Order": 0,
         "Priority": -2,
         "Name": "R(t)R(y)",
-        "NameAlt": "C(null,t0-sy0)",
-        "PreCompile": "R\\(t\\)R\\(y\\)"
+        "NameAlt": "C(null,t0-sy0)"
+        
       },
       "50": {
         "ID": 50,
@@ -1614,8 +1614,8 @@
         "Order": 0,
         "Priority": -1,
         "Name": "R(d)",
-        "NameAlt": "C(null,t0-d0)",
-        "PreCompile": "R\\(d\\)"
+        "NameAlt": "C(null,t0-d0)"
+        
       },
       "51": {
         "ID": 51,
@@ -1623,8 +1623,8 @@
         "Order": 0,
         "Priority": -2,
         "Name": "R(k)R(y)",
-        "NameAlt": "C(null,k0-sy0)",
-        "PreCompile": "R\\(k\\)R\\(y\\)"
+        "NameAlt": "C(null,k0-sy0)"
+        
       },
       "52": {
         "ID": 52,
@@ -1632,8 +1632,8 @@
         "Order": 0,
         "Priority": -2,
         "Name": "R(k)R(w)",
-        "NameAlt": "C(null,k0-sw0)",
-        "PreCompile": "R\\(k\\)R\\(w\\)"
+        "NameAlt": "C(null,k0-sw0)"
+        
       },
       "53": {
         "ID": 53,
@@ -1641,8 +1641,8 @@
         "Order": 0,
         "Priority": -2,
         "Name": "R(q)R(w)",
-        "NameAlt": "C(null,q0-sw0)",
-        "PreCompile": "R\\(q\\)R\\(w\\)"
+        "NameAlt": "C(null,q0-sw0)"
+        
       },
       "54": {
         "ID": 54,
@@ -1650,8 +1650,8 @@
         "Order": 0,
         "Priority": -2,
         "Name": "R(h)R(q)",
-        "NameAlt": "C(null,q0-hd0)",
-        "PreCompile": "R\\(h\\)R\\(q\\)"
+        "NameAlt": "C(null,q0-hd0)"
+        
       },
       "55": {
         "ID": 55,
@@ -1659,8 +1659,8 @@
         "Order": 0,
         "Priority": -1,
         "Name": "R(m)",
-        "NameAlt": "C(null,n0-hd0)",
-        "PreCompile": "R\\(m\\)"
+        "NameAlt": "C(null,n0-hd0)"
+        
       },
       "56": {
         "ID": 56,
@@ -1668,8 +1668,8 @@
         "Order": 0,
         "Priority": -2,
         "Name": "R(m)R(y)",
-        "NameAlt": "C(null,n0-hd0-sy0)",
-        "PreCompile": "R\\(m\\)R\\(y\\)"
+        "NameAlt": "C(null,n0-hd0-sy0)"
+        
       },
       "57": {
         "ID": 57,
@@ -1677,8 +1677,8 @@
         "Order": 0,
         "Priority": -2,
         "Name": "R(n)R(y)",
-        "NameAlt": "C(null,n0-sy0)",
-        "PreCompile": "R\\(n\\)R\\(y\\)"
+        "NameAlt": "C(null,n0-sy0)"
+        
       },
       "58": {
         "ID": 58,
@@ -1686,8 +1686,8 @@
         "Order": 0,
         "Priority": -3,
         "Name": "R(n)R(g)R(y)",
-        "NameAlt": "C(null,ng0-sy0)",
-        "PreCompile": "R\\(n\\)R\\(g\\)R\\(y\\)"
+        "NameAlt": "C(null,ng0-sy0)"
+        
       },
       "59": {
         "ID": 59,
@@ -1695,8 +1695,8 @@
         "Order": 0,
         "Priority": -3,
         "Name": "R(n)R(g)R(w)",
-        "NameAlt": "C(null,ng0-sw0)",
-        "PreCompile": "R\\(n\\)R\\(g\\)R\\(w\\)"
+        "NameAlt": "C(null,ng0-sw0)"
+        
       },
       "60": {
         "ID": 60,
@@ -1704,8 +1704,8 @@
         "Order": 0,
         "Priority": -2,
         "Name": "R(s)R(y)",
-        "NameAlt": "C(null,s0-sy0)",
-        "PreCompile": "R\\(s\\)R\\(y\\)"
+        "NameAlt": "C(null,s0-sy0)"
+        
       },
       "61": {
         "ID": 61,
@@ -1713,8 +1713,8 @@
         "Order": 0,
         "Priority": -2,
         "Name": "R(h)R(w)",
-        "NameAlt": "C(null,qh0-sw0)",
-        "PreCompile": "R\\(h\\)R\\(w\\)"
+        "NameAlt": "C(null,qh0-sw0)"
+        
       },
       "62": {
         "ID": 62,
@@ -1722,8 +1722,8 @@
         "Order": 0,
         "Priority": -2,
         "Name": "R(r)R(y)",
-        "NameAlt": "C(null,r0-sy0)",
-        "PreCompile": "R\\(r\\)R\\(y\\)"
+        "NameAlt": "C(null,r0-sy0)"
+        
       },
       "63": {
         "ID": 63,
@@ -1731,8 +1731,8 @@
         "Order": 60,
         "Priority": 0,
         "Name": "(C(*)|V(*))R(h)",
-        "NameAlt": "$1C(null,kh0)",
-        "PreCompile": "(C\\((?:onset|coda|null),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|V\\((?:init|mid|fin|sol|null),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\))R\\(h\\)"
+        "NameAlt": "$1C(null,kh0)"
+        
       },
       "64": {
         "ID": 64,
@@ -1740,8 +1740,8 @@
         "Order": 60,
         "Priority": 1,
         "Name": "(^|P(*))R(h)",
-        "NameAlt": "$1C(null,h0)",
-        "PreCompile": "(^|P\\((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\))R\\(h\\)"
+        "NameAlt": "$1C(null,h0)"
+        
       },
       "65": {
         "ID": 65,
@@ -1749,8 +1749,8 @@
         "Order": 60,
         "Priority": 2,
         "Name": "(^|P(*))R(n)(V(*,(?:a|e|i|o|u|v|eold|iold|abig)_)|C(*,c_)|R(l))",
-        "NameAlt": "$1C(null,n0)$2",
-        "PreCompile": "(^|P\\((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\))R\\(n\\)(V\\((?:init|mid|fin|sol|null),(?:a|e|i|o|u|v|eold|iold|abig)\\d+\\)|C\\((?:onset|coda|null),c\\d+\\)|R\\(l\\))"
+        "NameAlt": "$1C(null,n0)$2"
+        
       },
       "66": {
         "ID": 66,
@@ -1758,8 +1758,8 @@
         "Order": 60,
         "Priority": 3,
         "Name": "(V(*,(?:a|e|i|o|u|v|eold|iold|abig)_)|R(l))R(n)(V(*,(?:a|e|i|o|u|v|eold|iold|abig)_)|R(l))",
-        "NameAlt": "$1C(null,n0)$2",
-        "PreCompile": "(V\\((?:init|mid|fin|sol|null),(?:a|e|i|o|u|v|eold|iold|abig)\\d+\\)|R\\(l\\))R\\(n\\)(V\\((?:init|mid|fin|sol|null),(?:a|e|i|o|u|v|eold|iold|abig)\\d+\\)|R\\(l\\))"
+        "NameAlt": "$1C(null,n0)$2"
+        
       },
       "67": {
         "ID": 67,
@@ -1767,8 +1767,8 @@
         "Order": 60,
         "Priority": 4,
         "Name": "(^|P(*))R(n)R(n)",
-        "NameAlt": "$1C(null,n0)R(n)",
-        "PreCompile": "(^|P\\((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\))R\\(n\\)R\\(n\\)"
+        "NameAlt": "$1C(null,n0)R(n)"
+        
       },
       "68": {
         "ID": 68,
@@ -1776,8 +1776,8 @@
         "Order": 60,
         "Priority": 5,
         "Name": "(C(*))R(n)R(n)",
-        "NameAlt": "$1R(n)C(null,n0)",
-        "PreCompile": "(C\\((?:onset|coda|null),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\))R\\(n\\)R\\(n\\)"
+        "NameAlt": "$1R(n)C(null,n0)"
+        
       },
       "69": {
         "ID": 69,
@@ -1785,8 +1785,8 @@
         "Order": 70,
         "Priority": 0,
         "Name": "(V(*)|C(null,[_.Name!='c']_))C(null,c_)*(V(*)|C(null,[_.Name!='c']_))",
-        "NameAlt": "$1$2",
-        "PreCompile": "(V\\((?:init|mid|fin|sol|null),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|C\\(null,(?:t|k|q|n|ng|th|s|hy|kh|qh|h|l|tl|r|w|y|x)\\d+\\))C\\(null,c\\d+\\)*(V\\((?:init|mid|fin|sol|null),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|C\\(null,(?:t|k|q|n|ng|th|s|hy|kh|qh|h|l|tl|r|w|y|x)\\d+\\))"
+        "NameAlt": "$1$2"
+        
       },
       "70": {
         "ID": 70,
@@ -1794,8 +1794,8 @@
         "Order": 0,
         "Priority": -1,
         "Name": "R( )",
-        "NameAlt": "P(space0)",
-        "PreCompile": "R\\( \\)"
+        "NameAlt": "P(space0)"
+        
       },
       "71": {
         "ID": 71,
@@ -1803,8 +1803,8 @@
         "Order": 0,
         "Priority": -1,
         "Name": "R(\\\")",
-        "NameAlt": "V(null,br0)",
-        "PreCompile": "R\\(\\\"\\)"
+        "NameAlt": "V(null,br0)"
+        
       },
       "72": {
         "ID": 72,
@@ -1812,8 +1812,8 @@
         "Order": 0,
         "Priority": -1,
         "Name": "R(\\.)",
-        "NameAlt": "P(period0)",
-        "PreCompile": "R\\(\\.\\)"
+        "NameAlt": "P(period0)"
+        
       },
       "73": {
         "ID": 73,
@@ -1821,8 +1821,8 @@
         "Order": 0,
         "Priority": -1,
         "Name": "R(,)",
-        "NameAlt": "P(comma0)",
-        "PreCompile": "R\\(,\\)"
+        "NameAlt": "P(comma0)"
+        
       },
       "74": {
         "ID": 74,
@@ -1830,8 +1830,8 @@
         "Order": 0,
         "Priority": -1,
         "Name": "R(-)",
-        "NameAlt": "V(null,hyphen0)",
-        "PreCompile": "R\\(-\\)"
+        "NameAlt": "V(null,hyphen0)"
+        
       },
       "75": {
         "ID": 75,
@@ -1839,8 +1839,8 @@
         "Order": 0,
         "Priority": -1,
         "Name": "R(\\n)",
-        "NameAlt": "P(newline0)",
-        "PreCompile": "R\\(\\n\\)"
+        "NameAlt": "P(newline0)"
+        
       },
       "76": {
         "ID": 76,
@@ -1848,8 +1848,8 @@
         "Order": 70,
         "Priority": 1,
         "Name": "(V(*,[!_.isBondtoPrev&&!_.isBondtoNext]_-*))",
-        "NameAlt": "Sep()$1Sep()",
-        "PreCompile": "(V\\((?:init|mid|fin|sol|null),(?:hyphen)\\d+(?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\))"
+        "NameAlt": "Sep()$1Sep()"
+        
       },
       "77": {
         "ID": 77,
@@ -1857,8 +1857,8 @@
         "Order": 70,
         "Priority": 2,
         "Name": "(V(*,[!_.isBondtoPrev&&_.isBondtoNext]_-*))",
-        "NameAlt": "Sep()$1",
-        "PreCompile": "(V\\((?:init|mid|fin|sol|null),(?:（無し）)\\d+(?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\))"
+        "NameAlt": "Sep()$1"
+        
       },
       "78": {
         "ID": 78,
@@ -1866,8 +1866,8 @@
         "Order": 70,
         "Priority": 3,
         "Name": "(V(*,[!_.isBondtoNext&&_.isBondtoPrev]_-*))",
-        "NameAlt": "$1Sep()",
-        "PreCompile": "(V\\((?:init|mid|fin|sol|null),(?:（無し）)\\d+(?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\))"
+        "NameAlt": "$1Sep()"
+        
       },
       "79": {
         "ID": 79,
@@ -1875,8 +1875,8 @@
         "Order": 70,
         "Priority": 4,
         "Name": "(V(*)|R(n)|R(l))(V(*)|R(n)|R(l))",
-        "NameAlt": "$1Sep()$2",
-        "PreCompile": "(V\\((?:init|mid|fin|sol|null),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|R\\(n\\)|R\\(l\\))(V\\((?:init|mid|fin|sol|null),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|R\\(n\\)|R\\(l\\))"
+        "NameAlt": "$1Sep()$2"
+        
       },
       "80": {
         "ID": 80,
@@ -1884,8 +1884,8 @@
         "Order": 70,
         "Priority": 5,
         "Name": "(C(*))(C(*))",
-        "NameAlt": "$1Sep()$2",
-        "PreCompile": "(C\\((?:onset|coda|null),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\))(C\\((?:onset|coda|null),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\))"
+        "NameAlt": "$1Sep()$2"
+        
       },
       "81": {
         "ID": 81,
@@ -1893,8 +1893,8 @@
         "Order": 70,
         "Priority": 6,
         "Name": "(V(*)|R(n)|R(l))(C(*))(V(*,[_.hasGreedyBond]_-*)|R(n)|R(l))",
-        "NameAlt": "$1Sep()$2$3",
-        "PreCompile": "(V\\((?:init|mid|fin|sol|null),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|R\\(n\\)|R\\(l\\))(C\\((?:onset|coda|null),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\))(V\\((?:init|mid|fin|sol|null),(?:a|abig|e|i|o|u|v|omit|eold|iold)\\d+(?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|R\\(n\\)|R\\(l\\))"
+        "NameAlt": "$1Sep()$2$3"
+        
       },
       "82": {
         "ID": 82,
@@ -1902,8 +1902,8 @@
         "Order": 70,
         "Priority": 7,
         "Name": "(V(*)|R(n)|R(l))(C(*))(V(*,[!_.hasGreedyBond]_-*))",
-        "NameAlt": "$1$2Sep()$3",
-        "PreCompile": "(V\\((?:init|mid|fin|sol|null),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|R\\(n\\)|R\\(l\\))(C\\((?:onset|coda|null),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\))(V\\((?:init|mid|fin|sol|null),(?:br|hyphen)\\d+(?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\))"
+        "NameAlt": "$1$2Sep()$3"
+        
       },
       "83": {
         "ID": 83,
@@ -1911,8 +1911,8 @@
         "Order": 70,
         "Priority": 8,
         "Name": "(Sep())+(P(*)+)(Sep())+",
-        "NameAlt": "$2",
-        "PreCompile": "(Sep\\(\\))+(P\\((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)+)(Sep\\(\\))+"
+        "NameAlt": "$2"
+        
       },
       "84": {
         "ID": 84,
@@ -1920,8 +1920,8 @@
         "Order": 70,
         "Priority": 9,
         "Name": "(Sep())+",
-        "NameAlt": "Sep()",
-        "PreCompile": "(Sep\\(\\))+"
+        "NameAlt": "Sep()"
+        
       },
       "85": {
         "ID": 85,
@@ -1929,8 +1929,8 @@
         "Order": 80,
         "Priority": 1,
         "Name": "(^|P(*))R(n)(P(*)|$)",
-        "NameAlt": "$1C(null,ng0)V(null,v0)C(null,ng0)$2",
-        "PreCompile": "(^|P\\((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\))R\\(n\\)(P\\((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|$)"
+        "NameAlt": "$1C(null,ng0)V(null,v0)C(null,ng0)$2"
+        
       },
       "86": {
         "ID": 86,
@@ -1938,8 +1938,8 @@
         "Order": 80,
         "Priority": 2,
         "Name": "R(n)(Sep()C(*,(?:t|d|n|tl)_|(?:(?:t|tl|n)_-sy_)|(?:(?:t|th|s|hy)_-d_)|(?:tl_-sw_)))",
-        "NameAlt": "V(null,v0)C(null,n0)$1",
-        "PreCompile": "R\\(n\\)(Sep\\(\\)C\\((?:onset|coda|null),(?:t|d|n|tl)\\d+|(?:(?:t|tl|n)\\d+-sy\\d+)|(?:(?:t|th|s|hy)\\d+-d\\d+)|(?:tl\\d+-sw\\d+)\\))"
+        "NameAlt": "V(null,v0)C(null,n0)$1"
+        
       },
       "87": {
         "ID": 87,
@@ -1947,8 +1947,8 @@
         "Order": 80,
         "Priority": 3,
         "Name": "R(n)(Sep()C(*,(?:(?:t|th|n)_-hd_)|(?:(?:t)_-d_-hd)_|(?:(?:tl|n)_-hd_-sy_)|(?:th_-hd_-sw_)))",
-        "NameAlt": "V(null,v0)C(null,n0-hd0)$1",
-        "PreCompile": "R\\(n\\)(Sep\\(\\)C\\((?:onset|coda|null),(?:(?:t|th|n)\\d+-hd\\d+)|(?:(?:t)\\d+-d\\d+-hd)\\d+|(?:(?:tl|n)\\d+-hd\\d+-sy\\d+)|(?:th\\d+-hd\\d+-sw\\d+)\\))"
+        "NameAlt": "V(null,v0)C(null,n0-hd0)$1"
+        
       },
       "88": {
         "ID": 88,
@@ -1956,8 +1956,8 @@
         "Order": 80,
         "Priority": 4,
         "Name": "R(n)Sep()R(l)",
-        "NameAlt": "V(null,v0)C(null,n0)Sep()C(null,l0)R(l)",
-        "PreCompile": "R\\(n\\)Sep\\(\\)R\\(l\\)"
+        "NameAlt": "V(null,v0)C(null,n0)Sep()C(null,l0)R(l)"
+        
       },
       "89": {
         "ID": 89,
@@ -1965,8 +1965,8 @@
         "Order": 80,
         "Priority": 5,
         "Name": "R(n)((?:Sep()(?:C(*)|V(*)|P(*)))|$)",
-        "NameAlt": "V(null,v0)C(null,ng0)$1",
-        "PreCompile": "R\\(n\\)((?:Sep\\(\\)(?:C\\((?:onset|coda|null),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|V\\((?:init|mid|fin|sol|null),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|P\\((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)))|$)"
+        "NameAlt": "V(null,v0)C(null,ng0)$1"
+        
       },
       "90": {
         "ID": 90,
@@ -1974,8 +1974,8 @@
         "Order": 80,
         "Priority": 7,
         "Name": "(C(*,r_))R(l)",
-        "NameAlt": "$1V(null,v0)C(null,r0)",
-        "PreCompile": "(C\\((?:onset|coda|null),r\\d+\\))R\\(l\\)"
+        "NameAlt": "$1V(null,v0)C(null,r0)"
+        
       },
       "91": {
         "ID": 91,
@@ -1983,8 +1983,8 @@
         "Order": 80,
         "Priority": 8,
         "Name": "(P(*)|Sep())R(l)(P(*)|Sep())",
-        "NameAlt": "$1C(null,l0)V(null,v0)C(null,l0)$2",
-        "PreCompile": "(P\\((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|Sep\\(\\))R\\(l\\)(P\\((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|Sep\\(\\))"
+        "NameAlt": "$1C(null,l0)V(null,v0)C(null,l0)$2"
+        
       },
       "92": {
         "ID": 92,
@@ -1992,8 +1992,8 @@
         "Order": 90,
         "Priority": 0,
         "Name": "C(*,(*))V((*),(*))C(*,(*))",
-        "NameAlt": "S($2,$1,$3,$4)",
-        "PreCompile": "C\\((?:onset|coda|null),((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*))\\)V\\(((?:init|mid|fin|sol|null)),((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*))\\)C\\((?:onset|coda|null),((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*))\\)"
+        "NameAlt": "S($2,$1,$3,$4)"
+        
       },
       "93": {
         "ID": 93,
@@ -2001,8 +2001,8 @@
         "Order": 90,
         "Priority": 1,
         "Name": "V((*),(*))C(*,(*))",
-        "NameAlt": "S($1,,$2,$3)",
-        "PreCompile": "V\\(((?:init|mid|fin|sol|null)),((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*))\\)C\\((?:onset|coda|null),((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*))\\)"
+        "NameAlt": "S($1,,$2,$3)"
+        
       },
       "94": {
         "ID": 94,
@@ -2010,8 +2010,8 @@
         "Order": 90,
         "Priority": 2,
         "Name": "C(*,(*))V((*),(*))",
-        "NameAlt": "S($2,$1,$3,)",
-        "PreCompile": "C\\((?:onset|coda|null),((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*))\\)V\\(((?:init|mid|fin|sol|null)),((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*))\\)"
+        "NameAlt": "S($2,$1,$3,)"
+        
       },
       "95": {
         "ID": 95,
@@ -2019,8 +2019,8 @@
         "Order": 90,
         "Priority": 3,
         "Name": "V((*),(*))",
-        "NameAlt": "S($1,,$2,)",
-        "PreCompile": "V\\(((?:init|mid|fin|sol|null)),((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*))\\)"
+        "NameAlt": "S($1,,$2,)"
+        
       },
       "96": {
         "ID": 96,
@@ -2028,8 +2028,8 @@
         "Order": 100,
         "Priority": 0,
         "Name": "Sep()",
-        "NameAlt": "",
-        "PreCompile": "Sep\\(\\)"
+        "NameAlt": ""
+        
       },
       "97": {
         "ID": 97,
@@ -2037,8 +2037,8 @@
         "Order": 0,
         "Priority": -2,
         "Name": "R(n)R(g)",
-        "NameAlt": "C(null,ng0)",
-        "PreCompile": "R\\(n\\)R\\(g\\)"
+        "NameAlt": "C(null,ng0)"
+        
       },
       "98": {
         "ID": 98,
@@ -2046,8 +2046,8 @@
         "Order": 0,
         "Priority": -1,
         "Name": "R(A)",
-        "NameAlt": "V(null,abig0)",
-        "PreCompile": "R\\(A\\)"
+        "NameAlt": "V(null,abig0)"
+        
       },
       "99": {
         "ID": 99,
@@ -2055,8 +2055,8 @@
         "Order": 0,
         "Priority": -1,
         "Name": "R(a)",
-        "NameAlt": "V(null,a0)",
-        "PreCompile": "R\\(a\\)"
+        "NameAlt": "V(null,a0)"
+        
       },
       "100": {
         "ID": 100,
@@ -2064,8 +2064,8 @@
         "Order": 0,
         "Priority": -1,
         "Name": "R(e)",
-        "NameAlt": "V(null,e0)",
-        "PreCompile": "R\\(e\\)"
+        "NameAlt": "V(null,e0)"
+        
       },
       "101": {
         "ID": 101,
@@ -2073,8 +2073,8 @@
         "Order": 0,
         "Priority": -1,
         "Name": "R(i)",
-        "NameAlt": "V(null,i0)",
-        "PreCompile": "R\\(i\\)"
+        "NameAlt": "V(null,i0)"
+        
       },
       "102": {
         "ID": 102,
@@ -2082,8 +2082,8 @@
         "Order": 0,
         "Priority": -1,
         "Name": "R(o)",
-        "NameAlt": "V(null,o0)",
-        "PreCompile": "R\\(o\\)"
+        "NameAlt": "V(null,o0)"
+        
       },
       "103": {
         "ID": 103,
@@ -2091,8 +2091,8 @@
         "Order": 0,
         "Priority": -1,
         "Name": "R(u)",
-        "NameAlt": "V(null,u0)",
-        "PreCompile": "R\\(u\\)"
+        "NameAlt": "V(null,u0)"
+        
       },
       "104": {
         "ID": 104,
@@ -2100,8 +2100,8 @@
         "Order": 0,
         "Priority": -1,
         "Name": "(R(v)|R(ö))",
-        "NameAlt": "V(null,v0)",
-        "PreCompile": "(R\\(v\\)|R\\(ö\\))"
+        "NameAlt": "V(null,v0)"
+        
       },
       "105": {
         "ID": 105,
@@ -2109,8 +2109,8 @@
         "Order": 0,
         "Priority": -1,
         "Name": "(R(E)|R(ë))",
-        "NameAlt": "V(null,eold0)",
-        "PreCompile": "(R\\(E\\)|R\\(ë\\))"
+        "NameAlt": "V(null,eold0)"
+        
       },
       "106": {
         "ID": 106,
@@ -2118,8 +2118,8 @@
         "Order": 0,
         "Priority": -1,
         "Name": "(R(I)|R(ï))",
-        "NameAlt": "V(null,iold0)",
-        "PreCompile": "(R\\(I\\)|R\\(ï\\))"
+        "NameAlt": "V(null,iold0)"
+        
       },
       "107": {
         "ID": 107,
@@ -2127,8 +2127,8 @@
         "Order": 0,
         "Priority": -1,
         "Name": "R(t)",
-        "NameAlt": "C(null,t0)",
-        "PreCompile": "R\\(t\\)"
+        "NameAlt": "C(null,t0)"
+        
       },
       "108": {
         "ID": 108,
@@ -2136,8 +2136,8 @@
         "Order": 0,
         "Priority": -1,
         "Name": "R(k)",
-        "NameAlt": "C(null,k0)",
-        "PreCompile": "R\\(k\\)"
+        "NameAlt": "C(null,k0)"
+        
       },
       "109": {
         "ID": 109,
@@ -2145,8 +2145,8 @@
         "Order": 0,
         "Priority": -1,
         "Name": "R(q)",
-        "NameAlt": "C(null,q0)",
-        "PreCompile": "R\\(q\\)"
+        "NameAlt": "C(null,q0)"
+        
       },
       "110": {
         "ID": 110,
@@ -2154,8 +2154,8 @@
         "Order": 0,
         "Priority": -1,
         "Name": "R(')",
-        "NameAlt": "C(null,c0)",
-        "PreCompile": "R\\('\\)"
+        "NameAlt": "C(null,c0)"
+        
       },
       "111": {
         "ID": 111,
@@ -2163,8 +2163,8 @@
         "Order": 0,
         "Priority": -1,
         "Name": "R(n)",
-        "NameAlt": "C(null,n0)",
-        "PreCompile": "R\\(n\\)"
+        "NameAlt": "C(null,n0)"
+        
       },
       "112": {
         "ID": 112,
@@ -2172,8 +2172,8 @@
         "Order": 0,
         "Priority": -2,
         "Name": "R(n)R(g)",
-        "NameAlt": "C(null,ng0)",
-        "PreCompile": "R\\(n\\)R\\(g\\)"
+        "NameAlt": "C(null,ng0)"
+        
       },
       "113": {
         "ID": 113,
@@ -2181,8 +2181,8 @@
         "Order": 0,
         "Priority": -2,
         "Name": "R(t)R(h)",
-        "NameAlt": "C(null,th0)",
-        "PreCompile": "R\\(t\\)R\\(h\\)"
+        "NameAlt": "C(null,th0)"
+        
       },
       "114": {
         "ID": 114,
@@ -2190,8 +2190,8 @@
         "Order": 0,
         "Priority": -1,
         "Name": "R(s)",
-        "NameAlt": "C(null,s0)",
-        "PreCompile": "R\\(s\\)"
+        "NameAlt": "C(null,s0)"
+        
       },
       "115": {
         "ID": 115,
@@ -2199,8 +2199,8 @@
         "Order": 0,
         "Priority": -2,
         "Name": "R(h)R(y)",
-        "NameAlt": "C(null,hy0)",
-        "PreCompile": "R\\(h\\)R\\(y\\)"
+        "NameAlt": "C(null,hy0)"
+        
       },
       "116": {
         "ID": 116,
@@ -2208,8 +2208,8 @@
         "Order": 0,
         "Priority": -2,
         "Name": "R(k)R(h)",
-        "NameAlt": "C(null,kh0)",
-        "PreCompile": "R\\(k\\)R\\(h\\)"
+        "NameAlt": "C(null,kh0)"
+        
       },
       "117": {
         "ID": 117,
@@ -2217,8 +2217,8 @@
         "Order": 0,
         "Priority": -2,
         "Name": "R(d)R(h)",
-        "NameAlt": "C(null,th0-d0)",
-        "PreCompile": "R\\(d\\)R\\(h\\)"
+        "NameAlt": "C(null,th0-d0)"
+        
       },
       "118": {
         "ID": 118,
@@ -2226,8 +2226,8 @@
         "Order": 0,
         "Priority": -1,
         "Name": "R(z)",
-        "NameAlt": "C(null,s0-d0)",
-        "PreCompile": "R\\(z\\)"
+        "NameAlt": "C(null,s0-d0)"
+        
       },
       "119": {
         "ID": 119,
@@ -2235,8 +2235,8 @@
         "Order": 0,
         "Priority": -2,
         "Name": "R(z)R(h)",
-        "NameAlt": "C(null,hy0-d0)",
-        "PreCompile": "R\\(z\\)R\\(h\\)"
+        "NameAlt": "C(null,hy0-d0)"
+        
       },
       "120": {
         "ID": 120,
@@ -2244,8 +2244,8 @@
         "Order": 0,
         "Priority": -1,
         "Name": "R(r)",
-        "NameAlt": "C(null,r0)",
-        "PreCompile": "R\\(r\\)"
+        "NameAlt": "C(null,r0)"
+        
       },
       "121": {
         "ID": 121,
@@ -2253,8 +2253,8 @@
         "Order": 0,
         "Priority": -1,
         "Name": "R(l)",
-        "NameAlt": "C(null,l0)",
-        "PreCompile": "R\\(l\\)"
+        "NameAlt": "C(null,l0)"
+        
       },
       "122": {
         "ID": 122,
@@ -2262,8 +2262,8 @@
         "Order": 0,
         "Priority": -1,
         "Name": "R(y)",
-        "NameAlt": "C(null,y0)",
-        "PreCompile": "R\\(y\\)"
+        "NameAlt": "C(null,y0)"
+        
       },
       "123": {
         "ID": 123,
@@ -2271,8 +2271,8 @@
         "Order": 0,
         "Priority": -1,
         "Name": "R(w)",
-        "NameAlt": "C(null,w0)",
-        "PreCompile": "R\\(w\\)"
+        "NameAlt": "C(null,w0)"
+        
       },
       "124": {
         "ID": 124,
@@ -2280,8 +2280,8 @@
         "Order": 70,
         "Priority": 6,
         "Name": "(V(*)|R(n)|R(l))(C(*))(V(*,[_.hasGreedyBond]_-*)|R(n)|R(l))",
-        "NameAlt": "$1Sep()$2$3",
-        "PreCompile": "(V\\((?:init|mid|fin|sol|null),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|R\\(n\\)|R\\(l\\))(C\\((?:onset|coda|null),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\))(V\\((?:init|mid|fin|sol|null),(?:a|abig|e|i|o|u|v|omit|eold|iold)\\d+(?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|R\\(n\\)|R\\(l\\))"
+        "NameAlt": "$1Sep()$2$3"
+        
       },
       "125": {
         "ID": 125,
@@ -2289,8 +2289,8 @@
         "Order": 70,
         "Priority": 7,
         "Name": "(V(*)|R(n)|R(l))(C(*))(V(*,[!_.hasGreedyBond]_-*))",
-        "NameAlt": "$1$2Sep()$3",
-        "PreCompile": "(V\\((?:init|mid|fin|sol|null),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|R\\(n\\)|R\\(l\\))(C\\((?:onset|coda|null),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\))(V\\((?:init|mid|fin|sol|null),(?:br|hyphen)\\d+(?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\))"
+        "NameAlt": "$1$2Sep()$3"
+        
       },
       "126": {
         "ID": 126,
@@ -2298,8 +2298,8 @@
         "Order": 0,
         "Priority": -2,
         "Name": "R(z)R(y)",
-        "NameAlt": "C(null,s0-d0-sy0)",
-        "PreCompile": "R\\(z\\)R\\(y\\)"
+        "NameAlt": "C(null,s0-d0-sy0)"
+        
       },
       "127": {
         "ID": 127,
@@ -2307,8 +2307,8 @@
         "Order": 0,
         "Priority": -1,
         "Name": "R(f)",
-        "NameAlt": "C(null,th0-hd0)",
-        "PreCompile": "R\\(f\\)"
+        "NameAlt": "C(null,th0-hd0)"
+        
       },
       "128": {
         "ID": 128,
@@ -2316,8 +2316,8 @@
         "Order": 60,
         "Priority": 5,
         "Name": "R(n)R(n)",
-        "NameAlt": "C(null,n0)R(n)",
-        "PreCompile": "R\\(n\\)R\\(n\\)"
+        "NameAlt": "C(null,n0)R(n)"
+        
       },
       "129": {
         "ID": 129,
@@ -2325,8 +2325,8 @@
         "Order": 60,
         "Priority": 6,
         "Name": "(V(*)|R(l))R(n)(V(*)|R(l))",
-        "NameAlt": "$1C(null,n0)$2",
-        "PreCompile": "(V\\((?:init|mid|fin|sol|null),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|R\\(l\\))R\\(n\\)(V\\((?:init|mid|fin|sol|null),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|R\\(l\\))"
+        "NameAlt": "$1C(null,n0)$2"
+        
       },
       "130": {
         "ID": 130,
@@ -2334,8 +2334,8 @@
         "Order": 60,
         "Priority": 5,
         "Name": "R(n)R(n)",
-        "NameAlt": "C(null,n0)R(n)",
-        "PreCompile": "R\\(n\\)R\\(n\\)"
+        "NameAlt": "C(null,n0)R(n)"
+        
       },
       "131": {
         "ID": 131,
@@ -2343,8 +2343,8 @@
         "Order": 60,
         "Priority": 6,
         "Name": "(V(*)|R(l))R(n)(V(*)|R(l))",
-        "NameAlt": "$1C(null,n0)$2",
-        "PreCompile": "(V\\((?:init|mid|fin|sol|null),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|R\\(l\\))R\\(n\\)(V\\((?:init|mid|fin|sol|null),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|R\\(l\\))"
+        "NameAlt": "$1C(null,n0)$2"
+        
       },
       "132": {
         "ID": 132,
@@ -2352,8 +2352,8 @@
         "Order": 0,
         "Priority": -1,
         "Name": "R(\\?)",
-        "NameAlt": "P(question0)",
-        "PreCompile": "R\\(\\?\\)"
+        "NameAlt": "P(question0)"
+        
       },
       "133": {
         "ID": 133,
@@ -2361,8 +2361,8 @@
         "Order": 0,
         "Priority": -1,
         "Name": "R(!)",
-        "NameAlt": "P(exclamation0)",
-        "PreCompile": "R\\(!\\)"
+        "NameAlt": "P(exclamation0)"
+        
       },
       "134": {
         "ID": 134,
@@ -2370,8 +2370,8 @@
         "Order": 90,
         "Priority": -1,
         "Name": "(V(*,[!_.hasGreedyBond]_-*))C(*,(*))(P(*)|C(*)|Sep()|$)",
-        "NameAlt": "$1S(null,,a0,$2)$3",
-        "PreCompile": "(V\\((?:init|mid|fin|sol|null),(?:br|hyphen)\\d+(?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\))C\\((?:onset|coda|null),((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*))\\)(P\\((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|C\\((?:onset|coda|null),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|Sep\\(\\)|$)"
+        "NameAlt": "$1S(null,,a0,$2)$3"
+        
       },
       "135": {
         "ID": 135,
@@ -2379,8 +2379,8 @@
         "Order": 0,
         "Priority": 0,
         "Name": "R(0)",
-        "NameAlt": "P(zero0)",
-        "PreCompile": "R\\(0\\)"
+        "NameAlt": "P(zero0)"
+        
       },
       "136": {
         "ID": 136,
@@ -2388,8 +2388,8 @@
         "Order": 0,
         "Priority": 1,
         "Name": "R(1)",
-        "NameAlt": "P(one0)",
-        "PreCompile": "R\\(1\\)"
+        "NameAlt": "P(one0)"
+        
       },
       "137": {
         "ID": 137,
@@ -2397,8 +2397,8 @@
         "Order": 0,
         "Priority": 2,
         "Name": "R(2)",
-        "NameAlt": "P(two0)",
-        "PreCompile": "R\\(2\\)"
+        "NameAlt": "P(two0)"
+        
       },
       "138": {
         "ID": 138,
@@ -2406,8 +2406,8 @@
         "Order": 0,
         "Priority": 3,
         "Name": "R(3)",
-        "NameAlt": "P(three0)",
-        "PreCompile": "R\\(3\\)"
+        "NameAlt": "P(three0)"
+        
       },
       "139": {
         "ID": 139,
@@ -2415,8 +2415,8 @@
         "Order": 0,
         "Priority": 4,
         "Name": "R(4)",
-        "NameAlt": "P(four0)",
-        "PreCompile": "R\\(4\\)"
+        "NameAlt": "P(four0)"
+        
       },
       "140": {
         "ID": 140,
@@ -2424,8 +2424,8 @@
         "Order": 0,
         "Priority": 5,
         "Name": "R(5)",
-        "NameAlt": "P(five0)",
-        "PreCompile": "R\\(5\\)"
+        "NameAlt": "P(five0)"
+        
       },
       "141": {
         "ID": 141,
@@ -2433,8 +2433,8 @@
         "Order": 0,
         "Priority": 6,
         "Name": "R(6)",
-        "NameAlt": "P(six0)",
-        "PreCompile": "R\\(6\\)"
+        "NameAlt": "P(six0)"
+        
       },
       "142": {
         "ID": 142,
@@ -2442,8 +2442,8 @@
         "Order": 0,
         "Priority": 7,
         "Name": "R(7)",
-        "NameAlt": "P(seven0)",
-        "PreCompile": "R\\(7\\)"
+        "NameAlt": "P(seven0)"
+        
       },
       "143": {
         "ID": 143,
@@ -2451,8 +2451,8 @@
         "Order": 0,
         "Priority": 8,
         "Name": "R(8)",
-        "NameAlt": "P(eight0)",
-        "PreCompile": "R\\(8\\)"
+        "NameAlt": "P(eight0)"
+        
       },
       "144": {
         "ID": 144,
@@ -2460,8 +2460,8 @@
         "Order": 0,
         "Priority": 9,
         "Name": "R(9)",
-        "NameAlt": "P(nine0)",
-        "PreCompile": "R\\(9\\)"
+        "NameAlt": "P(nine0)"
+        
       },
       "145": {
         "ID": 145,
@@ -2469,8 +2469,8 @@
         "Order": 0,
         "Priority": 10,
         "Name": "R(０)",
-        "NameAlt": "P(zero2)",
-        "PreCompile": "R\\(０\\)"
+        "NameAlt": "P(zero2)"
+        
       },
       "146": {
         "ID": 146,
@@ -2478,8 +2478,8 @@
         "Order": 0,
         "Priority": 11,
         "Name": "R(１)",
-        "NameAlt": "P(one2)",
-        "PreCompile": "R\\(１\\)"
+        "NameAlt": "P(one2)"
+        
       },
       "147": {
         "ID": 147,
@@ -2487,8 +2487,8 @@
         "Order": 0,
         "Priority": 12,
         "Name": "R(２)",
-        "NameAlt": "P(two2)",
-        "PreCompile": "R\\(２\\)"
+        "NameAlt": "P(two2)"
+        
       },
       "148": {
         "ID": 148,
@@ -2496,8 +2496,8 @@
         "Order": 0,
         "Priority": 13,
         "Name": "R(３)",
-        "NameAlt": "P(three2)",
-        "PreCompile": "R\\(３\\)"
+        "NameAlt": "P(three2)"
+        
       },
       "149": {
         "ID": 149,
@@ -2505,8 +2505,8 @@
         "Order": 0,
         "Priority": 14,
         "Name": "R(４)",
-        "NameAlt": "P(four2)",
-        "PreCompile": "R\\(４\\)"
+        "NameAlt": "P(four2)"
+        
       },
       "150": {
         "ID": 150,
@@ -2514,8 +2514,8 @@
         "Order": 0,
         "Priority": 15,
         "Name": "R(５)",
-        "NameAlt": "P(five2)",
-        "PreCompile": "R\\(５\\)"
+        "NameAlt": "P(five2)"
+        
       },
       "151": {
         "ID": 151,
@@ -2523,8 +2523,8 @@
         "Order": 0,
         "Priority": 16,
         "Name": "R(６)",
-        "NameAlt": "P(six2)",
-        "PreCompile": "R\\(６\\)"
+        "NameAlt": "P(six2)"
+        
       },
       "152": {
         "ID": 152,
@@ -2532,8 +2532,8 @@
         "Order": 0,
         "Priority": 17,
         "Name": "R(７)",
-        "NameAlt": "P(seven2)",
-        "PreCompile": "R\\(７\\)"
+        "NameAlt": "P(seven2)"
+        
       },
       "153": {
         "ID": 153,
@@ -2541,8 +2541,8 @@
         "Order": 0,
         "Priority": 18,
         "Name": "R(８)",
-        "NameAlt": "P(eight2)",
-        "PreCompile": "R\\(８\\)"
+        "NameAlt": "P(eight2)"
+        
       },
       "154": {
         "ID": 154,
@@ -2550,8 +2550,8 @@
         "Order": 0,
         "Priority": 19,
         "Name": "R(９)",
-        "NameAlt": "P(nine2)",
-        "PreCompile": "R\\(９\\)"
+        "NameAlt": "P(nine2)"
+        
       },
       "155": {
         "ID": 155,
@@ -2559,8 +2559,8 @@
         "Order": 0,
         "Priority": 100,
         "Name": "R(ⁿ)R(ᶢ)",
-        "NameAlt": "C(null,sng0)",
-        "PreCompile": "R\\(ⁿ\\)R\\(ᶢ\\)"
+        "NameAlt": "C(null,sng0)"
+        
       },
       "156": {
         "ID": 156,
@@ -2568,8 +2568,8 @@
         "Order": 0,
         "Priority": 101,
         "Name": "R(ᵑ)",
-        "NameAlt": "C(null,sng0)",
-        "PreCompile": "R\\(ᵑ\\)"
+        "NameAlt": "C(null,sng0)"
+        
       },
       "157": {
         "ID": 157,
@@ -2577,8 +2577,8 @@
         "Order": 0,
         "Priority": 102,
         "Name": "R(ⁿ)",
-        "NameAlt": "C(null,sn0)",
-        "PreCompile": "R\\(ⁿ\\)"
+        "NameAlt": "C(null,sn0)"
+        
       },
       "158": {
         "ID": 158,
@@ -2586,8 +2586,8 @@
         "Order": 0,
         "Priority": 103,
         "Name": "R(ʰ)",
-        "NameAlt": "C(null,sh0)",
-        "PreCompile": "R\\(ʰ\\)"
+        "NameAlt": "C(null,sh0)"
+        
       },
       "159": {
         "ID": 159,
@@ -2595,8 +2595,8 @@
         "Order": 0,
         "Priority": 111,
         "Name": "R(₁)",
-        "NameAlt": "Vd(null,sone1)",
-        "PreCompile": "R\\(₁\\)"
+        "NameAlt": "Vd(null,sone1)"
+        
       },
       "160": {
         "ID": 160,
@@ -2604,8 +2604,8 @@
         "Order": 0,
         "Priority": 112,
         "Name": "R(₂)",
-        "NameAlt": "Vd(null,stwo1)",
-        "PreCompile": "R\\(₂\\)"
+        "NameAlt": "Vd(null,stwo1)"
+        
       },
       "161": {
         "ID": 161,
@@ -2613,8 +2613,8 @@
         "Order": 0,
         "Priority": 113,
         "Name": "R(₃)",
-        "NameAlt": "Vd(null,sthree1)",
-        "PreCompile": "R\\(₃\\)"
+        "NameAlt": "Vd(null,sthree1)"
+        
       },
       "162": {
         "ID": 162,
@@ -2622,8 +2622,8 @@
         "Order": 0,
         "Priority": 114,
         "Name": "R(₄)",
-        "NameAlt": "Vd(null,sfour1)",
-        "PreCompile": "R\\(₄\\)"
+        "NameAlt": "Vd(null,sfour1)"
+        
       },
       "163": {
         "ID": 163,
@@ -2631,8 +2631,8 @@
         "Order": 20,
         "Priority": 0,
         "Name": "V(*,(abig_|a_|e_|i_|o_|u_|v_|eold_|iold_))Vd(*,(sone_|stwo_|sthree_|sfour_))",
-        "NameAlt": "V(null,$1-$2)",
-        "PreCompile": "V\\((?:init|mid|fin|sol|null),(abig\\d+|a\\d+|e\\d+|i\\d+|o\\d+|u\\d+|v\\d+|eold\\d+|iold\\d+)\\)Vd\\((?:onset|coda|null),(sone\\d+|stwo\\d+|sthree\\d+|sfour\\d+)\\)"
+        "NameAlt": "V(null,$1-$2)"
+        
       },
       "164": {
         "ID": 164,
@@ -2640,8 +2640,8 @@
         "Order": 20,
         "Priority": 0,
         "Name": "V(*,(abig_|a_|e_|i_|o_|u_|v_|eold_|iold_))(C(*))Vd(*,(sone_|stwo_|sthree_|sfour_))",
-        "NameAlt": "V(null,$1-$3)$2",
-        "PreCompile": "V\\((?:init|mid|fin|sol|null),(abig\\d+|a\\d+|e\\d+|i\\d+|o\\d+|u\\d+|v\\d+|eold\\d+|iold\\d+)\\)(C\\((?:onset|coda|null),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\))Vd\\((?:onset|coda|null),(sone\\d+|stwo\\d+|sthree\\d+|sfour\\d+)\\)"
+        "NameAlt": "V(null,$1-$3)$2"
+        
       },
       "165": {
         "ID": 165,
@@ -2649,8 +2649,8 @@
         "Order": 0,
         "Priority": 122,
         "Name": "R(²)",
-        "NameAlt": "Vd(null,stwo0)",
-        "PreCompile": "R\\(²\\)"
+        "NameAlt": "Vd(null,stwo0)"
+        
       },
       "166": {
         "ID": 166,
@@ -2658,8 +2658,8 @@
         "Order": 0,
         "Priority": 121,
         "Name": "R(¹)",
-        "NameAlt": "Vd(null,sone0)",
-        "PreCompile": "R\\(¹\\)"
+        "NameAlt": "Vd(null,sone0)"
+        
       },
       "167": {
         "ID": 167,
@@ -2667,8 +2667,8 @@
         "Order": 0,
         "Priority": 123,
         "Name": "R(³)",
-        "NameAlt": "Vd(null,sthree0)",
-        "PreCompile": "R\\(³\\)"
+        "NameAlt": "Vd(null,sthree0)"
+        
       },
       "168": {
         "ID": 168,
@@ -2676,8 +2676,8 @@
         "Order": 0,
         "Priority": 124,
         "Name": "R(⁴)",
-        "NameAlt": "Vd(null,sfour0)",
-        "PreCompile": "R\\(⁴\\)"
+        "NameAlt": "Vd(null,sfour0)"
+        
       },
       "169": {
         "ID": 169,
@@ -2685,8 +2685,8 @@
         "Order": 0,
         "Priority": 140,
         "Name": "R(\\+)",
-        "NameAlt": "P(plus0)",
-        "PreCompile": "R\\(\\+\\)"
+        "NameAlt": "P(plus0)"
+        
       },
       "170": {
         "ID": 170,
@@ -2694,8 +2694,8 @@
         "Order": 0,
         "Priority": 140,
         "Name": "R(－)",
-        "NameAlt": "P(minus0)",
-        "PreCompile": "R\\(－\\)"
+        "NameAlt": "P(minus0)"
+        
       },
       "171": {
         "ID": 171,
@@ -2703,8 +2703,8 @@
         "Order": 0,
         "Priority": 140,
         "Name": "R(×)",
-        "NameAlt": "P(multi0)",
-        "PreCompile": "R\\(×\\)"
+        "NameAlt": "P(multi0)"
+        
       },
       "172": {
         "ID": 172,
@@ -2712,8 +2712,8 @@
         "Order": 0,
         "Priority": 140,
         "Name": "R(÷)",
-        "NameAlt": "P(div0)",
-        "PreCompile": "R\\(÷\\)"
+        "NameAlt": "P(div0)"
+        
       },
       "173": {
         "ID": 173,
@@ -2721,8 +2721,8 @@
         "Order": 0,
         "Priority": 140,
         "Name": "R(\\^)",
-        "NameAlt": "P(power0)",
-        "PreCompile": "R\\(\\^\\)"
+        "NameAlt": "P(power0)"
+        
       },
       "174": {
         "ID": 174,
@@ -2730,8 +2730,8 @@
         "Order": 0,
         "Priority": 140,
         "Name": "R(\\=)",
-        "NameAlt": "P(equal0)",
-        "PreCompile": "R\\(\\=\\)"
+        "NameAlt": "P(equal0)"
+        
       },
       "175": {
         "ID": 175,
@@ -2739,8 +2739,8 @@
         "Order": 0,
         "Priority": 140,
         "Name": "R(ー)",
-        "NameAlt": "P(minus0)",
-        "PreCompile": "R\\(ー\\)"
+        "NameAlt": "P(minus0)"
+        
       }
     }
   },
@@ -2800,8 +2800,8 @@
         "Order": 10,
         "Priority": 1,
         "Name": "S(fin,(t_-*),(.)0(-*),(t_-*))",
-        "NameAlt": "S(fin,$1,$23$3,$4)",
-        "PreCompile": "S\\(fin,(t\\d+(?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),([A-Za-z]+)0((?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),(t\\d+(?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*))\\)"
+        "NameAlt": "S(fin,$1,$23$3,$4)"
+        
       },
       "1": {
         "ID": 1,
@@ -2809,8 +2809,8 @@
         "Order": 10,
         "Priority": 3,
         "Name": "S(fin,(*),(.)0(-*),(t_-*))",
-        "NameAlt": "S(fin,$1,$22$3,$4)",
-        "PreCompile": "S\\(fin,((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),([A-Za-z]+)0((?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),(t\\d+(?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*))\\)"
+        "NameAlt": "S(fin,$1,$22$3,$4)"
+        
       },
       "2": {
         "ID": 2,
@@ -2818,8 +2818,8 @@
         "Order": 10,
         "Priority": 2,
         "Name": "S(fin,(t_-*),(.)0(-*),(*))",
-        "NameAlt": "S(fin,$1,$21$3,$4)",
-        "PreCompile": "S\\(fin,(t\\d+(?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),([A-Za-z]+)0((?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*))\\)"
+        "NameAlt": "S(fin,$1,$21$3,$4)"
+        
       },
       "3": {
         "ID": 3,
@@ -2827,8 +2827,8 @@
         "Order": 10,
         "Priority": 0,
         "Name": "S(mid,(t_-*),(.)0(-*),(*))",
-        "NameAlt": "S(mid,$1,$21$3,$4)",
-        "PreCompile": "S\\(mid,(t\\d+(?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),([A-Za-z]+)0((?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*))\\)"
+        "NameAlt": "S(mid,$1,$21$3,$4)"
+        
       },
       "4": {
         "ID": 4,
@@ -2836,8 +2836,8 @@
         "Order": 5,
         "Priority": 27,
         "Name": "S(null,(*),(br|omit)_,(*))",
-        "NameAlt": "S(mid,$1,a_-*,,)S(sol,,$21,)S(mid,,a_-*,$3)",
-        "PreCompile": "S\\(null,((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),(br|omit)\\d+,((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*))\\)"
+        "NameAlt": "S(mid,$1,a_-*,,)S(sol,,$21,)S(mid,,a_-*,$3)"
+        
       },
       "5": {
         "ID": 5,
@@ -2845,8 +2845,8 @@
         "Order": 5,
         "Priority": 26,
         "Name": "S(null,,(br|omit)_,(*))",
-        "NameAlt": "S(mid,,a_-*,,)S(sol,,$11,)S(mid,,a_-*,$2)",
-        "PreCompile": "S\\(null,,(br|omit)\\d+,((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*))\\)"
+        "NameAlt": "S(mid,,a_-*,,)S(sol,,$11,)S(mid,,a_-*,$2)"
+        
       },
       "6": {
         "ID": 6,
@@ -2854,8 +2854,8 @@
         "Order": 5,
         "Priority": 25,
         "Name": "S(null,(*),iold_(-*),(*))",
-        "NameAlt": "S(init,$1,iold0$2,$3)",
-        "PreCompile": "S\\(null,((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),iold\\d+((?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*))\\)"
+        "NameAlt": "S(init,$1,iold0$2,$3)"
+        
       },
       "7": {
         "ID": 7,
@@ -2863,8 +2863,8 @@
         "Order": 5,
         "Priority": 24,
         "Name": "S(null,,iold_(-*),(*))",
-        "NameAlt": "S(init,,iold0$1,$2)",
-        "PreCompile": "S\\(null,,iold\\d+((?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*))\\)"
+        "NameAlt": "S(init,,iold0$1,$2)"
+        
       },
       "8": {
         "ID": 8,
@@ -2872,8 +2872,8 @@
         "Order": 5,
         "Priority": 23,
         "Name": "S(null,(*),iold_(-*),)",
-        "NameAlt": "S(fin,$1,iold0$2,)",
-        "PreCompile": "S\\(null,((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),iold\\d+((?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),\\)"
+        "NameAlt": "S(fin,$1,iold0$2,)"
+        
       },
       "9": {
         "ID": 9,
@@ -2881,8 +2881,8 @@
         "Order": 5,
         "Priority": 2,
         "Name": "S(null,(*),eold_(-*),(*))",
-        "NameAlt": "S(fin,$1,eold0$2,$3)",
-        "PreCompile": "S\\(null,((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),eold\\d+((?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*))\\)"
+        "NameAlt": "S(fin,$1,eold0$2,$3)"
+        
       },
       "10": {
         "ID": 10,
@@ -2890,8 +2890,8 @@
         "Order": 5,
         "Priority": 21,
         "Name": "S(null,,eold_(-*),(*))",
-        "NameAlt": "S(init,,eold0$1,$2)",
-        "PreCompile": "S\\(null,,eold\\d+((?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*))\\)"
+        "NameAlt": "S(init,,eold0$1,$2)"
+        
       },
       "11": {
         "ID": 11,
@@ -2899,8 +2899,8 @@
         "Order": 5,
         "Priority": 20,
         "Name": "S(null,(*),eold_(-*),)",
-        "NameAlt": "S(fin,$1,eold0$2,)",
-        "PreCompile": "S\\(null,((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),eold\\d+((?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),\\)"
+        "NameAlt": "S(fin,$1,eold0$2,)"
+        
       },
       "12": {
         "ID": 12,
@@ -2908,8 +2908,8 @@
         "Order": 5,
         "Priority": 19,
         "Name": "S(null,(*),v_(-*),(*))",
-        "NameAlt": "S(fin,$1,v1$2,$3)",
-        "PreCompile": "S\\(null,((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),v\\d+((?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*))\\)"
+        "NameAlt": "S(fin,$1,v1$2,$3)"
+        
       },
       "13": {
         "ID": 13,
@@ -2917,8 +2917,8 @@
         "Order": 5,
         "Priority": 18,
         "Name": "S(null,,v_(-*),(*))",
-        "NameAlt": "S(init,,v0$1,$2)",
-        "PreCompile": "S\\(null,,v\\d+((?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*))\\)"
+        "NameAlt": "S(init,,v0$1,$2)"
+        
       },
       "14": {
         "ID": 14,
@@ -2926,8 +2926,8 @@
         "Order": 5,
         "Priority": 17,
         "Name": "S(null,(*),v_(-*),)",
-        "NameAlt": "S(fin,$1,v1$2,)",
-        "PreCompile": "S\\(null,((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),v\\d+((?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),\\)"
+        "NameAlt": "S(fin,$1,v1$2,)"
+        
       },
       "15": {
         "ID": 15,
@@ -2935,8 +2935,8 @@
         "Order": 5,
         "Priority": 16,
         "Name": "S(null,(*),u_(-*),(*))",
-        "NameAlt": "S(fin,$1,u1$2,$3)",
-        "PreCompile": "S\\(null,((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),u\\d+((?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*))\\)"
+        "NameAlt": "S(fin,$1,u1$2,$3)"
+        
       },
       "16": {
         "ID": 16,
@@ -2944,8 +2944,8 @@
         "Order": 5,
         "Priority": 15,
         "Name": "S(null,,u_(-*),(*))",
-        "NameAlt": "S(init,,u0$1,$2)",
-        "PreCompile": "S\\(null,,u\\d+((?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*))\\)"
+        "NameAlt": "S(init,,u0$1,$2)"
+        
       },
       "17": {
         "ID": 17,
@@ -2953,8 +2953,8 @@
         "Order": 5,
         "Priority": 14,
         "Name": "S(null,(*),u_(-*),)",
-        "NameAlt": "S(fin,$1,u0$2,)",
-        "PreCompile": "S\\(null,((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),u\\d+((?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),\\)"
+        "NameAlt": "S(fin,$1,u0$2,)"
+        
       },
       "18": {
         "ID": 18,
@@ -2962,8 +2962,8 @@
         "Order": 5,
         "Priority": 13,
         "Name": "S(null,(*),o_(-*),(*))",
-        "NameAlt": "S(init,$1,o0$2,$3)",
-        "PreCompile": "S\\(null,((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),o\\d+((?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*))\\)"
+        "NameAlt": "S(init,$1,o0$2,$3)"
+        
       },
       "19": {
         "ID": 19,
@@ -2971,8 +2971,8 @@
         "Order": 5,
         "Priority": 12,
         "Name": "S(null,,o_(-*),(*))",
-        "NameAlt": "S(init,,o0$1,$2)",
-        "PreCompile": "S\\(null,,o\\d+((?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*))\\)"
+        "NameAlt": "S(init,,o0$1,$2)"
+        
       },
       "20": {
         "ID": 20,
@@ -2980,8 +2980,8 @@
         "Order": 5,
         "Priority": 11,
         "Name": "S(null,(*),o_(-*),)",
-        "NameAlt": "S(fin,$1,o0$2,)",
-        "PreCompile": "S\\(null,((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),o\\d+((?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),\\)"
+        "NameAlt": "S(fin,$1,o0$2,)"
+        
       },
       "21": {
         "ID": 21,
@@ -2989,8 +2989,8 @@
         "Order": 5,
         "Priority": 10,
         "Name": "S(null,(*),i_(-*),(*))",
-        "NameAlt": "S(fin,$1,i1$2,$3)",
-        "PreCompile": "S\\(null,((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),i\\d+((?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*))\\)"
+        "NameAlt": "S(fin,$1,i1$2,$3)"
+        
       },
       "22": {
         "ID": 22,
@@ -2998,8 +2998,8 @@
         "Order": 5,
         "Priority": 9,
         "Name": "S(null,,i_(-*),(*))",
-        "NameAlt": "S(init,,i0$1,$2)",
-        "PreCompile": "S\\(null,,i\\d+((?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*))\\)"
+        "NameAlt": "S(init,,i0$1,$2)"
+        
       },
       "23": {
         "ID": 23,
@@ -3007,8 +3007,8 @@
         "Order": 5,
         "Priority": 8,
         "Name": "S(null,(*),i_(-*),)",
-        "NameAlt": "S(fin,$1,i1$2,)",
-        "PreCompile": "S\\(null,((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),i\\d+((?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),\\)"
+        "NameAlt": "S(fin,$1,i1$2,)"
+        
       },
       "24": {
         "ID": 24,
@@ -3016,8 +3016,8 @@
         "Order": 5,
         "Priority": 7,
         "Name": "S(null,(*),e_(-*),(*))",
-        "NameAlt": "S(fin,$1,e0$2,$3)",
-        "PreCompile": "S\\(null,((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),e\\d+((?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*))\\)"
+        "NameAlt": "S(fin,$1,e0$2,$3)"
+        
       },
       "25": {
         "ID": 25,
@@ -3025,8 +3025,8 @@
         "Order": 5,
         "Priority": 6,
         "Name": "S(null,,e_(-*),(*))",
-        "NameAlt": "S(fin,x0,e0$1,$2)",
-        "PreCompile": "S\\(null,,e\\d+((?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*))\\)"
+        "NameAlt": "S(fin,x0,e0$1,$2)"
+        
       },
       "26": {
         "ID": 26,
@@ -3034,8 +3034,8 @@
         "Order": 5,
         "Priority": 5,
         "Name": "S(null,(*),e_(-*),)",
-        "NameAlt": "S(fin,$1,e0$2,)",
-        "PreCompile": "S\\(null,((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),e\\d+((?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),\\)"
+        "NameAlt": "S(fin,$1,e0$2,)"
+        
       },
       "27": {
         "ID": 27,
@@ -3043,8 +3043,8 @@
         "Order": 5,
         "Priority": 4,
         "Name": "S(null,(*),(?:a|abig)_(-*),(*))",
-        "NameAlt": "S(mid,$1,a0$2,$3)",
-        "PreCompile": "S\\(null,((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),(?:a|abig)\\d+((?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*))\\)"
+        "NameAlt": "S(mid,$1,a0$2,$3)"
+        
       },
       "28": {
         "ID": 28,
@@ -3052,8 +3052,8 @@
         "Order": 5,
         "Priority": 3,
         "Name": "S(null,,(?:a|abig)_(-*),(*))",
-        "NameAlt": "S(init,,abig0$1,$2)",
-        "PreCompile": "S\\(null,,(?:a|abig)\\d+((?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*))\\)"
+        "NameAlt": "S(init,,abig0$1,$2)"
+        
       },
       "29": {
         "ID": 29,
@@ -3061,8 +3061,8 @@
         "Order": 5,
         "Priority": 2,
         "Name": "S(null,(*),(?:a|abig)_(-*),)",
-        "NameAlt": "S(mid,$1,abig0$2,)",
-        "PreCompile": "S\\(null,((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),(?:a|abig)\\d+((?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),\\)"
+        "NameAlt": "S(mid,$1,abig0$2,)"
+        
       },
       "30": {
         "ID": 30,
@@ -3070,8 +3070,8 @@
         "Order": 5,
         "Priority": 0,
         "Name": "S(null,,a_(-*),)",
-        "NameAlt": "S(sol,,abig0$1,)",
-        "PreCompile": "S\\(null,,a\\d+((?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),\\)"
+        "NameAlt": "S(sol,,abig0$1,)"
+        
       },
       "31": {
         "ID": 31,
@@ -3079,8 +3079,8 @@
         "Order": 5,
         "Priority": 1,
         "Name": "S(null,,(.)_(-*),)",
-        "NameAlt": "S(sol,,$10$2,)",
-        "PreCompile": "S\\(null,,([A-Za-z]+)\\d+((?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),\\)"
+        "NameAlt": "S(sol,,$10$2,)"
+        
       },
       "32": {
         "ID": 32,
@@ -3088,8 +3088,8 @@
         "Order": 0,
         "Priority": 5,
         "Name": "S(null,(*),(+),(*))",
-        "NameAlt": "S(mid,$1,$2,$3)",
-        "PreCompile": "S\\(null,((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),([A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*),((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*))\\)"
+        "NameAlt": "S(mid,$1,$2,$3)"
+        
       },
       "33": {
         "ID": 33,
@@ -3097,8 +3097,8 @@
         "Order": 0,
         "Priority": 4,
         "Name": "S(null,(*),(+),(*))($|P(*))",
-        "NameAlt": "S(fin,$1,$2,$3)$4",
-        "PreCompile": "S\\(null,((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),([A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*),((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*))\\)($|P\\((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\))"
+        "NameAlt": "S(fin,$1,$2,$3)$4"
+        
       },
       "34": {
         "ID": 34,
@@ -3106,8 +3106,8 @@
         "Order": 0,
         "Priority": 3,
         "Name": "(^|P(*))S(null,(*),(+),(*))",
-        "NameAlt": "$1S(init,$2,$3,$4)",
-        "PreCompile": "(^|P\\((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\))S\\(null,((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),([A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*),((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*))\\)"
+        "NameAlt": "$1S(init,$2,$3,$4)"
+        
       },
       "35": {
         "ID": 35,
@@ -3115,8 +3115,8 @@
         "Order": 0,
         "Priority": 2,
         "Name": "(^|P(*))S(null,(+),(+),(+))($|P(*))",
-        "NameAlt": "$1S(mid,$2,$3,$4)$5",
-        "PreCompile": "(^|P\\((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\))S\\(null,([A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*),([A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*),([A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)($|P\\((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\))"
+        "NameAlt": "$1S(mid,$2,$3,$4)$5"
+        
       },
       "36": {
         "ID": 36,
@@ -3124,8 +3124,8 @@
         "Order": 0,
         "Priority": 2,
         "Name": "(^|P(*))S(null,,(+),(+))($|P(*))",
-        "NameAlt": "$1S(init,,$2,$3)$4",
-        "PreCompile": "(^|P\\((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\))S\\(null,,([A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*),([A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)($|P\\((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\))"
+        "NameAlt": "$1S(init,,$2,$3)$4"
+        
       },
       "37": {
         "ID": 37,
@@ -3133,8 +3133,8 @@
         "Order": 0,
         "Priority": 1,
         "Name": "(^|P(*))S(null,(+),(+),)($|P(*))",
-        "NameAlt": "$1S(fin,$2,$3,)$4",
-        "PreCompile": "(^|P\\((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\))S\\(null,([A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*),([A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*),\\)($|P\\((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\))"
+        "NameAlt": "$1S(fin,$2,$3,)$4"
+        
       },
       "38": {
         "ID": 38,
@@ -3142,8 +3142,8 @@
         "Order": 0,
         "Priority": 0,
         "Name": "(^|P(*))S(null,,(+),)($|P(*))",
-        "NameAlt": "$1S(sol,,$2,)$3",
-        "PreCompile": "(^|P\\((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\))S\\(null,,([A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*),\\)($|P\\((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\))"
+        "NameAlt": "$1S(sol,,$2,)$3"
+        
       },
       "39": {
         "ID": 39,
@@ -3151,8 +3151,8 @@
         "Order": 20,
         "Priority": -1,
         "Name": "S(*,,hyphen_-*,)",
-        "NameAlt": "",
-        "PreCompile": "S\\((?:init|mid|fin|sol|null),,hyphen\\d+(?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*),\\)"
+        "NameAlt": ""
+        
       },
       "40": {
         "ID": 40,
@@ -3160,8 +3160,8 @@
         "Order": 20,
         "Priority": 0,
         "Name": "S(init,,a(_-*),)S((*),(*),a(_-*),(*))",
-        "NameAlt": "S(init,,abig$1,)S($2,$3,abig$4,$5)",
-        "PreCompile": "S\\(init,,a(\\d+(?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),\\)S\\(((?:init|mid|fin|sol|null)),((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),a(\\d+(?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*))\\)"
+        "NameAlt": "S(init,,abig$1,)S($2,$3,abig$4,$5)"
+        
       },
       "41": {
         "ID": 41,
@@ -3169,8 +3169,8 @@
         "Order": 20,
         "Priority": 1,
         "Name": "S(init,,a(_-*),)S((*),(*),(*),(*))",
-        "NameAlt": "S(init,,abig$1,)S($2,$3,$4,$5)",
-        "PreCompile": "S\\(init,,a(\\d+(?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),\\)S\\(((?:init|mid|fin|sol|null)),((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*))\\)"
+        "NameAlt": "S(init,,abig$1,)S($2,$3,$4,$5)"
+        
       },
       "42": {
         "ID": 42,
@@ -3178,8 +3178,8 @@
         "Order": 20,
         "Priority": 2,
         "Name": "S(init,,(*),)S((*),(*),a(_-*),(*))",
-        "NameAlt": "S(init,,$1,)S($2,$3,abig$4,$5)",
-        "PreCompile": "S\\(init,,((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),\\)S\\(((?:init|mid|fin|sol|null)),((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),a(\\d+(?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*))\\)"
+        "NameAlt": "S(init,,$1,)S($2,$3,abig$4,$5)"
+        
       },
       "43": {
         "ID": 43,
@@ -3187,8 +3187,8 @@
         "Order": 20,
         "Priority": 3,
         "Name": "S((*),(*),a(_-*),(*))S(fin,,a(_-*),(*))",
-        "NameAlt": "S($1,$2,abig$3,$4)S(fin,,abig$5,$6)",
-        "PreCompile": "S\\(((?:init|mid|fin|sol|null)),((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),a(\\d+(?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*))\\)S\\(fin,,a(\\d+(?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*))\\)"
+        "NameAlt": "S($1,$2,abig$3,$4)S(fin,,abig$5,$6)"
+        
       },
       "44": {
         "ID": 44,
@@ -3196,8 +3196,8 @@
         "Order": 20,
         "Priority": 4,
         "Name": "S((*),(*),a(_-*),(*))S(fin,,(*),(*))",
-        "NameAlt": "S($1,$2,abig$3,$4)S(fin,,$5,$6)",
-        "PreCompile": "S\\(((?:init|mid|fin|sol|null)),((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),a(\\d+(?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*))\\)S\\(fin,,((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*))\\)"
+        "NameAlt": "S($1,$2,abig$3,$4)S(fin,,$5,$6)"
+        
       },
       "45": {
         "ID": 45,
@@ -3205,8 +3205,8 @@
         "Order": 20,
         "Priority": 5,
         "Name": "S(init,(+),(*),(*))S((*),,([_.isVowel]_-*),(*))",
-        "NameAlt": "S(init,$1,$2,$3)S($4,x0,$5,$6)",
-        "PreCompile": "S\\(init,([A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*),((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*))\\)S\\(((?:init|mid|fin|sol|null)),,((?:a|abig|e|i|o|u|v|omit|eold|iold)\\d+(?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*))\\)"
+        "NameAlt": "S(init,$1,$2,$3)S($4,x0,$5,$6)"
+        
       },
       "46": {
         "ID": 46,
@@ -3214,8 +3214,8 @@
         "Order": 20,
         "Priority": 6,
         "Name": "S((*),(*),(*),(+))S(fin,,(*),(*))",
-        "NameAlt": "S($1,$2,$3,$4)S(fin,x0,$5,$6)",
-        "PreCompile": "S\\(((?:init|mid|fin|sol|null)),((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),([A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)S\\(fin,,((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*))\\)"
+        "NameAlt": "S($1,$2,$3,$4)S(fin,x0,$5,$6)"
+        
       },
       "47": {
         "ID": 47,
@@ -3223,8 +3223,8 @@
         "Order": 20,
         "Priority": 7,
         "Name": "S((*),(x_),a(_-*),(*))",
-        "NameAlt": "S($1,$2,abig$3,$4)",
-        "PreCompile": "S\\(((?:init|mid|fin|sol|null)),(x\\d+),a(\\d+(?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*))\\)"
+        "NameAlt": "S($1,$2,abig$3,$4)"
+        
       },
       "48": {
         "ID": 48,
@@ -3232,8 +3232,8 @@
         "Order": 10,
         "Priority": 3,
         "Name": "S(fin,(*),(e|o|v|eold|iold)(_-*),t0(-*))",
-        "NameAlt": "S(fin,$1,$2$3,t1$4)",
-        "PreCompile": "S\\(fin,((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),(e|o|v|eold|iold)(\\d+(?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),t0((?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*))\\)"
+        "NameAlt": "S(fin,$1,$2$3,t1$4)"
+        
       },
       "49": {
         "ID": 49,
@@ -3241,8 +3241,8 @@
         "Order": 0,
         "Priority": 0,
         "Name": "(^|P(*))S(null,,(+),)($|P(*))",
-        "NameAlt": "$1S(sol,,$2,)$3",
-        "PreCompile": "(^|P\\((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\))S\\(null,,([A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*),\\)($|P\\((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\))"
+        "NameAlt": "$1S(sol,,$2,)$3"
+        
       },
       "50": {
         "ID": 50,
@@ -3250,8 +3250,8 @@
         "Order": 0,
         "Priority": 6,
         "Name": "S(null,,(+),)",
-        "NameAlt": "S(sol,,$1,)",
-        "PreCompile": "S\\(null,,([A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*),\\)"
+        "NameAlt": "S(sol,,$1,)"
+        
       },
       "51": {
         "ID": 51,
@@ -3259,8 +3259,8 @@
         "Order": 0,
         "Priority": 2,
         "Name": "(^|P(*))S(null,,(+),(+))($|P(*))",
-        "NameAlt": "$1S(init,,$2,$3)$4",
-        "PreCompile": "(^|P\\((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\))S\\(null,,([A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*),([A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)($|P\\((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\))"
+        "NameAlt": "$1S(init,,$2,$3)$4"
+        
       },
       "52": {
         "ID": 52,
@@ -3268,8 +3268,8 @@
         "Order": 0,
         "Priority": 1,
         "Name": "(^|P(*))S(null,(+),(+),)($|P(*))",
-        "NameAlt": "$1S(fin,$2,$3,)$4",
-        "PreCompile": "(^|P\\((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\))S\\(null,([A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*),([A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*),\\)($|P\\((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\))"
+        "NameAlt": "$1S(fin,$2,$3,)$4"
+        
       },
       "53": {
         "ID": 53,
@@ -3277,8 +3277,8 @@
         "Order": 0,
         "Priority": 2,
         "Name": "(^|P(*))S(null,(+),(+),(+))($|P(*))",
-        "NameAlt": "$1S(mid,$2,$3,$4)$5",
-        "PreCompile": "(^|P\\((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\))S\\(null,([A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*),([A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*),([A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)($|P\\((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\))"
+        "NameAlt": "$1S(mid,$2,$3,$4)$5"
+        
       },
       "54": {
         "ID": 54,
@@ -3286,8 +3286,8 @@
         "Order": 0,
         "Priority": 6,
         "Name": "S(null,,(+),)",
-        "NameAlt": "S(sol,,$1,)",
-        "PreCompile": "S\\(null,,([A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*),\\)"
+        "NameAlt": "S(sol,,$1,)"
+        
       },
       "55": {
         "ID": 55,
@@ -3295,8 +3295,8 @@
         "Order": 0,
         "Priority": 6,
         "Name": "S(null,,(+),)",
-        "NameAlt": "S(sol,,$1,)",
-        "PreCompile": "S\\(null,,([A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*),\\)"
+        "NameAlt": "S(sol,,$1,)"
+        
       },
       "56": {
         "ID": 56,
@@ -3304,8 +3304,8 @@
         "Order": 1,
         "Priority": 0,
         "Name": "P((exclamation|comma|question)0)",
-        "NameAlt": "P($11)",
-        "PreCompile": "P\\((exclamation|comma|question)0\\)"
+        "NameAlt": "P($11)"
+        
       },
       "57": {
         "ID": 57,
@@ -3313,8 +3313,8 @@
         "Order": 1,
         "Priority": 0,
         "Name": "P((zero|one|two|three|four|five|six|seven|eight|nine)0)",
-        "NameAlt": "P($11)",
-        "PreCompile": "P\\((zero|one|two|three|four|five|six|seven|eight|nine)0\\)"
+        "NameAlt": "P($11)"
+        
       },
       "58": {
         "ID": 58,
@@ -3322,8 +3322,8 @@
         "Order": 1,
         "Priority": 0,
         "Name": "P((plus|minus|multi|div|power|equal)0)",
-        "NameAlt": "P($11)",
-        "PreCompile": "P\\((plus|minus|multi|div|power|equal)0\\)"
+        "NameAlt": "P($11)"
+        
       },
       "59": {
         "ID": 59,
@@ -3331,8 +3331,8 @@
         "Order": 20,
         "Priority": 4,
         "Name": "S((*),(*),(*),(+))S(fin,,a(_-*),(*))",
-        "NameAlt": "S($1,$2,$3,$4)S(fin,,abig$5,$6)",
-        "PreCompile": "S\\(((?:init|mid|fin|sol|null)),((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),([A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)S\\(fin,,a(\\d+(?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*))\\)"
+        "NameAlt": "S($1,$2,$3,$4)S(fin,,abig$5,$6)"
+        
       },
       "60": {
         "ID": 60,
@@ -3340,8 +3340,8 @@
         "Order": 20,
         "Priority": 2,
         "Name": "(S(*,*,*,*))S(mid,,a(_-*),(+))",
-        "NameAlt": "$1S(mid,,abig$2,$3)",
-        "PreCompile": "(S\\((?:init|mid|fin|sol|null),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\))S\\(mid,,a(\\d+(?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),([A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)"
+        "NameAlt": "$1S(mid,,abig$2,$3)"
+        
       },
       "61": {
         "ID": 61,
@@ -3349,8 +3349,8 @@
         "Order": 20,
         "Priority": 2,
         "Name": "(S(*,*,[_.Name!=\"a\"]_-*,*))S(mid,,a(_-*),)",
-        "NameAlt": "$1S(mid,,abig$2,)",
-        "PreCompile": "(S\\((?:init|mid|fin|sol|null),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*),(?:abig|e|i|o|u|v|omit|eold|iold|br|hyphen)\\d+(?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\))S\\(mid,,a(\\d+(?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),\\)"
+        "NameAlt": "$1S(mid,,abig$2,)"
+        
       },
       "62": {
         "ID": 62,
@@ -3358,8 +3358,8 @@
         "Order": 5,
         "Priority": 0,
         "Name": "S(null,,(br|hyphen)_(-*),)",
-        "NameAlt": "S(sol,,$11,)",
-        "PreCompile": "S\\(null,,(br|hyphen)\\d+((?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),\\)"
+        "NameAlt": "S(sol,,$11,)"
+        
       },
       "63": {
         "ID": 63,
@@ -3367,8 +3367,8 @@
         "Order": 5,
         "Priority": 30,
         "Name": "(S(*,,hyphen_,)|V(*,hyphen_))",
-        "NameAlt": "",
-        "PreCompile": "(S\\((?:init|mid|fin|sol|null),,hyphen\\d+,\\)|V\\((?:init|mid|fin|sol|null),hyphen\\d+\\))"
+        "NameAlt": ""
+        
       },
       "64": {
         "ID": 64,
@@ -3376,8 +3376,8 @@
         "Order": 20,
         "Priority": -2,
         "Name": "S((*),,a(_-*),)",
-        "NameAlt": "S($1,,abig$2,)",
-        "PreCompile": "S\\(((?:init|mid|fin|sol|null)),,a(\\d+(?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),\\)"
+        "NameAlt": "S($1,,abig$2,)"
+        
       },
       "65": {
         "ID": 65,
@@ -3385,8 +3385,8 @@
         "Order": 0,
         "Priority": 13,
         "Name": "S(init,,(br_-*),)S(mid,,(+),)S(fin,,(br_-*),*)",
-        "NameAlt": "S(sol,,$1,)S(sol,,$2,)S(sol,,$3,)",
-        "PreCompile": "S\\(init,,(br\\d+(?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),\\)S\\(mid,,([A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*),\\)S\\(fin,,(br\\d+(?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)"
+        "NameAlt": "S(sol,,$1,)S(sol,,$2,)S(sol,,$3,)"
+        
       },
       "66": {
         "ID": 66,
@@ -3394,8 +3394,8 @@
         "Order": 0,
         "Priority": 10,
         "Name": "S(init,,(br_-*),)S(mid,(+),(+),(+))S(fin,,(br_-*),*)",
-        "NameAlt": "S(sol,,$1,)S(mid,$2,$3,$4)S(sol,,$5,)",
-        "PreCompile": "S\\(init,,(br\\d+(?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),\\)S\\(mid,([A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*),([A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*),([A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)S\\(fin,,(br\\d+(?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)"
+        "NameAlt": "S(sol,,$1,)S(mid,$2,$3,$4)S(sol,,$5,)"
+        
       },
       "67": {
         "ID": 67,
@@ -3403,8 +3403,8 @@
         "Order": 0,
         "Priority": 10,
         "Name": "S(init,,(br_-*),)S(mid,(+),(+),(+))S(fin,,(br_-*),*)",
-        "NameAlt": "S(sol,,$1,)S(mid,$2,$3,$4)S(sol,,$5,)",
-        "PreCompile": "S\\(init,,(br\\d+(?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),\\)S\\(mid,([A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*),([A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*),([A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)S\\(fin,,(br\\d+(?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)"
+        "NameAlt": "S(sol,,$1,)S(mid,$2,$3,$4)S(sol,,$5,)"
+        
       },
       "68": {
         "ID": 68,
@@ -3412,8 +3412,8 @@
         "Order": 0,
         "Priority": 13,
         "Name": "S(init,,(br_-*),)S(mid,,(+),)S(fin,,(br_-*),*)",
-        "NameAlt": "S(sol,,$1,)S(sol,,$2,)S(sol,,$3,)",
-        "PreCompile": "S\\(init,,(br\\d+(?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),\\)S\\(mid,,([A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*),\\)S\\(fin,,(br\\d+(?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)"
+        "NameAlt": "S(sol,,$1,)S(sol,,$2,)S(sol,,$3,)"
+        
       },
       "69": {
         "ID": 69,
@@ -3421,8 +3421,8 @@
         "Order": 0,
         "Priority": 11,
         "Name": "S(init,,(br_-*),)S(mid,(+),(+),)S(fin,,(br_-*),*)",
-        "NameAlt": "S(sol,,$1,)S(fin,$2,$3,)S(sol,,$4,)",
-        "PreCompile": "S\\(init,,(br\\d+(?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),\\)S\\(mid,([A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*),([A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*),\\)S\\(fin,,(br\\d+(?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)"
+        "NameAlt": "S(sol,,$1,)S(fin,$2,$3,)S(sol,,$4,)"
+        
       },
       "70": {
         "ID": 70,
@@ -3430,8 +3430,8 @@
         "Order": 0,
         "Priority": 11,
         "Name": "S(init,,(br_-*),)S(mid,(+),(+),)S(fin,,(br_-*),*)",
-        "NameAlt": "S(sol,,$1,)S(fin,$2,$3,)S(sol,,$4,)",
-        "PreCompile": "S\\(init,,(br\\d+(?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),\\)S\\(mid,([A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*),([A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*),\\)S\\(fin,,(br\\d+(?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)"
+        "NameAlt": "S(sol,,$1,)S(fin,$2,$3,)S(sol,,$4,)"
+        
       },
       "71": {
         "ID": 71,
@@ -3439,8 +3439,8 @@
         "Order": 0,
         "Priority": 12,
         "Name": "S(init,,(br_-*),)S(mid,,(+),(+))S(fin,,(br_-*),*)",
-        "NameAlt": "S(sol,,$1,)S(init,,$2,$3)S(sol,,$4,)",
-        "PreCompile": "S\\(init,,(br\\d+(?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),\\)S\\(mid,,([A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*),([A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)S\\(fin,,(br\\d+(?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)"
+        "NameAlt": "S(sol,,$1,)S(init,,$2,$3)S(sol,,$4,)"
+        
       },
       "72": {
         "ID": 72,
@@ -3448,8 +3448,8 @@
         "Order": 0,
         "Priority": 12,
         "Name": "S(init,,(br_-*),)S(mid,,(+),(+))S(fin,,(br_-*),*)",
-        "NameAlt": "S(sol,,$1,)S(init,,$2,$3)S(sol,,$4,)",
-        "PreCompile": "S\\(init,,(br\\d+(?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),\\)S\\(mid,,([A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*),([A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)S\\(fin,,(br\\d+(?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)"
+        "NameAlt": "S(sol,,$1,)S(init,,$2,$3)S(sol,,$4,)"
+        
       },
       "73": {
         "ID": 73,
@@ -3457,8 +3457,8 @@
         "Order": 0,
         "Priority": 14,
         "Name": "S(init,,(br_-*),)S(mid,(*),(*),(*))",
-        "NameAlt": "S(sol,,$1,)S(init,$2,$3,$4)",
-        "PreCompile": "S\\(init,,(br\\d+(?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),\\)S\\(mid,((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*))\\)"
+        "NameAlt": "S(sol,,$1,)S(init,$2,$3,$4)"
+        
       },
       "74": {
         "ID": 74,
@@ -3466,8 +3466,8 @@
         "Order": 0,
         "Priority": 14,
         "Name": "S(init,,(br_-*),)S(mid,(*),(*),(*))",
-        "NameAlt": "S(sol,,$1,)S(init,$2,$3,$4)",
-        "PreCompile": "S\\(init,,(br\\d+(?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),\\)S\\(mid,((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*))\\)"
+        "NameAlt": "S(sol,,$1,)S(init,$2,$3,$4)"
+        
       },
       "75": {
         "ID": 75,
@@ -3475,8 +3475,8 @@
         "Order": 0,
         "Priority": 15,
         "Name": "S(mid,(*),(*),(*))S(fin,,(br_-*),)",
-        "NameAlt": "S(fin,$1,$2,$3)S(sol,,$4,)",
-        "PreCompile": "S\\(mid,((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*))\\)S\\(fin,,(br\\d+(?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),\\)"
+        "NameAlt": "S(fin,$1,$2,$3)S(sol,,$4,)"
+        
       },
       "76": {
         "ID": 76,
@@ -3484,8 +3484,8 @@
         "Order": 0,
         "Priority": 15,
         "Name": "S(mid,(*),(*),(*))S(fin,,(br_-*),)",
-        "NameAlt": "S(fin,$1,$2,$3)S(sol,,$4,)",
-        "PreCompile": "S\\(mid,((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*))\\)S\\(fin,,(br\\d+(?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)),\\)"
+        "NameAlt": "S(fin,$1,$2,$3)S(sol,,$4,)"
+        
       },
       "77": {
         "ID": 77,
@@ -3493,96 +3493,8 @@
         "Order": 1,
         "Priority": 0,
         "Name": "P((zero|one|two|three|four|five|six|seven|eight|nine)2)",
-        "NameAlt": "P($13)",
-        "PreCompile": "P\\((zero|one|two|three|four|five|six|seven|eight|nine)2\\)"
-      }
-    }
-  },
-  "REGEX": {
-    "name": "REGEX",
-    "columnList": {
-      "ID": {
-        "name": "ID",
-        "type": "int",
-        "order": 0,
-        "subtype": "id",
-        "dev": true
-      },
-      "Name": {
-        "name": "Name",
-        "type": "string",
-        "order": 1,
-        "subtype": "string",
-        "dev": false
-      },
-      "PreCompile": {
-        "name": "PreCompile",
-        "type": "string",
-        "order": 2,
-        "subtype": "compiled",
-        "dev": false
-      }
-    },
-    "data": {
-      "0": {
-        "ID": 0,
-        "Name": "(L()L())",
-        "PreCompile": "(C\\((?:onset|coda|null),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|V\\((?:init|mid|fin|sol|null),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|Cd\\((?:onset|coda|null),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|Vd\\((?:onset|coda|null),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|P\\((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|Pd\\((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|S\\((?:init|mid|fin|sol|null),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\))(C\\((?:onset|coda|null),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|V\\((?:init|mid|fin|sol|null),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|Cd\\((?:onset|coda|null),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|Vd\\((?:onset|coda|null),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|P\\((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|Pd\\((?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)|S\\((?:init|mid|fin|sol|null),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*),(?:|[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\))"
-      },
-      "1": {
-        "ID": 1,
-        "Name": "Seperate",
-        "PreCompile": "Sep\\(\\)"
-      },
-      "2": {
-        "ID": 2,
-        "Name": "P(*)",
-        "PreCompile": "^P\\(([A-Za-z]+)"
-      },
-      "3": {
-        "ID": 3,
-        "Name": "*(sol",
-        "PreCompile": "^(((P|Pd)\\()|((S|V|Vd)\\(sol,))"
-      },
-      "4": {
-        "ID": 4,
-        "Name": "h|u",
-        "PreCompile": "h|u"
-      },
-      "5": {
-        "ID": 5,
-        "Name": "v|u",
-        "PreCompile": "v|u"
-      },
-      "6": {
-        "ID": 6,
-        "Name": "extract_name",
-        "PreCompile": "^([A-Za-z]+)"
-      },
-      "7": {
-        "ID": 7,
-        "Name": "c|u",
-        "PreCompile": "c|u"
-      },
-      "8": {
-        "ID": 8,
-        "Name": "o|u",
-        "PreCompile": "o|u"
-      },
-      "9": {
-        "ID": 9,
-        "Name": "Sep_Parser",
-        "PreCompile": "(.|\n)"
-      },
-      "10": {
-        "ID": 10,
-        "Name": "Sep_SVG",
-        "PreCompile": "( |,)+"
-      },
-      "11": {
-        "ID": 11,
-        "Name": "P(newline)",
-        "PreCompile": "P\\((?:newline)\\d+(?:|-[A-Za-z]+\\d+(?:-[A-Za-z]+\\d+)*)\\)"
+        "NameAlt": "P($13)"
+        
       }
     }
   }
