@@ -2,6 +2,9 @@ defmodule Thaqqa.GsubRegister do
   def get_gsub() do
   end
 
+  defp detect_precompile() do
+  end
+
   def add_gsub() do
   end
 

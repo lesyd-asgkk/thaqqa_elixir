@@ -1,9 +1,13 @@
+# todo too_many_subjectの適応、かつ初期制限(safety_num)引数の追加
+
 defmodule Thaqqa.DataTable do
   alias Thaqqa.FontRegistry, as: FontRegistry
   alias Thaqqa.FontRegistry.Error, as: Error
   alias Thaqqa.Column, as: Column
   alias Thaqqa.Data, as: Data
   alias Thaqqa.Font, as: Font
+
+  use Thaqqa.DataTable.Const
 
   defstruct [
     :name,
@@ -37,7 +41,7 @@ defmodule Thaqqa.DataTable do
       :float -> is_float(val) || is_integer(val)
       :int -> is_integer(val)
       :bool -> is_boolean(val)
-      :volatilty -> true
+      :volatility -> true
     end
   end
 
@@ -64,9 +68,9 @@ defmodule Thaqqa.DataTable do
       false
     else
       case subtype do
-        :language -> val in ["universal", "khehyelu", "samlhta"]
-        :writing_direction -> val in ["universal", "vertical", "horizontal"]
-        :gpos -> val in ["internal", "external", "kerning", "diacritical"]
+        :language -> val in @language_list
+        :writing_direction -> val in @writing_direction_list
+        :gpos -> val in @gpos_list
         _ -> true
       end
     end
@@ -227,11 +231,11 @@ defmodule Thaqqa.DataTable do
   end
 
   defp attach_id(value_map, table) when is_map(value_map) do
-    if Map.has_key?(value_map, "ID") do
+    if Map.has_key?(value_map, @id) do
       value_map
     else
       least_id = get_least_available_id(table)
-      Map.put(value_map, "ID", least_id)
+      Map.put(value_map, @id, least_id)
       value_map
     end
   end
@@ -326,28 +330,20 @@ defmodule Thaqqa.DataTable do
 
   defp validate_value_map(value_map, column_list) when is_map(value_map) do
     # ※volatilityの編集拒否はwrapper module側(LetterEditorとか)で行う
-    Enum.reduce(column_list, [], fn %Column{
-                                      name: name,
-                                      type: type,
-                                      subtype: subtype
-                                    },
-                                    acc ->
-      if Map.has_key?(value_map, name) do
-        # is_value_range_valid?も追加。検証対象とする
-        # :name領域重複も検出（今後）
-        cond do
-          !is_value_valid?(Map.get(value_map, name), type) ->
-            [Error.invalid_value_type(Map.get(value_map, name), type) | acc]
+    Enum.reduce(column_list, [], fn %Column{name: name, type: type, subtype: subtype}, acc ->
+      if Map.has_key?(value_map, name),
+        do:
+          (cond do
+             !is_value_valid?(Map.get(value_map, name), type) ->
+               [Error.invalid_value_type(Map.get(value_map, name), type) | acc]
 
-          !is_value_range_valid?(Map.get(value_map, name), type, subtype) ->
-            [Error.invalid_value_range(Map.get(value_map, name), type, subtype) | acc]
+             !is_value_range_valid?(Map.get(value_map, name), type, subtype) ->
+               [Error.invalid_value_range(Map.get(value_map, name), type, subtype) | acc]
 
-          true ->
-            [{:ok, nil} | acc]
-        end
-      else
-        [{:ok, nil} | acc]
-      end
+             true ->
+               [{:ok, nil} | acc]
+           end),
+        else: [{:ok, nil} | acc]
     end)
     |> Enum.reduce_while({:ok, []}, fn
       {:ok, str}, {:ok, acc} ->
@@ -363,17 +359,9 @@ defmodule Thaqqa.DataTable do
   end
 
   defp modify_value_map(value_map, table) when is_map(value_map) do
-    Enum.reduce(table.column_list, value_map, fn %Column{
-                                                   name: name,
-                                                   type: type,
-                                                   subtype: subtype
-                                                 },
+    Enum.reduce(table.column_list, value_map, fn %Column{name: name, type: type, subtype: subtype},
                                                  acc ->
       if Map.has_key?(acc, name) do
-        # 事前にコンパイルしておく
-        # if type == :string and subtype == :pre_compiled,
-        # do: Map.put(acc, name, Map.get(acc, name) |> Regex.compile!()),
-        # else:
         acc
       else
         val_init = init_val(nil, type, subtype)
@@ -382,9 +370,9 @@ defmodule Thaqqa.DataTable do
     end)
   end
 
-  def add_data!(%__MODULE__{column_list: column_list} = table, value_map)
-      when is_map(value_map) do
-    case add_data(table, value_map) do
+  def add_data!(%__MODULE__{} = table, value_map) when is_map(value_map) do
+    add_data(table, value_map)
+    |> case do
       {:error, msg} -> raise msg
       {:ok, v} -> v
     end
@@ -399,17 +387,30 @@ defmodule Thaqqa.DataTable do
       {:ok, v} ->
         value_map = value_map |> modify_value_map(table) |> attach_id(table)
         new_data = %Data{value_list: value_map}
-        {:ok, %{table | data_list: datas ++ [new_data]}}
+        {:ok, %{table | data_list: [new_data | datas]}}
     end
   end
 
-  def delete_data(%__MODULE__{data_list: datas} = table, filter_fun) do
-    new_datas = Enum.filter(datas, filter_fun)
-    %{table | data_list: new_datas}
+  def delete_data!(%__MODULE__{data_list: datas} = table, filter_fun, safety_num \\ 1) do
+    delete_data(table, filter_fun, safety_num)
+    |> case do
+      {:error, msg} -> raise msg
+      {:ok, v} -> v
+    end
   end
 
-  def edit_data!(%__MODULE__{} = table, filter_fun, new_value_map) do
-    case edit_data(table, filter_fun, new_value_map) do
+  def delete_data(%__MODULE__{data_list: datas} = table, filter_fun, safety_num \\ 1) do
+    new_datas = Enum.filter(datas, filter_fun)
+    data_sub = datas -- new_datas
+
+    if length(data_sub) > safety_num,
+      do: Error.too_many_subject(data_sub, :delete),
+      else: {:ok, %{table | data_list: new_datas}}
+  end
+
+  def edit_data!(%__MODULE__{} = table, filter_fun, new_value_map, safety_num \\ 1) do
+    edit_data(table, filter_fun, new_value_map)
+    |> case do
       {:error, msg} -> raise msg
       {:ok, v} -> v
     end
@@ -418,7 +419,8 @@ defmodule Thaqqa.DataTable do
   def edit_data(
         %__MODULE__{data_list: datas, column_list: column_list} = table,
         filter_fun,
-        new_value_map
+        new_value_map,
+        safety_num \\ 1
       ) do
     case validate_data(table, new_value_map, column_list, :edit) do
       {:error, msg} ->
@@ -427,14 +429,16 @@ defmodule Thaqqa.DataTable do
       {:ok, _} ->
         new_datas =
           Enum.map(datas, fn %Data{} = data ->
-            if filter_fun.(data) do
-              %Data{data | value_list: Map.merge(data.value_list, new_value_map)}
-            else
-              data
-            end
+            if filter_fun.(data),
+              do: %Data{data | value_list: Map.merge(data.value_list, new_value_map)},
+              else: data
           end)
 
-        {:ok, %{table | data_list: new_datas}}
+        data_sub = datas -- new_datas
+
+        if length(data_sub) > safety_num,
+          do: Error.too_many_subject(data_sub, :delete),
+          else: {:ok, %{table | data_list: new_datas}}
     end
   end
 
@@ -443,4 +447,7 @@ defmodule Thaqqa.DataTable do
 
   def update_fontregistry(%__MODULE__{name: name, parent: parent} = table),
     do: Font.edit_table(parent, name, table) |> Font.update_fontregistry()
+
+  def update_fontregistry(%{} = map),
+    do: Enum.map(map, fn %__MODULE__{} = table -> update_fontregistry(table) end)
 end

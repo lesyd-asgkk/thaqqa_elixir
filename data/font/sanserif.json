@@ -164,9 +164,9 @@
       },
       "PreCompile": {
         "name": "PreCompile",
-        "type": "volatilty",
+        "type": "volatility",
         "order": 9,
-        "subtype": "precompile",
+        "subtype": "regex",
         "dev": false
       }
     },
@@ -8488,9 +8488,9 @@
       },
       "PreCompile": {
         "name": "PreCompile",
-        "type": "volatilty",
+        "type": "volatility",
         "order": 6,
-        "subtype": "precompile",
+        "subtype": "regex",
         "dev": false
       }
     },
@@ -8523,6 +8523,13 @@
         "name": "Path",
         "type": "string",
         "dev": false
+      },
+            "PreCompile": {
+        "name": "PreCompile",
+        "type": "volatility",
+        "subtype": "path",
+        "dev": false
+        
       }
     },
     "data": {

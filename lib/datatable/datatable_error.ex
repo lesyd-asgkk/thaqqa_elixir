@@ -70,4 +70,13 @@ defmodule Thaqqa.FontRegistry.Error do
          detail: :subtype,
          meta: %{column_name: column, subtype: subtype}
        }}
+
+  def too_many_subject(values, op),
+    do:
+      {:error,
+       %__MODULE__{
+         type: :subject,
+         detail: :too_many_elements,
+         meta: %{subject_list: values, operation: op}
+       }}
 end

@@ -28,8 +28,8 @@ defmodule Thaqqa.Column do
   # :path :regexの２種類（いずれも直接編集不可）
 
   def is_available_type(type) when is_binary(type),
-    do: type in ["string", "float", "int", "bool", "volatilty"]
+    do: type in ["string", "float", "int", "bool", "volatility"]
 
   def is_available_type(type) when is_atom(type),
-    do: type in [:string, :float, :int, :bool, :volatilty]
+    do: type in [:string, :float, :int, :bool, :volatility]
 end

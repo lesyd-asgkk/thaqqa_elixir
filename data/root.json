@@ -1152,7 +1152,8 @@
       },
       "PreCompile": {
         "name": "PreCompile",
-        "type": "string",
+        "type": "volatility",
+        "subtype": "regex",
         "order": 6,
         "dev": false
       }
