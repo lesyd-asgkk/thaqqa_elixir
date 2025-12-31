@@ -103,7 +103,7 @@ defmodule Thaqqa.FontIO do
 
             data =
               Enum.reduce_while(v, ans, fn {_, v_}, ans_ ->
-                data_ = ans_ |> Map.drop(column_volatility) |> DataTable.add_data(v_)
+                data_ = ans_ |> Map.drop(column_volatility) |> DataTable.add_data(v_, true)
 
                 case data_ do
                   {:error, _msg} -> {:halt, data_}

@@ -26,11 +26,24 @@ defmodule Thaqqa.DataTable do
   defp init_val(val, type, subtype) do
     val ||
       case type do
-        :string -> ""
-        :float -> 0.0
-        :int -> if subtype == :natural, do: 1, else: 0
-        :bool -> false
-        _ -> nil
+        :string ->
+          ""
+
+        :float ->
+          0.0
+
+        :int ->
+          cond do
+            subtype == :natural -> 1
+            subtype == :id -> nil
+            true -> 0
+          end
+
+        :bool ->
+          false
+
+        _ ->
+          nil
       end
   end
 
@@ -231,13 +244,9 @@ defmodule Thaqqa.DataTable do
   end
 
   defp attach_id(value_map, table) when is_map(value_map) do
-    if Map.has_key?(value_map, @id) do
-      value_map
-    else
-      least_id = get_least_available_id(table)
-      Map.put(value_map, @id, least_id)
-      value_map
-    end
+    if Map.has_key?(value_map, @id) and Map.get(value_map, @id) != nil,
+      do: value_map,
+      else: Map.put(value_map, @id, get_least_available_id(table))
   end
 
   defp id_validation(%__MODULE__{} = table, data_alt, op) do
@@ -253,11 +262,8 @@ defmodule Thaqqa.DataTable do
         else: [{:ok, nil} | acc]
     end)
     |> Enum.reduce_while({:ok, []}, fn
-      {:ok, str}, {:ok, acc} ->
-        {:cont, {:ok, acc}}
-
-      {:error, reason}, _acc ->
-        {:halt, {:error, reason}}
+      {:ok, str}, {:ok, acc} -> {:cont, {:ok, acc}}
+      {:error, reason}, _acc -> {:halt, {:error, reason}}
     end)
     |> case do
       {:error, reason} -> {:error, reason}
@@ -265,9 +271,8 @@ defmodule Thaqqa.DataTable do
     end
   end
 
-  # nameでのvalidation。uniqueのがよいかも？　（空文字はokとする)
   # unique_column_conflictはtablenameを反映させるようにする
-  def unique_validation(%__MODULE__{} = table, data_alt, op) do
+  def unique_validation(%__MODULE__{name: tablename} = table, data_alt, op) do
     column_list =
       get_column(table, fn %Column{subtype: st} -> st in [:name, :id] end)
       |> Enum.map(fn %Column{name: name} -> name end)
@@ -276,15 +281,34 @@ defmodule Thaqqa.DataTable do
       k_str = if is_atom(k), do: Atom.to_string(k), else: k
 
       if k_str in column_list do
-        if get_data(
-             table,
-             &(&1 |> Thaqqa.Data.get_val(k_str) == v and (v != "" and v != nil))
-           ) != [],
-           do: [Error.unique_column_conflict(k_str, v, op) | acc],
-           else: [{:ok, nil} | acc]
+        if get_data(table, &(&1 |> Thaqqa.Data.get_val(k_str) == v and v not in ["", nil])) != [],
+          do: [Error.unique_column_conflict(tablename, k_str, v, op) | acc],
+          else: [{:ok, nil} | acc]
       else
         [{:ok, nil} | acc]
       end
+    end)
+    |> Enum.reduce_while({:ok, []}, fn
+      {:ok, str}, {:ok, acc} -> {:cont, {:ok, acc}}
+      {:error, reason}, _acc -> {:halt, {:error, reason}}
+    end)
+    |> case do
+      {:error, reason} -> {:error, reason}
+      {:ok, _} -> {:ok, nil}
+    end
+  end
+
+  def column_validation(%__MODULE__{name: tablename} = table, data_alt, op) do
+    column_list =
+      get_column(table, fn %Column{subtype: st} -> st in [:name, :id] end)
+      |> Enum.map(fn %Column{name: name} -> name end)
+
+    Enum.reduce(data_alt, [], fn {k, v}, acc ->
+      k_str = if is_atom(k), do: Atom.to_string(k), else: k
+
+      if k_str in column_list,
+        do: [{:ok, nil} | acc],
+        else: [Error.column_not_found(tablename, k_str, v, op) | acc]
     end)
     |> Enum.reduce_while({:ok, []}, fn
       {:ok, str}, {:ok, acc} ->
@@ -299,17 +323,27 @@ defmodule Thaqqa.DataTable do
     end
   end
 
-  defp validate_data(table, new_value_map, column_list, :add) do
+  defp validate_data(table, new_value_map, column_list, :add, force) do
     case validate_value_map(new_value_map, column_list) do
       {:error, msg} ->
         {:error, msg}
 
       {:ok, _} ->
-        unique_validation(table, new_value_map, :add)
+        if force do
+          unique_validation(table, new_value_map, :add)
+        else
+          case column_validation(table, new_value_map, :add) do
+            {:error, msg} ->
+              {:error, msg}
+
+            {:ok, _} ->
+              unique_validation(table, new_value_map, :add)
+          end
+        end
     end
   end
 
-  defp validate_data(table, new_value_map, column_list, :edit) do
+  defp validate_data(table, new_value_map, column_list, :edit, force) do
     case validate_value_map(new_value_map, column_list) do
       {:error, msg} ->
         {:error, msg}
@@ -320,7 +354,17 @@ defmodule Thaqqa.DataTable do
             {:error, msg}
 
           {:ok, _} ->
-            unique_validation(table, new_value_map, :edit)
+            if force do
+              unique_validation(table, new_value_map, :edit)
+            else
+              case column_validation(table, new_value_map, :edit) do
+                {:error, msg} ->
+                  {:error, msg}
+
+                {:ok, _} ->
+                  unique_validation(table, new_value_map, :edit)
+              end
+            end
         end
     end
   end
@@ -370,17 +414,21 @@ defmodule Thaqqa.DataTable do
     end)
   end
 
-  def add_data!(%__MODULE__{} = table, value_map) when is_map(value_map) do
-    add_data(table, value_map)
+  def add_data!(%__MODULE__{} = table, value_map, force \\ false) when is_map(value_map) do
+    add_data(table, value_map, force)
     |> case do
       {:error, msg} -> raise msg
       {:ok, v} -> v
     end
   end
 
-  def add_data(%__MODULE__{data_list: datas, column_list: column_list} = table, value_map)
+  def add_data(
+        %__MODULE__{data_list: datas, column_list: column_list} = table,
+        value_map,
+        force \\ false
+      )
       when is_map(value_map) do
-    case validate_data(table, value_map, column_list, :add) do
+    case validate_data(table, value_map, column_list, :add, force) do
       {:error, msg} ->
         {:error, msg}
 
@@ -422,7 +470,7 @@ defmodule Thaqqa.DataTable do
         new_value_map,
         safety_num \\ 1
       ) do
-    case validate_data(table, new_value_map, column_list, :edit) do
+    case validate_data(table, new_value_map, column_list, :edit, false) do
       {:error, msg} ->
         {:error, msg}
 

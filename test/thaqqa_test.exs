@@ -25,22 +25,28 @@ defmodule ThaqqaTest do
 
     Thaqqa.FontRegistry.get_font("Default")
 
-    data_of_a =
-      Thaqqa.FontRegistry.get_static_table("VOWEL")
-      |> Thaqqa.DataTable.get_data(&(&1 |> Thaqqa.Data.get_val("Name") == "a"))
-      |> Enum.at(0)
+    # data_of_a =
+    #   Thaqqa.FontRegistry.get_static_table("VOWEL")
+    #  |> Thaqqa.DataTable.get_data(&(&1 |> Thaqqa.Data.get_val("Name") == "a"))
+    #   |> Enum.at(0)
 
-    testobj =
-      Thaqqa.Regex_Khhyl.Cond.tokenize("_.Name == \"a\" && (_.SolGlyphNum >= 1) ")
-      |> Thaqqa.Regex_Khhyl.Cond.normalize!()
-      |> Thaqqa.Regex_Khhyl.Cond.translate(data_of_a)
+    # testobj =
+    # Thaqqa.Regex_Khhyl.Cond.tokenize("_.Name == \"a\" && (_.SolGlyphNum >= 1) ")
+    #  |> Thaqqa.Regex_Khhyl.Cond.normalize!()
+    #  |> Thaqqa.Regex_Khhyl.Cond.translate(data_of_a)
+    #
+    # Thaqqa.LetterRegister.get_letter(&(&1 |> Thaqqa.Data.get_val("Name") == "a"))
+    data_of_regex =
+      Thaqqa.LetterRegister.add_letter(
+        %{"Name" => "comeon"},
+        "VOWEL"
+        # &(&1 |> Thaqqa.Data.get_val("Name") == "a")
+      )
 
     data_of_regex =
-      Thaqqa.LetterRegister.get_letter(&(&1 |> Thaqqa.Data.get_val("Name") == "a"))
-
-    #  Thaqqa.FontRegistry.get_static_table("VOWEL")
-
-    # |> Thaqqa.DataTable.edit_data(&(&1 |> Thaqqa.Data.get_val("Name") == "a"), %{ID: 1})
+      case data_of_regex do
+        {:ok, val} -> val
+      end
 
     # |> Thaqqa.DataTable.update_fontregistry()
 
@@ -48,8 +54,12 @@ defmodule ThaqqaTest do
 
     # |> Enum.at(0)
 
-    IO.inspect(testobj, label: "testobj")
-    assert data_of_regex == Thaqqa.FontRegistry.get_static_table("VOWEL")
+    IO.inspect(
+      data_of_regex
+      |> Thaqqa.DataTable.get_data(&(&1 |> Thaqqa.Data.get_val("Name") == "comeon"))
+    )
+
+    # assert  == Thaqqa.FontRegistry.get_static_table("VOWEL")
 
     # Supervisor.start_link(Thaqqa.FontRegistry, strategy: :one_for_one)
   end

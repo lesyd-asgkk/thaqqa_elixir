@@ -14,13 +14,23 @@ defmodule Thaqqa.FontRegistry.Error do
        }}
 
   # ユニーク行での衝突（※""は例外とする)
-  def unique_column_conflict(column, name, op),
+  def unique_column_conflict(tablename, column, name, op),
     do:
       {:error,
        %__MODULE__{
          type: :conflict,
          detail: :data,
-         meta: %{column_name: column, name: name, operation: op}
+         meta: %{table_name: tablename, column_name: column, name: name, operation: op}
+       }}
+
+  # ユニーク行での衝突（※""は例外とする)
+  def column_not_found(tablename, column, name, op),
+    do:
+      {:error,
+       %__MODULE__{
+         type: :invalid,
+         detail: :not_found,
+         meta: %{table_name: tablename, column_name: column, name: name}
        }}
 
   def invalid_datatype(type),
@@ -76,7 +86,7 @@ defmodule Thaqqa.FontRegistry.Error do
       {:error,
        %__MODULE__{
          type: :subject,
-         detail: :too_many_elements,
+         detail: :too_many_subjects,
          meta: %{subject_list: values, operation: op}
        }}
 end
