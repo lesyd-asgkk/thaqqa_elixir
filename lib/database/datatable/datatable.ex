@@ -21,7 +21,7 @@ defmodule Thaqqa.DataTable do
     do: %__MODULE__{name: name, parent: parent, desc: "", column_list: [], data_list: []}
 
   # 初期値設定のため
-  defp init_val(val, type), do: init_val(val, type, :none)
+  # defp init_val(val, type), do: init_val(val, type, :none)
 
   defp init_val(val, type, subtype) do
     val ||
@@ -74,7 +74,7 @@ defmodule Thaqqa.DataTable do
     end
   end
 
-  def is_value_range_valid?(val, :volatility, _subtype), do: true
+  def is_value_range_valid?(_val, :volatility, _subtype), do: true
 
   def is_value_range_valid?(val, :string, subtype) do
     if !is_binary(val) do
@@ -89,7 +89,7 @@ defmodule Thaqqa.DataTable do
     end
   end
 
-  def is_value_range_valid?(val, type, subtype) when type in [:float, :bool] do
+  def is_value_range_valid?(val, type, _subtype) when type in [:float, :bool] do
     case type do
       :float -> is_float(val) || is_integer(val)
       :bool -> is_boolean(val)
@@ -101,11 +101,11 @@ defmodule Thaqqa.DataTable do
   def get_column(%__MODULE__{column_list: columns}, filter_fun \\ fn _ -> true end),
     do: Enum.filter(columns, filter_fun)
 
-  def get_column(%__MODULE__{column_list: cols}, column_name),
-    do: Enum.find(cols, fn %Column{name: name} -> name == column_name end)
+  # def get_column(%__MODULE__{column_list: cols}, column_name),
+  #  do: Enum.find(cols, fn %Column{name: name} -> name == column_name end)
 
   def add_column!(
-        %__MODULE__{column_list: cols, data_list: datas} = table,
+        %__MODULE__{} = table,
         column_name,
         type,
         desc \\ "",
@@ -249,12 +249,12 @@ defmodule Thaqqa.DataTable do
       else: Map.put(value_map, @id, get_least_available_id(table))
   end
 
-  defp id_validation(%__MODULE__{} = table, data_alt, op) do
+  defp id_validation(%__MODULE__{} = table, data_alt, _op) do
     column_list =
       get_column(table, fn %Column{subtype: st} -> st == :id end)
       |> Enum.map(fn %Column{name: name} -> name end)
 
-    Enum.reduce(data_alt, [], fn {k, v}, acc ->
+    Enum.reduce(data_alt, [], fn {k, _v}, acc ->
       k_str = if is_atom(k), do: Atom.to_string(k), else: k
 
       if k_str in column_list,
@@ -262,7 +262,7 @@ defmodule Thaqqa.DataTable do
         else: [{:ok, nil} | acc]
     end)
     |> Enum.reduce_while({:ok, []}, fn
-      {:ok, str}, {:ok, acc} -> {:cont, {:ok, acc}}
+      {:ok, _str}, {:ok, acc} -> {:cont, {:ok, acc}}
       {:error, reason}, _acc -> {:halt, {:error, reason}}
     end)
     |> case do
@@ -289,7 +289,7 @@ defmodule Thaqqa.DataTable do
       end
     end)
     |> Enum.reduce_while({:ok, []}, fn
-      {:ok, str}, {:ok, acc} -> {:cont, {:ok, acc}}
+      {:ok, _str}, {:ok, acc} -> {:cont, {:ok, acc}}
       {:error, reason}, _acc -> {:halt, {:error, reason}}
     end)
     |> case do
@@ -311,7 +311,7 @@ defmodule Thaqqa.DataTable do
         else: [Error.column_not_found(tablename, k_str, v, op) | acc]
     end)
     |> Enum.reduce_while({:ok, []}, fn
-      {:ok, str}, {:ok, acc} ->
+      {:ok, _str}, {:ok, acc} ->
         {:cont, {:ok, acc}}
 
       {:error, reason}, _acc ->
@@ -333,11 +333,8 @@ defmodule Thaqqa.DataTable do
           unique_validation(table, new_value_map, :add)
         else
           case column_validation(table, new_value_map, :add) do
-            {:error, msg} ->
-              {:error, msg}
-
-            {:ok, _} ->
-              unique_validation(table, new_value_map, :add)
+            {:error, msg} -> {:error, msg}
+            {:ok, _} -> unique_validation(table, new_value_map, :add)
           end
         end
     end
@@ -354,17 +351,14 @@ defmodule Thaqqa.DataTable do
             {:error, msg}
 
           {:ok, _} ->
-            if force do
-              unique_validation(table, new_value_map, :edit)
-            else
-              case column_validation(table, new_value_map, :edit) do
-                {:error, msg} ->
-                  {:error, msg}
-
-                {:ok, _} ->
-                  unique_validation(table, new_value_map, :edit)
-              end
-            end
+            if force,
+              do: unique_validation(table, new_value_map, :edit),
+              else:
+                column_validation(table, new_value_map, :edit)
+                |> (case do
+                      {:error, msg} -> {:error, msg}
+                      {:ok, _} -> unique_validation(table, new_value_map, :edit)
+                    end)
         end
     end
   end
@@ -390,7 +384,7 @@ defmodule Thaqqa.DataTable do
         else: [{:ok, nil} | acc]
     end)
     |> Enum.reduce_while({:ok, []}, fn
-      {:ok, str}, {:ok, acc} ->
+      {:ok, _str}, {:ok, acc} ->
         {:cont, {:ok, acc}}
 
       {:error, reason}, _acc ->
@@ -432,14 +426,14 @@ defmodule Thaqqa.DataTable do
       {:error, msg} ->
         {:error, msg}
 
-      {:ok, v} ->
+      {:ok, _v} ->
         value_map = value_map |> modify_value_map(table) |> attach_id(table)
         new_data = %Data{value_list: value_map}
         {:ok, %{table | data_list: [new_data | datas]}}
     end
   end
 
-  def delete_data!(%__MODULE__{data_list: datas} = table, filter_fun, safety_num \\ 1) do
+  def delete_data!(%__MODULE__{} = table, filter_fun, safety_num \\ 1) do
     delete_data(table, filter_fun, safety_num)
     |> case do
       {:error, msg} -> raise msg
@@ -457,7 +451,7 @@ defmodule Thaqqa.DataTable do
   end
 
   def edit_data!(%__MODULE__{} = table, filter_fun, new_value_map, safety_num \\ 1) do
-    edit_data(table, filter_fun, new_value_map)
+    edit_data(table, filter_fun, new_value_map, safety_num)
     |> case do
       {:error, msg} -> raise msg
       {:ok, v} -> v
@@ -491,7 +485,7 @@ defmodule Thaqqa.DataTable do
   end
 
   def update_fontregistry(%__MODULE__{name: name, parent: nil} = table),
-    do: Thaqqa.FontRegistry.edit_static_table(name, table)
+    do: FontRegistry.edit_static_table(name, table)
 
   def update_fontregistry(%__MODULE__{name: name, parent: parent} = table),
     do: Font.edit_table(parent, name, table) |> Font.update_fontregistry()

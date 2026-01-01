@@ -30,7 +30,7 @@ defmodule Thaqqa.FontRegistry.Error do
        %__MODULE__{
          type: :invalid,
          detail: :not_found,
-         meta: %{table_name: tablename, column_name: column, name: name}
+         meta: %{table_name: tablename, column_name: column, name: name, operation: op}
        }}
 
   def invalid_datatype(type),

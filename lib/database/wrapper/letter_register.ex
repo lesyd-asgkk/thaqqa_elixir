@@ -30,13 +30,13 @@ defmodule Thaqqa.LetterRegister do
 
   defp unique_validation_letter(value_map, op) do
     get_table()
-    |> Enum.reduce_while([], fn {k, v}, acc ->
+    |> Enum.reduce_while([], fn {_k, v}, acc ->
       if v == nil do
         {:cont, [:ok | acc]}
       else
         case DataTable.unique_validation(v, value_map, op) do
           {:error, msg} -> {:halt, {:error, msg}}
-          {:ok, value} -> {:cont, [:ok | acc]}
+          {:ok, _value} -> {:cont, [:ok | acc]}
         end
       end
     end)
@@ -48,8 +48,8 @@ defmodule Thaqqa.LetterRegister do
 
   defp get_letter_num(filter_fun \\ fn _ -> true end) do
     get_letter(filter_fun)
-    |> Enum.reduce(0, fn {k, v}, acc ->
-      acc = acc + length(v)
+    |> Enum.reduce(0, fn {_k, v}, acc ->
+      acc + length(v)
     end)
   end
 
@@ -68,7 +68,6 @@ defmodule Thaqqa.LetterRegister do
     end
   end
 
-  # todo:delete,editの仕様変更につきここも個別errorに対応する
   def delete_letter!(table_name, filter_fun, safety_num \\ 1) do
     case delete_letter(table_name, filter_fun, safety_num) do
       {:error, msg} -> raise msg
@@ -77,12 +76,11 @@ defmodule Thaqqa.LetterRegister do
   end
 
   def delete_letter(table_name, filter_fun, safety_num \\ 1) do
-    if get_letter_num(filter_fun) > safety_num do
-      Error.too_many_subject(get_letter(filter_fun), :delete)
-    else
-      FontRegistry.get_static_table(table_name)
-      |> DataTable.delete_data(filter_fun, safety_num)
-    end
+    if get_letter_num(filter_fun) > safety_num,
+      do: Error.too_many_subject(get_letter(filter_fun), :delete),
+      else:
+        FontRegistry.get_static_table(table_name)
+        |> DataTable.delete_data(filter_fun, safety_num)
   end
 
   def edit_letter!(value_map, filter_fun, table_name, safety_num \\ 1)
@@ -95,18 +93,17 @@ defmodule Thaqqa.LetterRegister do
 
   def edit_letter(value_map, table_name, filter_fun, safety_num \\ 1)
       when table_name in @lettertable_list do
-    if get_letter_num(filter_fun) > safety_num do
-      Error.too_many_subject(get_letter(filter_fun), :edit)
-    else
-      unique_validation_letter(value_map, :edit)
-      |> case do
-        {:error, msg} ->
-          {:error, msg}
+    if get_letter_num(filter_fun) > safety_num,
+      do: Error.too_many_subject(get_letter(filter_fun), :edit),
+      else:
+        unique_validation_letter(value_map, :edit)
+        |> (case do
+              {:error, msg} ->
+                {:error, msg}
 
-        {:ok} ->
-          FontRegistry.get_static_table(table_name)
-          |> DataTable.edit_data(filter_fun, safety_num)
-      end
-    end
+              {:ok} ->
+                FontRegistry.get_static_table(table_name)
+                |> DataTable.edit_data(filter_fun, safety_num)
+            end)
   end
 end

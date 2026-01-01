@@ -9,4 +9,6 @@ defmodule SVG.Error do
 
   def invalid_value(val),
     do: {:error, %__MODULE__{type: :invalid, detail: :value, meta: %{value: val}}}
+
+  def message(t), do: t
 end

@@ -1,6 +1,6 @@
 defmodule Thaqqa.FontRegistry do
   use GenServer
-  import Thaqqa.Font
+  # import Thaqqa.Font
   @fonts :fonts
   @static_tables :static_tables
 

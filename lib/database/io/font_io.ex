@@ -45,11 +45,9 @@ defmodule Thaqqa.FontIO do
     # reduce_whileに書き換える
     table =
       Enum.reduce_while(data, [], fn {k, v}, acc ->
-        table_ = import_table(k, v)
-
-        case table_ do
-          {:error, _msg} -> {:halt, table_}
-          {:ok, value} -> {:cont, acc = [value | acc]}
+        case import_table(k, v) do
+          {:error, msg} -> {:halt, {:error, msg}}
+          {:ok, value} -> {:cont, [value | acc]}
         end
       end)
 

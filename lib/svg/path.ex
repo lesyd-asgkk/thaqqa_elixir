@@ -116,8 +116,6 @@ defmodule SVG.Path do
     end
   end
 
-  defp to_command(list, acum), do: to_command(list, acum, :None)
-
   defp to_command([], acum, _prev), do: Enum.reverse(acum)
 
   defp to_command(list, acum, prev) do

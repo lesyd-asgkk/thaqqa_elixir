@@ -1,6 +1,6 @@
 defmodule Thaqqa.Regex_Khhyl do
-  alias Thaqqa.Regex_Khhyl.AST, as: AST
-  alias Thaqqa.Regex_Khhyl.Error, as: Error
+  # alias Thaqqa.Regex_Khhyl.AST, as: AST
+  # alias Thaqqa.Regex_Khhyl.Error, as: Error
   alias Thaqqa.Regex_Khhyl.Translator, as: Translator
   alias Thaqqa.Regex_Khhyl.Normalizer, as: Normalizer
   alias Thaqqa.Regex_Khhyl.Tokenizer, as: Tokenizer

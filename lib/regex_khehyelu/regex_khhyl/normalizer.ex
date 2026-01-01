@@ -1,6 +1,6 @@
 defmodule Thaqqa.Regex_Khhyl.Normalizer do
   alias Thaqqa.Regex_Khhyl.AST, as: AST
-  import Thaqqa.Regex_Khhyl.Error
+  alias Thaqqa.Regex_Khhyl.Error, as: Error
 
   # 文章全体→Syllable(というか「一文字」)→Glyph群→Glyphの順に分解。
   # 括弧は同じ階層の別にnormalize対象として扱う
@@ -19,7 +19,7 @@ defmodule Thaqqa.Regex_Khhyl.Normalizer do
     t = normalize_sub(list, [], :sentence)
 
     case t do
-      {:error, msg} -> t
+      {:error, _msg} -> t
       _ -> {:ok, t}
     end
   end
