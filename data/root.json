@@ -1453,7 +1453,7 @@
         "Order": 10,
         "Priority": 0,
         "Name": "(V(*,a_)){2}(V(*,[_.Name!='a']_)|Vd(*)|Cd(*)|C(*)|P(*)|$)",
-        "NameAlt": "$1C(null,c0)$2"
+        "NameAlt": "\\1C(null,c0)\\2"
         
       },
       "33": {
@@ -1462,7 +1462,7 @@
         "Order": 10,
         "Priority": 0,
         "Name": "(V(*,e_)){2}(V(*,[_.Name!='e']_)|Vd(*)|Cd(*)|C(*)|P(*)|$)",
-        "NameAlt": "$1C(null,c0)$2"
+        "NameAlt": "\\1C(null,c0)\\2"
         
       },
       "34": {
@@ -1471,7 +1471,7 @@
         "Order": 10,
         "Priority": 0,
         "Name": "(V(*,i_)){2}(V(*,[_.Name!='i']_)|Vd(*)|Cd(*)|C(*)|P(*)|$)",
-        "NameAlt": "$1C(null,c0)$2"
+        "NameAlt": "\\1C(null,c0)\\2"
         
       },
       "35": {
@@ -1480,7 +1480,7 @@
         "Order": 10,
         "Priority": 0,
         "Name": "(V(*,o_)){2}(V(*,[_.Name!='o']_)|Vd(*)|Cd(*)|C(*)|P(*)|$)",
-        "NameAlt": "$1C(null,c0)$2"
+        "NameAlt": "\\1C(null,c0)\\2"
         
       },
       "36": {
@@ -1489,7 +1489,7 @@
         "Order": 10,
         "Priority": 0,
         "Name": "(V(*,u_)){2}(V(*,[_.Name!='u']_)|Vd(*)|Cd(*)|C(*)|P(*)|$)",
-        "NameAlt": "$1C(null,c0)$2"
+        "NameAlt": "\\1C(null,c0)\\2"
         
       },
       "37": {
@@ -1498,7 +1498,7 @@
         "Order": 10,
         "Priority": 0,
         "Name": "(V(*,v_)){2}(V(*,[_.Name!='v']_)|Vd(*)|Cd(*)|C(*)|P(*)|$)",
-        "NameAlt": "$1C(null,c0)$2"
+        "NameAlt": "\\1C(null,c0)\\2"
         
       },
       "38": {
@@ -1507,7 +1507,7 @@
         "Order": 10,
         "Priority": 0,
         "Name": "(V(*,eold_)){2}(V(*,[_.Name!='eold']_)|Vd(*)|Cd(*)|C(*)|P(*)|$)",
-        "NameAlt": "$1C(null,c0)$2"
+        "NameAlt": "\\1C(null,c0)\\2"
         
       },
       "39": {
@@ -1516,7 +1516,7 @@
         "Order": 10,
         "Priority": 0,
         "Name": "(V(*,iold_)){2}(V(*,[_.Name!='iold']_)|Vd(*)|Cd(*)|C(*)|P(*)|$)",
-        "NameAlt": "$1C(null,c0)$2"
+        "NameAlt": "\\1C(null,c0)\\2"
         
       },
       "40": {
@@ -1525,7 +1525,7 @@
         "Order": 10,
         "Priority": 0,
         "Name": "(V(*,abig_)){2}(V(*,[_.Name!='abig']_)|Vd(*)|Cd(*)|C(*)|P(*)|$)",
-        "NameAlt": "$1C(null,c0)$2"
+        "NameAlt": "\\1C(null,c0)\\2"
         
       },
       "41": {
@@ -1534,7 +1534,7 @@
         "Order": 10,
         "Priority": 0,
         "Name": "(C(*,[_.Name!='c']_))C(*,c_)(C(*,[_.Name!='c']_))",
-        "NameAlt": "$1$2"
+        "NameAlt": "\\1\\2"
         
       },
       "42": {
@@ -1732,7 +1732,7 @@
         "Order": 60,
         "Priority": 0,
         "Name": "(C(*)|V(*))R(h)",
-        "NameAlt": "$1C(null,kh0)"
+        "NameAlt": "\\1C(null,kh0)"
         
       },
       "64": {
@@ -1741,7 +1741,7 @@
         "Order": 60,
         "Priority": 1,
         "Name": "(^|P(*))R(h)",
-        "NameAlt": "$1C(null,h0)"
+        "NameAlt": "\\1C(null,h0)"
         
       },
       "65": {
@@ -1750,7 +1750,7 @@
         "Order": 60,
         "Priority": 2,
         "Name": "(^|P(*))R(n)(V(*,(?:a|e|i|o|u|v|eold|iold|abig)_)|C(*,c_)|R(l))",
-        "NameAlt": "$1C(null,n0)$2"
+        "NameAlt": "\\1C(null,n0)\\2"
         
       },
       "66": {
@@ -1759,7 +1759,7 @@
         "Order": 60,
         "Priority": 3,
         "Name": "(V(*,(?:a|e|i|o|u|v|eold|iold|abig)_)|R(l))R(n)(V(*,(?:a|e|i|o|u|v|eold|iold|abig)_)|R(l))",
-        "NameAlt": "$1C(null,n0)$2"
+        "NameAlt": "\\1C(null,n0)\\2"
         
       },
       "67": {
@@ -1768,7 +1768,7 @@
         "Order": 60,
         "Priority": 4,
         "Name": "(^|P(*))R(n)R(n)",
-        "NameAlt": "$1C(null,n0)R(n)"
+        "NameAlt": "\\1C(null,n0)R(n)"
         
       },
       "68": {
@@ -1777,7 +1777,7 @@
         "Order": 60,
         "Priority": 5,
         "Name": "(C(*))R(n)R(n)",
-        "NameAlt": "$1R(n)C(null,n0)"
+        "NameAlt": "\\1R(n)C(null,n0)"
         
       },
       "69": {
@@ -1786,7 +1786,7 @@
         "Order": 70,
         "Priority": 0,
         "Name": "(V(*)|C(null,[_.Name!='c']_))C(null,c_)*(V(*)|C(null,[_.Name!='c']_))",
-        "NameAlt": "$1$2"
+        "NameAlt": "\\1\\2"
         
       },
       "70": {
@@ -1849,7 +1849,7 @@
         "Order": 70,
         "Priority": 1,
         "Name": "(V(*,[!_.isBondtoPrev&&!_.isBondtoNext]_-*))",
-        "NameAlt": "Sep()$1Sep()"
+        "NameAlt": "Sep()\\1Sep()"
         
       },
       "77": {
@@ -1858,7 +1858,7 @@
         "Order": 70,
         "Priority": 2,
         "Name": "(V(*,[!_.isBondtoPrev&&_.isBondtoNext]_-*))",
-        "NameAlt": "Sep()$1"
+        "NameAlt": "Sep()\\1"
         
       },
       "78": {
@@ -1867,7 +1867,7 @@
         "Order": 70,
         "Priority": 3,
         "Name": "(V(*,[!_.isBondtoNext&&_.isBondtoPrev]_-*))",
-        "NameAlt": "$1Sep()"
+        "NameAlt": "\\1Sep()"
         
       },
       "79": {
@@ -1876,7 +1876,7 @@
         "Order": 70,
         "Priority": 4,
         "Name": "(V(*)|R(n)|R(l))(V(*)|R(n)|R(l))",
-        "NameAlt": "$1Sep()$2"
+        "NameAlt": "\\1Sep()\\2"
         
       },
       "80": {
@@ -1885,7 +1885,7 @@
         "Order": 70,
         "Priority": 5,
         "Name": "(C(*))(C(*))",
-        "NameAlt": "$1Sep()$2"
+        "NameAlt": "\\1Sep()\\2"
         
       },
       "81": {
@@ -1894,7 +1894,7 @@
         "Order": 70,
         "Priority": 6,
         "Name": "(V(*)|R(n)|R(l))(C(*))(V(*,[_.hasGreedyBond]_-*)|R(n)|R(l))",
-        "NameAlt": "$1Sep()$2$3"
+        "NameAlt": "\\1Sep()\\2\\3"
         
       },
       "82": {
@@ -1903,7 +1903,7 @@
         "Order": 70,
         "Priority": 7,
         "Name": "(V(*)|R(n)|R(l))(C(*))(V(*,[!_.hasGreedyBond]_-*))",
-        "NameAlt": "$1$2Sep()$3"
+        "NameAlt": "\\1\\2Sep()\\3"
         
       },
       "83": {
@@ -1912,7 +1912,7 @@
         "Order": 70,
         "Priority": 8,
         "Name": "(Sep())+(P(*)+)(Sep())+",
-        "NameAlt": "$2"
+        "NameAlt": "\\2"
         
       },
       "84": {
@@ -1930,7 +1930,7 @@
         "Order": 80,
         "Priority": 1,
         "Name": "(^|P(*))R(n)(P(*)|$)",
-        "NameAlt": "$1C(null,ng0)V(null,v0)C(null,ng0)$2"
+        "NameAlt": "\\1C(null,ng0)V(null,v0)C(null,ng0)\\2"
         
       },
       "86": {
@@ -1939,7 +1939,7 @@
         "Order": 80,
         "Priority": 2,
         "Name": "R(n)(Sep()C(*,(?:t|d|n|tl)_|(?:(?:t|tl|n)_-sy_)|(?:(?:t|th|s|hy)_-d_)|(?:tl_-sw_)))",
-        "NameAlt": "V(null,v0)C(null,n0)$1"
+        "NameAlt": "V(null,v0)C(null,n0)\\1"
         
       },
       "87": {
@@ -1947,8 +1947,8 @@
         "Language": "universal",
         "Order": 80,
         "Priority": 3,
-        "Name": "R(n)(Sep()C(*,(?:(?:t|th|n)_-hd_)|(?:(?:t)_-d_-hd)_|(?:(?:tl|n)_-hd_-sy_)|(?:th_-hd_-sw_)))",
-        "NameAlt": "V(null,v0)C(null,n0-hd0)$1"
+        "Name": "R(n)(Sep()C(*,(?:(?:t|th|n)_-hd_)|(?:(?:t)_-d_-hd_)|(?:(?:tl|n)_-hd_-sy_)|(?:th_-hd_-sw_)))",
+        "NameAlt": "V(null,v0)C(null,n0-hd0)\\1"
         
       },
       "88": {
@@ -1966,7 +1966,7 @@
         "Order": 80,
         "Priority": 5,
         "Name": "R(n)((?:Sep()(?:C(*)|V(*)|P(*)))|$)",
-        "NameAlt": "V(null,v0)C(null,ng0)$1"
+        "NameAlt": "V(null,v0)C(null,ng0)\\1"
         
       },
       "90": {
@@ -1975,7 +1975,7 @@
         "Order": 80,
         "Priority": 7,
         "Name": "(C(*,r_))R(l)",
-        "NameAlt": "$1V(null,v0)C(null,r0)"
+        "NameAlt": "\\1V(null,v0)C(null,r0)"
         
       },
       "91": {
@@ -1984,7 +1984,7 @@
         "Order": 80,
         "Priority": 8,
         "Name": "(P(*)|Sep())R(l)(P(*)|Sep())",
-        "NameAlt": "$1C(null,l0)V(null,v0)C(null,l0)$2"
+        "NameAlt": "\\1C(null,l0)V(null,v0)C(null,l0)\\2"
         
       },
       "92": {
@@ -1993,7 +1993,7 @@
         "Order": 90,
         "Priority": 0,
         "Name": "C(*,(*))V((*),(*))C(*,(*))",
-        "NameAlt": "S($2,$1,$3,$4)"
+        "NameAlt": "S(\\2,\\1,\\3,\\4)"
         
       },
       "93": {
@@ -2002,7 +2002,7 @@
         "Order": 90,
         "Priority": 1,
         "Name": "V((*),(*))C(*,(*))",
-        "NameAlt": "S($1,,$2,$3)"
+        "NameAlt": "S(\\1,,\\2,\\3)"
         
       },
       "94": {
@@ -2011,7 +2011,7 @@
         "Order": 90,
         "Priority": 2,
         "Name": "C(*,(*))V((*),(*))",
-        "NameAlt": "S($2,$1,$3,)"
+        "NameAlt": "S(\\2,\\1,\\3,)"
         
       },
       "95": {
@@ -2020,7 +2020,7 @@
         "Order": 90,
         "Priority": 3,
         "Name": "V((*),(*))",
-        "NameAlt": "S($1,,$2,)"
+        "NameAlt": "S(\\1,,\\2,)"
         
       },
       "96": {
@@ -2281,7 +2281,7 @@
         "Order": 70,
         "Priority": 6,
         "Name": "(V(*)|R(n)|R(l))(C(*))(V(*,[_.hasGreedyBond]_-*)|R(n)|R(l))",
-        "NameAlt": "$1Sep()$2$3"
+        "NameAlt": "\\1Sep()\\2\\3"
         
       },
       "125": {
@@ -2290,7 +2290,7 @@
         "Order": 70,
         "Priority": 7,
         "Name": "(V(*)|R(n)|R(l))(C(*))(V(*,[!_.hasGreedyBond]_-*))",
-        "NameAlt": "$1$2Sep()$3"
+        "NameAlt": "\\1\\2Sep()\\3"
         
       },
       "126": {
@@ -2326,7 +2326,7 @@
         "Order": 60,
         "Priority": 6,
         "Name": "(V(*)|R(l))R(n)(V(*)|R(l))",
-        "NameAlt": "$1C(null,n0)$2"
+        "NameAlt": "\\1C(null,n0)\\2"
         
       },
       "130": {
@@ -2344,7 +2344,7 @@
         "Order": 60,
         "Priority": 6,
         "Name": "(V(*)|R(l))R(n)(V(*)|R(l))",
-        "NameAlt": "$1C(null,n0)$2"
+        "NameAlt": "\\1C(null,n0)\\2"
         
       },
       "132": {
@@ -2371,7 +2371,7 @@
         "Order": 90,
         "Priority": -1,
         "Name": "(V(*,[!_.hasGreedyBond]_-*))C(*,(*))(P(*)|C(*)|Sep()|$)",
-        "NameAlt": "$1S(null,,a0,$2)$3"
+        "NameAlt": "\\1S(null,,a0,\\2)\\3"
         
       },
       "135": {
@@ -2632,7 +2632,7 @@
         "Order": 20,
         "Priority": 0,
         "Name": "V(*,(abig_|a_|e_|i_|o_|u_|v_|eold_|iold_))Vd(*,(sone_|stwo_|sthree_|sfour_))",
-        "NameAlt": "V(null,$1-$2)"
+        "NameAlt": "V(null,\\1-\\2)"
         
       },
       "164": {
@@ -2641,7 +2641,7 @@
         "Order": 20,
         "Priority": 0,
         "Name": "V(*,(abig_|a_|e_|i_|o_|u_|v_|eold_|iold_))(C(*))Vd(*,(sone_|stwo_|sthree_|sfour_))",
-        "NameAlt": "V(null,$1-$3)$2"
+        "NameAlt": "V(null,\\1-\\3)\\2"
         
       },
       "165": {
@@ -2801,7 +2801,7 @@
         "Order": 10,
         "Priority": 1,
         "Name": "S(fin,(t_-*),(.)0(-*),(t_-*))",
-        "NameAlt": "S(fin,$1,$23$3,$4)"
+        "NameAlt": "S(fin,\\1,\\23\\3,\\4)"
         
       },
       "1": {
@@ -2810,7 +2810,7 @@
         "Order": 10,
         "Priority": 3,
         "Name": "S(fin,(*),(.)0(-*),(t_-*))",
-        "NameAlt": "S(fin,$1,$22$3,$4)"
+        "NameAlt": "S(fin,\\1,\\22\\3,\\4)"
         
       },
       "2": {
@@ -2819,7 +2819,7 @@
         "Order": 10,
         "Priority": 2,
         "Name": "S(fin,(t_-*),(.)0(-*),(*))",
-        "NameAlt": "S(fin,$1,$21$3,$4)"
+        "NameAlt": "S(fin,\\1,\\21\\3,\\4)"
         
       },
       "3": {
@@ -2828,7 +2828,7 @@
         "Order": 10,
         "Priority": 0,
         "Name": "S(mid,(t_-*),(.)0(-*),(*))",
-        "NameAlt": "S(mid,$1,$21$3,$4)"
+        "NameAlt": "S(mid,\\1,\\21\\3,\\4)"
         
       },
       "4": {
@@ -2837,7 +2837,7 @@
         "Order": 5,
         "Priority": 27,
         "Name": "S(null,(*),(br|omit)_,(*))",
-        "NameAlt": "S(mid,$1,a_-*,,)S(sol,,$21,)S(mid,,a_-*,$3)"
+        "NameAlt": "S(mid,\\1,a_-*,,)S(sol,,\\21,)S(mid,,a_-*,\\3)"
         
       },
       "5": {
@@ -2846,7 +2846,7 @@
         "Order": 5,
         "Priority": 26,
         "Name": "S(null,,(br|omit)_,(*))",
-        "NameAlt": "S(mid,,a_-*,,)S(sol,,$11,)S(mid,,a_-*,$2)"
+        "NameAlt": "S(mid,,a_-*,,)S(sol,,\\11,)S(mid,,a_-*,\\2)"
         
       },
       "6": {
@@ -2855,7 +2855,7 @@
         "Order": 5,
         "Priority": 25,
         "Name": "S(null,(*),iold_(-*),(*))",
-        "NameAlt": "S(init,$1,iold0$2,$3)"
+        "NameAlt": "S(init,\\1,iold0\\2,\\3)"
         
       },
       "7": {
@@ -2864,7 +2864,7 @@
         "Order": 5,
         "Priority": 24,
         "Name": "S(null,,iold_(-*),(*))",
-        "NameAlt": "S(init,,iold0$1,$2)"
+        "NameAlt": "S(init,,iold0\\1,\\2)"
         
       },
       "8": {
@@ -2873,7 +2873,7 @@
         "Order": 5,
         "Priority": 23,
         "Name": "S(null,(*),iold_(-*),)",
-        "NameAlt": "S(fin,$1,iold0$2,)"
+        "NameAlt": "S(fin,\\1,iold0\\2,)"
         
       },
       "9": {
@@ -2882,7 +2882,7 @@
         "Order": 5,
         "Priority": 2,
         "Name": "S(null,(*),eold_(-*),(*))",
-        "NameAlt": "S(fin,$1,eold0$2,$3)"
+        "NameAlt": "S(fin,\\1,eold0\\2,\\3)"
         
       },
       "10": {
@@ -2891,7 +2891,7 @@
         "Order": 5,
         "Priority": 21,
         "Name": "S(null,,eold_(-*),(*))",
-        "NameAlt": "S(init,,eold0$1,$2)"
+        "NameAlt": "S(init,,eold0\\1,\\2)"
         
       },
       "11": {
@@ -2900,7 +2900,7 @@
         "Order": 5,
         "Priority": 20,
         "Name": "S(null,(*),eold_(-*),)",
-        "NameAlt": "S(fin,$1,eold0$2,)"
+        "NameAlt": "S(fin,\\1,eold0\\2,)"
         
       },
       "12": {
@@ -2909,7 +2909,7 @@
         "Order": 5,
         "Priority": 19,
         "Name": "S(null,(*),v_(-*),(*))",
-        "NameAlt": "S(fin,$1,v1$2,$3)"
+        "NameAlt": "S(fin,\\1,v1\\2,\\3)"
         
       },
       "13": {
@@ -2918,7 +2918,7 @@
         "Order": 5,
         "Priority": 18,
         "Name": "S(null,,v_(-*),(*))",
-        "NameAlt": "S(init,,v0$1,$2)"
+        "NameAlt": "S(init,,v0\\1,\\2)"
         
       },
       "14": {
@@ -2927,7 +2927,7 @@
         "Order": 5,
         "Priority": 17,
         "Name": "S(null,(*),v_(-*),)",
-        "NameAlt": "S(fin,$1,v1$2,)"
+        "NameAlt": "S(fin,\\1,v1\\2,)"
         
       },
       "15": {
@@ -2936,7 +2936,7 @@
         "Order": 5,
         "Priority": 16,
         "Name": "S(null,(*),u_(-*),(*))",
-        "NameAlt": "S(fin,$1,u1$2,$3)"
+        "NameAlt": "S(fin,\\1,u1\\2,\\3)"
         
       },
       "16": {
@@ -2945,7 +2945,7 @@
         "Order": 5,
         "Priority": 15,
         "Name": "S(null,,u_(-*),(*))",
-        "NameAlt": "S(init,,u0$1,$2)"
+        "NameAlt": "S(init,,u0\\1,\\2)"
         
       },
       "17": {
@@ -2954,7 +2954,7 @@
         "Order": 5,
         "Priority": 14,
         "Name": "S(null,(*),u_(-*),)",
-        "NameAlt": "S(fin,$1,u0$2,)"
+        "NameAlt": "S(fin,\\1,u0\\2,)"
         
       },
       "18": {
@@ -2963,7 +2963,7 @@
         "Order": 5,
         "Priority": 13,
         "Name": "S(null,(*),o_(-*),(*))",
-        "NameAlt": "S(init,$1,o0$2,$3)"
+        "NameAlt": "S(init,\\1,o0\\2,\\3)"
         
       },
       "19": {
@@ -2972,7 +2972,7 @@
         "Order": 5,
         "Priority": 12,
         "Name": "S(null,,o_(-*),(*))",
-        "NameAlt": "S(init,,o0$1,$2)"
+        "NameAlt": "S(init,,o0\\1,\\2)"
         
       },
       "20": {
@@ -2981,7 +2981,7 @@
         "Order": 5,
         "Priority": 11,
         "Name": "S(null,(*),o_(-*),)",
-        "NameAlt": "S(fin,$1,o0$2,)"
+        "NameAlt": "S(fin,\\1,o0\\2,)"
         
       },
       "21": {
@@ -2990,7 +2990,7 @@
         "Order": 5,
         "Priority": 10,
         "Name": "S(null,(*),i_(-*),(*))",
-        "NameAlt": "S(fin,$1,i1$2,$3)"
+        "NameAlt": "S(fin,\\1,i1\\2,\\3)"
         
       },
       "22": {
@@ -2999,7 +2999,7 @@
         "Order": 5,
         "Priority": 9,
         "Name": "S(null,,i_(-*),(*))",
-        "NameAlt": "S(init,,i0$1,$2)"
+        "NameAlt": "S(init,,i0\\1,\\2)"
         
       },
       "23": {
@@ -3008,7 +3008,7 @@
         "Order": 5,
         "Priority": 8,
         "Name": "S(null,(*),i_(-*),)",
-        "NameAlt": "S(fin,$1,i1$2,)"
+        "NameAlt": "S(fin,\\1,i1\\2,)"
         
       },
       "24": {
@@ -3017,7 +3017,7 @@
         "Order": 5,
         "Priority": 7,
         "Name": "S(null,(*),e_(-*),(*))",
-        "NameAlt": "S(fin,$1,e0$2,$3)"
+        "NameAlt": "S(fin,\\1,e0\\2,\\3)"
         
       },
       "25": {
@@ -3026,7 +3026,7 @@
         "Order": 5,
         "Priority": 6,
         "Name": "S(null,,e_(-*),(*))",
-        "NameAlt": "S(fin,x0,e0$1,$2)"
+        "NameAlt": "S(fin,x0,e0\\1,\\2)"
         
       },
       "26": {
@@ -3035,7 +3035,7 @@
         "Order": 5,
         "Priority": 5,
         "Name": "S(null,(*),e_(-*),)",
-        "NameAlt": "S(fin,$1,e0$2,)"
+        "NameAlt": "S(fin,\\1,e0\\2,)"
         
       },
       "27": {
@@ -3044,7 +3044,7 @@
         "Order": 5,
         "Priority": 4,
         "Name": "S(null,(*),(?:a|abig)_(-*),(*))",
-        "NameAlt": "S(mid,$1,a0$2,$3)"
+        "NameAlt": "S(mid,\\1,a0\\2,\\3)"
         
       },
       "28": {
@@ -3053,7 +3053,7 @@
         "Order": 5,
         "Priority": 3,
         "Name": "S(null,,(?:a|abig)_(-*),(*))",
-        "NameAlt": "S(init,,abig0$1,$2)"
+        "NameAlt": "S(init,,abig0\\1,\\2)"
         
       },
       "29": {
@@ -3062,7 +3062,7 @@
         "Order": 5,
         "Priority": 2,
         "Name": "S(null,(*),(?:a|abig)_(-*),)",
-        "NameAlt": "S(mid,$1,abig0$2,)"
+        "NameAlt": "S(mid,\\1,abig0\\2,)"
         
       },
       "30": {
@@ -3071,7 +3071,7 @@
         "Order": 5,
         "Priority": 0,
         "Name": "S(null,,a_(-*),)",
-        "NameAlt": "S(sol,,abig0$1,)"
+        "NameAlt": "S(sol,,abig0\\1,)"
         
       },
       "31": {
@@ -3080,7 +3080,7 @@
         "Order": 5,
         "Priority": 1,
         "Name": "S(null,,(.)_(-*),)",
-        "NameAlt": "S(sol,,$10$2,)"
+        "NameAlt": "S(sol,,\\10\\2,)"
         
       },
       "32": {
@@ -3089,7 +3089,7 @@
         "Order": 0,
         "Priority": 5,
         "Name": "S(null,(*),(+),(*))",
-        "NameAlt": "S(mid,$1,$2,$3)"
+        "NameAlt": "S(mid,\\1,\\2,\\3)"
         
       },
       "33": {
@@ -3098,7 +3098,7 @@
         "Order": 0,
         "Priority": 4,
         "Name": "S(null,(*),(+),(*))($|P(*))",
-        "NameAlt": "S(fin,$1,$2,$3)$4"
+        "NameAlt": "S(fin,\\1,\\2,\\3)\\4"
         
       },
       "34": {
@@ -3107,7 +3107,7 @@
         "Order": 0,
         "Priority": 3,
         "Name": "(^|P(*))S(null,(*),(+),(*))",
-        "NameAlt": "$1S(init,$2,$3,$4)"
+        "NameAlt": "\\1S(init,\\2,\\3,\\4)"
         
       },
       "35": {
@@ -3116,7 +3116,7 @@
         "Order": 0,
         "Priority": 2,
         "Name": "(^|P(*))S(null,(+),(+),(+))($|P(*))",
-        "NameAlt": "$1S(mid,$2,$3,$4)$5"
+        "NameAlt": "\\1S(mid,\\2,\\3,\\4)\\5"
         
       },
       "36": {
@@ -3125,7 +3125,7 @@
         "Order": 0,
         "Priority": 2,
         "Name": "(^|P(*))S(null,,(+),(+))($|P(*))",
-        "NameAlt": "$1S(init,,$2,$3)$4"
+        "NameAlt": "\\1S(init,,\\2,\\3)\\4"
         
       },
       "37": {
@@ -3134,7 +3134,7 @@
         "Order": 0,
         "Priority": 1,
         "Name": "(^|P(*))S(null,(+),(+),)($|P(*))",
-        "NameAlt": "$1S(fin,$2,$3,)$4"
+        "NameAlt": "\\1S(fin,\\2,\\3,)\\4"
         
       },
       "38": {
@@ -3143,7 +3143,7 @@
         "Order": 0,
         "Priority": 0,
         "Name": "(^|P(*))S(null,,(+),)($|P(*))",
-        "NameAlt": "$1S(sol,,$2,)$3"
+        "NameAlt": "\\1S(sol,,\\2,)\\3"
         
       },
       "39": {
@@ -3161,7 +3161,7 @@
         "Order": 20,
         "Priority": 0,
         "Name": "S(init,,a(_-*),)S((*),(*),a(_-*),(*))",
-        "NameAlt": "S(init,,abig$1,)S($2,$3,abig$4,$5)"
+        "NameAlt": "S(init,,abig\\1,)S(\\2,\\3,abig\\4,\\5)"
         
       },
       "41": {
@@ -3170,7 +3170,7 @@
         "Order": 20,
         "Priority": 1,
         "Name": "S(init,,a(_-*),)S((*),(*),(*),(*))",
-        "NameAlt": "S(init,,abig$1,)S($2,$3,$4,$5)"
+        "NameAlt": "S(init,,abig\\1,)S(\\2,\\3,\\4,\\5)"
         
       },
       "42": {
@@ -3179,7 +3179,7 @@
         "Order": 20,
         "Priority": 2,
         "Name": "S(init,,(*),)S((*),(*),a(_-*),(*))",
-        "NameAlt": "S(init,,$1,)S($2,$3,abig$4,$5)"
+        "NameAlt": "S(init,,\\1,)S(\\2,\\3,abig\\4,\\5)"
         
       },
       "43": {
@@ -3188,7 +3188,7 @@
         "Order": 20,
         "Priority": 3,
         "Name": "S((*),(*),a(_-*),(*))S(fin,,a(_-*),(*))",
-        "NameAlt": "S($1,$2,abig$3,$4)S(fin,,abig$5,$6)"
+        "NameAlt": "S(\\1,\\2,abig\\3,\\4)S(fin,,abig\\5,\\6)"
         
       },
       "44": {
@@ -3197,7 +3197,7 @@
         "Order": 20,
         "Priority": 4,
         "Name": "S((*),(*),a(_-*),(*))S(fin,,(*),(*))",
-        "NameAlt": "S($1,$2,abig$3,$4)S(fin,,$5,$6)"
+        "NameAlt": "S(\\1,\\2,abig\\3,\\4)S(fin,,\\5,\\6)"
         
       },
       "45": {
@@ -3206,7 +3206,7 @@
         "Order": 20,
         "Priority": 5,
         "Name": "S(init,(+),(*),(*))S((*),,([_.isVowel]_-*),(*))",
-        "NameAlt": "S(init,$1,$2,$3)S($4,x0,$5,$6)"
+        "NameAlt": "S(init,\\1,\\2,\\3)S(\\4,x0,\\5,\\6)"
         
       },
       "46": {
@@ -3215,7 +3215,7 @@
         "Order": 20,
         "Priority": 6,
         "Name": "S((*),(*),(*),(+))S(fin,,(*),(*))",
-        "NameAlt": "S($1,$2,$3,$4)S(fin,x0,$5,$6)"
+        "NameAlt": "S(\\1,\\2,\\3,\\4)S(fin,x0,\\5,\\6)"
         
       },
       "47": {
@@ -3224,7 +3224,7 @@
         "Order": 20,
         "Priority": 7,
         "Name": "S((*),(x_),a(_-*),(*))",
-        "NameAlt": "S($1,$2,abig$3,$4)"
+        "NameAlt": "S(\\1,\\2,abig\\3,\\4)"
         
       },
       "48": {
@@ -3233,7 +3233,7 @@
         "Order": 10,
         "Priority": 3,
         "Name": "S(fin,(*),(e|o|v|eold|iold)(_-*),t0(-*))",
-        "NameAlt": "S(fin,$1,$2$3,t1$4)"
+        "NameAlt": "S(fin,\\1,\\2\\3,t1\\4)"
         
       },
       "49": {
@@ -3242,7 +3242,7 @@
         "Order": 0,
         "Priority": 0,
         "Name": "(^|P(*))S(null,,(+),)($|P(*))",
-        "NameAlt": "$1S(sol,,$2,)$3"
+        "NameAlt": "\\1S(sol,,\\2,)\\3"
         
       },
       "50": {
@@ -3251,7 +3251,7 @@
         "Order": 0,
         "Priority": 6,
         "Name": "S(null,,(+),)",
-        "NameAlt": "S(sol,,$1,)"
+        "NameAlt": "S(sol,,\\1,)"
         
       },
       "51": {
@@ -3260,7 +3260,7 @@
         "Order": 0,
         "Priority": 2,
         "Name": "(^|P(*))S(null,,(+),(+))($|P(*))",
-        "NameAlt": "$1S(init,,$2,$3)$4"
+        "NameAlt": "\\1S(init,,\\2,\\3)\\4"
         
       },
       "52": {
@@ -3269,7 +3269,7 @@
         "Order": 0,
         "Priority": 1,
         "Name": "(^|P(*))S(null,(+),(+),)($|P(*))",
-        "NameAlt": "$1S(fin,$2,$3,)$4"
+        "NameAlt": "\\1S(fin,\\2,\\3,)\\4"
         
       },
       "53": {
@@ -3278,7 +3278,7 @@
         "Order": 0,
         "Priority": 2,
         "Name": "(^|P(*))S(null,(+),(+),(+))($|P(*))",
-        "NameAlt": "$1S(mid,$2,$3,$4)$5"
+        "NameAlt": "\\1S(mid,\\2,\\3,\\4)\\5"
         
       },
       "54": {
@@ -3287,7 +3287,7 @@
         "Order": 0,
         "Priority": 6,
         "Name": "S(null,,(+),)",
-        "NameAlt": "S(sol,,$1,)"
+        "NameAlt": "S(sol,,\\1,)"
         
       },
       "55": {
@@ -3296,7 +3296,7 @@
         "Order": 0,
         "Priority": 6,
         "Name": "S(null,,(+),)",
-        "NameAlt": "S(sol,,$1,)"
+        "NameAlt": "S(sol,,\\1,)"
         
       },
       "56": {
@@ -3305,7 +3305,7 @@
         "Order": 1,
         "Priority": 0,
         "Name": "P((exclamation|comma|question)0)",
-        "NameAlt": "P($11)"
+        "NameAlt": "P(\\11)"
         
       },
       "57": {
@@ -3314,7 +3314,7 @@
         "Order": 1,
         "Priority": 0,
         "Name": "P((zero|one|two|three|four|five|six|seven|eight|nine)0)",
-        "NameAlt": "P($11)"
+        "NameAlt": "P(\\11)"
         
       },
       "58": {
@@ -3323,7 +3323,7 @@
         "Order": 1,
         "Priority": 0,
         "Name": "P((plus|minus|multi|div|power|equal)0)",
-        "NameAlt": "P($11)"
+        "NameAlt": "P(\\11)"
         
       },
       "59": {
@@ -3332,7 +3332,7 @@
         "Order": 20,
         "Priority": 4,
         "Name": "S((*),(*),(*),(+))S(fin,,a(_-*),(*))",
-        "NameAlt": "S($1,$2,$3,$4)S(fin,,abig$5,$6)"
+        "NameAlt": "S(\\1,\\2,\\3,\\4)S(fin,,abig\\5,\\6)"
         
       },
       "60": {
@@ -3341,7 +3341,7 @@
         "Order": 20,
         "Priority": 2,
         "Name": "(S(*,*,*,*))S(mid,,a(_-*),(+))",
-        "NameAlt": "$1S(mid,,abig$2,$3)"
+        "NameAlt": "\\1S(mid,,abig\\2,\\3)"
         
       },
       "61": {
@@ -3350,7 +3350,7 @@
         "Order": 20,
         "Priority": 2,
         "Name": "(S(*,*,[_.Name!=\"a\"]_-*,*))S(mid,,a(_-*),)",
-        "NameAlt": "$1S(mid,,abig$2,)"
+        "NameAlt": "\\1S(mid,,abig\\2,)"
         
       },
       "62": {
@@ -3359,7 +3359,7 @@
         "Order": 5,
         "Priority": 0,
         "Name": "S(null,,(br|hyphen)_(-*),)",
-        "NameAlt": "S(sol,,$11,)"
+        "NameAlt": "S(sol,,\\11,)"
         
       },
       "63": {
@@ -3377,7 +3377,7 @@
         "Order": 20,
         "Priority": -2,
         "Name": "S((*),,a(_-*),)",
-        "NameAlt": "S($1,,abig$2,)"
+        "NameAlt": "S(\\1,,abig\\2,)"
         
       },
       "65": {
@@ -3386,7 +3386,7 @@
         "Order": 0,
         "Priority": 13,
         "Name": "S(init,,(br_-*),)S(mid,,(+),)S(fin,,(br_-*),*)",
-        "NameAlt": "S(sol,,$1,)S(sol,,$2,)S(sol,,$3,)"
+        "NameAlt": "S(sol,,\\1,)S(sol,,\\2,)S(sol,,\\3,)"
         
       },
       "66": {
@@ -3395,7 +3395,7 @@
         "Order": 0,
         "Priority": 10,
         "Name": "S(init,,(br_-*),)S(mid,(+),(+),(+))S(fin,,(br_-*),*)",
-        "NameAlt": "S(sol,,$1,)S(mid,$2,$3,$4)S(sol,,$5,)"
+        "NameAlt": "S(sol,,\\1,)S(mid,\\2,\\3,\\4)S(sol,,\\5,)"
         
       },
       "67": {
@@ -3404,7 +3404,7 @@
         "Order": 0,
         "Priority": 10,
         "Name": "S(init,,(br_-*),)S(mid,(+),(+),(+))S(fin,,(br_-*),*)",
-        "NameAlt": "S(sol,,$1,)S(mid,$2,$3,$4)S(sol,,$5,)"
+        "NameAlt": "S(sol,,\\1,)S(mid,\\2,\\3,\\4)S(sol,,\\5,)"
         
       },
       "68": {
@@ -3413,7 +3413,7 @@
         "Order": 0,
         "Priority": 13,
         "Name": "S(init,,(br_-*),)S(mid,,(+),)S(fin,,(br_-*),*)",
-        "NameAlt": "S(sol,,$1,)S(sol,,$2,)S(sol,,$3,)"
+        "NameAlt": "S(sol,,\\1,)S(sol,,\\2,)S(sol,,\\3,)"
         
       },
       "69": {
@@ -3422,7 +3422,7 @@
         "Order": 0,
         "Priority": 11,
         "Name": "S(init,,(br_-*),)S(mid,(+),(+),)S(fin,,(br_-*),*)",
-        "NameAlt": "S(sol,,$1,)S(fin,$2,$3,)S(sol,,$4,)"
+        "NameAlt": "S(sol,,\\1,)S(fin,\\2,\\3,)S(sol,,\\4,)"
         
       },
       "70": {
@@ -3431,7 +3431,7 @@
         "Order": 0,
         "Priority": 11,
         "Name": "S(init,,(br_-*),)S(mid,(+),(+),)S(fin,,(br_-*),*)",
-        "NameAlt": "S(sol,,$1,)S(fin,$2,$3,)S(sol,,$4,)"
+        "NameAlt": "S(sol,,\\1,)S(fin,\\2,\\3,)S(sol,,\\4,)"
         
       },
       "71": {
@@ -3440,7 +3440,7 @@
         "Order": 0,
         "Priority": 12,
         "Name": "S(init,,(br_-*),)S(mid,,(+),(+))S(fin,,(br_-*),*)",
-        "NameAlt": "S(sol,,$1,)S(init,,$2,$3)S(sol,,$4,)"
+        "NameAlt": "S(sol,,\\1,)S(init,,\\2,\\3)S(sol,,\\4,)"
         
       },
       "72": {
@@ -3449,7 +3449,7 @@
         "Order": 0,
         "Priority": 12,
         "Name": "S(init,,(br_-*),)S(mid,,(+),(+))S(fin,,(br_-*),*)",
-        "NameAlt": "S(sol,,$1,)S(init,,$2,$3)S(sol,,$4,)"
+        "NameAlt": "S(sol,,\\1,)S(init,,\\2,\\3)S(sol,,\\4,)"
         
       },
       "73": {
@@ -3458,7 +3458,7 @@
         "Order": 0,
         "Priority": 14,
         "Name": "S(init,,(br_-*),)S(mid,(*),(*),(*))",
-        "NameAlt": "S(sol,,$1,)S(init,$2,$3,$4)"
+        "NameAlt": "S(sol,,\\1,)S(init,\\2,\\3,\\4)"
         
       },
       "74": {
@@ -3467,7 +3467,7 @@
         "Order": 0,
         "Priority": 14,
         "Name": "S(init,,(br_-*),)S(mid,(*),(*),(*))",
-        "NameAlt": "S(sol,,$1,)S(init,$2,$3,$4)"
+        "NameAlt": "S(sol,,\\1,)S(init,\\2,\\3,\\4)"
         
       },
       "75": {
@@ -3476,7 +3476,7 @@
         "Order": 0,
         "Priority": 15,
         "Name": "S(mid,(*),(*),(*))S(fin,,(br_-*),)",
-        "NameAlt": "S(fin,$1,$2,$3)S(sol,,$4,)"
+        "NameAlt": "S(fin,\\1,\\2,\\3)S(sol,,\\4,)"
         
       },
       "76": {
@@ -3485,7 +3485,7 @@
         "Order": 0,
         "Priority": 15,
         "Name": "S(mid,(*),(*),(*))S(fin,,(br_-*),)",
-        "NameAlt": "S(fin,$1,$2,$3)S(sol,,$4,)"
+        "NameAlt": "S(fin,\\1,\\2,\\3)S(sol,,\\4,)"
         
       },
       "77": {
@@ -3494,7 +3494,7 @@
         "Order": 1,
         "Priority": 0,
         "Name": "P((zero|one|two|three|four|five|six|seven|eight|nine)2)",
-        "NameAlt": "P($13)"
+        "NameAlt": "P(\\13)"
         
       }
     }

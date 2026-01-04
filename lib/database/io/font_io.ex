@@ -9,7 +9,9 @@ defmodule Thaqqa.FontIO do
   alias Thaqqa.FontRegistry, as: FontRegistry
   alias Thaqqa.Font, as: Font
   alias Thaqqa.Column, as: Column
+  alias Thaqqa.Regex_Khhyl, as: Regex_Khhyl
   alias Thaqqa.DataTable, as: DataTable
+  alias Thaqqa.ParserRegister, as: ParserRegister
 
   def import() do
     # json → structs
@@ -26,15 +28,27 @@ defmodule Thaqqa.FontIO do
 
           {:ok, value} ->
             case FontRegistry.add_static_table(value) do
-              :ok -> {:cont, nil}
-              {:error, msg} -> {:halt, {:error, msg}}
+              :ok ->
+                {:cont, nil}
+
+              {:error, msg} ->
+                {:halt, {:error, msg}}
             end
         end
       end)
 
     case checker do
-      {:error, _msg} -> checker
-      _ -> {:ok, nil}
+      {:error, _msg} ->
+        checker
+
+      _ ->
+        checker_ = ParserRegister.precompile_parser_all()
+
+        case checker_ do
+          # 削除or差し戻し処理をここに追加予定。
+          {:error, _msg} -> checker_
+          {:ok, data} -> data |> DataTable.update_fontregistry()
+        end
     end
   end
 
@@ -94,18 +108,24 @@ defmodule Thaqqa.FontIO do
           end
         else
           if is_map(v) do
-            # volatilityとなっている値は追加しません
+            # volatilityとなっている値は追加しません　→ subtypeから考えます
             column_volatility =
-              DataTable.get_column(table, fn %Column{type: st} -> st == :volatility end)
+              DataTable.get_column(ans, fn %Column{type: type} -> type == :volatility end)
               |> Enum.map(fn %Column{name: name} -> name end)
 
             data =
               Enum.reduce_while(v, ans, fn {_, v_}, ans_ ->
-                data_ = ans_ |> Map.drop(column_volatility) |> DataTable.add_data(v_, true)
+                v_ =
+                  Enum.reduce(column_volatility, v_, fn k, ans__ ->
+                    ans__ |> Map.put(k, nil)
+                  end)
+
+                data_ = ans_ |> DataTable.add_data(v_, true)
 
                 case data_ do
                   {:error, _msg} -> {:halt, data_}
                   {:ok, value} -> {:cont, value}
+                  _ -> {:cont, data_}
                 end
               end)
 

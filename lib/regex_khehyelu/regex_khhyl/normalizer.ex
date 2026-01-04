@@ -8,6 +8,11 @@ defmodule Thaqqa.Regex_Khhyl.Normalizer do
   # 都合の悪い記号を吐いたり括弧が閉じてなかったらエラー
   # todo:{}系統のエラーを作る (括弧が閉じていない、中身が不正etc)
 
+  @brancket_forward ["(?:", "(", "(?=", "(?<=", "(?!", "(?<!"]
+  @brancket_backward [")"]
+
+  @form_list ["init", "mid", "fin", "sol", "onset", "coda", "null"]
+
   def normalize!(list) when is_list(list) do
     case normalize(list) do
       {:ok, val} -> val
@@ -34,16 +39,16 @@ defmodule Thaqqa.Regex_Khhyl.Normalizer do
     case head do
       # S(*),S(form,*) のようなものも実装したい
 
-      h when h in ["S", "V", "C", "Cd", "Vd", "P", "Pd", "L", "X", "R"] ->
+      h when h in ["S", "V", "C", "Cd", "Vd", "P", "Pd", "L", "X", "R", "Sep", "Null"] ->
         normalize_branckets(:"#{h}", nil, acum_all, tail, next_layer, current_layer)
 
       # Rは別処理とする
 
-      h when h in ["(?:", "(", "(?=", "(?<=", "(?!", "(?<!"] ->
+      h when h in @brancket_forward ->
         name = String.slice(head, 1..-1//1)
         normalize_branckets(:brancket, name, acum_all, tail, current_layer, current_layer, 1)
 
-      ")" ->
+      h when h in @brancket_backward ->
         Error.unclosed_brancket_backward("#{Enum.join(list, "")}")
 
       h when h in ["^", "$", "*", "+", "?", "|", "*?", "+?", "??"] ->
@@ -93,7 +98,7 @@ defmodule Thaqqa.Regex_Khhyl.Normalizer do
 
     case head do
       # 形状指定用
-      h when h in ["init", "mid", "fin", "sol", "onset", "coda", "null"] ->
+      h when h in @form_list ->
         normalize_sub(
           tail,
           [AST.new(:finite, current_layer, head, head) | acum_all],
@@ -121,11 +126,11 @@ defmodule Thaqqa.Regex_Khhyl.Normalizer do
     case head do
       # 形状指定用
 
-      h when h in ["(?:", "(", "(?=", "(?<=", "(?!", "(?<!"] ->
+      h when h in @brancket_forward ->
         name = String.slice(head, 1..-1//1)
         normalize_branckets(:brancket, name, acum_all, tail, current_layer, current_layer, 1)
 
-      ")" ->
+      h when h in @brancket_backward ->
         Error.unclosed_brancket_backward("#{Enum.join(list, "")}")
 
       "-" ->
@@ -190,11 +195,11 @@ defmodule Thaqqa.Regex_Khhyl.Normalizer do
           current_layer
         )
 
-      h when h in ["(?:", "(", "(?=", "(?<=", "(?!", "(?<!"] ->
+      h when h in @brancket_forward ->
         name = String.slice(head, 1..-1//1)
         normalize_branckets(:brancket, name, acum_all, tail, current_layer, current_layer, 1)
 
-      ")" ->
+      h when h in @brancket_backward ->
         Error.unclosed_brancket_backward("#{Enum.join(list, "")}")
 
       "]" ->
@@ -216,7 +221,7 @@ defmodule Thaqqa.Regex_Khhyl.Normalizer do
             )
 
           Regex.match?(~r/^\[.*?\]$/, head) ->
-            script = String.slice(head, 1..-1//1)
+            script = String.slice(head, 1..-2//1)
 
             normalize_sub(
               tail,
@@ -288,7 +293,7 @@ defmodule Thaqqa.Regex_Khhyl.Normalizer do
     [head | tail] = list
 
     case head do
-      "(" ->
+      h when h in @brancket_forward ->
         acum = if branket_nest == 0, do: acum, else: [head | acum]
 
         normalize_branckets(
@@ -302,7 +307,7 @@ defmodule Thaqqa.Regex_Khhyl.Normalizer do
           acum
         )
 
-      ")" ->
+      h when h in @brancket_backward ->
         if branket_nest == 1 do
           if token == :R do
             text = Enum.reverse(acum) |> Enum.join("")

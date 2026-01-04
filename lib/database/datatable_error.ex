@@ -1,7 +1,12 @@
 defmodule Thaqqa.FontRegistry.Error do
   defexception [:type, :detail, :meta]
 
-  def message(msg), do: msg
+  def message(msg) do
+    case msg do
+      {:error, data} -> data
+      _ -> msg
+    end
+  end
 
   # 名義衝突
   def nominal_conflict_column(name, op),

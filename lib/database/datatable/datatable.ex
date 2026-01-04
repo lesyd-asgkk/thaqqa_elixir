@@ -340,7 +340,7 @@ defmodule Thaqqa.DataTable do
     end
   end
 
-  defp validate_data(table, new_value_map, column_list, :edit, force) do
+  defp validate_data(table, new_value_map, column_list, :edit, _force) do
     case validate_value_map(new_value_map, column_list) do
       {:error, msg} ->
         {:error, msg}
@@ -351,14 +351,7 @@ defmodule Thaqqa.DataTable do
             {:error, msg}
 
           {:ok, _} ->
-            if force,
-              do: unique_validation(table, new_value_map, :edit),
-              else:
-                column_validation(table, new_value_map, :edit)
-                |> (case do
-                      {:error, msg} -> {:error, msg}
-                      {:ok, _} -> unique_validation(table, new_value_map, :edit)
-                    end)
+            unique_validation(table, new_value_map, :edit)
         end
     end
   end

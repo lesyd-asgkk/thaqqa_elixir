@@ -3,6 +3,8 @@ defmodule Thaqqa.Regex_Khhyl.Translator do
   alias Thaqqa.Regex_Khhyl.Error, as: Error
   alias Thaqqa.Regex_Khhyl.Normalizer, as: Normalizer
   alias Thaqqa.Regex_Khhyl.Tokenizer, as: Tokenizer
+  alias Thaqqa.LetterRegister, as: LetterRegister
+  use Thaqqa.DataTable.Const
 
   def translate!(ast) when is_list(ast) do
     case translate(ast) do
@@ -22,7 +24,7 @@ defmodule Thaqqa.Regex_Khhyl.Translator do
     end)
     |> case do
       {:ok, list} ->
-        {:ok, Enum.join(Enum.reverse(list), " ")}
+        {:ok, Enum.join(Enum.reverse(list), "")}
 
       {:error, reason} ->
         {:error, reason}
@@ -53,9 +55,30 @@ defmodule Thaqqa.Regex_Khhyl.Translator do
     end
   end
 
-  defp translate_sub(%AST{type: :script, value: val}),
+  defp translate_sub(%AST{type: :script, value: val}) do
     # 暫定的な処置。todo:scriptパーサ (テーブル実装後になります)
-    do: "[" <> val <> "]"
+
+    letter_list =
+      LetterRegister.get_letter()
+      |> Enum.reduce([], fn {_k, v}, acc -> acc = v ++ acc end)
+
+    letter_available =
+      Enum.reduce_while(letter_list, [], fn letter, acc ->
+        true_or_false = Thaqqa.Regex_Khhyl.Cond.convert(val, letter)
+
+        case true_or_false do
+          {:error, _msg} -> {:halt, true_or_false}
+          {:ok, nil} -> {:cont, acc}
+          {:ok, false} -> {:cont, acc}
+          {:ok, true} -> {:cont, [Thaqqa.Data.get_val(letter, @name) | acc]}
+        end
+      end)
+
+    case letter_available do
+      {:error, msg} -> letter_available
+      val -> "(?:" <> Enum.join(val, "|") <> ")"
+    end
+  end
 
   defp translate_sub(%AST{type: :finite, value: val}), do: val
 
@@ -71,14 +94,19 @@ defmodule Thaqqa.Regex_Khhyl.Translator do
         [head | tail] = children
 
         if AST.has_astarisk_for_form?(head),
-          do: translate_brancket_sub("#{Atom.to_string(type)}\\((?:init|mid|fin|sol|null)", tail),
+          do:
+            translate_sub(%AST{type: :S, children: [AST.replace_astarisk_as_form(head) | tail]}),
           else: translate_brancket_sub("#{Atom.to_string(type)}\\(", children)
 
       2 ->
-        [_ | tail] = children
+        [head | tail] = children
 
         if AST.has_astarisk_for_form?(Enum.at(children, 2)),
-          do: translate_sub(%AST{type: :S, children: children ++ tail ++ tail}),
+          do:
+            translate_sub(%AST{
+              type: :S,
+              children: [AST.replace_astarisk_as_form(head)] ++ tail ++ tail
+            }),
           else: Error.invalid_astarisk(type, range)
 
       1 ->
@@ -98,7 +126,8 @@ defmodule Thaqqa.Regex_Khhyl.Translator do
         [head | tail] = children
 
         if AST.has_astarisk_for_form?(head),
-          do: translate_brancket_sub("#{Atom.to_string(type)}\\((?:init|mid|fin|sol|null)", tail),
+          do:
+            translate_sub(%AST{type: type, children: [AST.replace_astarisk_as_form(head) | tail]}),
           else: translate_brancket_sub("#{Atom.to_string(type)}\\(", children)
 
       1 ->
@@ -118,7 +147,11 @@ defmodule Thaqqa.Regex_Khhyl.Translator do
         [head | tail] = children
 
         if AST.has_astarisk_for_form?(head),
-          do: translate_brancket_sub("#{Atom.to_string(type)}\\((?:onset|coda|null)", tail),
+          do:
+            translate_sub(%AST{
+              type: type,
+              children: [AST.replace_astarisk_as_form_consonant(head) | tail]
+            }),
           else: translate_brancket_sub("#{Atom.to_string(type)}\\(", children)
 
       1 ->
@@ -128,6 +161,14 @@ defmodule Thaqqa.Regex_Khhyl.Translator do
 
       _ ->
         Error.invalid_argument_num(type, range)
+    end
+  end
+
+  defp translate_sub(%AST{type: type, range: range, children: children})
+       when type in [:Sep, :Null] do
+    case argument_number(children) do
+      0 -> "#{Atom.to_string(type)}\\(\\)"
+      _ -> Error.invalid_argument_num(type, range)
     end
   end
 

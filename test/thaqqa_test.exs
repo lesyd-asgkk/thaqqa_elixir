@@ -11,13 +11,17 @@ defmodule ThaqqaTest do
 
     Thaqqa.FontRegistry.get_font("Default")
 
+    Thaqqa.ParserRegister.parse("suzusha koratl", "khehyelu")
+    |> IO.inspect()
+
     # |> Thaqqa.DataTable.update_fontregistry()
 
     # |> Thaqqa.DataTable.get_column()
 
     # |> Enum.at(0)
-
-    # assert  == Thaqqa.FontRegistry.get_static_table("VOWEL")
+    # IO.inspect(Thaqqa.FontRegistry.get_static_table_all())
+    # IO.inspect(Thaqqa.FontRegistry.get_static_table("PARSER"))
+    # IO.inspect(Thaqqa.FontRegistry.get_static_table("VOWEL"))
 
     # Supervisor.start_link(Thaqqa.FontRegistry, strategy: :one_for_one)
   end

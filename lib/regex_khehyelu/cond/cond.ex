@@ -46,68 +46,72 @@ defmodule Thaqqa.Regex_Khhyl.Cond do
   def translate_sub([], _letter, stack) when is_list(stack) and length(stack) == 1,
     do: Enum.at(stack, 0)
 
-  def translate_sub([], _letter, stack) when is_list(stack) and length(stack) != 1,
-    do: Error.invalid_stack_at_end(stack)
+  def translate_sub([], letter, stack) when is_list(stack) and length(stack) != 1,
+    do: translate_calc([], letter, stack)
+
+  # Error.invalid_stack_at_end(stack)
 
   def translate_sub(ast, %Data{} = letter_data, stack) when is_list(ast) do
     [head | tail] = ast
     stack = [translate_sub(head, letter_data, []) | stack]
+    translate_calc(tail, letter_data, stack)
+  end
 
+  def translate_calc(tail, %Data{} = letter_data, stack) when is_list(tail) do
     first = Enum.at(stack, 0, nil)
     second = Enum.at(stack, 1, nil)
     third = Enum.at(stack, 2, nil)
+
+    rest_alt = Enum.slice(stack, 2..-1//1)
     rest = Enum.slice(stack, 3..-1//1)
 
     first = if AST.is_ast?(first), do: AST.get_val(first), else: first
     second = if AST.is_ast?(second), do: AST.get_val(second), else: second
     third = if AST.is_ast?(third), do: AST.get_val(third), else: third
 
-    if third == nil do
+    if first != "!" do
       case second do
         "!" ->
-          stack = [!first | rest]
-          translate_sub(tail, letter_data, stack)
+          stack = [!first | rest_alt]
+          translate_calc(tail, letter_data, stack)
+
+        "&&" ->
+          stack = [first && third | rest]
+          translate_calc(tail, letter_data, stack)
+
+        "||" ->
+          stack = [first || third | rest]
+          translate_calc(tail, letter_data, stack)
+
+        "==" ->
+          stack = [first == third | rest]
+          translate_calc(tail, letter_data, stack)
+
+        "!=" ->
+          stack = [first != third | rest]
+          translate_calc(tail, letter_data, stack)
+
+        ">=" ->
+          stack = [first >= third | rest]
+          translate_calc(tail, letter_data, stack)
+
+        "<=" ->
+          stack = [first <= third | rest]
+          translate_calc(tail, letter_data, stack)
+
+        ">" ->
+          stack = [first > third | rest]
+          translate_calc(tail, letter_data, stack)
+
+        "<" ->
+          stack = [first < third | rest]
+          translate_calc(tail, letter_data, stack)
 
         _ ->
           translate_sub(tail, letter_data, stack)
       end
     else
-      case second do
-        "&&" ->
-          stack = [first && third | rest]
-          translate_sub(tail, letter_data, stack)
-
-        "||" ->
-          stack = [first || third | rest]
-          translate_sub(tail, letter_data, stack)
-
-        "==" ->
-          stack = [first == third | rest]
-          translate_sub(tail, letter_data, stack)
-
-        "!=" ->
-          stack = [first != third | rest]
-          translate_sub(tail, letter_data, stack)
-
-        ">=" ->
-          stack = [first >= third | rest]
-          translate_sub(tail, letter_data, stack)
-
-        "<=" ->
-          stack = [first <= third | rest]
-          translate_sub(tail, letter_data, stack)
-
-        ">" ->
-          stack = [first > third | rest]
-          translate_sub(tail, letter_data, stack)
-
-        "<" ->
-          stack = [first < third | rest]
-          translate_sub(tail, letter_data, stack)
-
-        _ ->
-          Error.too_many_elements_in_stack(stack)
-      end
+      translate_sub(tail, letter_data, stack)
     end
   end
 
