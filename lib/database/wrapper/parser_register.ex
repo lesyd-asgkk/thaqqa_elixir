@@ -8,7 +8,7 @@ defmodule Thaqqa.ParserRegister do
   def get_parser_table(), do: Thaqqa.FontRegistry.get_static_table(@parser)
 
   def get_parser(filter_fun \\ fn _ -> true end),
-    do: FontRegistry.get_static_table(@parser) |> DataTable.get_data(filter_fun)
+    do: get_parser_table() |> DataTable.get_data(filter_fun)
 
   def add_parser!(value_map) do
     case add_parser(value_map) do
@@ -23,7 +23,7 @@ defmodule Thaqqa.ParserRegister do
         {:error, msg}
 
       {:ok, val} ->
-        {:ok, FontRegistry.get_static_table(@parser) |> DataTable.add_data(val)}
+        {:ok, get_parser_table() |> DataTable.add_data(val)}
     end
   end
 
@@ -101,7 +101,7 @@ defmodule Thaqqa.ParserRegister do
   end
 
   def delete_parser(filter_fun, safety_num \\ 1),
-    do: FontRegistry.get_static_table(@parser) |> DataTable.delete_data(filter_fun, safety_num)
+    do: get_parser_table() |> DataTable.delete_data(filter_fun, safety_num)
 
   def edit_parser!(value_map, filter_fun, safety_num \\ 1) do
     case edit_parser(value_map, filter_fun, safety_num) do
@@ -116,39 +116,26 @@ defmodule Thaqqa.ParserRegister do
         {:error, msg}
 
       {:ok, val} ->
-        {:ok, FontRegistry.get_static_table(@parser) |> DataTable.edit_data(val, safety_num)}
+        {:ok, get_parser_table() |> DataTable.edit_data(val, safety_num)}
     end
   end
 
   def parse(string, language) do
-    string = Regex.replace(~r/(.)/, string, "R(\\1)")
-    IO.inspect(string)
+    string =
+      String.split(string, "")
+      |> Enum.slice(1..-2//1)
+      |> Enum.map(&("R(" <> &1 <> ")"))
+      |> Enum.join("")
 
     get_parser(fn %Thaqqa.Data{} = data ->
-      Thaqqa.Data.get_val(data, "Language") in [language, "universal"]
+      Thaqqa.Data.get_val(data, @language) in [language, @universal]
     end)
-    |> sort_parser()
     |> Enum.reduce(string, fn p, acc ->
       reg = Thaqqa.Data.get_val(p, @precompile)
-      alt = Thaqqa.Data.get_val(p, "NameAlt")
-      IO.inspect(" ")
-      IO.inspect(Thaqqa.Data.get_val(p, "Name"))
-      IO.inspect(reg)
-      IO.inspect(Regex.replace(reg, acc, alt))
+      alt = Thaqqa.Data.get_val(p, @name_alt)
       Regex.replace(reg, acc, alt)
     end)
   end
 
-  defp sort_parser(list) when is_list(list) do
-    Enum.sort(
-      list,
-      &cond do
-        Thaqqa.Data.get_val(&1, "Order") < Thaqqa.Data.get_val(&2, "Order") -> true
-        Thaqqa.Data.get_val(&1, "Order") > Thaqqa.Data.get_val(&2, "Order") -> false
-        true -> Thaqqa.Data.get_val(&1, "Priority") <= Thaqqa.Data.get_val(&2, "Priority")
-      end
-    )
-  end
-
-  defp qsort([]), do: []
+  def sort_parser(), do: get_parser_table() |> Thaqqa.DataTable.sort()
 end

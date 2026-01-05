@@ -422,7 +422,7 @@ defmodule Thaqqa.DataTable do
       {:ok, _v} ->
         value_map = value_map |> modify_value_map(table) |> attach_id(table)
         new_data = %Data{value_list: value_map}
-        {:ok, %{table | data_list: [new_data | datas]}}
+        {:ok, %{table | data_list: [new_data | datas]} |> Thaqqa.DataTable.sort(force)}
     end
   end
 
@@ -473,7 +473,25 @@ defmodule Thaqqa.DataTable do
 
         if length(data_sub) > safety_num,
           do: Error.too_many_subject(data_sub, :delete),
-          else: {:ok, %{table | data_list: new_datas}}
+          else: {:ok, %{table | data_list: new_datas} |> Thaqqa.DataTable.sort()}
+    end
+  end
+
+  def sort(%__MODULE__{data_list: datas} = dt, force \\ false) do
+    if force do
+      dt
+    else
+      sorted =
+        Enum.sort(
+          datas,
+          &cond do
+            Thaqqa.Data.get_val(&1, "Order") < Thaqqa.Data.get_val(&2, "Order") -> true
+            Thaqqa.Data.get_val(&1, "Order") > Thaqqa.Data.get_val(&2, "Order") -> false
+            true -> Thaqqa.Data.get_val(&1, "Priority") <= Thaqqa.Data.get_val(&2, "Priority")
+          end
+        )
+
+      %__MODULE__{dt | data_list: sorted}
     end
   end
 

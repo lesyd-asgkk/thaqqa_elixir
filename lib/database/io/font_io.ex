@@ -12,6 +12,7 @@ defmodule Thaqqa.FontIO do
   alias Thaqqa.Regex_Khhyl, as: Regex_Khhyl
   alias Thaqqa.DataTable, as: DataTable
   alias Thaqqa.ParserRegister, as: ParserRegister
+  alias Thaqqa.GsubRegister, as: GsubRegister
 
   def import() do
     # json → structs
@@ -46,8 +47,18 @@ defmodule Thaqqa.FontIO do
 
         case checker_ do
           # 削除or差し戻し処理をここに追加予定。
-          {:error, _msg} -> checker_
-          {:ok, data} -> data |> DataTable.update_fontregistry()
+          {:error, _msg} ->
+            checker_
+
+          {:ok, data} ->
+            data |> DataTable.update_fontregistry()
+            checker_ = GsubRegister.precompile_gsub_all()
+
+            case checker_ do
+              # 削除or差し戻し処理をここに追加予定。
+              {:error, _msg} -> checker_
+              {:ok, data} -> data |> DataTable.update_fontregistry()
+            end
         end
     end
   end
@@ -138,6 +149,8 @@ defmodule Thaqqa.FontIO do
           end
         end
       end)
+
+    # |> DataTable.sort()
 
     case table_altered do
       {:error, _msg} -> table_altered

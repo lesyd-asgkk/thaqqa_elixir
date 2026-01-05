@@ -1,24 +1,128 @@
 defmodule Thaqqa.GsubRegister do
-  def get_gsub() do
+  alias Thaqqa.DataTable, as: DataTable
+  alias Thaqqa.FontRegistry, as: FontRegistry
+  alias Thaqqa.Regex_Khhyl, as: Regex_Khhyl
+  # alias Thaqqa.FontRegistry.Error, as: Error
+  use Thaqqa.DataTable.Const
+
+  def get_gsub_table(), do: Thaqqa.FontRegistry.get_static_table(@gsub)
+
+  def get_gsub(filter_fun \\ fn _ -> true end),
+    do: get_gsub_table() |> DataTable.get_data(filter_fun)
+
+  def precompile_gsub_all!(), do: precompile_gsub!([], true)
+  def precompile_gsub!(id) when is_integer(id), do: precompile_gsub!([id], false)
+
+  def precompile_gsub!(id_list, all_flag \\ false) when is_list(id_list) do
+    case precompile_gsub(id_list, all_flag) do
+      {:error, msg} -> raise msg
+      {:ok, val} -> val
+    end
   end
 
-  defp detect_precompile() do
+  def precompile_gsub_all(), do: precompile_gsub([], true)
+
+  def precompile_gsub(id) when is_integer(id), do: precompile_gsub([id], false)
+
+  def precompile_gsub(id_list, all_flag \\ false) when is_list(id_list) do
+    table = get_gsub_table()
+
+    table_alter =
+      Enum.reduce_while(DataTable.get_data(table), table, fn %Thaqqa.Data{
+                                                               value_list: value_list
+                                                             },
+                                                             acc ->
+        if Map.get(value_list, @id) in id_list or all_flag do
+          name = Map.get(value_list, @name)
+          reg_result = Regex_Khhyl.compile(name)
+
+          case reg_result do
+            {:error, _msg} ->
+              {:halt, reg_result}
+
+            {:ok, reg} ->
+              value_list_ = Map.put(%{}, @precompile, reg)
+
+              case DataTable.edit_data(
+                     acc,
+                     &(&1.value_list == value_list),
+                     value_list_
+                   ) do
+                {:error, msg} -> {:halt, {:error, msg}}
+                {:ok, data} -> {:cont, data}
+              end
+          end
+        else
+          {:cont, acc}
+        end
+      end)
+
+    case table_alter do
+      {:error, _msg} -> table_alter
+      _ -> {:ok, table_alter}
+    end
   end
 
-  def add_gsub() do
+  defp validate_and_modify_precompile(value_map) do
+    name = Map.get(value_map, @name)
+
+    if name != nil do
+      case Regex_Khhyl.compile(name) do
+        {:error, msg} -> {:error, msg}
+        {:ok, val} -> {:ok, Map.put(value_map, @precompile, val)}
+      end
+    else
+      {:ok, value_map}
+    end
   end
 
-  defp precompile_gsub(id_list) when is_list(id_list) do
+  def add_gsub(value_map) do
+    case validate_and_modify_precompile(value_map) do
+      {:error, msg} ->
+        {:error, msg}
+
+      {:ok, val} ->
+        {:ok, get_gsub_table() |> DataTable.add_data(val)}
+    end
   end
 
-  defp precompile_gsub(id) when is_integer(id), do: precompile_gsub([id])
-
-  def delete_gsub() do
+  def delete_gsub!(filter_fun, safety_num \\ 1) do
+    case delete_gsub(filter_fun, safety_num) do
+      {:error, msg} -> raise msg
+      {:ok, val} -> val
+    end
   end
 
-  def edit_gsub() do
+  def delete_gsub(filter_fun, safety_num \\ 1),
+    do: get_gsub_table() |> DataTable.delete_data(filter_fun, safety_num)
+
+  def edit_gsub!(value_map, filter_fun, safety_num \\ 1) do
+    case edit_gsub(value_map, filter_fun, safety_num) do
+      {:error, msg} -> raise msg
+      {:ok, val} -> val
+    end
+  end
+
+  def edit_gsub(value_map, filter_fun, safety_num \\ 1) do
+    case validate_and_modify_precompile(value_map) do
+      {:error, msg} ->
+        {:error, msg}
+
+      {:ok, val} ->
+        {:ok, get_gsub_table() |> DataTable.edit_data(val, safety_num)}
+    end
   end
 
   def gsub(string, writing_direction) do
+    get_gsub(fn %Thaqqa.Data{} = data ->
+      Thaqqa.Data.get_val(data, @writing_direction) in [writing_direction, @universal]
+    end)
+    |> Enum.reduce(string, fn p, acc ->
+      reg = Thaqqa.Data.get_val(p, @precompile)
+      alt = Thaqqa.Data.get_val(p, @name_alt)
+      Regex.replace(reg, acc, alt)
+    end)
   end
+
+  def sort_gsub(), do: get_gsub_table() |> Thaqqa.DataTable.sort()
 end

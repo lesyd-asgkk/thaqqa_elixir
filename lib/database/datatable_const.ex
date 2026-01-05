@@ -6,6 +6,9 @@ defmodule Thaqqa.DataTable.Const do
       @id "ID"
       @name "Name"
       @precompile "PreCompile"
+      @writing_direction "WritingDirection"
+      @language "Language"
+      @name_alt "NameAlt"
 
       # table名
       @rootdata "ROOTDATA"
