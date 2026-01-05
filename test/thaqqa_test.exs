@@ -23,15 +23,6 @@ defmodule ThaqqaTest do
     |> Thaqqa.GsubRegister.gsub("vertical")
     |> IO.inspect()
 
-    # |> Thaqqa.DataTable.update_fontregistry()
-
-    # |> Thaqqa.DataTable.get_column()
-
-    # |> Enum.at(0)
-    # IO.inspect(Thaqqa.FontRegistry.get_static_table_all())
-    # IO.inspect(Thaqqa.FontRegistry.get_static_table("PARSER"))
-    # IO.inspect(Thaqqa.FontRegistry.get_static_table("VOWEL"))
-
     # Supervisor.start_link(Thaqqa.FontRegistry, strategy: :one_for_one)
   end
 end

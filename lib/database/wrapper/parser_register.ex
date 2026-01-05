@@ -7,8 +7,12 @@ defmodule Thaqqa.ParserRegister do
 
   def get_parser_table(), do: Thaqqa.FontRegistry.get_static_table(@parser)
 
-  def get_parser(filter_fun \\ fn _ -> true end),
-    do: get_parser_table() |> DataTable.get_data(filter_fun)
+  def get_parser(filter_fun \\ fn _ -> true end) do
+    case get_parser_table() do
+      {:ok, val} -> val |> DataTable.get_data(filter_fun)
+      {:error, msg} -> {:error, msg}
+    end
+  end
 
   def add_parser!(value_map) do
     case add_parser(value_map) do
@@ -18,12 +22,17 @@ defmodule Thaqqa.ParserRegister do
   end
 
   def add_parser(value_map) do
-    case validate_and_modify_precompile(value_map) do
+    table_ = get_parser_table()
+
+    case table_ do
       {:error, msg} ->
         {:error, msg}
 
-      {:ok, val} ->
-        {:ok, get_parser_table() |> DataTable.add_data(val)}
+      {:ok, table} ->
+        case validate_and_modify_precompile(value_map) do
+          {:error, msg} -> {:error, msg}
+          {:ok, val} -> {:ok, table |> DataTable.add_data(val)}
+        end
     end
   end
 
@@ -42,41 +51,45 @@ defmodule Thaqqa.ParserRegister do
   def precompile_parser(id) when is_integer(id), do: precompile_parser([id], false)
 
   def precompile_parser(id_list, all_flag \\ false) when is_list(id_list) do
-    table = get_parser_table()
+    case get_parser_table() do
+      {:error, msg} ->
+        {:error, msg}
 
-    table_alter =
-      Enum.reduce_while(DataTable.get_data(table), table, fn %Thaqqa.Data{
-                                                               value_list: value_list
-                                                             },
-                                                             acc ->
-        if Map.get(value_list, @id) in id_list or all_flag do
-          name = Map.get(value_list, @name)
-          reg_result = Regex_Khhyl.compile(name)
+      {:ok, table} ->
+        table_alter =
+          Enum.reduce_while(DataTable.get_data(table), table, fn %Thaqqa.Data{
+                                                                   value_list: value_list
+                                                                 },
+                                                                 acc ->
+            if Map.get(value_list, @id) in id_list or all_flag do
+              name = Map.get(value_list, @name)
+              reg_result = Regex_Khhyl.compile(name)
 
-          case reg_result do
-            {:error, _msg} ->
-              {:halt, reg_result}
+              case reg_result do
+                {:error, _msg} ->
+                  {:halt, reg_result}
 
-            {:ok, reg} ->
-              value_list_ = Map.put(%{}, @precompile, reg)
+                {:ok, reg} ->
+                  value_list_ = Map.put(%{}, @precompile, reg)
 
-              case DataTable.edit_data(
-                     acc,
-                     &(&1.value_list == value_list),
-                     value_list_
-                   ) do
-                {:error, msg} -> {:halt, {:error, msg}}
-                {:ok, data} -> {:cont, data}
+                  case DataTable.edit_data(
+                         acc,
+                         &(&1.value_list == value_list),
+                         value_list_
+                       ) do
+                    {:error, msg} -> {:halt, {:error, msg}}
+                    {:ok, data} -> {:cont, data}
+                  end
               end
-          end
-        else
-          {:cont, acc}
-        end
-      end)
+            else
+              {:cont, acc}
+            end
+          end)
 
-    case table_alter do
-      {:error, _msg} -> table_alter
-      _ -> {:ok, table_alter}
+        case table_alter do
+          {:error, _msg} -> table_alter
+          _ -> {:ok, table_alter}
+        end
     end
   end
 
@@ -100,8 +113,12 @@ defmodule Thaqqa.ParserRegister do
     end
   end
 
-  def delete_parser(filter_fun, safety_num \\ 1),
-    do: get_parser_table() |> DataTable.delete_data(filter_fun, safety_num)
+  def delete_parser(filter_fun, safety_num \\ 1) do
+    case get_parser_table() do
+      {:error, msg} -> {:error, msg}
+      {:ok, table} -> table |> DataTable.delete_data(filter_fun, safety_num)
+    end
+  end
 
   def edit_parser!(value_map, filter_fun, safety_num \\ 1) do
     case edit_parser(value_map, filter_fun, safety_num) do
@@ -111,16 +128,19 @@ defmodule Thaqqa.ParserRegister do
   end
 
   def edit_parser(value_map, filter_fun, safety_num \\ 1) do
-    case validate_and_modify_precompile(value_map) do
+    case get_parser_table() do
       {:error, msg} ->
         {:error, msg}
 
-      {:ok, val} ->
-        {:ok, get_parser_table() |> DataTable.edit_data(val, safety_num)}
+      {:ok, table} ->
+        case validate_and_modify_precompile(value_map) do
+          {:error, msg} -> {:error, msg}
+          {:ok, val} -> {:ok, table |> DataTable.edit_data(val, safety_num)}
+        end
     end
   end
 
-  def parse(string, language) do
+  def parse(string, language) when language in [@khehyelu, @samlhta] do
     string =
       String.split(string, "")
       |> Enum.slice(1..-2//1)
@@ -128,7 +148,7 @@ defmodule Thaqqa.ParserRegister do
       |> Enum.join("")
 
     get_parser(fn %Thaqqa.Data{} = data ->
-      Thaqqa.Data.get_val(data, @language) in [language, @universal]
+      Thaqqa.Data.get_val(data, @language) in [language, @universal_language]
     end)
     |> Enum.reduce(string, fn p, acc ->
       reg = Thaqqa.Data.get_val(p, @precompile)
@@ -137,5 +157,10 @@ defmodule Thaqqa.ParserRegister do
     end)
   end
 
-  def sort_parser(), do: get_parser_table() |> Thaqqa.DataTable.sort()
+  def sort_parser() do
+    case get_parser_table() do
+      {:error, msg} -> {:error, msg}
+      {:ok, table} -> table |> Thaqqa.DataTable.sort()
+    end
+  end
 end

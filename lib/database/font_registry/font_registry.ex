@@ -9,40 +9,94 @@ defmodule Thaqqa.FontRegistry do
     GenServer.start_link(__MODULE__, :ok, name: __MODULE__)
   end
 
-  def get_font(name) do
-    GenServer.call(__MODULE__, {:get_font, name})
+  def get_font(name, timeout \\ 5_000) do
+    try do
+      {:ok, GenServer.call(__MODULE__, {:get_font, name})}
+    catch
+      :exit, {:noproc, _} -> {:error, :font_registry_restarting}
+      :exit, {:timeout, _} -> {:error, :font_registry_timeout}
+      :exit, reason -> {:error, {:font_registry_exit, reason}}
+    end
   end
 
-  def add_font(font) do
-    GenServer.call(__MODULE__, {:add_font, font})
+  def add_font(font, timeout \\ 5_000) do
+    try do
+      {:ok, GenServer.call(__MODULE__, {:add_font, font})}
+    catch
+      :exit, {:noproc, _} -> {:error, :font_registry_restarting}
+      :exit, {:timeout, _} -> {:error, :font_registry_timeout}
+      :exit, reason -> {:error, {:font_registry_exit, reason}}
+    end
   end
 
-  def delete_font(name) do
-    GenServer.call(__MODULE__, {:delete_font, name})
+  def delete_font(name, timeout \\ 5_000) do
+    try do
+      {:ok, GenServer.call(__MODULE__, {:delete_font, name})}
+    catch
+      :exit, {:noproc, _} -> {:error, :font_registry_restarting}
+      :exit, {:timeout, _} -> {:error, :font_registry_timeout}
+      :exit, reason -> {:error, {:font_registry_exit, reason}}
+    end
   end
 
-  def edit_font(name, new_font) do
-    GenServer.call(__MODULE__, {:edit_font, {name, new_font}})
+  def edit_font(name, new_font, timeout \\ 5_000) do
+    try do
+      {:ok, GenServer.call(__MODULE__, {:edit_font, {name, new_font}})}
+    catch
+      :exit, {:noproc, _} -> {:error, :font_registry_restarting}
+      :exit, {:timeout, _} -> {:error, :font_registry_timeout}
+      :exit, reason -> {:error, {:font_registry_exit, reason}}
+    end
   end
 
   def get_static_table_all() do
-    GenServer.call(__MODULE__, {:get_static_table_all})
+    try do
+      {:ok, GenServer.call(__MODULE__, {:get_static_table_all})}
+    catch
+      :exit, {:noproc, _} -> {:error, :font_registry_restarting}
+      :exit, {:timeout, _} -> {:error, :font_registry_timeout}
+      :exit, reason -> {:error, {:font_registry_exit, reason}}
+    end
   end
 
   def get_static_table(name) do
-    GenServer.call(__MODULE__, {:get_static_table, name})
+    try do
+      {:ok, GenServer.call(__MODULE__, {:get_static_table, name})}
+    catch
+      :exit, {:noproc, _} -> {:error, :font_registry_restarting}
+      :exit, {:timeout, _} -> {:error, :font_registry_timeout}
+      :exit, reason -> {:error, {:font_registry_exit, reason}}
+    end
   end
 
-  def add_static_table(table) do
-    GenServer.call(__MODULE__, {:add_static_table, table})
+  def add_static_table(name) do
+    try do
+      {:ok, GenServer.call(__MODULE__, {:add_static_table, name})}
+    catch
+      :exit, {:noproc, _} -> {:error, :font_registry_restarting}
+      :exit, {:timeout, _} -> {:error, :font_registry_timeout}
+      :exit, reason -> {:error, {:font_registry_exit, reason}}
+    end
   end
 
   def delete_static_table(name) do
-    GenServer.call(__MODULE__, {:delete_static_table, name})
+    try do
+      {:ok, GenServer.call(__MODULE__, {:delete_static_table, name})}
+    catch
+      :exit, {:noproc, _} -> {:error, :font_registry_restarting}
+      :exit, {:timeout, _} -> {:error, :font_registry_timeout}
+      :exit, reason -> {:error, {:font_registry_exit, reason}}
+    end
   end
 
   def edit_static_table(name, new_table) do
-    GenServer.call(__MODULE__, {:edit_static_table, {name, new_table}})
+    try do
+      {:ok, GenServer.call(__MODULE__, {:edit_static_table, {name, new_table}})}
+    catch
+      :exit, {:noproc, _} -> {:error, :font_registry_restarting}
+      :exit, {:timeout, _} -> {:error, :font_registry_timeout}
+      :exit, reason -> {:error, {:font_registry_exit, reason}}
+    end
   end
 
   ## 以下はCallbacks

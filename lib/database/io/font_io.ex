@@ -29,7 +29,7 @@ defmodule Thaqqa.FontIO do
 
           {:ok, value} ->
             case FontRegistry.add_static_table(value) do
-              :ok ->
+              {:ok, _} ->
                 {:cont, nil}
 
               {:error, msg} ->
@@ -52,13 +52,14 @@ defmodule Thaqqa.FontIO do
 
           {:ok, data} ->
             data |> DataTable.update_fontregistry()
-            checker_ = GsubRegister.precompile_gsub_all()
+        end
 
-            case checker_ do
-              # 削除or差し戻し処理をここに追加予定。
-              {:error, _msg} -> checker_
-              {:ok, data} -> data |> DataTable.update_fontregistry()
-            end
+        checker_ = GsubRegister.precompile_gsub_all()
+
+        case checker_ do
+          # 削除or差し戻し処理をここに追加予定。
+          {:error, _msg} -> checker_
+          {:ok, data} -> data |> DataTable.update_fontregistry()
         end
     end
   end
@@ -160,5 +161,9 @@ defmodule Thaqqa.FontIO do
 
   def export(fonts) do
     # structs → json
+    # デッドロックがどうとか馬鹿馬鹿しい！　いっそ分裂可能にして保存してしまう？
+    # （編集終了までのアクセスが1つまでしかない場合は普通に上書きする）
+    # （編集物が二つ以上現れた場合は分岐させて、権限持ちが統合or選択できるようにする）
+    #
   end
 end

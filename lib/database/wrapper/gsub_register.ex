@@ -7,8 +7,12 @@ defmodule Thaqqa.GsubRegister do
 
   def get_gsub_table(), do: Thaqqa.FontRegistry.get_static_table(@gsub)
 
-  def get_gsub(filter_fun \\ fn _ -> true end),
-    do: get_gsub_table() |> DataTable.get_data(filter_fun)
+  def get_gsub(filter_fun \\ fn _ -> true end) do
+    case get_gsub_table() do
+      {:error, msg} -> {:error, msg}
+      {:ok, table} -> table |> DataTable.get_data(filter_fun)
+    end
+  end
 
   def precompile_gsub_all!(), do: precompile_gsub!([], true)
   def precompile_gsub!(id) when is_integer(id), do: precompile_gsub!([id], false)
@@ -25,41 +29,45 @@ defmodule Thaqqa.GsubRegister do
   def precompile_gsub(id) when is_integer(id), do: precompile_gsub([id], false)
 
   def precompile_gsub(id_list, all_flag \\ false) when is_list(id_list) do
-    table = get_gsub_table()
+    case get_gsub_table() do
+      {:error, msg} ->
+        {:error, msg}
 
-    table_alter =
-      Enum.reduce_while(DataTable.get_data(table), table, fn %Thaqqa.Data{
-                                                               value_list: value_list
-                                                             },
-                                                             acc ->
-        if Map.get(value_list, @id) in id_list or all_flag do
-          name = Map.get(value_list, @name)
-          reg_result = Regex_Khhyl.compile(name)
+      {:ok, table} ->
+        table_alter =
+          Enum.reduce_while(DataTable.get_data(table), table, fn %Thaqqa.Data{
+                                                                   value_list: value_list
+                                                                 },
+                                                                 acc ->
+            if Map.get(value_list, @id) in id_list or all_flag do
+              name = Map.get(value_list, @name)
+              reg_result = Regex_Khhyl.compile(name)
 
-          case reg_result do
-            {:error, _msg} ->
-              {:halt, reg_result}
+              case reg_result do
+                {:error, _msg} ->
+                  {:halt, reg_result}
 
-            {:ok, reg} ->
-              value_list_ = Map.put(%{}, @precompile, reg)
+                {:ok, reg} ->
+                  value_list_ = Map.put(%{}, @precompile, reg)
 
-              case DataTable.edit_data(
-                     acc,
-                     &(&1.value_list == value_list),
-                     value_list_
-                   ) do
-                {:error, msg} -> {:halt, {:error, msg}}
-                {:ok, data} -> {:cont, data}
+                  case DataTable.edit_data(
+                         acc,
+                         &(&1.value_list == value_list),
+                         value_list_
+                       ) do
+                    {:error, msg} -> {:halt, {:error, msg}}
+                    {:ok, data} -> {:cont, data}
+                  end
               end
-          end
-        else
-          {:cont, acc}
-        end
-      end)
+            else
+              {:cont, acc}
+            end
+          end)
 
-    case table_alter do
-      {:error, _msg} -> table_alter
-      _ -> {:ok, table_alter}
+        case table_alter do
+          {:error, _msg} -> table_alter
+          _ -> {:ok, table_alter}
+        end
     end
   end
 
@@ -77,12 +85,18 @@ defmodule Thaqqa.GsubRegister do
   end
 
   def add_gsub(value_map) do
-    case validate_and_modify_precompile(value_map) do
+    case get_gsub_table() do
       {:error, msg} ->
         {:error, msg}
 
-      {:ok, val} ->
-        {:ok, get_gsub_table() |> DataTable.add_data(val)}
+      {:ok, table} ->
+        case validate_and_modify_precompile(value_map) do
+          {:error, msg} ->
+            {:error, msg}
+
+          {:ok, val} ->
+            {:ok, table |> DataTable.add_data(val)}
+        end
     end
   end
 
@@ -93,8 +107,12 @@ defmodule Thaqqa.GsubRegister do
     end
   end
 
-  def delete_gsub(filter_fun, safety_num \\ 1),
-    do: get_gsub_table() |> DataTable.delete_data(filter_fun, safety_num)
+  def delete_gsub(filter_fun, safety_num \\ 1) do
+    case get_gsub_table() do
+      {:error, msg} -> {:error, msg}
+      {:ok, table} -> table |> DataTable.delete_data(filter_fun, safety_num)
+    end
+  end
 
   def edit_gsub!(value_map, filter_fun, safety_num \\ 1) do
     case edit_gsub(value_map, filter_fun, safety_num) do
@@ -104,18 +122,21 @@ defmodule Thaqqa.GsubRegister do
   end
 
   def edit_gsub(value_map, filter_fun, safety_num \\ 1) do
-    case validate_and_modify_precompile(value_map) do
+    case get_gsub_table() do
       {:error, msg} ->
         {:error, msg}
 
-      {:ok, val} ->
-        {:ok, get_gsub_table() |> DataTable.edit_data(val, safety_num)}
+      {:ok, table} ->
+        case validate_and_modify_precompile(value_map) do
+          {:error, msg} -> {:error, msg}
+          {:ok, val} -> {:ok, table |> DataTable.edit_data(val, safety_num)}
+        end
     end
   end
 
-  def gsub(string, writing_direction) do
+  def gsub(string, writing_direction) when writing_direction in [@vertical, @horizontal] do
     get_gsub(fn %Thaqqa.Data{} = data ->
-      Thaqqa.Data.get_val(data, @writing_direction) in [writing_direction, @universal]
+      Thaqqa.Data.get_val(data, @writing_direction) in [writing_direction, @universal_direction]
     end)
     |> Enum.reduce(string, fn p, acc ->
       reg = Thaqqa.Data.get_val(p, @precompile)
@@ -124,5 +145,10 @@ defmodule Thaqqa.GsubRegister do
     end)
   end
 
-  def sort_gsub(), do: get_gsub_table() |> Thaqqa.DataTable.sort()
+  def sort_gsub() do
+    case get_gsub_table() do
+      {:error, msg} -> {:error, msg}
+      {:ok, table} -> table |> Thaqqa.DataTable.sort()
+    end
+  end
 end

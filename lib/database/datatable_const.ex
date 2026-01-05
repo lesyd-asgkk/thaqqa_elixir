@@ -37,14 +37,16 @@ defmodule Thaqqa.DataTable.Const do
       @fontdata "FONTDATA"
 
       # 指定された値
-      @universal "universal"
+
+      @universal_language "universal"
       @khehyelu "khehyelu"
       @samlhta "samlhta"
-      @language_list [@universal, @khehyelu, @samlhta]
+      @language_list [@universal_language, @khehyelu, @samlhta]
 
+      @universal_direction "universal"
       @vertical "vertical"
       @horizontal "horizontal"
-      @writing_direction_list [@universal, @vertical, @horizontal]
+      @writing_direction_list [@universal_direction, @vertical, @horizontal]
 
       @internal "internal"
       @external "external"
