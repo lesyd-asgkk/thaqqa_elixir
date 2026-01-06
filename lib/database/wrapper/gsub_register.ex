@@ -2,7 +2,7 @@ defmodule Thaqqa.GsubRegister do
   alias Thaqqa.DataTable, as: DataTable
   alias Thaqqa.FontRegistry, as: FontRegistry
   alias Thaqqa.Regex_Khhyl, as: Regex_Khhyl
-  # alias Thaqqa.FontRegistry.Error, as: Error
+  alias Thaqqa.FontRegistry.Error, as: Error
   use Thaqqa.DataTable.Const
 
   def get_gsub_table(), do: Thaqqa.FontRegistry.get_static_table(@gsub)
@@ -10,7 +10,8 @@ defmodule Thaqqa.GsubRegister do
   def get_gsub(filter_fun \\ fn _ -> true end) do
     case get_gsub_table() do
       {:error, msg} -> {:error, msg}
-      {:ok, table} -> table |> DataTable.get_data(filter_fun)
+      {:ok, nil} -> Error.table_not_found(@gsub)
+      {:ok, table} -> {:ok, table |> DataTable.get_data(filter_fun)}
     end
   end
 
@@ -32,6 +33,9 @@ defmodule Thaqqa.GsubRegister do
     case get_gsub_table() do
       {:error, msg} ->
         {:error, msg}
+
+      {:ok, nil} ->
+        Error.table_not_found(@gsub)
 
       {:ok, table} ->
         table_alter =
@@ -89,6 +93,9 @@ defmodule Thaqqa.GsubRegister do
       {:error, msg} ->
         {:error, msg}
 
+      {:ok, nil} ->
+        Error.table_not_found(@gsub)
+
       {:ok, table} ->
         case validate_and_modify_precompile(value_map) do
           {:error, msg} ->
@@ -110,6 +117,7 @@ defmodule Thaqqa.GsubRegister do
   def delete_gsub(filter_fun, safety_num \\ 1) do
     case get_gsub_table() do
       {:error, msg} -> {:error, msg}
+      {:ok, nil} -> Error.table_not_found(@gsub)
       {:ok, table} -> table |> DataTable.delete_data(filter_fun, safety_num)
     end
   end
@@ -126,6 +134,9 @@ defmodule Thaqqa.GsubRegister do
       {:error, msg} ->
         {:error, msg}
 
+      {:ok, nil} ->
+        Error.table_not_found(@gsub)
+
       {:ok, table} ->
         case validate_and_modify_precompile(value_map) do
           {:error, msg} -> {:error, msg}
@@ -134,15 +145,30 @@ defmodule Thaqqa.GsubRegister do
     end
   end
 
+  def gsub!(string, writing_direction) when writing_direction in [@vertical, @horizontal] do
+    case gsub(string, writing_direction) do
+      {:error, msg} -> raise msg
+      {:ok, val} -> val
+    end
+  end
+
   def gsub(string, writing_direction) when writing_direction in [@vertical, @horizontal] do
     get_gsub(fn %Thaqqa.Data{} = data ->
       Thaqqa.Data.get_val(data, @writing_direction) in [writing_direction, @universal_direction]
     end)
-    |> Enum.reduce(string, fn p, acc ->
-      reg = Thaqqa.Data.get_val(p, @precompile)
-      alt = Thaqqa.Data.get_val(p, @name_alt)
-      Regex.replace(reg, acc, alt)
-    end)
+    |> case do
+      {:error, msg} ->
+        {:error, msg}
+
+      {:ok, val} ->
+        {:ok,
+         val
+         |> Enum.reduce(string, fn p, acc ->
+           reg = Thaqqa.Data.get_val(p, @precompile)
+           alt = Thaqqa.Data.get_val(p, @name_alt)
+           Regex.replace(reg, acc, alt)
+         end)}
+    end
   end
 
   def sort_gsub() do

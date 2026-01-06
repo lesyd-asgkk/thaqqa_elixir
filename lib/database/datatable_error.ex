@@ -94,4 +94,13 @@ defmodule Thaqqa.FontRegistry.Error do
          detail: :too_many_subjects,
          meta: %{subject_list: values, operation: op}
        }}
+
+  def table_not_found(tablename, fontname \\ nil),
+    do:
+      {:error,
+       %__MODULE__{
+         type: :table,
+         detail: :notfound,
+         meta: %{tablename: tablename, fontname: fontname}
+       }}
 end

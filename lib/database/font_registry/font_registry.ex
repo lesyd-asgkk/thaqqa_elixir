@@ -19,6 +19,16 @@ defmodule Thaqqa.FontRegistry do
     end
   end
 
+  def get_table_from_font(name, tablename, timeout \\ 5_000) do
+    try do
+      {:ok, GenServer.call(__MODULE__, {:get_table_from_font, {name, tablename}})}
+    catch
+      :exit, {:noproc, _} -> {:error, :font_registry_restarting}
+      :exit, {:timeout, _} -> {:error, :font_registry_timeout}
+      :exit, reason -> {:error, {:font_registry_exit, reason}}
+    end
+  end
+
   def add_font(font, timeout \\ 5_000) do
     try do
       {:ok, GenServer.call(__MODULE__, {:add_font, font})}
@@ -115,6 +125,16 @@ defmodule Thaqqa.FontRegistry do
   def handle_call({:delete_font, name}, _from, state) do
     :ets.delete(@fonts, name)
     {:reply, :ok, state}
+  end
+
+  def handle_call({:get_table_from_font, {name, tablename}}, _form, state) do
+    reply =
+      case :ets.lookup(@fonts, name) do
+        [{^name, font}] -> font |> Font.get_table(tablename)
+        [] -> nil
+      end
+
+    {:reply, reply, state}
   end
 
   def handle_call({:get_font, name}, _form, state) do

@@ -2,14 +2,15 @@ defmodule Thaqqa.ParserRegister do
   alias Thaqqa.DataTable, as: DataTable
   alias Thaqqa.FontRegistry, as: FontRegistry
   alias Thaqqa.Regex_Khhyl, as: Regex_Khhyl
-  # alias Thaqqa.FontRegistry.Error, as: Error
+  alias Thaqqa.FontRegistry.Error, as: Error
   use Thaqqa.DataTable.Const
 
   def get_parser_table(), do: Thaqqa.FontRegistry.get_static_table(@parser)
 
   def get_parser(filter_fun \\ fn _ -> true end) do
     case get_parser_table() do
-      {:ok, val} -> val |> DataTable.get_data(filter_fun)
+      {:ok, nil} -> Error.table_not_found(@parser)
+      {:ok, table} -> {:ok, table |> DataTable.get_data(filter_fun)}
       {:error, msg} -> {:error, msg}
     end
   end
@@ -27,6 +28,9 @@ defmodule Thaqqa.ParserRegister do
     case table_ do
       {:error, msg} ->
         {:error, msg}
+
+      {:ok, nil} ->
+        Error.table_not_found(@parser)
 
       {:ok, table} ->
         case validate_and_modify_precompile(value_map) do
@@ -54,6 +58,9 @@ defmodule Thaqqa.ParserRegister do
     case get_parser_table() do
       {:error, msg} ->
         {:error, msg}
+
+      {:ok, nil} ->
+        Error.table_not_found(@parser)
 
       {:ok, table} ->
         table_alter =
@@ -116,6 +123,7 @@ defmodule Thaqqa.ParserRegister do
   def delete_parser(filter_fun, safety_num \\ 1) do
     case get_parser_table() do
       {:error, msg} -> {:error, msg}
+      {:ok, nil} -> Error.table_not_found(@parser)
       {:ok, table} -> table |> DataTable.delete_data(filter_fun, safety_num)
     end
   end
@@ -132,11 +140,21 @@ defmodule Thaqqa.ParserRegister do
       {:error, msg} ->
         {:error, msg}
 
+      {:ok, nil} ->
+        Error.table_not_found(@parser)
+
       {:ok, table} ->
         case validate_and_modify_precompile(value_map) do
           {:error, msg} -> {:error, msg}
           {:ok, val} -> {:ok, table |> DataTable.edit_data(val, safety_num)}
         end
+    end
+  end
+
+  def parse!(string, language) when language in [@khehyelu, @samlhta] do
+    case parse(string, language) do
+      {:error, msg} -> raise msg
+      {:ok, val} -> val
     end
   end
 
@@ -150,11 +168,19 @@ defmodule Thaqqa.ParserRegister do
     get_parser(fn %Thaqqa.Data{} = data ->
       Thaqqa.Data.get_val(data, @language) in [language, @universal_language]
     end)
-    |> Enum.reduce(string, fn p, acc ->
-      reg = Thaqqa.Data.get_val(p, @precompile)
-      alt = Thaqqa.Data.get_val(p, @name_alt)
-      Regex.replace(reg, acc, alt)
-    end)
+    |> case do
+      {:error, msg} ->
+        {:error, msg}
+
+      {:ok, val} ->
+        {:ok,
+         val
+         |> Enum.reduce(string, fn p, acc ->
+           reg = Thaqqa.Data.get_val(p, @precompile)
+           alt = Thaqqa.Data.get_val(p, @name_alt)
+           Regex.replace(reg, acc, alt)
+         end)}
+    end
   end
 
   def sort_parser() do
