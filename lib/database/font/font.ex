@@ -1,5 +1,6 @@
 defmodule Thaqqa.Font do
   alias Thaqqa.FontRegistry, as: FontRegistry
+  alias Thaqqa.DataTable, as: DataTable
 
   defstruct [:filename, :name, table_list: []]
 
@@ -9,7 +10,8 @@ defmodule Thaqqa.Font do
     Enum.find(tables, fn table -> table.name == table_name end)
   end
 
-  def add_table(%__MODULE__{table_list: tables} = font, table) do
+  def add_table(%__MODULE__{table_list: tables, name: fontname} = font, %DataTable{} = table) do
+    table = %DataTable{table | parent: fontname}
     %{font | table_list: tables ++ [table]}
   end
 

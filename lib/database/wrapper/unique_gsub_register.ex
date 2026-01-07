@@ -3,10 +3,16 @@ defmodule Thaqqa.UniqueGsubRegister do
   alias Thaqqa.FontRegistry, as: FontRegistry
   alias Thaqqa.Regex_Khhyl, as: Regex_Khhyl
   alias Thaqqa.FontRegistry.Error, as: Error
+  alias Thaqqa.Font, as: Font
   use Thaqqa.DataTable.Const
 
-  def get_unique_gsub_table(fontname),
-    do: Thaqqa.FontRegistry.get_table_from_font(@unique_gsub, fontname)
+  def get_unique_gsub_table(fontname) do
+    case FontRegistry.get_font(fontname) do
+      {:error, msg} -> {:error, msg}
+      {:ok, nil} -> Error.font_not_found(fontname)
+      {:ok, font} -> {:ok, font |> Font.get_table(@unique_gsub)}
+    end
+  end
 
   def get_unique_gsub(fontname, filter_fun \\ fn _ -> true end) do
     case get_unique_gsub_table(fontname) do
@@ -138,9 +144,6 @@ defmodule Thaqqa.UniqueGsubRegister do
       {:error, msg} ->
         {:error, msg}
 
-      {:ok, nil} ->
-        Error.table_not_found(@unique_gsub, fontname)
-
       {:ok, table} ->
         case validate_and_modify_precompile(value_map) do
           {:error, msg} -> {:error, msg}
@@ -149,15 +152,15 @@ defmodule Thaqqa.UniqueGsubRegister do
     end
   end
 
-  def unique_gsub!(fontname, string, writing_direction)
+  def unique_gsub!(string, fontname, writing_direction)
       when writing_direction in [@vertical, @horizontal] do
-    case unique_gsub(fontname, string, writing_direction) do
+    case unique_gsub(string, fontname, writing_direction) do
       {:error, msg} -> raise msg
       {:ok, val} -> val
     end
   end
 
-  def unique_gsub(fontname, string, writing_direction)
+  def unique_gsub(string, fontname, writing_direction)
       when writing_direction in [@vertical, @horizontal] do
     get_unique_gsub(fontname, fn %Thaqqa.Data{} = data ->
       Thaqqa.Data.get_val(data, @writing_direction) in [writing_direction, @universal_direction]

@@ -13,6 +13,7 @@ defmodule Thaqqa.FontIO do
   alias Thaqqa.DataTable, as: DataTable
   alias Thaqqa.ParserRegister, as: ParserRegister
   alias Thaqqa.GsubRegister, as: GsubRegister
+  alias Thaqqa.UniqueGsubRegister, as: UniqueGsubRegister
 
   def import() do
     # json → structs
@@ -84,9 +85,24 @@ defmodule Thaqqa.FontIO do
       _ ->
         name = Map.get(data, "FONTDATA") |> Map.get("data") |> Map.get("0") |> Map.get("Fontname")
 
-        if name == nil,
-          do: {:error, "Cannot load font: Fontname is not found"},
-          else: FontRegistry.add_font(Font.new(filename, name, table))
+        if name == nil do
+          {:error, "Cannot load font: Fontname is not found"}
+        else
+          font =
+            table
+            |> Enum.reduce(Font.new(filename, name, []), fn k, acc -> acc |> Font.add_table(k) end)
+
+          FontRegistry.add_font(font)
+
+          checker_ = UniqueGsubRegister.precompile_unique_gsub_all(name)
+          IO.inspect(checker_)
+
+          case checker_ do
+            # 削除or差し戻し処理をここに追加予定。
+            {:error, _msg} -> checker_
+            {:ok, data} -> data |> DataTable.update_fontregistry()
+          end
+        end
     end
   end
 

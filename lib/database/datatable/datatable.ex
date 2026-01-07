@@ -498,8 +498,10 @@ defmodule Thaqqa.DataTable do
   def update_fontregistry(%__MODULE__{name: name, parent: nil} = table),
     do: FontRegistry.edit_static_table(name, table)
 
-  def update_fontregistry(%__MODULE__{name: name, parent: parent} = table),
-    do: Font.edit_table(parent, name, table) |> Font.update_fontregistry()
+  def update_fontregistry(%__MODULE__{name: name, parent: parent} = table) do
+    {:ok, parent_font} = FontRegistry.get_font(parent)
+    parent_font |> Font.edit_table(name, table) |> Font.update_fontregistry()
+  end
 
   def update_fontregistry(%{} = map),
     do: Enum.map(map, fn %__MODULE__{} = table -> update_fontregistry(table) end)

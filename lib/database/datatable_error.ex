@@ -103,4 +103,13 @@ defmodule Thaqqa.FontRegistry.Error do
          detail: :notfound,
          meta: %{tablename: tablename, fontname: fontname}
        }}
+
+  def font_not_found(fontname),
+    do:
+      {:error,
+       %__MODULE__{
+         type: :font,
+         detail: :notfound,
+         meta: %{fontname: fontname}
+       }}
 end

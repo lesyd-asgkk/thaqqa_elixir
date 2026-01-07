@@ -9,10 +9,13 @@ defmodule ThaqqaTest do
     Thaqqa.FontIO.import()
     Thaqqa.FontIO.import("default")
 
-    Thaqqa.FontRegistry.get_font("Default")
+    {:ok, table} = Thaqqa.FontRegistry.get_font("Default")
+
+    IO.inspect(table |> Thaqqa.Font.get_table("UniqueGSUB"))
 
     Thaqqa.ParserRegister.parse!("suzusha koratl", "khehyelu")
     |> Thaqqa.GsubRegister.gsub!("vertical")
+    |> Thaqqa.UniqueGsubRegister.unique_gsub("Default", "vertical")
     |> IO.inspect()
 
     Thaqqa.ParserRegister.parse!("naylath kaatak", "khehyelu")
