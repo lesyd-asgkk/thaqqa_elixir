@@ -25,6 +25,8 @@ defmodule Thaqqa.LetterRegister do
   def get_diacritic_c_table(), do: Thaqqa.FontRegistry.get_static_table(@diacritic_c)
   def get_diacritic_p_table(), do: Thaqqa.FontRegistry.get_static_table(@diacritic_p)
 
+  # get_letterの帰り値を{:ok, table_map}の形にするし
+  # get_letterを用いる関数も修正する
   def get_letter(filter_fun \\ fn _ -> true end) do
     case get_table() do
       {:error, msg} ->

@@ -1,6 +1,6 @@
 defmodule Thaqqa.Font do
   # fontの関数について、結果として名前が変更される/追加される/削除されるものは
-  # こちらから編集できないようにし、FontRegistryで編集するように変更する
+  # 直接APIを提供しないようにし、FontRegistryで編集するように変更する
   alias Thaqqa.FontRegistry, as: FontRegistry
   alias Thaqqa.DataTable, as: DataTable
   alias Thaqqa.Regex_Khhyl.Error, as: Error
@@ -10,6 +10,14 @@ defmodule Thaqqa.Font do
 
   def get_table(%__MODULE__{table_list: tables}, table_name) do
     Enum.find(tables, fn table -> table.name == table_name end)
+  end
+
+  defp check_tablename_conflict(name) do
+    case FontRegistry.get_static_table(name) do
+      {:error, reason} -> Error.genserver_error(reason)
+      {:ok, nil} -> {:ok, nil}
+      {:ok, _} -> Error.nominal_conflict_datatable(name, :add)
+    end
   end
 
   def add_table!(%__MODULE__{} = font, %DataTable{} = table) do
@@ -23,20 +31,17 @@ defmodule Thaqqa.Font do
         %__MODULE__{table_list: tables, name: fontname} = font,
         %DataTable{name: name} = table
       ) do
-    case FontRegistry.get_static_table(name) do
+    case check_tablename_conflict(name) do
       {:error, reason} ->
-        Error.genserver_error(reason)
+        {:error, reason}
 
-      {:ok, nil} ->
+      {:ok, _} ->
         if get_table(font, name) != nil do
           Error.nominal_conflict_datatable(name, :add)
         else
           table = %DataTable{table | parent: fontname}
           {:ok, %{font | table_list: tables ++ [table]}}
         end
-
-      {:ok, _} ->
-        Error.nominal_conflict_datatable(name, :add)
     end
   end
 
