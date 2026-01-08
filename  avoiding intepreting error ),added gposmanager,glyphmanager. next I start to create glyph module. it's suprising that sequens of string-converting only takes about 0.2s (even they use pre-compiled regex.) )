@@ -1,0 +1,14 @@
+[workspace 3b15b17] fixed glitch in UniqueGSUB, Regex_khhyl(_ and . didn't translate well, changed num as <num
+ 24 files changed, 1203 insertions(+), 1890 deletions(-)
+ delete mode 100644 lib/database/js/DataTable.js
+ delete mode 100644 lib/database/js/F_GSUB.js
+ delete mode 100644 lib/database/js/FontManager.js
+ delete mode 100644 lib/database/js/GPOS.js
+ delete mode 100644 lib/database/js/GSUB.js
+ delete mode 100644 lib/database/js/Letter.js
+ delete mode 100644 lib/database/js/Parser.js
+ rename lib/{ => glpyh}/glyph.ex (100%)
+ rename lib/{database => glpyh}/js/Glyph.js (100%)
+ rename lib/{database => glpyh}/js/GlyphManager.js (100%)
+ rename lib/{database => glpyh}/js/Render.js (100%)
+ rename lib/{database => glpyh}/js/Update.js (100%)

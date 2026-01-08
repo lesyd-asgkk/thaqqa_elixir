@@ -92,7 +92,9 @@ defmodule Thaqqa.FontIO do
         else
           font =
             table
-            |> Enum.reduce(Font.new(filename, name, []), fn k, acc -> acc |> Font.add_table(k) end)
+            |> Enum.reduce(Font.new(filename, name, []), fn k, acc ->
+              acc |> Font.add_table!(k)
+            end)
 
           FontRegistry.add_font(font)
 
