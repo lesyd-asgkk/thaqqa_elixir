@@ -175,6 +175,7 @@ defmodule Thaqqa.UniqueGsubRegister do
          |> Enum.reduce(string, fn p, acc ->
            reg = Thaqqa.Data.get_val(p, @precompile)
            alt = Thaqqa.Data.get_val(p, @name_alt)
+
            Regex.replace(reg, acc, alt)
          end)}
     end

@@ -9,7 +9,8 @@ defmodule Thaqqa.DataTable.Const do
       @writing_direction "WritingDirection"
       @language "Language"
       @name_alt "NameAlt"
-
+      @path "Path"
+      @gpos_type "GPOSType"
       # table名
       @rootdata "ROOTDATA"
 

@@ -3,7 +3,7 @@ defmodule Thaqqa.Regex_Khhyl.Tokenizer do
     String.split(
       string,
       ~r/(\[.*?\]|(\(\?<?[=!])|(\(\?(:|<.*?>))|
-      ((\{\\d+(,(\\d+)?)?\})\??)|(\-?(\+|\*|\?)\??)|[\(\)\-\,\|])/,
+      ((\{\\d+(,(\\d+)?)?\})\??)|(\-?(\+|\*|\?)\??)|[\(\)\-\,\|])|_/,
       include_captures: true
     )
     |> Enum.filter(fn x -> x != "" end)

@@ -114,8 +114,8 @@
         "subtype": "writing_direction",
         "dev": false
       },
-      "Pattern_sub": {
-        "name": "Pattern_sub",
+      "GPOSType": {
+        "name": "GPOSType",
         "type": "string",
         "order": 2,
         "subtype": "GPOS",
@@ -175,7 +175,7 @@
       "0": {
         "ID": 0,
         "WritingDirection": "universal",
-        "Pattern_sub": "diacritical",
+        "GPOSType": "diacritical",
         "Order": 0,
         "Name": "C(*,+-d_)",
         "OffsetX0": 3,
@@ -187,7 +187,7 @@
       "1": {
         "ID": 1,
         "WritingDirection": "vertical",
-        "Pattern_sub": "external",
+        "GPOSType": "external",
         "Order": 19,
         "Name": "P(*)",
         "OffsetX0": 0,
@@ -199,7 +199,7 @@
       "2": {
         "ID": 2,
         "WritingDirection": "vertical",
-        "Pattern_sub": "external",
+        "GPOSType": "external",
         "Order": 1,
         "Name": "S(*)",
         "OffsetX0": 0,
@@ -211,7 +211,7 @@
       "3": {
         "ID": 3,
         "WritingDirection": "vertical",
-        "Pattern_sub": "external",
+        "GPOSType": "external",
         "Order": 19,
         "Name": "P(space_)",
         "OffsetX0": 0,
@@ -223,7 +223,7 @@
       "4": {
         "ID": 4,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 0,
         "Name": "S(*,t_-*,[_.isNullVowel]_-*,t_-*)|S((init|fin),t_-*,*,t_-*)",
         "OffsetX0": 0,
@@ -235,7 +235,7 @@
       "5": {
         "ID": 5,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 1,
         "Name": "S(*,t_-*,[_.isNullVowel]_-*,k_-*)|S((init|fin),t_-*,*,k_-*)",
         "OffsetX0": 0,
@@ -247,7 +247,7 @@
       "6": {
         "ID": 6,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2,
         "Name": "S(*,t_-*,[_.isNullVowel]_-*,q_-*)|S((init|fin),t_-*,*,q_-*)",
         "OffsetX0": 0,
@@ -259,7 +259,7 @@
       "7": {
         "ID": 7,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 3,
         "Name": "S(*,t_-*,[_.isNullVowel]_-*,c_-*)|S((init|fin),t_-*,*,c_-*)",
         "OffsetX0": 0,
@@ -271,7 +271,7 @@
       "8": {
         "ID": 8,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 4,
         "Name": "S(*,t_-*,[_.isNullVowel]_-*,n_-*)|S((init|fin),t_-*,*,n_-*)",
         "OffsetX0": 0,
@@ -283,7 +283,7 @@
       "9": {
         "ID": 9,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 5,
         "Name": "S(*,t_-*,[_.isNullVowel]_-*,ng_-*)|S((init|fin),t_-*,*,ng_-*)",
         "OffsetX0": 0,
@@ -295,7 +295,7 @@
       "10": {
         "ID": 10,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 6,
         "Name": "S(*,t_-*,[_.isNullVowel]_-*,th_-*)|S((init|fin),t_-*,*,th_-*)",
         "OffsetX0": 0,
@@ -307,7 +307,7 @@
       "11": {
         "ID": 11,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 7,
         "Name": "S(*,t_-*,[_.isNullVowel]_-*,s_-*)|S((init|fin),t_-*,*,s_-*)",
         "OffsetX0": 0,
@@ -319,7 +319,7 @@
       "12": {
         "ID": 12,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 8,
         "Name": "S(*,t_-*,[_.isNullVowel]_-*,hy_-*)|S((init|fin),t_-*,*,hy_-*)",
         "OffsetX0": 0,
@@ -331,7 +331,7 @@
       "13": {
         "ID": 13,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 9,
         "Name": "S(*,t_-*,[_.isNullVowel]_-*,kh_-*)|S((init|fin),t_-*,*,kh_-*)",
         "OffsetX0": 0,
@@ -343,7 +343,7 @@
       "14": {
         "ID": 14,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 10,
         "Name": "S(*,t_-*,[_.isNullVowel]_-*,qh_-*)|S((init|fin),t_-*,*,qh_-*)",
         "OffsetX0": 0,
@@ -355,7 +355,7 @@
       "15": {
         "ID": 15,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 11,
         "Name": "S(*,t_-*,[_.isNullVowel]_-*,h_-*)|S((init|fin),t_-*,*,h_-*)",
         "OffsetX0": 0,
@@ -367,7 +367,7 @@
       "16": {
         "ID": 16,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 12,
         "Name": "S(*,t_-*,[_.isNullVowel]_-*,l_-*)|S((init|fin),t_-*,*,l_-*)",
         "OffsetX0": 0,
@@ -379,7 +379,7 @@
       "17": {
         "ID": 17,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 13,
         "Name": "S(*,t_-*,[_.isNullVowel]_-*,r_-*)|S((init|fin),t_-*,*,r_-*)",
         "OffsetX0": 0,
@@ -391,7 +391,7 @@
       "18": {
         "ID": 18,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 14,
         "Name": "S(*,t_-*,[_.isNullVowel]_-*,tl_-*)|S((init|fin),t_-*,*,tl_-*)",
         "OffsetX0": 0,
@@ -403,7 +403,7 @@
       "19": {
         "ID": 19,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 15,
         "Name": "S(*,t_-*,[_.isNullVowel]_-*,w_-*)|S((init|fin),t_-*,*,w_-*)",
         "OffsetX0": 0,
@@ -415,7 +415,7 @@
       "20": {
         "ID": 20,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 16,
         "Name": "S(*,t_-*,[_.isNullVowel]_-*,y_-*)|S((init|fin),t_-*,*,y_-*)",
         "OffsetX0": 0,
@@ -427,7 +427,7 @@
       "21": {
         "ID": 21,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 50,
         "Name": "S(*,k_-*,[_.isNullVowel]_-*,t_-*)|S((init|fin),k_-*,*,t_-*)",
         "OffsetX0": 0,
@@ -439,7 +439,7 @@
       "22": {
         "ID": 22,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 51,
         "Name": "S(*,k_-*,[_.isNullVowel]_-*,k_-*)|S((init|fin),k_-*,*,k_-*)",
         "OffsetX0": 0,
@@ -451,7 +451,7 @@
       "23": {
         "ID": 23,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 52,
         "Name": "S(*,k_-*,[_.isNullVowel]_-*,q_-*)|S((init|fin),k_-*,*,q_-*)",
         "OffsetX0": 0,
@@ -463,7 +463,7 @@
       "24": {
         "ID": 24,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 53,
         "Name": "S(*,k_-*,[_.isNullVowel]_-*,c_-*)|S((init|fin),k_-*,*,c_-*)",
         "OffsetX0": 0,
@@ -475,7 +475,7 @@
       "25": {
         "ID": 25,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 54,
         "Name": "S(*,k_-*,[_.isNullVowel]_-*,n_-*)|S((init|fin),k_-*,*,n_-*)",
         "OffsetX0": 0,
@@ -487,7 +487,7 @@
       "26": {
         "ID": 26,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 55,
         "Name": "S(*,k_-*,[_.isNullVowel]_-*,ng_-*)|S((init|fin),k_-*,*,ng_-*)",
         "OffsetX0": 0,
@@ -499,7 +499,7 @@
       "27": {
         "ID": 27,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 56,
         "Name": "S(*,k_-*,[_.isNullVowel]_-*,th_-*)|S((init|fin),k_-*,*,th_-*)",
         "OffsetX0": 0,
@@ -511,7 +511,7 @@
       "28": {
         "ID": 28,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 57,
         "Name": "S(*,k_-*,[_.isNullVowel]_-*,s_-*)|S((init|fin),k_-*,*,s_-*)",
         "OffsetX0": 0,
@@ -523,7 +523,7 @@
       "29": {
         "ID": 29,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 58,
         "Name": "S(*,k_-*,[_.isNullVowel]_-*,hy_-*)|S((init|fin),k_-*,*,hy_-*)",
         "OffsetX0": 0,
@@ -535,7 +535,7 @@
       "30": {
         "ID": 30,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 59,
         "Name": "S(*,k_-*,[_.isNullVowel]_-*,kh_-*)|S((init|fin),k_-*,*,kh_-*)",
         "OffsetX0": 0,
@@ -547,7 +547,7 @@
       "31": {
         "ID": 31,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 60,
         "Name": "S(*,k_-*,[_.isNullVowel]_-*,qh_-*)|S((init|fin),k_-*,*,qh_-*)",
         "OffsetX0": 0,
@@ -559,7 +559,7 @@
       "32": {
         "ID": 32,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 61,
         "Name": "S(*,k_-*,[_.isNullVowel]_-*,h_-*)|S((init|fin),k_-*,*,h_-*)",
         "OffsetX0": 0,
@@ -571,7 +571,7 @@
       "33": {
         "ID": 33,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 62,
         "Name": "S(*,k_-*,[_.isNullVowel]_-*,l_-*)|S((init|fin),k_-*,*,l_-*)",
         "OffsetX0": 0,
@@ -583,7 +583,7 @@
       "34": {
         "ID": 34,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 63,
         "Name": "S(*,k_-*,[_.isNullVowel]_-*,tl_-*)|S((init|fin),k_-*,*,tl_-*)",
         "OffsetX0": 0,
@@ -595,7 +595,7 @@
       "35": {
         "ID": 35,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 64,
         "Name": "S(*,k_-*,[_.isNullVowel]_-*,r_-*)|S((init|fin),k_-*,*,r_-*)",
         "OffsetX0": 0,
@@ -607,7 +607,7 @@
       "36": {
         "ID": 36,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 65,
         "Name": "S(*,k_-*,[_.isNullVowel]_-*,w_-*)|S((init|fin),k_-*,*,w_-*)",
         "OffsetX0": 0,
@@ -619,7 +619,7 @@
       "37": {
         "ID": 37,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 66,
         "Name": "S(*,k_-*,[_.isNullVowel]_-*,y_-*)|S((init|fin),k_-*,*,y_-*)",
         "OffsetX0": 0,
@@ -631,7 +631,7 @@
       "38": {
         "ID": 38,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 100,
         "Name": "S(*,q_-*,[_.isNullVowel]_-*,t_-*)|S((init|fin),q_-*,*,t_-*)",
         "OffsetX0": 0,
@@ -643,7 +643,7 @@
       "39": {
         "ID": 39,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 101,
         "Name": "S(*,q_-*,[_.isNullVowel]_-*,k_-*)|S((init|fin),q_-*,*,k_-*)",
         "OffsetX0": 0,
@@ -655,7 +655,7 @@
       "40": {
         "ID": 40,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 102,
         "Name": "S(*,q_-*,[_.isNullVowel]_-*,q_-*)|S((init|fin),q_-*,*,q_-*)",
         "OffsetX0": 0,
@@ -667,7 +667,7 @@
       "41": {
         "ID": 41,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 103,
         "Name": "S(*,q_-*,[_.isNullVowel]_-*,c_-*)|S((init|fin),q_-*,*,c_-*)",
         "OffsetX0": 0,
@@ -679,7 +679,7 @@
       "42": {
         "ID": 42,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 104,
         "Name": "S(*,q_-*,[_.isNullVowel]_-*,n_-*)|S((init|fin),q_-*,*,n_-*)",
         "OffsetX0": 0,
@@ -691,7 +691,7 @@
       "43": {
         "ID": 43,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 105,
         "Name": "S(*,q_-*,[_.isNullVowel]_-*,ng_-*)|S((init|fin),q_-*,*,ng_-*)",
         "OffsetX0": 0,
@@ -703,7 +703,7 @@
       "44": {
         "ID": 44,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 106,
         "Name": "S(*,q_-*,[_.isNullVowel]_-*,th_-*)|S((init|fin),q_-*,*,th_-*)",
         "OffsetX0": 0,
@@ -715,7 +715,7 @@
       "45": {
         "ID": 45,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 107,
         "Name": "S(*,q_-*,[_.isNullVowel]_-*,s_-*)|S((init|fin),q_-*,*,s_-*)",
         "OffsetX0": 0,
@@ -727,7 +727,7 @@
       "46": {
         "ID": 46,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 108,
         "Name": "S(*,q_-*,[_.isNullVowel]_-*,hy_-*)|S((init|fin),q_-*,*,hy_-*)",
         "OffsetX0": 0,
@@ -739,7 +739,7 @@
       "47": {
         "ID": 47,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 109,
         "Name": "S(*,q_-*,[_.isNullVowel]_-*,kh_-*)|S((init|fin),q_-*,*,kh_-*)",
         "OffsetX0": 0,
@@ -751,7 +751,7 @@
       "48": {
         "ID": 48,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 110,
         "Name": "S(*,q_-*,[_.isNullVowel]_-*,qh_-*)|S((init|fin),q_-*,*,qh_-*)",
         "OffsetX0": 0,
@@ -763,7 +763,7 @@
       "49": {
         "ID": 49,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 111,
         "Name": "S(*,q_-*,[_.isNullVowel]_-*,h_-*)|S((init|fin),q_-*,*,h_-*)",
         "OffsetX0": 0,
@@ -775,7 +775,7 @@
       "50": {
         "ID": 50,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 112,
         "Name": "S(*,q_-*,[_.isNullVowel]_-*,l_-*)|S((init|fin),q_-*,*,l_-*)",
         "OffsetX0": 0,
@@ -787,7 +787,7 @@
       "51": {
         "ID": 51,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 113,
         "Name": "S(*,q_-*,[_.isNullVowel]_-*,tl_-*)|S((init|fin),q_-*,*,tl_-*)",
         "OffsetX0": 0,
@@ -799,7 +799,7 @@
       "52": {
         "ID": 52,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 114,
         "Name": "S(*,q_-*,[_.isNullVowel]_-*,r_-*)|S((init|fin),q_-*,*,r_-*)",
         "OffsetX0": 0,
@@ -811,7 +811,7 @@
       "53": {
         "ID": 53,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 115,
         "Name": "S(*,q_-*,[_.isNullVowel]_-*,w_-*)|S((init|fin),q_-*,*,w_-*)",
         "OffsetX0": 0,
@@ -823,7 +823,7 @@
       "54": {
         "ID": 54,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 116,
         "Name": "S(*,q_-*,[_.isNullVowel]_-*,y_-*)|S((init|fin),q_-*,*,y_-*)",
         "OffsetX0": 0,
@@ -835,7 +835,7 @@
       "55": {
         "ID": 55,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 150,
         "Name": "S(*,c_-*,[_.isNullVowel]_-*,t_-*)|S((init|fin),c_-*,*,t_-*)",
         "OffsetX0": 0,
@@ -847,7 +847,7 @@
       "56": {
         "ID": 56,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 151,
         "Name": "S(*,c_-*,[_.isNullVowel]_-*,k_-*)|S((init|fin),c_-*,*,k_-*)",
         "OffsetX0": 0,
@@ -859,7 +859,7 @@
       "57": {
         "ID": 57,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 152,
         "Name": "S(*,c_-*,[_.isNullVowel]_-*,q_-*)|S((init|fin),c_-*,*,q_-*)",
         "OffsetX0": 0,
@@ -871,7 +871,7 @@
       "58": {
         "ID": 58,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 153,
         "Name": "S(*,c_-*,[_.isNullVowel]_-*,c_-*)|S((init|fin),c_-*,*,c_-*)",
         "OffsetX0": 0,
@@ -883,7 +883,7 @@
       "59": {
         "ID": 59,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 154,
         "Name": "S(*,c_-*,[_.isNullVowel]_-*,n_-*)|S((init|fin),c_-*,*,n_-*)",
         "OffsetX0": 0,
@@ -895,7 +895,7 @@
       "60": {
         "ID": 60,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 155,
         "Name": "S(*,c_-*,[_.isNullVowel]_-*,ng_-*)|S((init|fin),c_-*,*,ng_-*)",
         "OffsetX0": 0,
@@ -907,7 +907,7 @@
       "61": {
         "ID": 61,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 156,
         "Name": "S(*,c_-*,[_.isNullVowel]_-*,th_-*)|S((init|fin),c_-*,*,th_-*)",
         "OffsetX0": 0,
@@ -919,7 +919,7 @@
       "62": {
         "ID": 62,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 157,
         "Name": "S(*,c_-*,[_.isNullVowel]_-*,s_-*)|S((init|fin),c_-*,*,s_-*)",
         "OffsetX0": 0,
@@ -931,7 +931,7 @@
       "63": {
         "ID": 63,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 158,
         "Name": "S(*,c_-*,[_.isNullVowel]_-*,hy_-*)|S((init|fin),c_-*,*,hy_-*)",
         "OffsetX0": 0,
@@ -943,7 +943,7 @@
       "64": {
         "ID": 64,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 159,
         "Name": "S(*,c_-*,[_.isNullVowel]_-*,kh_-*)|S((init|fin),c_-*,*,kh_-*)",
         "OffsetX0": 0,
@@ -955,7 +955,7 @@
       "65": {
         "ID": 65,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 160,
         "Name": "S(*,c_-*,[_.isNullVowel]_-*,qh_-*)|S((init|fin),c_-*,*,qh_-*)",
         "OffsetX0": 0,
@@ -967,7 +967,7 @@
       "66": {
         "ID": 66,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 161,
         "Name": "S(*,c_-*,[_.isNullVowel]_-*,h_-*)|S((init|fin),c_-*,*,h_-*)",
         "OffsetX0": 0,
@@ -979,7 +979,7 @@
       "67": {
         "ID": 67,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 162,
         "Name": "S(*,c_-*,[_.isNullVowel]_-*,l_-*)|S((init|fin),c_-*,*,l_-*)",
         "OffsetX0": 0,
@@ -991,7 +991,7 @@
       "68": {
         "ID": 68,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 163,
         "Name": "S(*,c_-*,[_.isNullVowel]_-*,tl_-*)|S((init|fin),c_-*,*,tl_-*)",
         "OffsetX0": 0,
@@ -1003,7 +1003,7 @@
       "69": {
         "ID": 69,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 164,
         "Name": "S(*,c_-*,[_.isNullVowel]_-*,r_-*)|S((init|fin),c_-*,*,r_-*)",
         "OffsetX0": 0,
@@ -1015,7 +1015,7 @@
       "70": {
         "ID": 70,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 165,
         "Name": "S(*,c_-*,[_.isNullVowel]_-*,w_-*)|S((init|fin),c_-*,*,w_-*)",
         "OffsetX0": 0,
@@ -1027,7 +1027,7 @@
       "71": {
         "ID": 71,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 166,
         "Name": "S(*,c_-*,[_.isNullVowel]_-*,y_-*)|S((init|fin),c_-*,*,y_-*)",
         "OffsetX0": 0,
@@ -1039,7 +1039,7 @@
       "72": {
         "ID": 72,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 200,
         "Name": "S(*,n_-*,[_.isNullVowel]_-*,t_-*)|S((init|fin),n_-*,*,t_-*)",
         "OffsetX0": 0,
@@ -1051,7 +1051,7 @@
       "73": {
         "ID": 73,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 201,
         "Name": "S(*,n_-*,[_.isNullVowel]_-*,k_-*)|S((init|fin),n_-*,*,k_-*)",
         "OffsetX0": 0,
@@ -1063,7 +1063,7 @@
       "74": {
         "ID": 74,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 202,
         "Name": "S(*,n_-*,[_.isNullVowel]_-*,q_-*)|S((init|fin),n_-*,*,q_-*)",
         "OffsetX0": 0,
@@ -1075,7 +1075,7 @@
       "75": {
         "ID": 75,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 203,
         "Name": "S(*,n_-*,[_.isNullVowel]_-*,c_-*)|S((init|fin),n_-*,*,c_-*)",
         "OffsetX0": 0,
@@ -1087,7 +1087,7 @@
       "76": {
         "ID": 76,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 204,
         "Name": "S(*,n_-*,[_.isNullVowel]_-*,n_-*)|S((init|fin),n_-*,*,n_-*)",
         "OffsetX0": 0,
@@ -1099,7 +1099,7 @@
       "77": {
         "ID": 77,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 205,
         "Name": "S(*,n_-*,[_.isNullVowel]_-*,ng_-*)|S((init|fin),n_-*,*,ng_-*)",
         "OffsetX0": 0,
@@ -1111,7 +1111,7 @@
       "78": {
         "ID": 78,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 206,
         "Name": "S(*,n_-*,[_.isNullVowel]_-*,th_-*)|S((init|fin),n_-*,*,th_-*)",
         "OffsetX0": 0,
@@ -1123,7 +1123,7 @@
       "79": {
         "ID": 79,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 207,
         "Name": "S(*,n_-*,[_.isNullVowel]_-*,s_-*)|S((init|fin),n_-*,*,s_-*)",
         "OffsetX0": 0,
@@ -1135,7 +1135,7 @@
       "80": {
         "ID": 80,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 208,
         "Name": "S(*,n_-*,[_.isNullVowel]_-*,hy_-*)|S((init|fin),n_-*,*,hy_-*)",
         "OffsetX0": 0,
@@ -1147,7 +1147,7 @@
       "81": {
         "ID": 81,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 209,
         "Name": "S(*,n_-*,[_.isNullVowel]_-*,kh_-*)|S((init|fin),n_-*,*,kh_-*)",
         "OffsetX0": 0,
@@ -1159,7 +1159,7 @@
       "82": {
         "ID": 82,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 210,
         "Name": "S(*,n_-*,[_.isNullVowel]_-*,qh_-*)|S((init|fin),n_-*,*,qh_-*)",
         "OffsetX0": 0,
@@ -1171,7 +1171,7 @@
       "83": {
         "ID": 83,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 211,
         "Name": "S(*,n_-*,[_.isNullVowel]_-*,h_-*)|S((init|fin),n_-*,*,h_-*)",
         "OffsetX0": 0,
@@ -1183,7 +1183,7 @@
       "84": {
         "ID": 84,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 212,
         "Name": "S(*,n_-*,[_.isNullVowel]_-*,l_-*)|S((init|fin),n_-*,*,l_-*)",
         "OffsetX0": 0,
@@ -1195,7 +1195,7 @@
       "85": {
         "ID": 85,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 213,
         "Name": "S(*,n_-*,[_.isNullVowel]_-*,tl_-*)|S((init|fin),n_-*,*,tl_-*)",
         "OffsetX0": 0,
@@ -1207,7 +1207,7 @@
       "86": {
         "ID": 86,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 214,
         "Name": "S(*,n_-*,[_.isNullVowel]_-*,r_-*)|S((init|fin),n_-*,*,r_-*)",
         "OffsetX0": 0,
@@ -1219,7 +1219,7 @@
       "87": {
         "ID": 87,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 215,
         "Name": "S(*,n_-*,[_.isNullVowel]_-*,w_-*)|S((init|fin),n_-*,*,w_-*)",
         "OffsetX0": 0,
@@ -1231,7 +1231,7 @@
       "88": {
         "ID": 88,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 216,
         "Name": "S(*,n_-*,[_.isNullVowel]_-*,y_-*)|S((init|fin),n_-*,*,y_-*)",
         "OffsetX0": 0,
@@ -1243,7 +1243,7 @@
       "89": {
         "ID": 89,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 250,
         "Name": "S(*,ng_-*,[_.isNullVowel]_-*,t_-*)|S((init|fin),ng_-*,*,t_-*)",
         "OffsetX0": 0,
@@ -1255,7 +1255,7 @@
       "90": {
         "ID": 90,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 251,
         "Name": "S(*,ng_-*,[_.isNullVowel]_-*,k_-*)|S((init|fin),ng_-*,*,k_-*)",
         "OffsetX0": 0,
@@ -1267,7 +1267,7 @@
       "91": {
         "ID": 91,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 252,
         "Name": "S(*,ng_-*,[_.isNullVowel]_-*,q_-*)|S((init|fin),ng_-*,*,q_-*)",
         "OffsetX0": 0,
@@ -1279,7 +1279,7 @@
       "92": {
         "ID": 92,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 253,
         "Name": "S(*,ng_-*,[_.isNullVowel]_-*,c_-*)|S((init|fin),ng_-*,*,c_-*)",
         "OffsetX0": 0,
@@ -1291,7 +1291,7 @@
       "93": {
         "ID": 93,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 254,
         "Name": "S(*,ng_-*,[_.isNullVowel]_-*,n_-*)|S((init|fin),ng_-*,*,n_-*)",
         "OffsetX0": 0,
@@ -1303,7 +1303,7 @@
       "94": {
         "ID": 94,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 255,
         "Name": "S(*,ng_-*,[_.isNullVowel]_-*,ng_-*)|S((init|fin),ng_-*,*,ng_-*)",
         "OffsetX0": 0,
@@ -1315,7 +1315,7 @@
       "95": {
         "ID": 95,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 256,
         "Name": "S(*,ng_-*,[_.isNullVowel]_-*,th_-*)|S((init|fin),ng_-*,*,th_-*)",
         "OffsetX0": 0,
@@ -1327,7 +1327,7 @@
       "96": {
         "ID": 96,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 257,
         "Name": "S(*,ng_-*,[_.isNullVowel]_-*,s_-*)|S((init|fin),ng_-*,*,s_-*)",
         "OffsetX0": 0,
@@ -1339,7 +1339,7 @@
       "97": {
         "ID": 97,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 258,
         "Name": "S(*,ng_-*,[_.isNullVowel]_-*,hy_-*)|S((init|fin),ng_-*,*,hy_-*)",
         "OffsetX0": 0,
@@ -1351,7 +1351,7 @@
       "98": {
         "ID": 98,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 259,
         "Name": "S(*,ng_-*,[_.isNullVowel]_-*,kh_-*)|S((init|fin),ng_-*,*,kh_-*)",
         "OffsetX0": 0,
@@ -1363,7 +1363,7 @@
       "99": {
         "ID": 99,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 260,
         "Name": "S(*,ng_-*,[_.isNullVowel]_-*,qh_-*)|S((init|fin),ng_-*,*,qh_-*)",
         "OffsetX0": 0,
@@ -1375,7 +1375,7 @@
       "100": {
         "ID": 100,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 261,
         "Name": "S(*,ng_-*,[_.isNullVowel]_-*,h_-*)|S((init|fin),ng_-*,*,h_-*)",
         "OffsetX0": 0,
@@ -1387,7 +1387,7 @@
       "101": {
         "ID": 101,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 262,
         "Name": "S(*,ng_-*,[_.isNullVowel]_-*,l_-*)|S((init|fin),ng_-*,*,l_-*)",
         "OffsetX0": 0,
@@ -1399,7 +1399,7 @@
       "102": {
         "ID": 102,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 263,
         "Name": "S(*,ng_-*,[_.isNullVowel]_-*,tl_-*)|S((init|fin),ng_-*,*,tl_-*)",
         "OffsetX0": 0,
@@ -1411,7 +1411,7 @@
       "103": {
         "ID": 103,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 264,
         "Name": "S(*,ng_-*,[_.isNullVowel]_-*,r_-*)|S((init|fin),ng_-*,*,r_-*)",
         "OffsetX0": 0,
@@ -1423,7 +1423,7 @@
       "104": {
         "ID": 104,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 265,
         "Name": "S(*,ng_-*,[_.isNullVowel]_-*,w_-*)|S((init|fin),ng_-*,*,w_-*)",
         "OffsetX0": 0,
@@ -1435,7 +1435,7 @@
       "105": {
         "ID": 105,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 266,
         "Name": "S(*,ng_-*,[_.isNullVowel]_-*,y_-*)|S((init|fin),ng_-*,*,y_-*)",
         "OffsetX0": 0,
@@ -1447,7 +1447,7 @@
       "106": {
         "ID": 106,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 300,
         "Name": "S(*,th_-*,[_.isNullVowel]_-*,t_-*)|S((init|fin),th_-*,*,t_-*)",
         "OffsetX0": 0,
@@ -1459,7 +1459,7 @@
       "107": {
         "ID": 107,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 301,
         "Name": "S(*,th_-*,[_.isNullVowel]_-*,k_-*)|S((init|fin),th_-*,*,k_-*)",
         "OffsetX0": 0,
@@ -1471,7 +1471,7 @@
       "108": {
         "ID": 108,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 302,
         "Name": "S(*,th_-*,[_.isNullVowel]_-*,q_-*)|S((init|fin),th_-*,*,q_-*)",
         "OffsetX0": 0,
@@ -1483,7 +1483,7 @@
       "109": {
         "ID": 109,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 303,
         "Name": "S(*,th_-*,[_.isNullVowel]_-*,c_-*)|S((init|fin),th_-*,*,c_-*)",
         "OffsetX0": 0,
@@ -1495,7 +1495,7 @@
       "110": {
         "ID": 110,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 304,
         "Name": "S(*,th_-*,[_.isNullVowel]_-*,n_-*)|S((init|fin),th_-*,*,n_-*)",
         "OffsetX0": 0,
@@ -1507,7 +1507,7 @@
       "111": {
         "ID": 111,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 305,
         "Name": "S(*,th_-*,[_.isNullVowel]_-*,ng_-*)|S((init|fin),th_-*,*,ng_-*)",
         "OffsetX0": 0,
@@ -1519,7 +1519,7 @@
       "112": {
         "ID": 112,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 306,
         "Name": "S(*,th_-*,[_.isNullVowel]_-*,th_-*)|S((init|fin),th_-*,*,th_-*)",
         "OffsetX0": 0,
@@ -1531,7 +1531,7 @@
       "113": {
         "ID": 113,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 307,
         "Name": "S(*,th_-*,[_.isNullVowel]_-*,s_-*)|S((init|fin),th_-*,*,s_-*)",
         "OffsetX0": 0,
@@ -1543,7 +1543,7 @@
       "114": {
         "ID": 114,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 308,
         "Name": "S(*,th_-*,[_.isNullVowel]_-*,hy_-*)|S((init|fin),th_-*,*,hy_-*)",
         "OffsetX0": 0,
@@ -1555,7 +1555,7 @@
       "115": {
         "ID": 115,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 309,
         "Name": "S(*,th_-*,[_.isNullVowel]_-*,kh_-*)|S((init|fin),th_-*,*,kh_-*)",
         "OffsetX0": 0,
@@ -1567,7 +1567,7 @@
       "116": {
         "ID": 116,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 310,
         "Name": "S(*,th_-*,[_.isNullVowel]_-*,qh_-*)|S((init|fin),th_-*,*,qh_-*)",
         "OffsetX0": 0,
@@ -1579,7 +1579,7 @@
       "117": {
         "ID": 117,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 311,
         "Name": "S(*,th_-*,[_.isNullVowel]_-*,h_-*)|S((init|fin),th_-*,*,h_-*)",
         "OffsetX0": 0,
@@ -1591,7 +1591,7 @@
       "118": {
         "ID": 118,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 312,
         "Name": "S(*,th_-*,[_.isNullVowel]_-*,l_-*)|S((init|fin),th_-*,*,l_-*)",
         "OffsetX0": 0,
@@ -1603,7 +1603,7 @@
       "119": {
         "ID": 119,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 313,
         "Name": "S(*,th_-*,[_.isNullVowel]_-*,tl_-*)|S((init|fin),th_-*,*,tl_-*)",
         "OffsetX0": 0,
@@ -1615,7 +1615,7 @@
       "120": {
         "ID": 120,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 314,
         "Name": "S(*,th_-*,[_.isNullVowel]_-*,r_-*)|S((init|fin),th_-*,*,r_-*)",
         "OffsetX0": 0,
@@ -1627,7 +1627,7 @@
       "121": {
         "ID": 121,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 315,
         "Name": "S(*,th_-*,[_.isNullVowel]_-*,w_-*)|S((init|fin),th_-*,*,w_-*)",
         "OffsetX0": 0,
@@ -1639,7 +1639,7 @@
       "122": {
         "ID": 122,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 316,
         "Name": "S(*,th_-*,[_.isNullVowel]_-*,y_-*)|S((init|fin),th_-*,*,y_-*)",
         "OffsetX0": 0,
@@ -1651,7 +1651,7 @@
       "123": {
         "ID": 123,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 350,
         "Name": "S(*,s_-*,[_.isNullVowel]_-*,t_-*)|S((init|fin),s_-*,*,t_-*)",
         "OffsetX0": 0,
@@ -1663,7 +1663,7 @@
       "124": {
         "ID": 124,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 352,
         "Name": "S(*,s_-*,[_.isNullVowel]_-*,q_-*)|S((init|fin),s_-*,*,q_-*)",
         "OffsetX0": 0,
@@ -1675,7 +1675,7 @@
       "125": {
         "ID": 125,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 351,
         "Name": "S(*,s_-*,[_.isNullVowel]_-*,k_-*)|S((init|fin),s_-*,*,k_-*)",
         "OffsetX0": 0,
@@ -1687,7 +1687,7 @@
       "126": {
         "ID": 126,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 400,
         "Name": "S(*,hy_-*,[_.isNullVowel]_-*,t_-*)|S((init|fin),hy_-*,*,t_-*)",
         "OffsetX0": 0,
@@ -1699,7 +1699,7 @@
       "127": {
         "ID": 127,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 353,
         "Name": "S(*,s_-*,[_.isNullVowel]_-*,c_-*)|S((init|fin),s_-*,*,c_-*)",
         "OffsetX0": 0,
@@ -1711,7 +1711,7 @@
       "128": {
         "ID": 128,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 354,
         "Name": "S(*,s_-*,[_.isNullVowel]_-*,n_-*)|S((init|fin),s_-*,*,n_-*)",
         "OffsetX0": 0,
@@ -1723,7 +1723,7 @@
       "129": {
         "ID": 129,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 355,
         "Name": "S(*,s_-*,[_.isNullVowel]_-*,ng_-*)|S((init|fin),s_-*,*,ng_-*)",
         "OffsetX0": 0,
@@ -1735,7 +1735,7 @@
       "130": {
         "ID": 130,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 356,
         "Name": "S(*,s_-*,[_.isNullVowel]_-*,th_-*)|S((init|fin),s_-*,*,th_-*)",
         "OffsetX0": 0,
@@ -1747,7 +1747,7 @@
       "131": {
         "ID": 131,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 357,
         "Name": "S(*,s_-*,[_.isNullVowel]_-*,s_-*)|S((init|fin),s_-*,*,s_-*)",
         "OffsetX0": 0,
@@ -1759,7 +1759,7 @@
       "132": {
         "ID": 132,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 358,
         "Name": "S(*,s_-*,[_.isNullVowel]_-*,hy_-*)|S((init|fin),s_-*,*,hy_-*)",
         "OffsetX0": 0,
@@ -1771,7 +1771,7 @@
       "133": {
         "ID": 133,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 359,
         "Name": "S(*,s_-*,[_.isNullVowel]_-*,kh_-*)|S((init|fin),s_-*,*,kh_-*)",
         "OffsetX0": 0,
@@ -1783,7 +1783,7 @@
       "134": {
         "ID": 134,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 360,
         "Name": "S(*,s_-*,[_.isNullVowel]_-*,qh_-*)|S((init|fin),s_-*,*,qh_-*)",
         "OffsetX0": 0,
@@ -1795,7 +1795,7 @@
       "135": {
         "ID": 135,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 361,
         "Name": "S(*,s_-*,[_.isNullVowel]_-*,h_-*)|S((init|fin),s_-*,*,h_-*)",
         "OffsetX0": 0,
@@ -1807,7 +1807,7 @@
       "136": {
         "ID": 136,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 362,
         "Name": "S(*,s_-*,[_.isNullVowel]_-*,l_-*)|S((init|fin),s_-*,*,l_-*)",
         "OffsetX0": 0,
@@ -1819,7 +1819,7 @@
       "137": {
         "ID": 137,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 363,
         "Name": "S(*,s_-*,[_.isNullVowel]_-*,tl_-*)|S((init|fin),s_-*,*,tl_-*)",
         "OffsetX0": 0,
@@ -1831,7 +1831,7 @@
       "138": {
         "ID": 138,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 364,
         "Name": "S(*,s_-*,[_.isNullVowel]_-*,r_-*)|S((init|fin),s_-*,*,r_-*)",
         "OffsetX0": 0,
@@ -1843,7 +1843,7 @@
       "139": {
         "ID": 139,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 365,
         "Name": "S(*,s_-*,[_.isNullVowel]_-*,w_-*)|S((init|fin),s_-*,*,w_-*)",
         "OffsetX0": 0,
@@ -1855,7 +1855,7 @@
       "140": {
         "ID": 140,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 366,
         "Name": "S(*,s_-*,[_.isNullVowel]_-*,y_-*)|S((init|fin),s_-*,*,y_-*)",
         "OffsetX0": 0,
@@ -1867,7 +1867,7 @@
       "141": {
         "ID": 141,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 401,
         "Name": "S(*,hy_-*,[_.isNullVowel]_-*,k_-*)|S((init|fin),hy_-*,*,k_-*)",
         "OffsetX0": 0,
@@ -1879,7 +1879,7 @@
       "142": {
         "ID": 142,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 402,
         "Name": "S(*,hy_-*,[_.isNullVowel]_-*,q_-*)|S((init|fin),hy_-*,*,q_-*)",
         "OffsetX0": 0,
@@ -1891,7 +1891,7 @@
       "143": {
         "ID": 143,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 403,
         "Name": "S(*,hy_-*,[_.isNullVowel]_-*,c_-*)|S((init|fin),hy_-*,*,c_-*)",
         "OffsetX0": 0,
@@ -1903,7 +1903,7 @@
       "144": {
         "ID": 144,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 404,
         "Name": "S(*,hy_-*,[_.isNullVowel]_-*,n_-*)|S((init|fin),hy_-*,*,n_-*)",
         "OffsetX0": 0,
@@ -1915,7 +1915,7 @@
       "145": {
         "ID": 145,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 405,
         "Name": "S(*,hy_-*,[_.isNullVowel]_-*,ng_-*)|S((init|fin),hy_-*,*,ng_-*)",
         "OffsetX0": 0,
@@ -1927,7 +1927,7 @@
       "146": {
         "ID": 146,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 406,
         "Name": "S(*,hy_-*,[_.isNullVowel]_-*,th_-*)|S((init|fin),hy_-*,*,th_-*)",
         "OffsetX0": 0,
@@ -1939,7 +1939,7 @@
       "147": {
         "ID": 147,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 407,
         "Name": "S(*,hy_-*,[_.isNullVowel]_-*,s_-*)|S((init|fin),hy_-*,*,s_-*)",
         "OffsetX0": 0,
@@ -1951,7 +1951,7 @@
       "148": {
         "ID": 148,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 408,
         "Name": "S(*,hy_-*,[_.isNullVowel]_-*,hy_-*)|S((init|fin),hy_-*,*,hy_-*)",
         "OffsetX0": 0,
@@ -1963,7 +1963,7 @@
       "149": {
         "ID": 149,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 409,
         "Name": "S(*,hy_-*,[_.isNullVowel]_-*,kh_-*)|S((init|fin),hy_-*,*,kh_-*)",
         "OffsetX0": 0,
@@ -1975,7 +1975,7 @@
       "150": {
         "ID": 150,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 410,
         "Name": "S(*,hy_-*,[_.isNullVowel]_-*,qh_-*)|S((init|fin),hy_-*,*,qh_-*)",
         "OffsetX0": 0,
@@ -1987,7 +1987,7 @@
       "151": {
         "ID": 151,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 411,
         "Name": "S(*,hy_-*,[_.isNullVowel]_-*,h_-*)|S((init|fin),hy_-*,*,h_-*)",
         "OffsetX0": 0,
@@ -1999,7 +1999,7 @@
       "152": {
         "ID": 152,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 412,
         "Name": "S(*,hy_-*,[_.isNullVowel]_-*,l_-*)|S((init|fin),hy_-*,*,l_-*)",
         "OffsetX0": 0,
@@ -2011,7 +2011,7 @@
       "153": {
         "ID": 153,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 413,
         "Name": "S(*,hy_-*,[_.isNullVowel]_-*,tl_-*)|S((init|fin),hy_-*,*,tl_-*)",
         "OffsetX0": 0,
@@ -2023,7 +2023,7 @@
       "154": {
         "ID": 154,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 414,
         "Name": "S(*,hy_-*,[_.isNullVowel]_-*,r_-*)|S((init|fin),hy_-*,*,r_-*)",
         "OffsetX0": 0,
@@ -2035,7 +2035,7 @@
       "155": {
         "ID": 155,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 415,
         "Name": "S(*,hy_-*,[_.isNullVowel]_-*,w_-*)|S((init|fin),hy_-*,*,w_-*)",
         "OffsetX0": 0,
@@ -2047,7 +2047,7 @@
       "156": {
         "ID": 156,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 416,
         "Name": "S(*,hy_-*,[_.isNullVowel]_-*,y_-*)|S((init|fin),hy_-*,*,y_-*)",
         "OffsetX0": 0,
@@ -2059,7 +2059,7 @@
       "157": {
         "ID": 157,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 450,
         "Name": "S(*,kh_-*,[_.isNullVowel]_-*,t_-*)|S((init|fin),kh_-*,*,t_-*)",
         "OffsetX0": 0,
@@ -2071,7 +2071,7 @@
       "158": {
         "ID": 158,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 451,
         "Name": "S(*,kh_-*,[_.isNullVowel]_-*,k_-*)|S((init|fin),kh_-*,*,k_-*)",
         "OffsetX0": 0,
@@ -2083,7 +2083,7 @@
       "159": {
         "ID": 159,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 452,
         "Name": "S(*,kh_-*,[_.isNullVowel]_-*,q_-*)|S((init|fin),kh_-*,*,q_-*)",
         "OffsetX0": 0,
@@ -2095,7 +2095,7 @@
       "160": {
         "ID": 160,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 453,
         "Name": "S(*,kh_-*,[_.isNullVowel]_-*,c_-*)|S((init|fin),kh_-*,*,c_-*)",
         "OffsetX0": 0,
@@ -2107,7 +2107,7 @@
       "161": {
         "ID": 161,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 454,
         "Name": "S(*,kh_-*,[_.isNullVowel]_-*,n_-*)|S((init|fin),kh_-*,*,n_-*)",
         "OffsetX0": 0,
@@ -2119,7 +2119,7 @@
       "162": {
         "ID": 162,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 455,
         "Name": "S(*,kh_-*,[_.isNullVowel]_-*,ng_-*)|S((init|fin),kh_-*,*,ng_-*)",
         "OffsetX0": 0,
@@ -2131,7 +2131,7 @@
       "163": {
         "ID": 163,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 456,
         "Name": "S(*,kh_-*,[_.isNullVowel]_-*,th_-*)|S((init|fin),kh_-*,*,th_-*)",
         "OffsetX0": 0,
@@ -2143,7 +2143,7 @@
       "164": {
         "ID": 164,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 457,
         "Name": "S(*,kh_-*,[_.isNullVowel]_-*,s_-*)|S((init|fin),kh_-*,*,s_-*)",
         "OffsetX0": 0,
@@ -2155,7 +2155,7 @@
       "165": {
         "ID": 165,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 458,
         "Name": "S(*,kh_-*,[_.isNullVowel]_-*,hy_-*)|S((init|fin),kh_-*,*,hy_-*)",
         "OffsetX0": 0,
@@ -2167,7 +2167,7 @@
       "166": {
         "ID": 166,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 459,
         "Name": "S(*,kh_-*,[_.isNullVowel]_-*,kh_-*)|S((init|fin),kh_-*,*,kh_-*)",
         "OffsetX0": 0,
@@ -2179,7 +2179,7 @@
       "167": {
         "ID": 167,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 460,
         "Name": "S(*,kh_-*,[_.isNullVowel]_-*,qh_-*)|S((init|fin),kh_-*,*,qh_-*)",
         "OffsetX0": 0,
@@ -2191,7 +2191,7 @@
       "168": {
         "ID": 168,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 461,
         "Name": "S(*,kh_-*,[_.isNullVowel]_-*,h_-*)|S((init|fin),kh_-*,*,h_-*)",
         "OffsetX0": 0,
@@ -2203,7 +2203,7 @@
       "169": {
         "ID": 169,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 462,
         "Name": "S(*,kh_-*,[_.isNullVowel]_-*,l_-*)|S((init|fin),kh_-*,*,l_-*)",
         "OffsetX0": 0,
@@ -2215,7 +2215,7 @@
       "170": {
         "ID": 170,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 463,
         "Name": "S(*,kh_-*,[_.isNullVowel]_-*,tl_-*)|S((init|fin),kh_-*,*,tl_-*)",
         "OffsetX0": 0,
@@ -2227,7 +2227,7 @@
       "171": {
         "ID": 171,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 464,
         "Name": "S(*,kh_-*,[_.isNullVowel]_-*,r_-*)|S((init|fin),kh_-*,*,r_-*)",
         "OffsetX0": 0,
@@ -2239,7 +2239,7 @@
       "172": {
         "ID": 172,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 465,
         "Name": "S(*,kh_-*,[_.isNullVowel]_-*,w_-*)|S((init|fin),kh_-*,*,w_-*)",
         "OffsetX0": 0,
@@ -2251,7 +2251,7 @@
       "173": {
         "ID": 173,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 466,
         "Name": "S(*,kh_-*,[_.isNullVowel]_-*,y_-*)|S((init|fin),kh_-*,*,y_-*)",
         "OffsetX0": 0,
@@ -2263,7 +2263,7 @@
       "174": {
         "ID": 174,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 500,
         "Name": "S(*,qh_-*,[_.isNullVowel]_-*,t_-*)|S((init|fin),qh_-*,*,t_-*)",
         "OffsetX0": 0,
@@ -2275,7 +2275,7 @@
       "175": {
         "ID": 175,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 501,
         "Name": "S(*,qh_-*,[_.isNullVowel]_-*,k_-*)|S((init|fin),qh_-*,*,k_-*)",
         "OffsetX0": 0,
@@ -2287,7 +2287,7 @@
       "176": {
         "ID": 176,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 502,
         "Name": "S(*,qh_-*,[_.isNullVowel]_-*,q_-*)|S((init|fin),qh_-*,*,q_-*)",
         "OffsetX0": 0,
@@ -2299,7 +2299,7 @@
       "177": {
         "ID": 177,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 503,
         "Name": "S(*,qh_-*,[_.isNullVowel]_-*,c_-*)|S((init|fin),qh_-*,*,c_-*)",
         "OffsetX0": 0,
@@ -2311,7 +2311,7 @@
       "178": {
         "ID": 178,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 504,
         "Name": "S(*,qh_-*,[_.isNullVowel]_-*,n_-*)|S((init|fin),qh_-*,*,n_-*)",
         "OffsetX0": 0,
@@ -2323,7 +2323,7 @@
       "179": {
         "ID": 179,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 505,
         "Name": "S(*,qh_-*,[_.isNullVowel]_-*,ng_-*)|S((init|fin),qh_-*,*,ng_-*)",
         "OffsetX0": 0,
@@ -2335,7 +2335,7 @@
       "180": {
         "ID": 180,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 506,
         "Name": "S(*,qh_-*,[_.isNullVowel]_-*,th_-*)|S((init|fin),qh_-*,*,th_-*)",
         "OffsetX0": 0,
@@ -2347,7 +2347,7 @@
       "181": {
         "ID": 181,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 507,
         "Name": "S(*,qh_-*,[_.isNullVowel]_-*,s_-*)|S((init|fin),qh_-*,*,s_-*)",
         "OffsetX0": 0,
@@ -2359,7 +2359,7 @@
       "182": {
         "ID": 182,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 508,
         "Name": "S(*,qh_-*,[_.isNullVowel]_-*,hy_-*)|S((init|fin),qh_-*,*,hy_-*)",
         "OffsetX0": 0,
@@ -2371,7 +2371,7 @@
       "183": {
         "ID": 183,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 509,
         "Name": "S(*,qh_-*,[_.isNullVowel]_-*,kh_-*)|S((init|fin),qh_-*,*,kh_-*)",
         "OffsetX0": 0,
@@ -2383,7 +2383,7 @@
       "184": {
         "ID": 184,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 510,
         "Name": "S(*,qh_-*,[_.isNullVowel]_-*,qh_-*)|S((init|fin),qh_-*,*,qh_-*)",
         "OffsetX0": 0,
@@ -2395,7 +2395,7 @@
       "185": {
         "ID": 185,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 511,
         "Name": "S(*,qh_-*,[_.isNullVowel]_-*,h_-*)|S((init|fin),qh_-*,*,h_-*)",
         "OffsetX0": 0,
@@ -2407,7 +2407,7 @@
       "186": {
         "ID": 186,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 512,
         "Name": "S(*,qh_-*,[_.isNullVowel]_-*,l_-*)|S((init|fin),qh_-*,*,l_-*)",
         "OffsetX0": 0,
@@ -2419,7 +2419,7 @@
       "187": {
         "ID": 187,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 513,
         "Name": "S(*,qh_-*,[_.isNullVowel]_-*,tl_-*)|S((init|fin),qh_-*,*,tl_-*)",
         "OffsetX0": 0,
@@ -2431,7 +2431,7 @@
       "188": {
         "ID": 188,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 514,
         "Name": "S(*,qh_-*,[_.isNullVowel]_-*,r_-*)|S((init|fin),qh_-*,*,r_-*)",
         "OffsetX0": 0,
@@ -2443,7 +2443,7 @@
       "189": {
         "ID": 189,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 515,
         "Name": "S(*,qh_-*,[_.isNullVowel]_-*,w_-*)|S((init|fin),qh_-*,*,w_-*)",
         "OffsetX0": 0,
@@ -2455,7 +2455,7 @@
       "190": {
         "ID": 190,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 516,
         "Name": "S(*,qh_-*,[_.isNullVowel]_-*,y_-*)|S((init|fin),qh_-*,*,y_-*)",
         "OffsetX0": 0,
@@ -2467,7 +2467,7 @@
       "191": {
         "ID": 191,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 550,
         "Name": "S(*,h_-*,[_.isNullVowel]_-*,t_-*)|S((init|fin),h_-*,*,t_-*)",
         "OffsetX0": 0,
@@ -2479,7 +2479,7 @@
       "192": {
         "ID": 192,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 551,
         "Name": "S(*,h_-*,[_.isNullVowel]_-*,k_-*)|S((init|fin),h_-*,*,k_-*)",
         "OffsetX0": 0,
@@ -2491,7 +2491,7 @@
       "193": {
         "ID": 193,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 552,
         "Name": "S(*,h_-*,[_.isNullVowel]_-*,q_-*)|S((init|fin),h_-*,*,q_-*)",
         "OffsetX0": 0,
@@ -2503,7 +2503,7 @@
       "194": {
         "ID": 194,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 553,
         "Name": "S(*,h_-*,[_.isNullVowel]_-*,c_-*)|S((init|fin),h_-*,*,c_-*)",
         "OffsetX0": 0,
@@ -2515,7 +2515,7 @@
       "195": {
         "ID": 195,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 554,
         "Name": "S(*,h_-*,[_.isNullVowel]_-*,n_-*)|S((init|fin),h_-*,*,n_-*)",
         "OffsetX0": 0,
@@ -2527,7 +2527,7 @@
       "196": {
         "ID": 196,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 555,
         "Name": "S(*,h_-*,[_.isNullVowel]_-*,ng_-*)|S((init|fin),h_-*,*,ng_-*)",
         "OffsetX0": 0,
@@ -2539,7 +2539,7 @@
       "197": {
         "ID": 197,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 556,
         "Name": "S(*,h_-*,[_.isNullVowel]_-*,th_-*)|S((init|fin),h_-*,*,th_-*)",
         "OffsetX0": 0,
@@ -2551,7 +2551,7 @@
       "198": {
         "ID": 198,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 557,
         "Name": "S(*,h_-*,[_.isNullVowel]_-*,s_-*)|S((init|fin),h_-*,*,s_-*)",
         "OffsetX0": 0,
@@ -2563,7 +2563,7 @@
       "199": {
         "ID": 199,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 558,
         "Name": "S(*,h_-*,[_.isNullVowel]_-*,hy_-*)|S((init|fin),h_-*,*,hy_-*)",
         "OffsetX0": 0,
@@ -2575,7 +2575,7 @@
       "200": {
         "ID": 200,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 559,
         "Name": "S(*,h_-*,[_.isNullVowel]_-*,kh_-*)|S((init|fin),h_-*,*,kh_-*)",
         "OffsetX0": 0,
@@ -2587,7 +2587,7 @@
       "201": {
         "ID": 201,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 560,
         "Name": "S(*,h_-*,[_.isNullVowel]_-*,qh_-*)|S((init|fin),h_-*,*,qh_-*)",
         "OffsetX0": 0,
@@ -2599,7 +2599,7 @@
       "202": {
         "ID": 202,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 561,
         "Name": "S(*,h_-*,[_.isNullVowel]_-*,h_-*)|S((init|fin),h_-*,*,h_-*)",
         "OffsetX0": 0,
@@ -2611,7 +2611,7 @@
       "203": {
         "ID": 203,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 562,
         "Name": "S(*,h_-*,[_.isNullVowel]_-*,l_-*)|S((init|fin),h_-*,*,l_-*)",
         "OffsetX0": 0,
@@ -2623,7 +2623,7 @@
       "204": {
         "ID": 204,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 563,
         "Name": "S(*,h_-*,[_.isNullVowel]_-*,tl_-*)|S((init|fin),h_-*,*,tl_-*)",
         "OffsetX0": 0,
@@ -2635,7 +2635,7 @@
       "205": {
         "ID": 205,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 564,
         "Name": "S(*,h_-*,[_.isNullVowel]_-*,r_-*)|S((init|fin),h_-*,*,r_-*)",
         "OffsetX0": 0,
@@ -2647,7 +2647,7 @@
       "206": {
         "ID": 206,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 565,
         "Name": "S(*,h_-*,[_.isNullVowel]_-*,w_-*)|S((init|fin),h_-*,*,w_-*)",
         "OffsetX0": 0,
@@ -2659,7 +2659,7 @@
       "207": {
         "ID": 207,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 566,
         "Name": "S(*,h_-*,[_.isNullVowel]_-*,y_-*)|S((init|fin),h_-*,*,y_-*)",
         "OffsetX0": 0,
@@ -2671,7 +2671,7 @@
       "208": {
         "ID": 208,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 600,
         "Name": "S(*,l_-*,[_.isNullVowel]_-*,t_-*)|S((init|fin),l_-*,*,t_-*)",
         "OffsetX0": 0,
@@ -2683,7 +2683,7 @@
       "209": {
         "ID": 209,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 601,
         "Name": "S(*,l_-*,[_.isNullVowel]_-*,k_-*)|S((init|fin),l_-*,*,k_-*)",
         "OffsetX0": 0,
@@ -2695,7 +2695,7 @@
       "210": {
         "ID": 210,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 602,
         "Name": "S(*,l_-*,[_.isNullVowel]_-*,q_-*)|S((init|fin),l_-*,*,q_-*)",
         "OffsetX0": 0,
@@ -2707,7 +2707,7 @@
       "211": {
         "ID": 211,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 603,
         "Name": "S(*,l_-*,[_.isNullVowel]_-*,c_-*)|S((init|fin),l_-*,*,c_-*)",
         "OffsetX0": 0,
@@ -2719,7 +2719,7 @@
       "212": {
         "ID": 212,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 604,
         "Name": "S(*,l_-*,[_.isNullVowel]_-*,n_-*)|S((init|fin),l_-*,*,n_-*)",
         "OffsetX0": 0,
@@ -2731,7 +2731,7 @@
       "213": {
         "ID": 213,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 605,
         "Name": "S(*,l_-*,[_.isNullVowel]_-*,ng_-*)|S((init|fin),l_-*,*,ng_-*)",
         "OffsetX0": 0,
@@ -2743,7 +2743,7 @@
       "214": {
         "ID": 214,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 606,
         "Name": "S(*,l_-*,[_.isNullVowel]_-*,th_-*)|S((init|fin),l_-*,*,th_-*)",
         "OffsetX0": 0,
@@ -2755,7 +2755,7 @@
       "215": {
         "ID": 215,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 607,
         "Name": "S(*,l_-*,[_.isNullVowel]_-*,s_-*)|S((init|fin),l_-*,*,s_-*)",
         "OffsetX0": 0,
@@ -2767,7 +2767,7 @@
       "216": {
         "ID": 216,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 608,
         "Name": "S(*,l_-*,[_.isNullVowel]_-*,hy_-*)|S((init|fin),l_-*,*,hy_-*)",
         "OffsetX0": 0,
@@ -2779,7 +2779,7 @@
       "217": {
         "ID": 217,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 609,
         "Name": "S(*,l_-*,[_.isNullVowel]_-*,kh_-*)|S((init|fin),l_-*,*,kh_-*)",
         "OffsetX0": 0,
@@ -2791,7 +2791,7 @@
       "218": {
         "ID": 218,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 610,
         "Name": "S(*,l_-*,[_.isNullVowel]_-*,qh_-*)|S((init|fin),l_-*,*,qh_-*)",
         "OffsetX0": 0,
@@ -2803,7 +2803,7 @@
       "219": {
         "ID": 219,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 611,
         "Name": "S(*,l_-*,[_.isNullVowel]_-*,h_-*)|S((init|fin),l_-*,*,h_-*)",
         "OffsetX0": 0,
@@ -2815,7 +2815,7 @@
       "220": {
         "ID": 220,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 612,
         "Name": "S(*,l_-*,[_.isNullVowel]_-*,l_-*)|S((init|fin),l_-*,*,l_-*)",
         "OffsetX0": 0,
@@ -2827,7 +2827,7 @@
       "221": {
         "ID": 221,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 613,
         "Name": "S(*,l_-*,[_.isNullVowel]_-*,tl_-*)|S((init|fin),l_-*,*,tl_-*)",
         "OffsetX0": 0,
@@ -2839,7 +2839,7 @@
       "222": {
         "ID": 222,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 614,
         "Name": "S(*,l_-*,[_.isNullVowel]_-*,r_-*)|S((init|fin),l_-*,*,r_-*)",
         "OffsetX0": 0,
@@ -2851,7 +2851,7 @@
       "223": {
         "ID": 223,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 615,
         "Name": "S(*,l_-*,[_.isNullVowel]_-*,w_-*)|S((init|fin),l_-*,*,w_-*)",
         "OffsetX0": 0,
@@ -2863,7 +2863,7 @@
       "224": {
         "ID": 224,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 616,
         "Name": "S(*,l_-*,[_.isNullVowel]_-*,y_-*)|S((init|fin),l_-*,*,y_-*)",
         "OffsetX0": 0,
@@ -2875,7 +2875,7 @@
       "225": {
         "ID": 225,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 650,
         "Name": "S(*,tl_-*,[_.isNullVowel]_-*,t_-*)|S((init|fin),tl_-*,*,t_-*)",
         "OffsetX0": 0,
@@ -2887,7 +2887,7 @@
       "226": {
         "ID": 226,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 651,
         "Name": "S(*,tl_-*,[_.isNullVowel]_-*,k_-*)|S((init|fin),tl_-*,*,k_-*)",
         "OffsetX0": 0,
@@ -2899,7 +2899,7 @@
       "227": {
         "ID": 227,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 652,
         "Name": "S(*,tl_-*,[_.isNullVowel]_-*,q_-*)|S((init|fin),tl_-*,*,q_-*)",
         "OffsetX0": 0,
@@ -2911,7 +2911,7 @@
       "228": {
         "ID": 228,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 653,
         "Name": "S(*,tl_-*,[_.isNullVowel]_-*,c_-*)|S((init|fin),tl_-*,*,c_-*)",
         "OffsetX0": 0,
@@ -2923,7 +2923,7 @@
       "229": {
         "ID": 229,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 654,
         "Name": "S(*,tl_-*,[_.isNullVowel]_-*,n_-*)|S((init|fin),tl_-*,*,n_-*)",
         "OffsetX0": 0,
@@ -2935,7 +2935,7 @@
       "230": {
         "ID": 230,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 655,
         "Name": "S(*,tl_-*,[_.isNullVowel]_-*,ng_-*)|S((init|fin),tl_-*,*,ng_-*)",
         "OffsetX0": 0,
@@ -2947,7 +2947,7 @@
       "231": {
         "ID": 231,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 656,
         "Name": "S(*,tl_-*,[_.isNullVowel]_-*,th_-*)|S((init|fin),tl_-*,*,th_-*)",
         "OffsetX0": 0,
@@ -2959,7 +2959,7 @@
       "232": {
         "ID": 232,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 657,
         "Name": "S(*,tl_-*,[_.isNullVowel]_-*,s_-*)|S((init|fin),tl_-*,*,s_-*)",
         "OffsetX0": 0,
@@ -2971,7 +2971,7 @@
       "233": {
         "ID": 233,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 658,
         "Name": "S(*,tl_-*,[_.isNullVowel]_-*,hy_-*)|S((init|fin),tl_-*,*,hy_-*)",
         "OffsetX0": 0,
@@ -2983,7 +2983,7 @@
       "234": {
         "ID": 234,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 659,
         "Name": "S(*,tl_-*,[_.isNullVowel]_-*,kh_-*)|S((init|fin),tl_-*,*,kh_-*)",
         "OffsetX0": 0,
@@ -2995,7 +2995,7 @@
       "235": {
         "ID": 235,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 660,
         "Name": "S(*,tl_-*,[_.isNullVowel]_-*,qh_-*)|S((init|fin),tl_-*,*,qh_-*)",
         "OffsetX0": 0,
@@ -3007,7 +3007,7 @@
       "236": {
         "ID": 236,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 661,
         "Name": "S(*,tl_-*,[_.isNullVowel]_-*,h_-*)|S((init|fin),tl_-*,*,h_-*)",
         "OffsetX0": 0,
@@ -3019,7 +3019,7 @@
       "237": {
         "ID": 237,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 662,
         "Name": "S(*,tl_-*,[_.isNullVowel]_-*,l_-*)|S((init|fin),tl_-*,*,l_-*)",
         "OffsetX0": 0,
@@ -3031,7 +3031,7 @@
       "238": {
         "ID": 238,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 663,
         "Name": "S(*,tl_-*,[_.isNullVowel]_-*,tl_-*)|S((init|fin),tl_-*,*,tl_-*)",
         "OffsetX0": 0,
@@ -3043,7 +3043,7 @@
       "239": {
         "ID": 239,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 664,
         "Name": "S(*,tl_-*,[_.isNullVowel]_-*,r_-*)|S((init|fin),tl_-*,*,r_-*)",
         "OffsetX0": 0,
@@ -3055,7 +3055,7 @@
       "240": {
         "ID": 240,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 665,
         "Name": "S(*,tl_-*,[_.isNullVowel]_-*,w_-*)|S((init|fin),tl_-*,*,w_-*)",
         "OffsetX0": 0,
@@ -3067,7 +3067,7 @@
       "241": {
         "ID": 241,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 666,
         "Name": "S(*,tl_-*,[_.isNullVowel]_-*,y_-*)|S((init|fin),tl_-*,*,y_-*)",
         "OffsetX0": 0,
@@ -3079,7 +3079,7 @@
       "242": {
         "ID": 242,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 700,
         "Name": "S(*,r_-*,[_.isNullVowel]_-*,t_-*)|S((init|fin),r_-*,*,t_-*)",
         "OffsetX0": 0,
@@ -3091,7 +3091,7 @@
       "243": {
         "ID": 243,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 701,
         "Name": "S(*,r_-*,[_.isNullVowel]_-*,k_-*)|S((init|fin),r_-*,*,k_-*)",
         "OffsetX0": 0,
@@ -3103,7 +3103,7 @@
       "244": {
         "ID": 244,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 702,
         "Name": "S(*,r_-*,[_.isNullVowel]_-*,q_-*)|S((init|fin),r_-*,*,q_-*)",
         "OffsetX0": 0,
@@ -3115,7 +3115,7 @@
       "245": {
         "ID": 245,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 703,
         "Name": "S(*,r_-*,[_.isNullVowel]_-*,c_-*)|S((init|fin),r_-*,*,c_-*)",
         "OffsetX0": 0,
@@ -3127,7 +3127,7 @@
       "246": {
         "ID": 246,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 704,
         "Name": "S(*,r_-*,[_.isNullVowel]_-*,n_-*)|S((init|fin),r_-*,*,n_-*)",
         "OffsetX0": 0,
@@ -3139,7 +3139,7 @@
       "247": {
         "ID": 247,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 705,
         "Name": "S(*,r_-*,[_.isNullVowel]_-*,ng_-*)|S((init|fin),r_-*,*,ng_-*)",
         "OffsetX0": 0,
@@ -3151,7 +3151,7 @@
       "248": {
         "ID": 248,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 706,
         "Name": "S(*,r_-*,[_.isNullVowel]_-*,th_-*)|S((init|fin),r_-*,*,th_-*)",
         "OffsetX0": 0,
@@ -3163,7 +3163,7 @@
       "249": {
         "ID": 249,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 707,
         "Name": "S(*,r_-*,[_.isNullVowel]_-*,s_-*)|S((init|fin),r_-*,*,s_-*)",
         "OffsetX0": 0,
@@ -3175,7 +3175,7 @@
       "250": {
         "ID": 250,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 708,
         "Name": "S(*,r_-*,[_.isNullVowel]_-*,hy_-*)|S((init|fin),r_-*,*,hy_-*)",
         "OffsetX0": 0,
@@ -3187,7 +3187,7 @@
       "251": {
         "ID": 251,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 709,
         "Name": "S(*,r_-*,[_.isNullVowel]_-*,kh_-*)|S((init|fin),r_-*,*,kh_-*)",
         "OffsetX0": 0,
@@ -3199,7 +3199,7 @@
       "252": {
         "ID": 252,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 710,
         "Name": "S(*,r_-*,[_.isNullVowel]_-*,qh_-*)|S((init|fin),r_-*,*,qh_-*)",
         "OffsetX0": 0,
@@ -3211,7 +3211,7 @@
       "253": {
         "ID": 253,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 711,
         "Name": "S(*,r_-*,[_.isNullVowel]_-*,h_-*)|S((init|fin),r_-*,*,h_-*)",
         "OffsetX0": 0,
@@ -3223,7 +3223,7 @@
       "254": {
         "ID": 254,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 712,
         "Name": "S(*,r_-*,[_.isNullVowel]_-*,l_-*)|S((init|fin),r_-*,*,l_-*)",
         "OffsetX0": 0,
@@ -3235,7 +3235,7 @@
       "255": {
         "ID": 255,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 713,
         "Name": "S(*,r_-*,[_.isNullVowel]_-*,tl_-*)|S((init|fin),r_-*,*,tl_-*)",
         "OffsetX0": 0,
@@ -3247,7 +3247,7 @@
       "256": {
         "ID": 256,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 714,
         "Name": "S(*,r_-*,[_.isNullVowel]_-*,r_-*)|S((init|fin),r_-*,*,r_-*)",
         "OffsetX0": 0,
@@ -3259,7 +3259,7 @@
       "257": {
         "ID": 257,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 715,
         "Name": "S(*,r_-*,[_.isNullVowel]_-*,w_-*)|S((init|fin),r_-*,*,w_-*)",
         "OffsetX0": 0,
@@ -3271,7 +3271,7 @@
       "258": {
         "ID": 258,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 716,
         "Name": "S(*,r_-*,[_.isNullVowel]_-*,y_-*)|S((init|fin),r_-*,*,y_-*)",
         "OffsetX0": 0,
@@ -3283,7 +3283,7 @@
       "259": {
         "ID": 259,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 750,
         "Name": "S(*,w_-*,[_.isNullVowel]_-*,t_-*)|S((init|fin),w_-*,*,t_-*)",
         "OffsetX0": 0,
@@ -3295,7 +3295,7 @@
       "260": {
         "ID": 260,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 751,
         "Name": "S(*,w_-*,[_.isNullVowel]_-*,k_-*)|S((init|fin),w_-*,*,k_-*)",
         "OffsetX0": 0,
@@ -3307,7 +3307,7 @@
       "261": {
         "ID": 261,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 752,
         "Name": "S(*,w_-*,[_.isNullVowel]_-*,q_-*)|S((init|fin),w_-*,*,q_-*)",
         "OffsetX0": 0,
@@ -3319,7 +3319,7 @@
       "262": {
         "ID": 262,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 753,
         "Name": "S(*,w_-*,[_.isNullVowel]_-*,c_-*)|S((init|fin),w_-*,*,c_-*)",
         "OffsetX0": 0,
@@ -3331,7 +3331,7 @@
       "263": {
         "ID": 263,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 754,
         "Name": "S(*,w_-*,[_.isNullVowel]_-*,n_-*)|S((init|fin),w_-*,*,n_-*)",
         "OffsetX0": 0,
@@ -3343,7 +3343,7 @@
       "264": {
         "ID": 264,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 755,
         "Name": "S(*,w_-*,[_.isNullVowel]_-*,ng_-*)|S((init|fin),w_-*,*,ng_-*)",
         "OffsetX0": 0,
@@ -3355,7 +3355,7 @@
       "265": {
         "ID": 265,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 756,
         "Name": "S(*,w_-*,[_.isNullVowel]_-*,th_-*)|S((init|fin),w_-*,*,th_-*)",
         "OffsetX0": 0,
@@ -3367,7 +3367,7 @@
       "266": {
         "ID": 266,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 757,
         "Name": "S(*,w_-*,[_.isNullVowel]_-*,s_-*)|S((init|fin),w_-*,*,s_-*)",
         "OffsetX0": 0,
@@ -3379,7 +3379,7 @@
       "267": {
         "ID": 267,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 758,
         "Name": "S(*,w_-*,[_.isNullVowel]_-*,hy_-*)|S((init|fin),w_-*,*,hy_-*)",
         "OffsetX0": 0,
@@ -3391,7 +3391,7 @@
       "268": {
         "ID": 268,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 759,
         "Name": "S(*,w_-*,[_.isNullVowel]_-*,kh_-*)|S((init|fin),w_-*,*,kh_-*)",
         "OffsetX0": 0,
@@ -3403,7 +3403,7 @@
       "269": {
         "ID": 269,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 760,
         "Name": "S(*,w_-*,[_.isNullVowel]_-*,qh_-*)|S((init|fin),w_-*,*,qh_-*)",
         "OffsetX0": 0,
@@ -3415,7 +3415,7 @@
       "270": {
         "ID": 270,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 761,
         "Name": "S(*,w_-*,[_.isNullVowel]_-*,h_-*)|S((init|fin),w_-*,*,h_-*)",
         "OffsetX0": 0,
@@ -3427,7 +3427,7 @@
       "271": {
         "ID": 271,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 762,
         "Name": "S(*,w_-*,[_.isNullVowel]_-*,l_-*)|S((init|fin),w_-*,*,l_-*)",
         "OffsetX0": 0,
@@ -3439,7 +3439,7 @@
       "272": {
         "ID": 272,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 763,
         "Name": "S(*,w_-*,[_.isNullVowel]_-*,tl_-*)|S((init|fin),w_-*,*,tl_-*)",
         "OffsetX0": 0,
@@ -3451,7 +3451,7 @@
       "273": {
         "ID": 273,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 764,
         "Name": "S(*,w_-*,[_.isNullVowel]_-*,r_-*)|S((init|fin),w_-*,*,r_-*)",
         "OffsetX0": 0,
@@ -3463,7 +3463,7 @@
       "274": {
         "ID": 274,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 765,
         "Name": "S(*,w_-*,[_.isNullVowel]_-*,w_-*)|S((init|fin),w_-*,*,w_-*)",
         "OffsetX0": 0,
@@ -3475,7 +3475,7 @@
       "275": {
         "ID": 275,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 766,
         "Name": "S(*,w_-*,[_.isNullVowel]_-*,y_-*)|S((init|fin),w_-*,*,y_-*)",
         "OffsetX0": 0,
@@ -3487,7 +3487,7 @@
       "276": {
         "ID": 276,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 800,
         "Name": "S(*,y_-*,[_.isNullVowel]_-*,t_-*)|S((init|fin),y_-*,*,t_-*)",
         "OffsetX0": 0,
@@ -3499,7 +3499,7 @@
       "277": {
         "ID": 277,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 801,
         "Name": "S(*,y_-*,[_.isNullVowel]_-*,k_-*)|S((init|fin),y_-*,*,k_-*)",
         "OffsetX0": 0,
@@ -3511,7 +3511,7 @@
       "278": {
         "ID": 278,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 802,
         "Name": "S(*,y_-*,[_.isNullVowel]_-*,q_-*)|S((init|fin),y_-*,*,q_-*)",
         "OffsetX0": 0,
@@ -3523,7 +3523,7 @@
       "279": {
         "ID": 279,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 803,
         "Name": "S(*,y_-*,[_.isNullVowel]_-*,c_-*)|S((init|fin),y_-*,*,c_-*)",
         "OffsetX0": 0,
@@ -3535,7 +3535,7 @@
       "280": {
         "ID": 280,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 804,
         "Name": "S(*,y_-*,[_.isNullVowel]_-*,n_-*)|S((init|fin),y_-*,*,n_-*)",
         "OffsetX0": 0,
@@ -3547,7 +3547,7 @@
       "281": {
         "ID": 281,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 805,
         "Name": "S(*,y_-*,[_.isNullVowel]_-*,ng_-*)|S((init|fin),y_-*,*,ng_-*)",
         "OffsetX0": 0,
@@ -3559,7 +3559,7 @@
       "282": {
         "ID": 282,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 806,
         "Name": "S(*,y_-*,[_.isNullVowel]_-*,th_-*)|S((init|fin),y_-*,*,th_-*)",
         "OffsetX0": 0,
@@ -3571,7 +3571,7 @@
       "283": {
         "ID": 283,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 807,
         "Name": "S(*,y_-*,[_.isNullVowel]_-*,s_-*)|S((init|fin),y_-*,*,s_-*)",
         "OffsetX0": 0,
@@ -3583,7 +3583,7 @@
       "284": {
         "ID": 284,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 808,
         "Name": "S(*,y_-*,[_.isNullVowel]_-*,hy_-*)|S((init|fin),y_-*,*,hy_-*)",
         "OffsetX0": 0,
@@ -3595,7 +3595,7 @@
       "285": {
         "ID": 285,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 809,
         "Name": "S(*,y_-*,[_.isNullVowel]_-*,kh_-*)|S((init|fin),y_-*,*,kh_-*)",
         "OffsetX0": 0,
@@ -3607,7 +3607,7 @@
       "286": {
         "ID": 286,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 810,
         "Name": "S(*,y_-*,[_.isNullVowel]_-*,qh_-*)|S((init|fin),y_-*,*,qh_-*)",
         "OffsetX0": 0,
@@ -3619,7 +3619,7 @@
       "287": {
         "ID": 287,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 811,
         "Name": "S(*,y_-*,[_.isNullVowel]_-*,h_-*)|S((init|fin),y_-*,*,h_-*)",
         "OffsetX0": 0,
@@ -3631,7 +3631,7 @@
       "288": {
         "ID": 288,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 812,
         "Name": "S(*,y_-*,[_.isNullVowel]_-*,l_-*)|S((init|fin),y_-*,*,l_-*)",
         "OffsetX0": 0,
@@ -3643,7 +3643,7 @@
       "289": {
         "ID": 289,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 813,
         "Name": "S(*,y_-*,[_.isNullVowel]_-*,tl_-*)|S((init|fin),y_-*,*,tl_-*)",
         "OffsetX0": 0,
@@ -3655,7 +3655,7 @@
       "290": {
         "ID": 290,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 814,
         "Name": "S(*,y_-*,[_.isNullVowel]_-*,r_-*)|S((init|fin),y_-*,*,r_-*)",
         "OffsetX0": 0,
@@ -3667,7 +3667,7 @@
       "291": {
         "ID": 291,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 816,
         "Name": "S(*,y_-*,[_.isNullVowel]_-*,y_-*)|S((init|fin),y_-*,*,y_-*)",
         "OffsetX0": 0,
@@ -3679,7 +3679,7 @@
       "292": {
         "ID": 292,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 815,
         "Name": "S(*,y_-*,[_.isNullVowel]_-*,w_-*)|S((init|fin),y_-*,*,w_-*)",
         "OffsetX0": 0,
@@ -3691,7 +3691,7 @@
       "293": {
         "ID": 293,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 5500,
         "Name": "S(fin,*,abig_-*,*)",
         "OffsetX0": 0,
@@ -3703,7 +3703,7 @@
       "294": {
         "ID": 294,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 5550,
         "Name": "S(fin,t_-*,abig_-*,*)|S(fin,*,abig_-*,t_-*)",
         "OffsetX0": 0,
@@ -3715,7 +3715,7 @@
       "295": {
         "ID": 295,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 5500,
         "Name": "S(fin,t_-*,abig_-*,t_-*)",
         "OffsetX0": 0,
@@ -3727,7 +3727,7 @@
       "296": {
         "ID": 296,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2501,
         "Name": "S(fin,h_-*,*,k_-*)",
         "OffsetX0": 0,
@@ -3739,7 +3739,7 @@
       "297": {
         "ID": 297,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2056,
         "Name": "S(fin,q_-*,*,l_-*)",
         "OffsetX0": 0,
@@ -3751,7 +3751,7 @@
       "298": {
         "ID": 298,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2001,
         "Name": "S(fin,k_-*,*,qh_-*)",
         "OffsetX0": 0,
@@ -3763,7 +3763,7 @@
       "299": {
         "ID": 299,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2002,
         "Name": "S(fin,k_-*,*,tl_-*)",
         "OffsetX0": 0,
@@ -3775,7 +3775,7 @@
       "300": {
         "ID": 300,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2000,
         "Name": "S(fin,k_-*,*,t1-*)",
         "OffsetX0": 0,
@@ -3787,7 +3787,7 @@
       "301": {
         "ID": 301,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2050,
         "Name": "S(fin,q_-*,*,t1-*)",
         "OffsetX0": 0,
@@ -3799,7 +3799,7 @@
       "302": {
         "ID": 302,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2051,
         "Name": "S(fin,q_-*,*,q_-*)",
         "OffsetX0": 0,
@@ -3811,7 +3811,7 @@
       "303": {
         "ID": 303,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2052,
         "Name": "S(fin,q_-*,*,ng_-*)",
         "OffsetX0": 0,
@@ -3823,7 +3823,7 @@
       "304": {
         "ID": 304,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2053,
         "Name": "S(fin,q_-*,*,s_-*)",
         "OffsetX0": 0,
@@ -3835,7 +3835,7 @@
       "305": {
         "ID": 305,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2057,
         "Name": "S(fin,q_-*,*,r_-*)",
         "OffsetX0": 0,
@@ -3847,7 +3847,7 @@
       "306": {
         "ID": 306,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2055,
         "Name": "S(fin,q_-*,*,qh_-*)",
         "OffsetX0": 0,
@@ -3859,7 +3859,7 @@
       "307": {
         "ID": 307,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2054,
         "Name": "S(fin,q_-*,*,kh_-*)",
         "OffsetX0": 0,
@@ -3871,7 +3871,7 @@
       "308": {
         "ID": 308,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2100,
         "Name": "S(fin,c_-*,*,t1-*)",
         "OffsetX0": 0,
@@ -3883,7 +3883,7 @@
       "309": {
         "ID": 309,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2101,
         "Name": "S(fin,c_-*,*,q_-*)",
         "OffsetX0": 0,
@@ -3895,7 +3895,7 @@
       "310": {
         "ID": 310,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2102,
         "Name": "S(fin,c_-*,*,c_-*)",
         "OffsetX0": 0,
@@ -3907,7 +3907,7 @@
       "311": {
         "ID": 311,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2103,
         "Name": "S(fin,c_-*,*,n_-*)",
         "OffsetX0": 0,
@@ -3919,7 +3919,7 @@
       "312": {
         "ID": 312,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2104,
         "Name": "S(fin,c_-*,*,ng_-*)",
         "OffsetX0": 0,
@@ -3931,7 +3931,7 @@
       "313": {
         "ID": 313,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2105,
         "Name": "S(fin,c_-*,*,th_-*)",
         "OffsetX0": 0,
@@ -3943,7 +3943,7 @@
       "314": {
         "ID": 314,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2106,
         "Name": "S(fin,c_-*,*,s_-*)",
         "OffsetX0": 0,
@@ -3955,7 +3955,7 @@
       "315": {
         "ID": 315,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2051,
         "Name": "S(fin,q_-*,*,c_-*)",
         "OffsetX0": 0,
@@ -3967,7 +3967,7 @@
       "316": {
         "ID": 316,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2107,
         "Name": "S(fin,c_-*,*,h_-*)",
         "OffsetX0": 0,
@@ -3979,7 +3979,7 @@
       "317": {
         "ID": 317,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 5600,
         "Name": "S(fin,*,e_-*,*)",
         "OffsetX0": 0,
@@ -3991,7 +3991,7 @@
       "318": {
         "ID": 318,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2150,
         "Name": "S(fin,n_-*,*,t1-*)",
         "OffsetX0": 0,
@@ -4003,7 +4003,7 @@
       "319": {
         "ID": 319,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2151,
         "Name": "S(fin,n_-*,*,k_-*)",
         "OffsetX0": 0,
@@ -4015,7 +4015,7 @@
       "320": {
         "ID": 320,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2152,
         "Name": "S(fin,n_-*,*,q_-*)",
         "OffsetX0": 0,
@@ -4027,7 +4027,7 @@
       "321": {
         "ID": 321,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2153,
         "Name": "S(fin,n_-*,*,c_-*)",
         "OffsetX0": 0,
@@ -4039,7 +4039,7 @@
       "322": {
         "ID": 322,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2154,
         "Name": "S(fin,n_-*,*,n_-*)",
         "OffsetX0": 0,
@@ -4051,7 +4051,7 @@
       "323": {
         "ID": 323,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2155,
         "Name": "S(fin,n_-*,*,ng_-*)",
         "OffsetX0": 0,
@@ -4063,7 +4063,7 @@
       "324": {
         "ID": 324,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2156,
         "Name": "S(fin,n_-*,*,th_-*)",
         "OffsetX0": 0,
@@ -4075,7 +4075,7 @@
       "325": {
         "ID": 325,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2157,
         "Name": "S(fin,n_-*,*,kh_-*)",
         "OffsetX0": 0,
@@ -4087,7 +4087,7 @@
       "326": {
         "ID": 326,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2158,
         "Name": "S(fin,n_-*,*,qh_-*)",
         "OffsetX0": 0,
@@ -4099,7 +4099,7 @@
       "327": {
         "ID": 327,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2159,
         "Name": "S(fin,n_-*,*,h_-*)",
         "OffsetX0": 0,
@@ -4111,7 +4111,7 @@
       "328": {
         "ID": 328,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2160,
         "Name": "S(fin,n_-*,*,l_-*)",
         "OffsetX0": 0,
@@ -4123,7 +4123,7 @@
       "329": {
         "ID": 329,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2161,
         "Name": "S(fin,n_-*,*,tl_-*)",
         "OffsetX0": 0,
@@ -4135,7 +4135,7 @@
       "330": {
         "ID": 330,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2163,
         "Name": "S(fin,n_-*,*,r_-*)",
         "OffsetX0": 0,
@@ -4147,7 +4147,7 @@
       "331": {
         "ID": 331,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2164,
         "Name": "S(fin,n_-*,*,w_-*)",
         "OffsetX0": 0,
@@ -4159,7 +4159,7 @@
       "332": {
         "ID": 332,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2200,
         "Name": "S(fin,ng_-*,*,t1-*)",
         "OffsetX0": 0,
@@ -4171,7 +4171,7 @@
       "333": {
         "ID": 333,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2201,
         "Name": "S(fin,ng_-*,*,k_-*)",
         "OffsetX0": 0,
@@ -4183,7 +4183,7 @@
       "334": {
         "ID": 334,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2202,
         "Name": "S(fin,ng_-*,*,q_-*)",
         "OffsetX0": 0,
@@ -4195,7 +4195,7 @@
       "335": {
         "ID": 335,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2203,
         "Name": "S(fin,ng_-*,*,n_-*)",
         "OffsetX0": 0,
@@ -4207,7 +4207,7 @@
       "336": {
         "ID": 336,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2204,
         "Name": "S(fin,ng_-*,*,ng_-*)",
         "OffsetX0": 0,
@@ -4219,7 +4219,7 @@
       "337": {
         "ID": 337,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2205,
         "Name": "S(fin,ng_-*,*,th_-*)",
         "OffsetX0": 0,
@@ -4231,7 +4231,7 @@
       "338": {
         "ID": 338,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2206,
         "Name": "S(fin,ng_-*,*,qh_-*)",
         "OffsetX0": 0,
@@ -4243,7 +4243,7 @@
       "339": {
         "ID": 339,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2207,
         "Name": "S(fin,ng_-*,*,h_-*)",
         "OffsetX0": 0,
@@ -4255,7 +4255,7 @@
       "340": {
         "ID": 340,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2208,
         "Name": "S(fin,ng_-*,*,tl_-*)",
         "OffsetX0": 0,
@@ -4267,7 +4267,7 @@
       "341": {
         "ID": 341,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2209,
         "Name": "S(fin,ng_-*,*,w_-*)",
         "OffsetX0": 0,
@@ -4279,7 +4279,7 @@
       "342": {
         "ID": 342,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2210,
         "Name": "S(fin,ng_-*,*,y_-*)",
         "OffsetX0": 0,
@@ -4291,7 +4291,7 @@
       "343": {
         "ID": 343,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2250,
         "Name": "S(fin,th_-*,*,t1-*)",
         "OffsetX0": 0,
@@ -4303,7 +4303,7 @@
       "344": {
         "ID": 344,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2251,
         "Name": "S(fin,th_-*,*,k_-*)",
         "OffsetX0": 0,
@@ -4315,7 +4315,7 @@
       "345": {
         "ID": 345,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2252,
         "Name": "S(fin,th_-*,*,q_-*)",
         "OffsetX0": 0,
@@ -4327,7 +4327,7 @@
       "346": {
         "ID": 346,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2253,
         "Name": "S(fin,th_-*,*,c_-*)",
         "OffsetX0": 0,
@@ -4339,7 +4339,7 @@
       "347": {
         "ID": 347,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2254,
         "Name": "S(fin,th_-*,*,n_-*)",
         "OffsetX0": 0,
@@ -4351,7 +4351,7 @@
       "348": {
         "ID": 348,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2255,
         "Name": "S(fin,th_-*,*,ng_-*)",
         "OffsetX0": 0,
@@ -4363,7 +4363,7 @@
       "349": {
         "ID": 349,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2256,
         "Name": "S(fin,th_-*,*,th_-*)",
         "OffsetX0": 0,
@@ -4375,7 +4375,7 @@
       "350": {
         "ID": 350,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2257,
         "Name": "S(fin,th_-*,*,s_-*)",
         "OffsetX0": 0,
@@ -4387,7 +4387,7 @@
       "351": {
         "ID": 351,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2258,
         "Name": "S(fin,th_-*,*,hy_-*)",
         "OffsetX0": 0,
@@ -4399,7 +4399,7 @@
       "352": {
         "ID": 352,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2258,
         "Name": "S(fin,th_-*,*,kh_-*)",
         "OffsetX0": 0,
@@ -4411,7 +4411,7 @@
       "353": {
         "ID": 353,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2259,
         "Name": "S(fin,th_-*,*,qh_-*)",
         "OffsetX0": 0,
@@ -4423,7 +4423,7 @@
       "354": {
         "ID": 354,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2260,
         "Name": "S(fin,th_-*,*,l_-*)",
         "OffsetX0": 0,
@@ -4435,7 +4435,7 @@
       "355": {
         "ID": 355,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2261,
         "Name": "S(fin,th_-*,*,tl_-*)",
         "OffsetX0": 0,
@@ -4447,7 +4447,7 @@
       "356": {
         "ID": 356,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2262,
         "Name": "S(fin,th_-*,*,r_-*)",
         "OffsetX0": 0,
@@ -4459,7 +4459,7 @@
       "357": {
         "ID": 357,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2263,
         "Name": "S(fin,th_-*,*,w_-*)",
         "OffsetX0": 0,
@@ -4471,7 +4471,7 @@
       "358": {
         "ID": 358,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2300,
         "Name": "S(fin,s_-*,*,t1-*)",
         "OffsetX0": 0,
@@ -4483,7 +4483,7 @@
       "359": {
         "ID": 359,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2301,
         "Name": "S(fin,s_-*,*,k_-*)",
         "OffsetX0": 0,
@@ -4495,7 +4495,7 @@
       "360": {
         "ID": 360,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2302,
         "Name": "S(fin,s_-*,*,q_-*)",
         "OffsetX0": 0,
@@ -4507,7 +4507,7 @@
       "361": {
         "ID": 361,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2303,
         "Name": "S(fin,s_-*,*,ng_-*)",
         "OffsetX0": 0,
@@ -4519,7 +4519,7 @@
       "362": {
         "ID": 362,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2304,
         "Name": "S(fin,s_-*,*,s_-*)",
         "OffsetX0": 0,
@@ -4531,7 +4531,7 @@
       "363": {
         "ID": 363,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2305,
         "Name": "S(fin,s_-*,*,qh_-*)",
         "OffsetX0": 0,
@@ -4543,7 +4543,7 @@
       "364": {
         "ID": 364,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2306,
         "Name": "S(fin,s_-*,*,h_-*)",
         "OffsetX0": 0,
@@ -4555,7 +4555,7 @@
       "365": {
         "ID": 365,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2307,
         "Name": "S(fin,s_-*,*,l_-*)",
         "OffsetX0": 0,
@@ -4567,7 +4567,7 @@
       "366": {
         "ID": 366,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2350,
         "Name": "S(fin,hy_-*,*,t1-*)",
         "OffsetX0": 0,
@@ -4579,7 +4579,7 @@
       "367": {
         "ID": 367,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2351,
         "Name": "S(fin,hy_-*,*,k_-*)",
         "OffsetX0": 0,
@@ -4591,7 +4591,7 @@
       "368": {
         "ID": 368,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2352,
         "Name": "S(fin,hy_-*,*,c_-*)",
         "OffsetX0": 0,
@@ -4603,7 +4603,7 @@
       "369": {
         "ID": 369,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2353,
         "Name": "S(fin,hy_-*,*,n_-*)",
         "OffsetX0": 0,
@@ -4615,7 +4615,7 @@
       "370": {
         "ID": 370,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2354,
         "Name": "S(fin,hy_-*,*,ng_-*)",
         "OffsetX0": 0,
@@ -4627,7 +4627,7 @@
       "371": {
         "ID": 371,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2355,
         "Name": "S(fin,hy_-*,*,hy_-*)",
         "OffsetX0": 0,
@@ -4639,7 +4639,7 @@
       "372": {
         "ID": 372,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2356,
         "Name": "S(fin,hy_-*,*,w_-*)",
         "OffsetX0": 0,
@@ -4651,7 +4651,7 @@
       "373": {
         "ID": 373,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2351,
         "Name": "S(fin,hy_-*,*,q_-*)",
         "OffsetX0": 0,
@@ -4663,7 +4663,7 @@
       "374": {
         "ID": 374,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2400,
         "Name": "S(fin,kh_-*,*,t1-*)",
         "OffsetX0": 0,
@@ -4675,7 +4675,7 @@
       "375": {
         "ID": 375,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2402,
         "Name": "S(fin,kh_-*,*,n_-*)",
         "OffsetX0": 0,
@@ -4687,7 +4687,7 @@
       "376": {
         "ID": 376,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2401,
         "Name": "S(fin,kh_-*,*,k_-*)",
         "OffsetX0": 0,
@@ -4699,7 +4699,7 @@
       "377": {
         "ID": 377,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2403,
         "Name": "S(fin,kh_-*,*,th_-*)",
         "OffsetX0": 0,
@@ -4711,7 +4711,7 @@
       "378": {
         "ID": 378,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2404,
         "Name": "S(fin,kh_-*,*,kh_-*)",
         "OffsetX0": 0,
@@ -4723,7 +4723,7 @@
       "379": {
         "ID": 379,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2405,
         "Name": "S(fin,kh_-*,*,qh_-*)",
         "OffsetX0": 0,
@@ -4735,7 +4735,7 @@
       "380": {
         "ID": 380,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2406,
         "Name": "S(fin,kh_-*,*,h_-*)",
         "OffsetX0": 0,
@@ -4747,7 +4747,7 @@
       "381": {
         "ID": 381,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2407,
         "Name": "S(fin,kh_-*,*,tl_-*)",
         "OffsetX0": 0,
@@ -4759,7 +4759,7 @@
       "382": {
         "ID": 382,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2450,
         "Name": "S(fin,qh_-*,*,t1-*)",
         "OffsetX0": 0,
@@ -4771,7 +4771,7 @@
       "383": {
         "ID": 383,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2451,
         "Name": "S(fin,qh_-*,*,k_-*)",
         "OffsetX0": 0,
@@ -4783,7 +4783,7 @@
       "384": {
         "ID": 384,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2452,
         "Name": "S(fin,qh_-*,*,q_-*)",
         "OffsetX0": 0,
@@ -4795,7 +4795,7 @@
       "385": {
         "ID": 385,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2453,
         "Name": "S(fin,qh_-*,*,n_-*)",
         "OffsetX0": 0,
@@ -4807,7 +4807,7 @@
       "386": {
         "ID": 386,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2454,
         "Name": "S(fin,qh_-*,*,ng_-*)",
         "OffsetX0": 0,
@@ -4819,7 +4819,7 @@
       "387": {
         "ID": 387,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2456,
         "Name": "S(fin,qh_-*,*,qh_-*)",
         "OffsetX0": 0,
@@ -4831,7 +4831,7 @@
       "388": {
         "ID": 388,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2455,
         "Name": "S(fin,qh_-*,*,kh_-*)",
         "OffsetX0": 0,
@@ -4843,7 +4843,7 @@
       "389": {
         "ID": 389,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2457,
         "Name": "S(fin,qh_-*,*,l_-*)",
         "OffsetX0": 0,
@@ -4855,7 +4855,7 @@
       "390": {
         "ID": 390,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2458,
         "Name": "S(fin,qh_-*,*,w_-*)",
         "OffsetX0": 0,
@@ -4867,7 +4867,7 @@
       "391": {
         "ID": 391,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2500,
         "Name": "S(fin,h_-*,*,t1-*)",
         "OffsetX0": 0,
@@ -4879,7 +4879,7 @@
       "392": {
         "ID": 392,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2502,
         "Name": "S(fin,h_-*,*,q_-*)",
         "OffsetX0": 0,
@@ -4891,7 +4891,7 @@
       "393": {
         "ID": 393,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2503,
         "Name": "S(fin,h_-*,*,c_-*)",
         "OffsetX0": 0,
@@ -4903,7 +4903,7 @@
       "394": {
         "ID": 394,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2504,
         "Name": "S(fin,h_-*,*,n_-*)",
         "OffsetX0": 0,
@@ -4915,7 +4915,7 @@
       "395": {
         "ID": 395,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2505,
         "Name": "S(fin,h_-*,*,ng_-*)",
         "OffsetX0": 0,
@@ -4927,7 +4927,7 @@
       "396": {
         "ID": 396,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2506,
         "Name": "S(fin,h_-*,*,th_-*)",
         "OffsetX0": 0,
@@ -4939,7 +4939,7 @@
       "397": {
         "ID": 397,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2507,
         "Name": "S(fin,h_-*,*,h_-*)",
         "OffsetX0": 0,
@@ -4951,7 +4951,7 @@
       "398": {
         "ID": 398,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2508,
         "Name": "S(fin,h_-*,*,l_-*)",
         "OffsetX0": 0,
@@ -4963,7 +4963,7 @@
       "399": {
         "ID": 399,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2509,
         "Name": "S(fin,h_-*,*,w_-*)",
         "OffsetX0": 0,
@@ -4975,7 +4975,7 @@
       "400": {
         "ID": 400,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2550,
         "Name": "S(fin,l_-*,*,t0-*)",
         "OffsetX0": 0,
@@ -4987,7 +4987,7 @@
       "401": {
         "ID": 401,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2550,
         "Name": "S(fin,l_-*,*,t1-*)",
         "OffsetX0": 0,
@@ -4999,7 +4999,7 @@
       "402": {
         "ID": 402,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2551,
         "Name": "S(fin,l_-*,*,k_-*)",
         "OffsetX0": 0,
@@ -5011,7 +5011,7 @@
       "403": {
         "ID": 403,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2552,
         "Name": "S(fin,l_-*,*,q_-*)",
         "OffsetX0": 0,
@@ -5023,7 +5023,7 @@
       "404": {
         "ID": 404,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2553,
         "Name": "S(fin,l_-*,*,c_-*)",
         "OffsetX0": 0,
@@ -5035,7 +5035,7 @@
       "405": {
         "ID": 405,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2554,
         "Name": "S(fin,l_-*,*,n_-*)",
         "OffsetX0": 0,
@@ -5047,7 +5047,7 @@
       "406": {
         "ID": 406,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2555,
         "Name": "S(fin,l_-*,*,th_-*)",
         "OffsetX0": 0,
@@ -5059,7 +5059,7 @@
       "407": {
         "ID": 407,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2556,
         "Name": "S(fin,l_-*,*,kh_-*)",
         "OffsetX0": 0,
@@ -5071,7 +5071,7 @@
       "408": {
         "ID": 408,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2557,
         "Name": "S(fin,l_-*,*,qh_-*)",
         "OffsetX0": 0,
@@ -5083,7 +5083,7 @@
       "409": {
         "ID": 409,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2558,
         "Name": "S(fin,l_-*,*,h_-*)",
         "OffsetX0": 0,
@@ -5095,7 +5095,7 @@
       "410": {
         "ID": 410,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2559,
         "Name": "S(fin,l_-*,*,l_-*)",
         "OffsetX0": 0,
@@ -5107,7 +5107,7 @@
       "411": {
         "ID": 411,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2560,
         "Name": "S(fin,l_-*,*,r_-*)",
         "OffsetX0": 0,
@@ -5119,7 +5119,7 @@
       "412": {
         "ID": 412,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2555,
         "Name": "S(fin,l_-*,*,s_-*)",
         "OffsetX0": 0,
@@ -5131,7 +5131,7 @@
       "413": {
         "ID": 413,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2600,
         "Name": "S(fin,tl_-*,*,t1-*)",
         "OffsetX0": 0,
@@ -5143,7 +5143,7 @@
       "414": {
         "ID": 414,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2601,
         "Name": "S(fin,tl_-*,*,ng_-*)",
         "OffsetX0": 0,
@@ -5155,7 +5155,7 @@
       "415": {
         "ID": 415,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2602,
         "Name": "S(fin,tl_-*,*,s_-*)",
         "OffsetX0": 0,
@@ -5167,7 +5167,7 @@
       "416": {
         "ID": 416,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2603,
         "Name": "S(fin,tl_-*,*,qh_-*)",
         "OffsetX0": 0,
@@ -5179,7 +5179,7 @@
       "417": {
         "ID": 417,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2604,
         "Name": "S(fin,tl_-*,*,l_-*)",
         "OffsetX0": 0,
@@ -5191,7 +5191,7 @@
       "418": {
         "ID": 418,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2605,
         "Name": "S(fin,tl_-*,*,r_-*)",
         "OffsetX0": 0,
@@ -5203,7 +5203,7 @@
       "419": {
         "ID": 419,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2600,
         "Name": "S(fin,tl_-*,*,n_-*)",
         "OffsetX0": 0,
@@ -5215,7 +5215,7 @@
       "420": {
         "ID": 420,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2650,
         "Name": "S(fin,r_-*,*,t1-*)",
         "OffsetX0": 0,
@@ -5227,7 +5227,7 @@
       "421": {
         "ID": 421,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2651,
         "Name": "S(fin,r_-*,*,k_-*)",
         "OffsetX0": 0,
@@ -5239,7 +5239,7 @@
       "422": {
         "ID": 422,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2652,
         "Name": "S(fin,r_-*,*,q_-*)",
         "OffsetX0": 0,
@@ -5251,7 +5251,7 @@
       "423": {
         "ID": 423,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2653,
         "Name": "S(fin,r_-*,*,hy_-*)",
         "OffsetX0": 0,
@@ -5263,7 +5263,7 @@
       "424": {
         "ID": 424,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2654,
         "Name": "S(fin,r_-*,*,qh_-*)",
         "OffsetX0": 0,
@@ -5275,7 +5275,7 @@
       "425": {
         "ID": 425,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2655,
         "Name": "S(fin,r_-*,*,r_-*)",
         "OffsetX0": 0,
@@ -5287,7 +5287,7 @@
       "426": {
         "ID": 426,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2654,
         "Name": "S(fin,r_-*,*,h_-*)",
         "OffsetX0": 0,
@@ -5299,7 +5299,7 @@
       "427": {
         "ID": 427,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2656,
         "Name": "S(fin,r_-*,*,w_-*)",
         "OffsetX0": 0,
@@ -5311,7 +5311,7 @@
       "428": {
         "ID": 428,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2701,
         "Name": "S(fin,w_-*,*,t0-*)",
         "OffsetX0": 0,
@@ -5323,7 +5323,7 @@
       "429": {
         "ID": 429,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2701,
         "Name": "S(fin,w_-*,*,t1-*)",
         "OffsetX0": 0,
@@ -5335,7 +5335,7 @@
       "430": {
         "ID": 430,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2702,
         "Name": "S(fin,w_-*,*,q_-*)",
         "OffsetX0": 0,
@@ -5347,7 +5347,7 @@
       "431": {
         "ID": 431,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2703,
         "Name": "S(fin,w_-*,*,th_-*)",
         "OffsetX0": 0,
@@ -5359,7 +5359,7 @@
       "432": {
         "ID": 432,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2704,
         "Name": "S(fin,w_-*,*,qh_-*)",
         "OffsetX0": 0,
@@ -5371,7 +5371,7 @@
       "433": {
         "ID": 433,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2705,
         "Name": "S(fin,w_-*,*,r_-*)",
         "OffsetX0": 0,
@@ -5383,7 +5383,7 @@
       "434": {
         "ID": 434,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2706,
         "Name": "S(fin,w_-*,*,w_-*)",
         "OffsetX0": 0,
@@ -5395,7 +5395,7 @@
       "435": {
         "ID": 435,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2700,
         "Name": "S(fin,w_-*,*,)",
         "OffsetX0": 0,
@@ -5407,7 +5407,7 @@
       "436": {
         "ID": 436,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2750,
         "Name": "S(fin,y_-*,*,t1-*)",
         "OffsetX0": 0,
@@ -5419,7 +5419,7 @@
       "437": {
         "ID": 437,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2751,
         "Name": "S(fin,y_-*,*,r_-*)",
         "OffsetX0": 0,
@@ -5431,7 +5431,7 @@
       "438": {
         "ID": 438,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2752,
         "Name": "S(fin,y_-*,*,w_-*)",
         "OffsetX0": 0,
@@ -5443,7 +5443,7 @@
       "439": {
         "ID": 439,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2800,
         "Name": "S(fin,n_-*,*,)",
         "OffsetX0": 0,
@@ -5455,7 +5455,7 @@
       "440": {
         "ID": 440,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2801,
         "Name": "S(fin,th_-*,*,)",
         "OffsetX0": 0,
@@ -5467,7 +5467,7 @@
       "441": {
         "ID": 441,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2802,
         "Name": "S(fin,h_-*,*,)",
         "OffsetX0": 0,
@@ -5479,7 +5479,7 @@
       "442": {
         "ID": 442,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2900,
         "Name": "S(fin,,*,t1-*)",
         "OffsetX0": 0,
@@ -5491,7 +5491,7 @@
       "443": {
         "ID": 443,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2901,
         "Name": "S(fin,x_-*,*,t0-*)",
         "OffsetX0": 0,
@@ -5503,7 +5503,7 @@
       "444": {
         "ID": 444,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2900,
         "Name": "S(fin,x_-*,*,t1-*)",
         "OffsetX0": 0,
@@ -5515,7 +5515,7 @@
       "445": {
         "ID": 445,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2903,
         "Name": "S(fin,,*,q_-*)",
         "OffsetX0": 0,
@@ -5527,7 +5527,7 @@
       "446": {
         "ID": 446,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2902,
         "Name": "S(fin,x_-*,*,k_-*)",
         "OffsetX0": 0,
@@ -5539,7 +5539,7 @@
       "447": {
         "ID": 447,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2903,
         "Name": "S(fin,x_-*,*,q_-*)",
         "OffsetX0": 0,
@@ -5551,7 +5551,7 @@
       "448": {
         "ID": 448,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2904,
         "Name": "S(fin,x_-*,*,c_-*)",
         "OffsetX0": 0,
@@ -5563,7 +5563,7 @@
       "449": {
         "ID": 449,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2905,
         "Name": "S(fin,,*,n_-*)",
         "OffsetX0": 0,
@@ -5575,7 +5575,7 @@
       "450": {
         "ID": 450,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2906,
         "Name": "S(fin,x_-*,*,n_-*)",
         "OffsetX0": 0,
@@ -5587,7 +5587,7 @@
       "451": {
         "ID": 451,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2908,
         "Name": "S(fin,x_-*,*,th_-*)",
         "OffsetX0": 0,
@@ -5599,7 +5599,7 @@
       "452": {
         "ID": 452,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2909,
         "Name": "S(fin,x_-*,*,hy_-*)",
         "OffsetX0": 0,
@@ -5611,7 +5611,7 @@
       "453": {
         "ID": 453,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2907,
         "Name": "S(fin,x_-*,*,ng_-*)",
         "OffsetX0": 0,
@@ -5623,7 +5623,7 @@
       "454": {
         "ID": 454,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2908,
         "Name": "S(fin,x_-*,*,s_-*)",
         "OffsetX0": 0,
@@ -5635,7 +5635,7 @@
       "455": {
         "ID": 455,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2910,
         "Name": "S(fin,x_-*,*,kh_-*)",
         "OffsetX0": 0,
@@ -5647,7 +5647,7 @@
       "456": {
         "ID": 456,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2911,
         "Name": "S(fin,,*,qh_-*)",
         "OffsetX0": 0,
@@ -5659,7 +5659,7 @@
       "457": {
         "ID": 457,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2911,
         "Name": "S(fin,x_-*,*,qh_-*)",
         "OffsetX0": 0,
@@ -5671,7 +5671,7 @@
       "458": {
         "ID": 458,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2912,
         "Name": "S(fin,,*,h_-*)",
         "OffsetX0": 0,
@@ -5683,7 +5683,7 @@
       "459": {
         "ID": 459,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2912,
         "Name": "S(fin,x_-*,*,h_-*)",
         "OffsetX0": 0,
@@ -5695,7 +5695,7 @@
       "460": {
         "ID": 460,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2913,
         "Name": "S(fin,,*,w_-*)",
         "OffsetX0": 0,
@@ -5707,7 +5707,7 @@
       "461": {
         "ID": 461,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2913,
         "Name": "S(fin,x_-*,*,w_-*)",
         "OffsetX0": 0,
@@ -5719,7 +5719,7 @@
       "462": {
         "ID": 462,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2914,
         "Name": "S(fin,x_-*,*,y_-*)",
         "OffsetX0": 0,
@@ -5731,7 +5731,7 @@
       "463": {
         "ID": 463,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2907,
         "Name": "S(fin,,*,th_-*)",
         "OffsetX0": 0,
@@ -5743,7 +5743,7 @@
       "464": {
         "ID": 464,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2913,
         "Name": "S(fin,x_-*,*,tl_-*)",
         "OffsetX0": 0,
@@ -5755,7 +5755,7 @@
       "465": {
         "ID": 465,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2914,
         "Name": "S(fin,x_-*,*,r_-*)",
         "OffsetX0": 0,
@@ -5767,7 +5767,7 @@
       "466": {
         "ID": 466,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2914,
         "Name": "S(fin,,*,r_-*)",
         "OffsetX0": 0,
@@ -5779,7 +5779,7 @@
       "467": {
         "ID": 467,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2912,
         "Name": "S(fin,x_-*,*,l_-*)",
         "OffsetX0": 0,
@@ -5791,7 +5791,7 @@
       "468": {
         "ID": 468,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 5700,
         "Name": "S(fin,*,o_-*,t1-*)",
         "OffsetX0": 0,
@@ -5803,7 +5803,7 @@
       "469": {
         "ID": 469,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 5600,
         "Name": "S(fin,*,e_-*,t1-*)",
         "OffsetX0": 0,
@@ -5815,7 +5815,7 @@
       "470": {
         "ID": 470,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 5600,
         "Name": "S(fin,t_-*,e_-*,*)",
         "OffsetX0": 0,
@@ -5827,7 +5827,7 @@
       "471": {
         "ID": 471,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 5650,
         "Name": "S(fin,*,i_-*,*)",
         "OffsetX0": 0,
@@ -5839,7 +5839,7 @@
       "472": {
         "ID": 472,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 5650,
         "Name": "S(fin,*,i_-*,t_-*)",
         "OffsetX0": 0,
@@ -5851,7 +5851,7 @@
       "473": {
         "ID": 473,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 5650,
         "Name": "S(fin,t_-*,i_-*,*)",
         "OffsetX0": 0,
@@ -5863,7 +5863,7 @@
       "474": {
         "ID": 474,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 5650,
         "Name": "S(fin,*,i_-*,t1-*)",
         "OffsetX0": 0,
@@ -5875,7 +5875,7 @@
       "475": {
         "ID": 475,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 5650,
         "Name": "S(fin,w_-*,i_-*,+)",
         "OffsetX0": 0,
@@ -5887,7 +5887,7 @@
       "476": {
         "ID": 476,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 3011,
         "Name": "S(init,(k|n|ng|hy|kh|l|y)_-*,e_-*,+)",
         "OffsetX0": 0,
@@ -5899,7 +5899,7 @@
       "477": {
         "ID": 477,
         "WritingDirection": "vertical",
-        "Pattern_sub": "external",
+        "GPOSType": "external",
         "Order": 2,
         "Name": "S(init,*,a_-*,*)",
         "OffsetX0": 0,
@@ -5911,7 +5911,7 @@
       "478": {
         "ID": 478,
         "WritingDirection": "vertical",
-        "Pattern_sub": "external",
+        "GPOSType": "external",
         "Order": 3,
         "Name": "S(fin,*)",
         "OffsetX0": 0,
@@ -5923,7 +5923,7 @@
       "479": {
         "ID": 479,
         "WritingDirection": "vertical",
-        "Pattern_sub": "external",
+        "GPOSType": "external",
         "Order": 3,
         "Name": "S(fin,*,a_-*,*)",
         "OffsetX0": 0,
@@ -5935,7 +5935,7 @@
       "480": {
         "ID": 480,
         "WritingDirection": "vertical",
-        "Pattern_sub": "external",
+        "GPOSType": "external",
         "Order": 2,
         "Name": "S(init,*)",
         "OffsetX0": 0,
@@ -5947,7 +5947,7 @@
       "481": {
         "ID": 481,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 3030,
         "Name": "S(init,+,o_-*,*)",
         "OffsetX0": 0,
@@ -5959,7 +5959,7 @@
       "482": {
         "ID": 482,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 3020,
         "Name": "S(init,*,i_-*,*)",
         "OffsetX0": 0,
@@ -5971,7 +5971,7 @@
       "483": {
         "ID": 483,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 3040,
         "Name": "S(init,*,u_-*,)",
         "OffsetX0": 0,
@@ -5983,7 +5983,7 @@
       "484": {
         "ID": 484,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 3040,
         "Name": "S(init,*,u_-*,*)",
         "OffsetX0": 0,
@@ -5995,7 +5995,7 @@
       "485": {
         "ID": 485,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 3050,
         "Name": "S(init,*,v_-*,*)",
         "OffsetX0": 0,
@@ -6007,7 +6007,7 @@
       "486": {
         "ID": 486,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 3000,
         "Name": "S(init,*,abig_-*,*)",
         "OffsetX0": 0,
@@ -6019,7 +6019,7 @@
       "487": {
         "ID": 487,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 5700,
         "Name": "S(fin,*,o_-*,*)",
         "OffsetX0": 0,
@@ -6031,7 +6031,7 @@
       "488": {
         "ID": 488,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 5700,
         "Name": "S(fin,t_-*,o_-*,*)",
         "OffsetX0": 0,
@@ -6043,7 +6043,7 @@
       "489": {
         "ID": 489,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 5750,
         "Name": "S(fin,*,u_-*,*)",
         "OffsetX0": 0,
@@ -6055,7 +6055,7 @@
       "490": {
         "ID": 490,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 5750,
         "Name": "S(fin,t_-*,u_-*,*)",
         "OffsetX0": 0,
@@ -6067,7 +6067,7 @@
       "491": {
         "ID": 491,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 5750,
         "Name": "S(fin,*,u_-*,t_-*)",
         "OffsetX0": 0,
@@ -6079,7 +6079,7 @@
       "492": {
         "ID": 492,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 5800,
         "Name": "S(fin,*,v_-*,*)",
         "OffsetX0": 0,
@@ -6091,7 +6091,7 @@
       "493": {
         "ID": 493,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 5800,
         "Name": "S(fin,*,v(1|3)-*,*)",
         "OffsetX0": 0,
@@ -6103,7 +6103,7 @@
       "494": {
         "ID": 494,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 5800,
         "Name": "S(fin,t_-*,v_-*,*)|S(fin,*,v_-*,t_-*)",
         "OffsetX0": 0,
@@ -6115,7 +6115,7 @@
       "495": {
         "ID": 495,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 5800,
         "Name": "S(fin,*,v(1|3)-*,)",
         "OffsetX0": 0,
@@ -6127,7 +6127,7 @@
       "496": {
         "ID": 496,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 10000,
         "Name": "S(mid,*,abig_-*,*)",
         "OffsetX0": 0,
@@ -6139,7 +6139,7 @@
       "497": {
         "ID": 497,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 10000,
         "Name": "S(mid,t_-*,abig_-*,*)",
         "OffsetX0": 0,
@@ -6151,7 +6151,7 @@
       "498": {
         "ID": 498,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 10050,
         "Name": "S(mid,*,e_-*,*)",
         "OffsetX0": 0,
@@ -6163,7 +6163,7 @@
       "499": {
         "ID": 499,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 10050,
         "Name": "S(mid,t_-*,e_-*,*)",
         "OffsetX0": 0,
@@ -6175,7 +6175,7 @@
       "500": {
         "ID": 500,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 3010,
         "Name": "S(init,+,e_-*,+)",
         "OffsetX0": 0,
@@ -6187,7 +6187,7 @@
       "501": {
         "ID": 501,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 3010,
         "Name": "S(init,r_-*,e_-*,*)",
         "OffsetX0": 0,
@@ -6199,7 +6199,7 @@
       "502": {
         "ID": 502,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 3011,
         "Name": "S(init,*,e_-*,(kh|q|n|r)_-*)",
         "OffsetX0": 0,
@@ -6211,7 +6211,7 @@
       "503": {
         "ID": 503,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 3010,
         "Name": "S(init,*,e_-*,*)",
         "OffsetX0": 0,
@@ -6223,7 +6223,7 @@
       "504": {
         "ID": 504,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 3010,
         "Name": "S(init,(n|ng|kh)_-*,e_-*,)",
         "OffsetX0": 0,
@@ -6235,7 +6235,7 @@
       "505": {
         "ID": 505,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 3010,
         "Name": "S(init,w_-*,e_-*,)",
         "OffsetX0": 0,
@@ -6247,7 +6247,7 @@
       "506": {
         "ID": 506,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 10050,
         "Name": "S(mid,(q|ng|hy|kh|tl|r)_-*,e_-*,*)",
         "OffsetX0": 0,
@@ -6259,7 +6259,7 @@
       "507": {
         "ID": 507,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 10050,
         "Name": "S(mid,(qh)_-*,e_-*,*)",
         "OffsetX0": 0,
@@ -6271,7 +6271,7 @@
       "508": {
         "ID": 508,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 10050,
         "Name": "S(mid,*,e_-*,(k|q|n|ng|kh|qh|r|tl)_-*)",
         "OffsetX0": 0,
@@ -6283,7 +6283,7 @@
       "509": {
         "ID": 509,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 10050,
         "Name": "S(mid,*,e_-*,(c|n|qh|r|tl)_-*)",
         "OffsetX0": 0,
@@ -6295,7 +6295,7 @@
       "510": {
         "ID": 510,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 10050,
         "Name": "S(mid,*,e_-*,n_-*)",
         "OffsetX0": 0,
@@ -6307,7 +6307,7 @@
       "511": {
         "ID": 511,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 10050,
         "Name": "S(mid,*,e_-*,w_-*)",
         "OffsetX0": 0,
@@ -6319,7 +6319,7 @@
       "512": {
         "ID": 512,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 10100,
         "Name": "S(mid,*,i_-*,*)",
         "OffsetX0": 0,
@@ -6331,7 +6331,7 @@
       "513": {
         "ID": 513,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 10100,
         "Name": "S(mid,(qh|w|y|l|h|th|s|hy|n|c)_-*,i_-*,*)",
         "OffsetX0": 0,
@@ -6343,7 +6343,7 @@
       "514": {
         "ID": 514,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 10100,
         "Name": "S(mid,t_-*,i_-*,*)",
         "OffsetX0": 0,
@@ -6355,7 +6355,7 @@
       "515": {
         "ID": 515,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 10100,
         "Name": "S(mid,*,i_-*,(k|q|c|n|hy|kh|qh|tl|r)_-*)",
         "OffsetX0": 0,
@@ -6367,7 +6367,7 @@
       "516": {
         "ID": 516,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 10100,
         "Name": "S(mid,*,i_-*,(t|s|l|w)_-*)",
         "OffsetX0": 0,
@@ -6379,7 +6379,7 @@
       "517": {
         "ID": 517,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 10100,
         "Name": "S(mid,*,i_-*,tl_-*)",
         "OffsetX0": 0,
@@ -6391,7 +6391,7 @@
       "518": {
         "ID": 518,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 10150,
         "Name": "S(mid,t_-*,o_-*,*)",
         "OffsetX0": 0,
@@ -6403,7 +6403,7 @@
       "519": {
         "ID": 519,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 10150,
         "Name": "S(mid,*,o_-*,*)",
         "OffsetX0": 0,
@@ -6415,7 +6415,7 @@
       "520": {
         "ID": 520,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 10150,
         "Name": "S(mid,(c|n|th|s|l|w)_-*,o_-*,*)",
         "OffsetX0": 0,
@@ -6427,7 +6427,7 @@
       "521": {
         "ID": 521,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 10150,
         "Name": "S(mid,qh_-*,o_-*,*)",
         "OffsetX0": 0,
@@ -6439,7 +6439,7 @@
       "522": {
         "ID": 522,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 10150,
         "Name": "S(mid,*,o_-*,(k|q|c|hy|kh|tl|qh)_-*)",
         "OffsetX0": 0,
@@ -6451,7 +6451,7 @@
       "523": {
         "ID": 523,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 10150,
         "Name": "S(mid,*,o_-*,(tl|n|r)_-*)",
         "OffsetX0": 0,
@@ -6463,7 +6463,7 @@
       "524": {
         "ID": 524,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 10150,
         "Name": "S(mid,*,o_-*,(t|w)_-*)",
         "OffsetX0": 0,
@@ -6475,7 +6475,7 @@
       "525": {
         "ID": 525,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 10200,
         "Name": "S(mid,*,u_-*,*)",
         "OffsetX0": 0,
@@ -6487,7 +6487,7 @@
       "526": {
         "ID": 526,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 10200,
         "Name": "S(mid,t_-*,u_-*,*)",
         "OffsetX0": 0,
@@ -6499,7 +6499,7 @@
       "527": {
         "ID": 527,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 10200,
         "Name": "S(mid,(ng|hy|kh|qh|tl|r|y)_-*,u_-*,*)",
         "OffsetX0": 0,
@@ -6511,7 +6511,7 @@
       "528": {
         "ID": 528,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 10200,
         "Name": "S(mid,w_-*,u_-*,*)",
         "OffsetX0": 0,
@@ -6523,7 +6523,7 @@
       "529": {
         "ID": 529,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 10200,
         "Name": "S(mid,*,u_-*,(c|k|q|hy|kh|h|ng|qh|w|th)_-*)",
         "OffsetX0": 0,
@@ -6535,7 +6535,7 @@
       "530": {
         "ID": 530,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 10250,
         "Name": "S(mid,*,v_-*,*)",
         "OffsetX0": 0,
@@ -6547,7 +6547,7 @@
       "531": {
         "ID": 531,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 10250,
         "Name": "S(mid,w_-*,v_-*,*)",
         "OffsetX0": 0,
@@ -6559,7 +6559,7 @@
       "532": {
         "ID": 532,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 10250,
         "Name": "S(mid,*,v_-*,(th|h|w)_-*)",
         "OffsetX0": 0,
@@ -6571,7 +6571,7 @@
       "533": {
         "ID": 533,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 10250,
         "Name": "S(mid,*,v_-*,(n|th|qh|tl|r)_-*)",
         "OffsetX0": 0,
@@ -6583,7 +6583,7 @@
       "534": {
         "ID": 534,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 10250,
         "Name": "S(mid,*,v_-*,s_-*)",
         "OffsetX0": 0,
@@ -6595,7 +6595,7 @@
       "535": {
         "ID": 535,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 10250,
         "Name": "S(mid,t_-*,v_-*,*)",
         "OffsetX0": 0,
@@ -6607,7 +6607,7 @@
       "536": {
         "ID": 536,
         "WritingDirection": "vertical",
-        "Pattern_sub": "kerning",
+        "GPOSType": "kerning",
         "Order": 50,
         "Name": "S(init,,*,)(S(mid,*,[!_.isNullVowel]_-*,*)|S(mid,+,[_.isNullVowel]_-*,*)|S(fin,+,*,))",
         "OffsetX0": 0,
@@ -6619,7 +6619,7 @@
       "537": {
         "ID": 537,
         "WritingDirection": "vertical",
-        "Pattern_sub": "kerning",
+        "GPOSType": "kerning",
         "Order": 60,
         "Name": "S(init,,*,+)(S(mid,*,[_.isNullVowel]_-*,)|S(mid,*,[!_.isNullVowel]_-*,*)|S(fin,*,*,))",
         "OffsetX0": 0,
@@ -6631,7 +6631,7 @@
       "538": {
         "ID": 538,
         "WritingDirection": "vertical",
-        "Pattern_sub": "kerning",
+        "GPOSType": "kerning",
         "Order": 61,
         "Name": "S(init,,*,t_-*)(S(mid,*,[_.isNullVowel]_-*,)|S(mid,*,[!_.isNullVowel]_-*,*)|S(fin,*,*,))",
         "OffsetX0": 0,
@@ -6643,7 +6643,7 @@
       "539": {
         "ID": 539,
         "WritingDirection": "vertical",
-        "Pattern_sub": "kerning",
+        "GPOSType": "kerning",
         "Order": 65,
         "Name": "S(init,,*,+)(S(mid,*,[_.isNullVowel]_-*,+)|S(fin,*,*,+))",
         "OffsetX0": 0,
@@ -6655,7 +6655,7 @@
       "540": {
         "ID": 540,
         "WritingDirection": "vertical",
-        "Pattern_sub": "kerning",
+        "GPOSType": "kerning",
         "Order": 51,
         "Name": "S(init,,*,)(S(mid,*,[_.isNullVowel]_-*,+)|S(fin,*,*,+))",
         "OffsetX0": 0,
@@ -6667,7 +6667,7 @@
       "541": {
         "ID": 541,
         "WritingDirection": "vertical",
-        "Pattern_sub": "kerning",
+        "GPOSType": "kerning",
         "Order": 50,
         "Name": "S(init,,abig_-*,)(S(mid,*,[!_.isNullVowel]_-*,*)|S(mid,+,[_.isNullVowel]_-*,*)|S(fin,+,*,))",
         "OffsetX0": 0,
@@ -6679,7 +6679,7 @@
       "542": {
         "ID": 542,
         "WritingDirection": "vertical",
-        "Pattern_sub": "kerning",
+        "GPOSType": "kerning",
         "Order": 51,
         "Name": "S(init,,abig_-*,)(S(mid,*,[_.isNullVowel]_-*,+)|S(fin,*,*,+))",
         "OffsetX0": 0,
@@ -6691,7 +6691,7 @@
       "543": {
         "ID": 543,
         "WritingDirection": "vertical",
-        "Pattern_sub": "kerning",
+        "GPOSType": "kerning",
         "Order": 51,
         "Name": "S(init,,i_-*,)(S(mid,*,[_.isNullVowel]_-*,+)|S(fin,*,*,+))",
         "OffsetX0": 0,
@@ -6703,7 +6703,7 @@
       "544": {
         "ID": 544,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 9000,
         "Name": "S(mid,*,[_.isNullVowel]_-*,*)",
         "OffsetX0": 0,
@@ -6715,7 +6715,7 @@
       "545": {
         "ID": 545,
         "WritingDirection": "vertical",
-        "Pattern_sub": "kerning",
+        "GPOSType": "kerning",
         "Order": 50,
         "Name": "S(init,,i_-*,)(S(mid,*,[!_.isNullVowel]_-*,*)|S(mid,+,[_.isNullVowel]_-*,*)|S(fin,+,*,))",
         "OffsetX0": 0,
@@ -6727,7 +6727,7 @@
       "546": {
         "ID": 546,
         "WritingDirection": "vertical",
-        "Pattern_sub": "kerning",
+        "GPOSType": "kerning",
         "Order": 50,
         "Name": "S(init,,e_-*,)(S(mid,*,[!_.isNullVowel]_-*,*)|S(mid,+,[_.isNullVowel]_-*,*)|S(fin,+,*,))",
         "OffsetX0": 0,
@@ -6739,7 +6739,7 @@
       "547": {
         "ID": 547,
         "WritingDirection": "vertical",
-        "Pattern_sub": "kerning",
+        "GPOSType": "kerning",
         "Order": 50,
         "Name": "S(init,,u_-*,)(S(mid,*,[!_.isNullVowel]_-*,*)|S(mid,+,[_.isNullVowel]_-*,*)|S(fin,+,*,))",
         "OffsetX0": 0,
@@ -6751,7 +6751,7 @@
       "548": {
         "ID": 548,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 5600,
         "Name": "S(fin,t_-*,e_-*,)",
         "OffsetX0": 0,
@@ -6763,7 +6763,7 @@
       "549": {
         "ID": 549,
         "WritingDirection": "universal",
-        "Pattern_sub": "diacritical",
+        "GPOSType": "diacritical",
         "Order": 1,
         "Name": "C(*,+-sy_)",
         "OffsetX0": 10,
@@ -6775,7 +6775,7 @@
       "550": {
         "ID": 550,
         "WritingDirection": "universal",
-        "Pattern_sub": "diacritical",
+        "GPOSType": "diacritical",
         "Order": 2,
         "Name": "C(*,+-sw_)",
         "OffsetX0": 0,
@@ -6787,7 +6787,7 @@
       "551": {
         "ID": 551,
         "WritingDirection": "universal",
-        "Pattern_sub": "diacritical",
+        "GPOSType": "diacritical",
         "Order": 0,
         "Name": "C(*,+-hd_)",
         "OffsetX0": 15,
@@ -6799,7 +6799,7 @@
       "552": {
         "ID": 552,
         "WritingDirection": "universal",
-        "Pattern_sub": "diacritical",
+        "GPOSType": "diacritical",
         "Order": 0,
         "Name": "C(*,+-d_-hd_)",
         "OffsetX0": -4,
@@ -6811,7 +6811,7 @@
       "553": {
         "ID": 553,
         "WritingDirection": "universal",
-        "Pattern_sub": "diacritical",
+        "GPOSType": "diacritical",
         "Order": 0,
         "Name": "C(onset,tl_-hd_)",
         "OffsetX0": -9,
@@ -6823,7 +6823,7 @@
       "554": {
         "ID": 554,
         "WritingDirection": "universal",
-        "Pattern_sub": "diacritical",
+        "GPOSType": "diacritical",
         "Order": 0,
         "Name": "C(onset,t_-hd_)",
         "OffsetX0": 2,
@@ -6835,7 +6835,7 @@
       "555": {
         "ID": 555,
         "WritingDirection": "universal",
-        "Pattern_sub": "diacritical",
+        "GPOSType": "diacritical",
         "Order": 0,
         "Name": "C(onset,tl_-hd_-sy_)",
         "OffsetX0": 0,
@@ -6847,7 +6847,7 @@
       "556": {
         "ID": 556,
         "WritingDirection": "universal",
-        "Pattern_sub": "diacritical",
+        "GPOSType": "diacritical",
         "Order": 1,
         "Name": "C(*,t_-sy_)",
         "OffsetX0": 4,
@@ -6859,7 +6859,7 @@
       "557": {
         "ID": 557,
         "WritingDirection": "universal",
-        "Pattern_sub": "diacritical",
+        "GPOSType": "diacritical",
         "Order": 1,
         "Name": "C(*,n_-sy_)",
         "OffsetX0": 4,
@@ -6871,7 +6871,7 @@
       "558": {
         "ID": 558,
         "WritingDirection": "universal",
-        "Pattern_sub": "diacritical",
+        "GPOSType": "diacritical",
         "Order": 1,
         "Name": "C(*,r_-sy_)",
         "OffsetX0": -4,
@@ -6883,7 +6883,7 @@
       "559": {
         "ID": 559,
         "WritingDirection": "universal",
-        "Pattern_sub": "diacritical",
+        "GPOSType": "diacritical",
         "Order": 0,
         "Name": "C(*,t_-d_)",
         "OffsetX0": 6,
@@ -6895,7 +6895,7 @@
       "560": {
         "ID": 560,
         "WritingDirection": "universal",
-        "Pattern_sub": "diacritical",
+        "GPOSType": "diacritical",
         "Order": 0,
         "Name": "C(*,qh_-d_)",
         "OffsetX0": 6,
@@ -6907,7 +6907,7 @@
       "561": {
         "ID": 561,
         "WritingDirection": "universal",
-        "Pattern_sub": "diacritical",
+        "GPOSType": "diacritical",
         "Order": 0,
         "Name": "C(onset,kh_-d_)",
         "OffsetX0": 5,
@@ -6919,7 +6919,7 @@
       "562": {
         "ID": 562,
         "WritingDirection": "universal",
-        "Pattern_sub": "diacritical",
+        "GPOSType": "diacritical",
         "Order": 0,
         "Name": "C(coda,kh_-d_)",
         "OffsetX0": 8,
@@ -6931,7 +6931,7 @@
       "563": {
         "ID": 563,
         "WritingDirection": "universal",
-        "Pattern_sub": "diacritical",
+        "GPOSType": "diacritical",
         "Order": 0,
         "Name": "C(coda,qh_-d_)",
         "OffsetX0": -3,
@@ -6943,7 +6943,7 @@
       "564": {
         "ID": 564,
         "WritingDirection": "universal",
-        "Pattern_sub": "diacritical",
+        "GPOSType": "diacritical",
         "Order": 0,
         "Name": "C(coda,hy_-d_)",
         "OffsetX0": 2,
@@ -6955,7 +6955,7 @@
       "565": {
         "ID": 565,
         "WritingDirection": "vertical",
-        "Pattern_sub": "kerning",
+        "GPOSType": "kerning",
         "Order": 50,
         "Name": "S(init,,v_-*,)(S(mid,*,[!_.isNullVowel]_-*,*)|S(mid,+,[_.isNullVowel]_-*,*)|S(fin,+,*,))",
         "OffsetX0": 0,
@@ -6967,7 +6967,7 @@
       "566": {
         "ID": 566,
         "WritingDirection": "vertical",
-        "Pattern_sub": "kerning",
+        "GPOSType": "kerning",
         "Order": 51,
         "Name": "S(init,,e_-*,)(S(mid,*,[_.isNullVowel]_-*,+)|S(fin,*,*,+))",
         "OffsetX0": 0,
@@ -6979,7 +6979,7 @@
       "567": {
         "ID": 567,
         "WritingDirection": "horizontal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 4,
         "Name": "S(fin,*,u_-*,*)",
         "OffsetX0": 0,
@@ -6991,7 +6991,7 @@
       "568": {
         "ID": 568,
         "WritingDirection": "horizontal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 4,
         "Name": "S(fin,*,u_-*,)",
         "OffsetX0": 0,
@@ -7003,7 +7003,7 @@
       "569": {
         "ID": 569,
         "WritingDirection": "horizontal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 4,
         "Name": "S(fin,*,o_-*,*)",
         "OffsetX0": 0,
@@ -7015,7 +7015,7 @@
       "570": {
         "ID": 570,
         "WritingDirection": "horizontal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2,
         "Name": "S(fin,*,e_-*,*)",
         "OffsetX0": 0,
@@ -7027,7 +7027,7 @@
       "571": {
         "ID": 571,
         "WritingDirection": "horizontal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2,
         "Name": "S(fin,t_-*,e_-*,*)",
         "OffsetX0": 0,
@@ -7039,7 +7039,7 @@
       "572": {
         "ID": 572,
         "WritingDirection": "horizontal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 3,
         "Name": "S(fin,*,i_-*,)",
         "OffsetX0": 0,
@@ -7051,7 +7051,7 @@
       "573": {
         "ID": 573,
         "WritingDirection": "horizontal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 3,
         "Name": "S(fin,*,i_-*,t_-*)",
         "OffsetX0": 0,
@@ -7063,7 +7063,7 @@
       "574": {
         "ID": 574,
         "WritingDirection": "horizontal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 4,
         "Name": "S(init,*,o_-*,*)",
         "OffsetX0": 0,
@@ -7075,7 +7075,7 @@
       "575": {
         "ID": 575,
         "WritingDirection": "horizontal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 4,
         "Name": "S(init,,o_-*,*)",
         "OffsetX0": 0,
@@ -7087,7 +7087,7 @@
       "576": {
         "ID": 576,
         "WritingDirection": "horizontal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 5,
         "Name": "S(init,,u_-*,*)",
         "OffsetX0": 0,
@@ -7099,7 +7099,7 @@
       "577": {
         "ID": 577,
         "WritingDirection": "horizontal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 6,
         "Name": "S(init,,v_-*,*)",
         "OffsetX0": 0,
@@ -7111,7 +7111,7 @@
       "578": {
         "ID": 578,
         "WritingDirection": "horizontal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 1,
         "Name": "S(init,,abig_-*,*)",
         "OffsetX0": 0,
@@ -7123,7 +7123,7 @@
       "579": {
         "ID": 579,
         "WritingDirection": "horizontal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 6,
         "Name": "S(fin,*,v_-*,*)",
         "OffsetX0": 0,
@@ -7135,7 +7135,7 @@
       "580": {
         "ID": 580,
         "WritingDirection": "horizontal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 6,
         "Name": "S(fin,*,v_-*,)",
         "OffsetX0": 0,
@@ -7147,7 +7147,7 @@
       "581": {
         "ID": 581,
         "WritingDirection": "horizontal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 6,
         "Name": "S(fin,t_-*,v_-*,)",
         "OffsetX0": 0,
@@ -7159,7 +7159,7 @@
       "582": {
         "ID": 582,
         "WritingDirection": "horizontal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2,
         "Name": "S(fin,t_-*,e_-*,)",
         "OffsetX0": 0,
@@ -7171,7 +7171,7 @@
       "583": {
         "ID": 583,
         "WritingDirection": "horizontal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 5,
         "Name": "S(fin,t_-*,u_-*,)",
         "OffsetX0": 0,
@@ -7183,7 +7183,7 @@
       "584": {
         "ID": 584,
         "WritingDirection": "vertical",
-        "Pattern_sub": "kerning",
+        "GPOSType": "kerning",
         "Order": 51,
         "Name": "S(init,,o_-*,)(S(mid,*,[_.isNullVowel]_-*,+)|S(fin,*,*,+))",
         "OffsetX0": 0,
@@ -7195,7 +7195,7 @@
       "585": {
         "ID": 585,
         "WritingDirection": "universal",
-        "Pattern_sub": "diacritical",
+        "GPOSType": "diacritical",
         "Order": 0,
         "Name": "C(*,+-hd_-sw_)",
         "OffsetX0": -9,
@@ -7207,7 +7207,7 @@
       "586": {
         "ID": 586,
         "WritingDirection": "horizontal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 3,
         "Name": "S(fin,*,i_-*,*)",
         "OffsetX0": 0,
@@ -7219,7 +7219,7 @@
       "587": {
         "ID": 587,
         "WritingDirection": "vertical",
-        "Pattern_sub": "kerning",
+        "GPOSType": "kerning",
         "Order": 51,
         "Name": "S(init,,u_-*,)(S(mid,*,[_.isNullVowel]_-*,+)|S(fin,*,*,+))",
         "OffsetX0": 0,
@@ -7231,7 +7231,7 @@
       "588": {
         "ID": 588,
         "WritingDirection": "vertical",
-        "Pattern_sub": "kerning",
+        "GPOSType": "kerning",
         "Order": 51,
         "Name": "S(init,,v_-*,)(S(mid,*,[_.isNullVowel]_-*,+)|S(fin,*,*,+))",
         "OffsetX0": 0,
@@ -7243,7 +7243,7 @@
       "589": {
         "ID": 589,
         "WritingDirection": "horizontal",
-        "Pattern_sub": "external",
+        "GPOSType": "external",
         "Order": 0,
         "Name": "S(mid,*,a_-*,+)",
         "OffsetX0": 0,
@@ -7255,7 +7255,7 @@
       "590": {
         "ID": 590,
         "WritingDirection": "horizontal",
-        "Pattern_sub": "external",
+        "GPOSType": "external",
         "Order": 0,
         "Name": "S(mid,*,abig_-*,)",
         "OffsetX0": 0,
@@ -7267,7 +7267,7 @@
       "591": {
         "ID": 591,
         "WritingDirection": "horizontal",
-        "Pattern_sub": "external",
+        "GPOSType": "external",
         "Order": 0,
         "Name": "P(period0)",
         "OffsetX0": -30,
@@ -7279,7 +7279,7 @@
       "592": {
         "ID": 592,
         "WritingDirection": "horizontal",
-        "Pattern_sub": "external",
+        "GPOSType": "external",
         "Order": 0,
         "Name": "P(comma1)",
         "OffsetX0": -30,
@@ -7291,7 +7291,7 @@
       "593": {
         "ID": 593,
         "WritingDirection": "horizontal",
-        "Pattern_sub": "external",
+        "GPOSType": "external",
         "Order": 0,
         "Name": "S(sol,,abig0-*,)",
         "OffsetX0": 0,
@@ -7303,7 +7303,7 @@
       "595": {
         "ID": 595,
         "WritingDirection": "vertical",
-        "Pattern_sub": "external",
+        "GPOSType": "external",
         "Order": 19,
         "Name": "P(question0)",
         "OffsetX0": 0,
@@ -7315,7 +7315,7 @@
       "596": {
         "ID": 596,
         "WritingDirection": "vertical",
-        "Pattern_sub": "external",
+        "GPOSType": "external",
         "Order": 19,
         "Name": "P(exclamation0)",
         "OffsetX0": 0,
@@ -7327,7 +7327,7 @@
       "597": {
         "ID": 597,
         "WritingDirection": "vertical",
-        "Pattern_sub": "kerning",
+        "GPOSType": "kerning",
         "Order": 20,
         "Name": "(S(*))(P(*))",
         "OffsetX0": 0,
@@ -7339,7 +7339,7 @@
       "598": {
         "ID": 598,
         "WritingDirection": "vertical",
-        "Pattern_sub": "kerning",
+        "GPOSType": "kerning",
         "Order": 20,
         "Name": "(P(*))(S(*))",
         "OffsetX0": 0,
@@ -7351,7 +7351,7 @@
       "599": {
         "ID": 599,
         "WritingDirection": "vertical",
-        "Pattern_sub": "kerning",
+        "GPOSType": "kerning",
         "Order": 61,
         "Name": "S(init,,*,kh_-*)(S(mid,*,[_.isNullVowel]_-*,)|S(mid,*,[!_.isNullVowel]_-*,*)|S(fin,*,*,))",
         "OffsetX0": 0,
@@ -7363,7 +7363,7 @@
       "600": {
         "ID": 600,
         "WritingDirection": "vertical",
-        "Pattern_sub": "kerning",
+        "GPOSType": "kerning",
         "Order": 70,
         "Name": "S(init,+,*,)(S(mid,,[_.isNullVowel]_-*,*)|S(fin,,*,*))",
         "OffsetX0": 0,
@@ -7375,7 +7375,7 @@
       "601": {
         "ID": 601,
         "WritingDirection": "vertical",
-        "Pattern_sub": "kerning",
+        "GPOSType": "kerning",
         "Order": 70,
         "Name": "S(init,+,*,)(S(mid,+,[_.isNullVowel]_-*,*)|S(fin,+,*,*))",
         "OffsetX0": 0,
@@ -7387,7 +7387,7 @@
       "602": {
         "ID": 602,
         "WritingDirection": "vertical",
-        "Pattern_sub": "kerning",
+        "GPOSType": "kerning",
         "Order": 65,
         "Name": "S(init,,*,+)(S((mid|fin),t_-*,[_.isNullVowel]_-*,(k|kh|tl)_-*))",
         "OffsetX0": 0,
@@ -7399,7 +7399,7 @@
       "603": {
         "ID": 603,
         "WritingDirection": "vertical",
-        "Pattern_sub": "kerning",
+        "GPOSType": "kerning",
         "Order": 72,
         "Name": "S(init,+,[_.isNullVowel]_-*,+)S(mid,*,*,*)",
         "OffsetX0": 0,
@@ -7411,7 +7411,7 @@
       "604": {
         "ID": 604,
         "WritingDirection": "vertical",
-        "Pattern_sub": "kerning",
+        "GPOSType": "kerning",
         "Order": 100,
         "Name": "S(mid,+,[_.isNullVowel]_-*,+)S(mid,*,[_.isNullVowel]_-*,*)",
         "OffsetX0": 0,
@@ -7423,7 +7423,7 @@
       "605": {
         "ID": 605,
         "WritingDirection": "vertical",
-        "Pattern_sub": "kerning",
+        "GPOSType": "kerning",
         "Order": 73,
         "Name": "S(init,+,[!_.isNullVowel]_-*,+)S((mid|fin),*,*,*)",
         "OffsetX0": 0,
@@ -7435,7 +7435,7 @@
       "606": {
         "ID": 606,
         "WritingDirection": "vertical",
-        "Pattern_sub": "kerning",
+        "GPOSType": "kerning",
         "Order": 100,
         "Name": "S(mid,+,[_.isNullVowel]_-*,+)S(fin,*,[_.isNullVowel]_-*,*)",
         "OffsetX0": 0,
@@ -7447,7 +7447,7 @@
       "607": {
         "ID": 607,
         "WritingDirection": "vertical",
-        "Pattern_sub": "kerning",
+        "GPOSType": "kerning",
         "Order": 72,
         "Name": "S(init,+,[_.isNullVowel]_-*,+)S(fin,*,*,*)",
         "OffsetX0": 0,
@@ -7459,7 +7459,7 @@
       "608": {
         "ID": 608,
         "WritingDirection": "vertical",
-        "Pattern_sub": "kerning",
+        "GPOSType": "kerning",
         "Order": 70,
         "Name": "S(init,+,*,)(S(mid,*,[!_.isNullVowel]_-*,*)|S(fin,+,*,*))",
         "OffsetX0": 0,
@@ -7471,7 +7471,7 @@
       "609": {
         "ID": 609,
         "WritingDirection": "vertical",
-        "Pattern_sub": "kerning",
+        "GPOSType": "kerning",
         "Order": 60,
         "Name": "S(init,,*,+)S(fin,*,*,)",
         "OffsetX0": 0,
@@ -7483,7 +7483,7 @@
       "610": {
         "ID": 610,
         "WritingDirection": "vertical",
-        "Pattern_sub": "kerning",
+        "GPOSType": "kerning",
         "Order": 105,
         "Name": "S(mid,+,[_.isNullVowel]_-*,)S(mid,,[_.isNullVowel]_-*,+)",
         "OffsetX0": 0,
@@ -7495,7 +7495,7 @@
       "611": {
         "ID": 611,
         "WritingDirection": "vertical",
-        "Pattern_sub": "kerning",
+        "GPOSType": "kerning",
         "Order": 105,
         "Name": "S(mid,+,[_.isNullVowel]_-*,)S(fin,,[_.isNullVowel]_-*,+)",
         "OffsetX0": 0,
@@ -7507,7 +7507,7 @@
       "612": {
         "ID": 612,
         "WritingDirection": "vertical",
-        "Pattern_sub": "kerning",
+        "GPOSType": "kerning",
         "Order": 107,
         "Name": "S(mid,+,[_.isNullVowel]_-*,)S(mid,+,[_.isNullVowel]_-*,*)",
         "OffsetX0": 0,
@@ -7519,7 +7519,7 @@
       "613": {
         "ID": 613,
         "WritingDirection": "vertical",
-        "Pattern_sub": "kerning",
+        "GPOSType": "kerning",
         "Order": 107,
         "Name": "S(mid,+,[!_.isNullVowel]_-*,)S(fin,*,[_.isNullVowel]_-*,*)",
         "OffsetX0": 0,
@@ -7531,7 +7531,7 @@
       "614": {
         "ID": 614,
         "WritingDirection": "vertical",
-        "Pattern_sub": "kerning",
+        "GPOSType": "kerning",
         "Order": 115,
         "Name": "S(mid,*,[_.isNullVowel]_-*,)S(mid,*,[!_.isNullVowel]_-*,)",
         "OffsetX0": 0,
@@ -7543,7 +7543,7 @@
       "615": {
         "ID": 615,
         "WritingDirection": "vertical",
-        "Pattern_sub": "kerning",
+        "GPOSType": "kerning",
         "Order": 109,
         "Name": "S(mid,,[_.isNullVowel]_-*,+)S(fin,+,[_.isNullVowel]_-*,)",
         "OffsetX0": 0,
@@ -7555,7 +7555,7 @@
       "616": {
         "ID": 616,
         "WritingDirection": "vertical",
-        "Pattern_sub": "kerning",
+        "GPOSType": "kerning",
         "Order": 111,
         "Name": "S(mid,,[_.isNullVowel]_-*,+)S(mid,*,[_.isNullVowel]_-*,+)",
         "OffsetX0": 0,
@@ -7567,7 +7567,7 @@
       "617": {
         "ID": 617,
         "WritingDirection": "vertical",
-        "Pattern_sub": "kerning",
+        "GPOSType": "kerning",
         "Order": 112,
         "Name": "S(mid,,[_.isNullVowel]_-*,+)S(fin,*,[_.isNullVowel]_-*,+)",
         "OffsetX0": 0,
@@ -7579,7 +7579,7 @@
       "618": {
         "ID": 618,
         "WritingDirection": "vertical",
-        "Pattern_sub": "kerning",
+        "GPOSType": "kerning",
         "Order": 125,
         "Name": "S(mid,*,[!_.isNullVowel]_-*,+)S(mid,*,[!_.isNullVowel]_-*,*)",
         "OffsetX0": 0,
@@ -7591,7 +7591,7 @@
       "619": {
         "ID": 619,
         "WritingDirection": "vertical",
-        "Pattern_sub": "kerning",
+        "GPOSType": "kerning",
         "Order": 125,
         "Name": "S(mid,*,[!_.isNullVowel]_-*,+)S(fin,*,[!_.isNullVowel]_-*,*)",
         "OffsetX0": 0,
@@ -7603,7 +7603,7 @@
       "620": {
         "ID": 620,
         "WritingDirection": "vertical",
-        "Pattern_sub": "kerning",
+        "GPOSType": "kerning",
         "Order": 1000,
         "Name": "S(mid,*,u_-*,*)S(*,*,[!_.isNullVowel]_-*,*)",
         "OffsetX0": 0,
@@ -7615,7 +7615,7 @@
       "621": {
         "ID": 621,
         "WritingDirection": "vertical",
-        "Pattern_sub": "kerning",
+        "GPOSType": "kerning",
         "Order": 1000,
         "Name": "S(mid,*,[!_.isNullVowel]_-*,*)S(mid,*,u_-*,*)",
         "OffsetX0": 0,
@@ -7627,7 +7627,7 @@
       "622": {
         "ID": 622,
         "WritingDirection": "vertical",
-        "Pattern_sub": "kerning",
+        "GPOSType": "kerning",
         "Order": 1000,
         "Name": "S(mid,*,u_-*,*)S(*,*,u_-*,*)",
         "OffsetX0": 0,
@@ -7639,7 +7639,7 @@
       "623": {
         "ID": 623,
         "WritingDirection": "vertical",
-        "Pattern_sub": "kerning",
+        "GPOSType": "kerning",
         "Order": 1000,
         "Name": "S(init,*,u_-*,*)S(*,*,u_-*,*)",
         "OffsetX0": 0,
@@ -7651,7 +7651,7 @@
       "624": {
         "ID": 624,
         "WritingDirection": "vertical",
-        "Pattern_sub": "kerning",
+        "GPOSType": "kerning",
         "Order": 1000,
         "Name": "(S(mid,*,u_-*,*)S(*,*,[_.isNullVowel]_-*,*))",
         "OffsetX0": 0,
@@ -7663,7 +7663,7 @@
       "625": {
         "ID": 625,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 3011,
         "Name": "S(init,(n|ng|hy|l|y)_-*,e_-*,)",
         "OffsetX0": 0,
@@ -7675,7 +7675,7 @@
       "626": {
         "ID": 626,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 3011,
         "Name": "S(init,k_-*,e_-*,)",
         "OffsetX0": 0,
@@ -7687,7 +7687,7 @@
       "627": {
         "ID": 627,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 3011,
         "Name": "S(init,kh_-*,e_-*,)",
         "OffsetX0": 0,
@@ -7699,7 +7699,7 @@
       "628": {
         "ID": 628,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 3030,
         "Name": "S(init,(kh|k|r)_-*,o_-*,)",
         "OffsetX0": 0,
@@ -7711,7 +7711,7 @@
       "629": {
         "ID": 629,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 3040,
         "Name": "S(init,(kh|k)_-*,u_-*,*)",
         "OffsetX0": 0,
@@ -7723,7 +7723,7 @@
       "630": {
         "ID": 630,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 3050,
         "Name": "S(init,(kh|k)_-*,v_-*,*)",
         "OffsetX0": 0,
@@ -7735,7 +7735,7 @@
       "631": {
         "ID": 631,
         "WritingDirection": "horizontal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 0,
         "Name": "S(mid,*,a_-*,*)",
         "OffsetX0": 0,
@@ -7747,7 +7747,7 @@
       "632": {
         "ID": 632,
         "WritingDirection": "horizontal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 2,
         "Name": "S(mid,*,abig_-*,)",
         "OffsetX0": 0,
@@ -7759,7 +7759,7 @@
       "633": {
         "ID": 633,
         "WritingDirection": "horizontal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 1,
         "Name": "S(init,,abig_-*,(q|ng|th|s|qh|l|w)_-*)",
         "OffsetX0": 0,
@@ -7771,7 +7771,7 @@
       "634": {
         "ID": 634,
         "WritingDirection": "horizontal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 1,
         "Name": "S(init,,abig_-*,t_-*)",
         "OffsetX0": 0,
@@ -7783,7 +7783,7 @@
       "635": {
         "ID": 635,
         "WritingDirection": "vertical",
-        "Pattern_sub": "kerning",
+        "GPOSType": "kerning",
         "Order": 1200,
         "Name": "S(init,w_-*,*,)S(*,*,*,*)",
         "OffsetX0": 0,
@@ -7795,7 +7795,7 @@
       "636": {
         "ID": 636,
         "WritingDirection": "vertical",
-        "Pattern_sub": "kerning",
+        "GPOSType": "kerning",
         "Order": 1000,
         "Name": "S(mid,*,v_-*,*)S(*,*,*,*)",
         "OffsetX0": 0,
@@ -7807,7 +7807,7 @@
       "637": {
         "ID": 637,
         "WritingDirection": "vertical",
-        "Pattern_sub": "kerning",
+        "GPOSType": "kerning",
         "Order": 1200,
         "Name": "S(init,,*,w_-*)S(*,*,*,*)",
         "OffsetX0": 0,
@@ -7819,7 +7819,7 @@
       "638": {
         "ID": 638,
         "WritingDirection": "vertical",
-        "Pattern_sub": "kerning",
+        "GPOSType": "kerning",
         "Order": 1205,
         "Name": "S(*,*,*,*)(S(mid,w_-*,*,)|S(fin,w_-*,*,))",
         "OffsetX0": 0,
@@ -7831,7 +7831,7 @@
       "639": {
         "ID": 639,
         "WritingDirection": "vertical",
-        "Pattern_sub": "kerning",
+        "GPOSType": "kerning",
         "Order": 1205,
         "Name": "S(*,*,*,*)(S(mid,,[_.isNullVowel]_-*,w_-*)|S(fin,,*,w_-*))",
         "OffsetX0": 0,
@@ -7843,7 +7843,7 @@
       "640": {
         "ID": 640,
         "WritingDirection": "vertical",
-        "Pattern_sub": "kerning",
+        "GPOSType": "kerning",
         "Order": 1205,
         "Name": "S(*,*,*,*)S(fin,w_-*,*,w_-*)",
         "OffsetX0": 0,
@@ -7855,7 +7855,7 @@
       "641": {
         "ID": 641,
         "WritingDirection": "vertical",
-        "Pattern_sub": "kerning",
+        "GPOSType": "kerning",
         "Order": 1200,
         "Name": "S(init,w_-*,*,w_-*)S(*,*,*,*)",
         "OffsetX0": 0,
@@ -7867,7 +7867,7 @@
       "642": {
         "ID": 642,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 5750,
         "Name": "S(fin,w_-*,u_-*,w_-*)",
         "OffsetX0": 0,
@@ -7879,7 +7879,7 @@
       "643": {
         "ID": 643,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 5700,
         "Name": "S(fin,w_-*,o_-*,w_-*)|S(fin,w_-*,o_-*,*)",
         "OffsetX0": 0,
@@ -7891,7 +7891,7 @@
       "644": {
         "ID": 644,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 5650,
         "Name": "S(fin,w_-*,i_-*,w_-*)|S(fin,w_-*,i_-*,*)",
         "OffsetX0": 0,
@@ -7903,7 +7903,7 @@
       "645": {
         "ID": 645,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 5600,
         "Name": "S(fin,w_-*,e_-*,w_-*)|S(fin,w_-*,e_-*,*)",
         "OffsetX0": 0,
@@ -7915,7 +7915,7 @@
       "646": {
         "ID": 646,
         "WritingDirection": "vertical",
-        "Pattern_sub": "kerning",
+        "GPOSType": "kerning",
         "Order": 20,
         "Name": "(S(*))(P(newline_))",
         "OffsetX0": 0,
@@ -7927,7 +7927,7 @@
       "647": {
         "ID": 647,
         "WritingDirection": "vertical",
-        "Pattern_sub": "kerning",
+        "GPOSType": "kerning",
         "Order": 20,
         "Name": "(P(newline_))(S(*))",
         "OffsetX0": 0,
@@ -7939,7 +7939,7 @@
       "648": {
         "ID": 648,
         "WritingDirection": "vertical",
-        "Pattern_sub": "external",
+        "GPOSType": "external",
         "Order": 19,
         "Name": "P(newline_)",
         "OffsetX0": 0,
@@ -7951,7 +7951,7 @@
       "649": {
         "ID": 649,
         "WritingDirection": "vertical",
-        "Pattern_sub": "kerning",
+        "GPOSType": "kerning",
         "Order": 500,
         "Name": "S(mid,t_-*,[!_.isNullVowel]_-*,)S(*)",
         "OffsetX0": 0,
@@ -7963,7 +7963,7 @@
       "650": {
         "ID": 650,
         "WritingDirection": "vertical",
-        "Pattern_sub": "kerning",
+        "GPOSType": "kerning",
         "Order": 50,
         "Name": "S(init,,o_-*,)(S(mid,*,[!_.isNullVowel]_-*,*)|S(mid,+,[_.isNullVowel]_-*,*)|S(fin,+,*,))",
         "OffsetX0": 0,
@@ -7975,7 +7975,7 @@
       "651": {
         "ID": 651,
         "WritingDirection": "vertical",
-        "Pattern_sub": "kerning",
+        "GPOSType": "kerning",
         "Order": 105,
         "Name": "S(mid,+,[_.isNullVowel]_-*,)S(fin,*,[!_.isNullVowel]_-*,*)",
         "OffsetX0": 0,
@@ -7987,7 +7987,7 @@
       "652": {
         "ID": 652,
         "WritingDirection": "vertical",
-        "Pattern_sub": "kerning",
+        "GPOSType": "kerning",
         "Order": 118,
         "Name": "S(mid,*,[!_.isNullVowel]_-*,*)S(*,*,[_.isNullVowel]_-*,*)",
         "OffsetX0": 0,
@@ -7999,7 +7999,7 @@
       "653": {
         "ID": 653,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 3030,
         "Name": "S(init,*,o_-*,)",
         "OffsetX0": 0,
@@ -8011,7 +8011,7 @@
       "654": {
         "ID": 654,
         "WritingDirection": "vertical",
-        "Pattern_sub": "kerning",
+        "GPOSType": "kerning",
         "Order": 119,
         "Name": "S(mid,t_-*,[!_.isNullVowel]_-*,*)S(fin,*,*,)",
         "OffsetX0": 0,
@@ -8023,7 +8023,7 @@
       "655": {
         "ID": 655,
         "WritingDirection": "vertical",
-        "Pattern_sub": "kerning",
+        "GPOSType": "kerning",
         "Order": 115,
         "Name": "S(mid,*,[_.isNullVowel]_-*,*)S(fin,*,[!_.isNullVowel]_-*,*)",
         "OffsetX0": 0,
@@ -8035,7 +8035,7 @@
       "656": {
         "ID": 656,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 3050,
         "Name": "S(init,*,v_-*,(th|k)_-*)",
         "OffsetX0": 0,
@@ -8047,7 +8047,7 @@
       "657": {
         "ID": 657,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 3100,
         "Name": "S(init,*,eold_-*,*)",
         "OffsetX0": 0,
@@ -8059,7 +8059,7 @@
       "658": {
         "ID": 658,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 3150,
         "Name": "S(init,*,iold_-*,*)",
         "OffsetX0": 0,
@@ -8071,7 +8071,7 @@
       "659": {
         "ID": 659,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 5850,
         "Name": "S(fin,*,eold_-*,*)",
         "OffsetX0": 0,
@@ -8083,7 +8083,7 @@
       "660": {
         "ID": 660,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 5900,
         "Name": "S(fin,*,iold_-*,*)",
         "OffsetX0": 0,
@@ -8095,7 +8095,7 @@
       "661": {
         "ID": 661,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 10250,
         "Name": "S(mid,*,eold_-*,*)",
         "OffsetX0": 0,
@@ -8107,7 +8107,7 @@
       "662": {
         "ID": 662,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 5850,
         "Name": "S(fin,t_-*,eold_-*,*)",
         "OffsetX0": 0,
@@ -8119,7 +8119,7 @@
       "663": {
         "ID": 663,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 5900,
         "Name": "S(fin,t_-*,iold_-*,*)",
         "OffsetX0": 0,
@@ -8131,7 +8131,7 @@
       "664": {
         "ID": 664,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 10300,
         "Name": "S(mid,t_-*,eold_-*,*)",
         "OffsetX0": 0,
@@ -8143,7 +8143,7 @@
       "665": {
         "ID": 665,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 10350,
         "Name": "S(mid,*,iold_-*,*)",
         "OffsetX0": 0,
@@ -8155,7 +8155,7 @@
       "666": {
         "ID": 666,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 10350,
         "Name": "S(mid,t_-*,iold_-*,*)",
         "OffsetX0": 0,
@@ -8167,7 +8167,7 @@
       "667": {
         "ID": 667,
         "WritingDirection": "vertical",
-        "Pattern_sub": "kerning",
+        "GPOSType": "kerning",
         "Order": 1000,
         "Name": "S(mid,*,[!_.isNullVowel&&!_.Name!=\"u\"]_-*,*)S(*,*,u_-*,*)",
         "OffsetX0": 0,
@@ -8179,7 +8179,7 @@
       "668": {
         "ID": 668,
         "WritingDirection": "vertical",
-        "Pattern_sub": "kerning",
+        "GPOSType": "kerning",
         "Order": 1000,
         "Name": "S(mid,*,u_-*,+)S(fin,*,u_-*,+)",
         "OffsetX0": 0,
@@ -8191,7 +8191,7 @@
       "669": {
         "ID": 669,
         "WritingDirection": "vertical",
-        "Pattern_sub": "kerning",
+        "GPOSType": "kerning",
         "Order": 1000,
         "Name": "S(mid,*,u_-*,)S(fin,*,u_-*,+)",
         "OffsetX0": 0,
@@ -8203,7 +8203,7 @@
       "670": {
         "ID": 670,
         "WritingDirection": "vertical",
-        "Pattern_sub": "kerning",
+        "GPOSType": "kerning",
         "Order": 1000,
         "Name": "S(mid,*,u_-*,)S(fin,*,u_-*,)",
         "OffsetX0": 0,
@@ -8215,7 +8215,7 @@
       "671": {
         "ID": 671,
         "WritingDirection": "vertical",
-        "Pattern_sub": "kerning",
+        "GPOSType": "kerning",
         "Order": 1000,
         "Name": "S(mid,+,[!_.isNullVowel&&!_.Name!=\"abig\"]_-*,)S(mid,*,[!_.isNullVowel]_-*,*)",
         "OffsetX0": 0,
@@ -8227,7 +8227,7 @@
       "672": {
         "ID": 672,
         "WritingDirection": "vertical",
-        "Pattern_sub": "kerning",
+        "GPOSType": "kerning",
         "Order": 119,
         "Name": "S(mid,*,[!_.isNullVowel]_-*,w_-*)S(*,*,[_.isNullVowel]_-*,*)",
         "OffsetX0": 0,
@@ -8239,7 +8239,7 @@
       "673": {
         "ID": 673,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 5699,
         "Name": "S(fin,t_-*,o_-*,)",
         "OffsetX0": 0,
@@ -8251,7 +8251,7 @@
       "674": {
         "ID": 674,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 5800,
         "Name": "S(fin,t_-*,v_-*,)|S(fin,,v_-*,t_-*)",
         "OffsetX0": 0,
@@ -8263,7 +8263,7 @@
       "675": {
         "ID": 675,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 5650,
         "Name": "S(fin,t_-*,i_-*,)",
         "OffsetX0": 0,
@@ -8275,7 +8275,7 @@
       "676": {
         "ID": 676,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": -1000,
         "Name": "S(fin,*-d_,(u)_-*,*)",
         "OffsetX0": 0,
@@ -8287,7 +8287,7 @@
       "677": {
         "ID": 677,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": -1000,
         "Name": "S(fin,*,(u)_-*,*-d_)",
         "OffsetX0": 0,
@@ -8299,7 +8299,7 @@
       "678": {
         "ID": 678,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": -900,
         "Name": "S(fin,*-d_,(v)_-*,+)",
         "OffsetX0": 0,
@@ -8311,7 +8311,7 @@
       "679": {
         "ID": 679,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": -1000,
         "Name": "S(fin,*-d_,(u)_-*,*-d_)",
         "OffsetX0": 0,
@@ -8323,7 +8323,7 @@
       "680": {
         "ID": 680,
         "WritingDirection": "vertical",
-        "Pattern_sub": "kerning",
+        "GPOSType": "kerning",
         "Order": 1000,
         "Name": "S(mid,,u_-*,)S(fin,*,*,+)",
         "OffsetX0": 0,
@@ -8335,7 +8335,7 @@
       "681": {
         "ID": 681,
         "WritingDirection": "vertical",
-        "Pattern_sub": "kerning",
+        "GPOSType": "kerning",
         "Order": 1000,
         "Name": "S(mid,,u_-*,)S(fin,*,*,)",
         "OffsetX0": 0,
@@ -8347,7 +8347,7 @@
       "682": {
         "ID": 682,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 10000,
         "Name": "S(mid,w_-*,abig_-*,*)",
         "OffsetX0": 0,
@@ -8359,7 +8359,7 @@
       "683": {
         "ID": 683,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": 10000,
         "Name": "S(mid,*,abig_-*,w_-*)",
         "OffsetX0": 0,
@@ -8371,7 +8371,7 @@
       "684": {
         "ID": 684,
         "WritingDirection": "horizontal",
-        "Pattern_sub": "external",
+        "GPOSType": "external",
         "Order": 0,
         "Name": "S(sol,,.0-*,)",
         "OffsetX0": 0,
@@ -8383,7 +8383,7 @@
       "685": {
         "ID": 685,
         "WritingDirection": "universal",
-        "Pattern_sub": "internal",
+        "GPOSType": "internal",
         "Order": -900,
         "Name": "S(fin,*-d_,(u)_-*,t_-*)",
         "OffsetX0": 0,
@@ -8395,7 +8395,7 @@
       "686": {
         "ID": 686,
         "WritingDirection": "horizontal",
-        "Pattern_sub": "external",
+        "GPOSType": "external",
         "Order": -5,
         "Name": "S(*)",
         "OffsetX0": -2,
@@ -8407,7 +8407,7 @@
       "687": {
         "ID": 687,
         "WritingDirection": "vertical",
-        "Pattern_sub": "external",
+        "GPOSType": "external",
         "Order": 0,
         "Name": "P(comma0)",
         "OffsetX0": 0,
@@ -8419,7 +8419,7 @@
       "688": {
         "ID": 688,
         "WritingDirection": "vertical",
-        "Pattern_sub": "external",
+        "GPOSType": "external",
         "Order": 0,
         "Name": "P(period0)",
         "OffsetX0": 0,
@@ -8431,7 +8431,7 @@
       "689": {
         "ID": 689,
         "WritingDirection": "universal",
-        "Pattern_sub": "diacritical",
+        "GPOSType": "diacritical",
         "Order": -10,
         "Name": "V(*,+-sone_)",
         "OffsetX0": -20,
@@ -8443,7 +8443,7 @@
       "690": {
         "ID": 690,
         "WritingDirection": "universal",
-        "Pattern_sub": "diacritical",
+        "GPOSType": "diacritical",
         "Order": -10,
         "Name": "V(*,+-stwo_)",
         "OffsetX0": -20,
@@ -8455,7 +8455,7 @@
       "691": {
         "ID": 691,
         "WritingDirection": "universal",
-        "Pattern_sub": "diacritical",
+        "GPOSType": "diacritical",
         "Order": -10,
         "Name": "V(*,+-sthree_)",
         "OffsetX0": -20,
@@ -8467,7 +8467,7 @@
       "692": {
         "ID": 692,
         "WritingDirection": "universal",
-        "Pattern_sub": "diacritical",
+        "GPOSType": "diacritical",
         "Order": -10,
         "Name": "V(*,+-sfour_)",
         "OffsetX0": -30,
@@ -8479,7 +8479,7 @@
       "693": {
         "ID": 693,
         "WritingDirection": "universal",
-        "Pattern_sub": "diacritical",
+        "GPOSType": "diacritical",
         "Order": -10,
         "Name": "V(*,[_.isNullVowel]_-*-(sone_|stwo_|sthree_|sfour_))",
         "OffsetX0": -20,
@@ -8491,7 +8491,7 @@
       "694": {
         "ID": 694,
         "WritingDirection": "horizontal",
-        "Pattern_sub": "external",
+        "GPOSType": "external",
         "Order": 0,
         "Name": "P(*)",
         "OffsetX0": 0,

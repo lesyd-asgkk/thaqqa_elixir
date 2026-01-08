@@ -101,13 +101,17 @@ defmodule Thaqqa.Regex_Khhyl.Translator do
       2 ->
         [head | tail] = children
 
-        if AST.has_astarisk_for_form?(Enum.at(children, 2)),
+        if AST.has_astarisk_for_form?(head),
           do:
             translate_sub(%AST{
               type: :S,
-              children: [AST.replace_astarisk_as_form(head)] ++ tail ++ tail
+              children: [AST.replace_astarisk_as_form(head)] ++ tail ++ tail ++ tail
             }),
-          else: Error.invalid_astarisk(type, range)
+          else:
+            translate_sub(%AST{
+              type: :S,
+              children: [head] ++ tail ++ tail ++ tail
+            })
 
       1 ->
         if AST.has_astarisk_for_form?(ast),
@@ -208,7 +212,7 @@ defmodule Thaqqa.Regex_Khhyl.Translator do
       # 全てのvariant
       "_" -> "(?:\\d+)"
       # 任意のglyph
-      "." -> "(?:[A-Za-z]+\\d+)"
+      "." -> "(?:[A-Za-z]+)"
       # 0グリフ以上
       "*" -> "(?:|(?:(?:[A-Za-z]+\\d+)(?:\-[A-Za-z]+\\d+)*))"
       # 1グリフ以上

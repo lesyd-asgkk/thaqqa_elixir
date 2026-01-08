@@ -58,47 +58,32 @@ defmodule SVG.Path do
       |> Enum.filter(fn x -> x not in [" ", ""] end)
 
     case parse_token(str_b) do
-      {:ok, list} ->
-        parse_command(list)
-
-      {:error, msg} ->
-        {:error, msg}
+      {:ok, list} -> parse_command(list)
+      {:error, msg} -> {:error, msg}
     end
   end
 
   defp parse_command(list) do
     to_command(list, [], :None)
     |> Enum.reduce_while({:ok, []}, fn
-      {:ok, str}, {:ok, acc} ->
-        {:cont, {:ok, [str | acc]}}
-
-      {:error, reason}, _acc ->
-        {:halt, {:error, reason}}
+      {:ok, str}, {:ok, acc} -> {:cont, {:ok, [str | acc]}}
+      {:error, reason}, _acc -> {:halt, {:error, reason}}
     end)
     |> case do
-      {:ok, list} ->
-        {:ok, Enum.reverse(list)}
-
-      {:error, reason} ->
-        {:error, reason}
+      {:ok, list} -> {:ok, Enum.reverse(list)}
+      {:error, reason} -> {:error, reason}
     end
   end
 
   defp parse_token(str_b) do
     Enum.map(str_b, &to_token/1)
     |> Enum.reduce_while({:ok, []}, fn
-      {:ok, str}, {:ok, acc} ->
-        {:cont, {:ok, [str | acc]}}
-
-      {:error, reason}, _acc ->
-        {:halt, {:error, reason}}
+      {:ok, str}, {:ok, acc} -> {:cont, {:ok, [str | acc]}}
+      {:error, reason}, _acc -> {:halt, {:error, reason}}
     end)
     |> case do
-      {:ok, list} ->
-        {:ok, Enum.reverse(list)}
-
-      {:error, reason} ->
-        {:error, reason}
+      {:ok, list} -> {:ok, Enum.reverse(list)}
+      {:error, reason} -> {:error, reason}
     end
   end
 

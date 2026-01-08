@@ -20,18 +20,18 @@ defmodule Thaqqa.Font do
     %{font | table_list: new_tables}
   end
 
-  def edit_table(%__MODULE__{table_list: tables} = font, table_name, new_name) do
-    if new_name == table_name do
-      font
-    else
-      new_tables =
-        Enum.map(tables, fn
-          table when table.name == table_name -> %{table | name: new_name}
-          table -> table
-        end)
+  def edit_table(
+        %__MODULE__{table_list: tables} = font,
+        table_name,
+        %DataTable{name: new_name} = new_table
+      ) do
+    new_tables =
+      Enum.map(tables, fn
+        table when table.name == table_name -> new_table
+        table -> table
+      end)
 
-      %{font | table_list: new_tables}
-    end
+    %{font | table_list: new_tables}
   end
 
   def update_fontregistry(%__MODULE__{name: name} = font) do

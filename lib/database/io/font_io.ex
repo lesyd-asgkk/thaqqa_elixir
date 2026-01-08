@@ -14,6 +14,8 @@ defmodule Thaqqa.FontIO do
   alias Thaqqa.ParserRegister, as: ParserRegister
   alias Thaqqa.GsubRegister, as: GsubRegister
   alias Thaqqa.UniqueGsubRegister, as: UniqueGsubRegister
+  alias Thaqqa.GlyphRegister, as: GlyphRegister
+  alias Thaqqa.GposRegister, as: GposRegister
 
   def import() do
     # json → structs
@@ -95,12 +97,27 @@ defmodule Thaqqa.FontIO do
           FontRegistry.add_font(font)
 
           checker_ = UniqueGsubRegister.precompile_unique_gsub_all(name)
-          IO.inspect(checker_)
 
           case checker_ do
-            # 削除or差し戻し処理をここに追加予定。
             {:error, _msg} -> checker_
             {:ok, data} -> data |> DataTable.update_fontregistry()
+          end
+
+          checker_ = GlyphRegister.precompile_glyph_all(name)
+
+          case checker_ do
+            {:error, _msg} -> checker_
+            {:ok, data} -> data |> DataTable.update_fontregistry()
+          end
+
+          checker_ = GposRegister.precompile_gpos_all(name)
+
+          case checker_ do
+            {:error, _msg} ->
+              checker_
+
+            {:ok, data} ->
+              data |> DataTable.update_fontregistry()
           end
         end
     end
