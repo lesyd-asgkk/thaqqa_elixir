@@ -1,6 +1,7 @@
 {
   "ROOTDATA": {
     "name": "ROOTDATA",
+        "global":true,
     "columnList": {
       "ID": {
         "name": "ID",
@@ -42,6 +43,7 @@
   },
   "VOWEL": {
     "name": "VOWEL",
+    "global":true,
     "columnList": {
       "ID": {
         "name": "ID",
@@ -320,6 +322,7 @@
   },
   "CONSONANT": {
     "name": "CONSONANT",
+    "global":true,
     "columnList": {
       "ID": {
         "name": "ID",
@@ -593,6 +596,7 @@
   },
   "PUNCTUATION": {
     "name": "PUNCTUATION",
+    "global":true,
     "columnList": {
       "ID": {
         "name": "ID",
@@ -826,6 +830,7 @@
   },
   "DIACRITIC_V": {
     "name": "DIACRITIC_V",
+    "global":true,
     "columnList": {
       "ID": {
         "name": "ID",
@@ -951,6 +956,7 @@
   },
   "DIACRITIC_C": {
     "name": "DIACRITIC_C",
+    "global":true,
     "columnList": {
       "ID": {
         "name": "ID",
@@ -1054,6 +1060,7 @@
   },
   "DIACRITIC_P": {
     "name": "DIACRITIC_P",
+    "global":true,
     "columnList": {
       "ID": {
         "name": "ID",
@@ -1109,6 +1116,7 @@
   },
   "PARSER": {
     "name": "PARSER",
+    "global":true,
     "columnList": {
       "ID": {
         "name": "ID",
@@ -2747,6 +2755,7 @@
   },
   "GSUB": {
     "name": "GSUB",
+    "global":true,
     "columnList": {
       "ID": {
         "name": "ID",
@@ -3497,6 +3506,296 @@
         "Name": "P((zero|one|two|three|four|five|six|seven|eight|nine)2)",
         "NameAlt": "P(\\g{1}3)"
         
+      }
+    }
+  },
+
+  "FONTDATA": {
+    "name": "FONTDATA",
+    "global": false, 
+    "columnList": {
+      "ID": {
+        "name": "ID",
+        "type": "int",
+        "order": 0,
+        "subtype": "id",
+        "dev": true
+      },
+      "Thickness": {
+        "name": "Thickness",
+        "type": "float",
+        "order": 0,
+        "subtype": "none",
+        "dev": false
+      },
+      "WidthH": {
+        "name": "WidthH",
+        "type": "float",
+        "order": 100,
+        "subtype": "none",
+        "dev": false
+      },
+      "WidthV": {
+        "name": "WidthV",
+        "type": "float",
+        "order": 101,
+        "subtype": "none",
+        "dev": false
+      },
+      "isWidthHRel": {
+        "name": "isWidthHRel",
+        "type": "bool",
+        "order": 110,
+        "subtype": "none",
+        "dev": false
+      },
+      "Height": {
+        "name": "Height",
+        "type": "float",
+        "order": 200,
+        "subtype": "none",
+        "dev": false
+      },
+      "TopGapH": {
+        "name": "TopGapH",
+        "type": "float",
+        "order": 300,
+        "subtype": "none",
+        "dev": false
+      },
+      "VersionMajor": {
+        "name": "VersionMajor",
+        "type": "int",
+        "order": 400,
+        "subtype": "n>=0",
+        "dev": false
+      },
+      "VersionMinor": {
+        "name": "VersionMinor",
+        "type": "int",
+        "order": 401,
+        "subtype": "n>=0",
+        "dev": false
+      },
+      "VersionPatch": {
+        "name": "VersionPatch",
+        "type": "int",
+        "order": 402,
+        "subtype": "n>=0",
+        "dev": false
+      },
+      "Fontname": {
+        "name": "Fontname",
+        "type": "string",
+        "order": 403,
+        "subtype": "",
+        "dev": false
+      }
+
+    },
+    "data": {
+      "0": {
+        "ID": 0,
+        "Thickness": 0,
+        "WidthH": 0,
+        "WidthV": 0,
+        "isWidthHRel": false,
+        "Height": 0,
+        "TopGapH": 0,
+        "VersionMajor": 0,
+        "VersionMinor": 0,
+        "VersionPatch": 0,
+        "Fontname":""
+      }
+    }
+  },
+ "GPOS": {
+    "name": "GPOS",
+    "global": false, 
+    "columnList": {
+      "ID": {
+        "name": "ID",
+        "type": "int",
+        "order": 0,
+        "subtype": "id",
+        "dev": true
+      },
+      "WritingDirection": {
+        "name": "WritingDirection",
+        "type": "string",
+        "order": 1,
+        "subtype": "writing_direction",
+        "dev": false
+      },
+      "GPOSType": {
+        "name": "GPOSType",
+        "type": "string",
+        "order": 2,
+        "subtype": "GPOS",
+        "dev": false
+      },
+      "Order": {
+        "name": "Order",
+        "type": "int",
+        "order": 3,
+        "subtype": "order",
+        "dev": true
+      },
+      "Name": {
+        "name": "Name",
+        "type": "string",
+        "order": 4,
+        "subtype": "none",
+        "dev": true
+      },
+      "OffsetX0": {
+        "name": "OffsetX0",
+        "type": "float",
+        "order": 5,
+        "subtype": "none",
+        "dev": false
+      },
+      "OffsetY0": {
+        "name": "OffsetY0",
+        "type": "float",
+        "order": 6,
+        "subtype": "none",
+        "dev": false
+      },
+      "OffsetX1": {
+        "name": "OffsetX1",
+        "type": "float",
+        "order": 7,
+        "subtype": "none",
+        "dev": false
+      },
+      "OffsetY1": {
+        "name": "OffsetY1",
+        "type": "float",
+        "order": 8,
+        "subtype": "none",
+        "dev": false
+      },
+      "PreCompile": {
+        "name": "PreCompile",
+        "type": "volatility",
+        "order": 9,
+        "subtype": "regex",
+        "dev": false
+      }
+    },
+    "data": {
+      "0": {
+        "ID": 0,
+        "WritingDirection": "universal",
+        "GPOSType": "diacritical",
+        "Order": 0,
+        "Name": "",
+        "OffsetX0": 3,
+        "OffsetY0": 10,
+        "OffsetX1": 0,
+        "OffsetY1": 0
+        
+      }
+    }
+  },
+  "UniqueGSUB": {
+    "name": "UniqueGSUB",
+    "global": false, 
+    "columnList": {
+      "ID": {
+        "name": "ID",
+        "type": "int",
+        "order": 0,
+        "subtype": "id",
+        "dev": true
+      },
+      "WritingDirection": {
+        "name": "WritingDirection",
+        "type": "string",
+        "order": 1,
+        "subtype": "writing_direction",
+        "dev": false
+      },
+      "Order": {
+        "name": "Order",
+        "type": "int",
+        "order": 2,
+        "subtype": "order",
+        "dev": false
+      },
+      "Priority": {
+        "name": "Priority",
+        "type": "int",
+        "order": 3,
+        "subtype": "priority",
+        "dev": false
+      },
+      "Name": {
+        "name": "Name",
+        "type": "string",
+        "order": 4,
+        "subtype": "string",
+        "dev": true
+      },
+      "NameAlt": {
+        "name": "NameAlt",
+        "type": "string",
+        "order": 5,
+        "subtype": "string",
+        "dev": false
+      },
+      "PreCompile": {
+        "name": "PreCompile",
+        "type": "volatility",
+        "order": 6,
+        "subtype": "regex",
+        "dev": false
+      }
+    },
+    "data": {
+      "0": {
+        "ID": 0,
+        "WritingDirection": "universal",
+        "Order": 0,
+        "Priority": 0,
+        "Name": "",
+        "NameAlt": ""
+      }
+    }
+  },
+  "GLYPH": {
+    "name": "GLYPH",
+    "global": false, 
+    "columnList": {
+      "ID": {
+        "name": "ID",
+        "type": "int",
+        "dev": false
+      },
+      "Name": {
+        "name": "Name",
+        "type": "string",
+        "dev": false
+      },
+      "Path": {
+        "name": "Path",
+        "type": "string",
+        "dev": false
+      },            
+      "PreCompile": {
+        "name": "PreCompile",
+        "type": "volatility",
+        "subtype": "path",
+        "dev": false
+        
+      }
+    },
+    "data": {
+      "0": {
+        "ID": 0,
+        "Name": "",
+        "Path": ""
       }
     }
   }

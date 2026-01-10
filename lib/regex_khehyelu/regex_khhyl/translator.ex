@@ -16,18 +16,12 @@ defmodule Thaqqa.Regex_Khhyl.Translator do
   def translate(ast) when is_list(ast) do
     Enum.map(ast, &translate/1)
     |> Enum.reduce_while({:ok, []}, fn
-      {:ok, str}, {:ok, acc} ->
-        {:cont, {:ok, [str | acc]}}
-
-      {:error, reason}, _acc ->
-        {:halt, {:error, reason}}
+      {:ok, str}, {:ok, acc} -> {:cont, {:ok, [str | acc]}}
+      {:error, reason}, _acc -> {:halt, {:error, reason}}
     end)
     |> case do
-      {:ok, list} ->
-        {:ok, Enum.join(Enum.reverse(list), "")}
-
-      {:error, reason} ->
-        {:error, reason}
+      {:ok, list} -> {:ok, Enum.join(Enum.reverse(list), "")}
+      {:error, reason} -> {:error, reason}
     end
   end
 
@@ -58,25 +52,20 @@ defmodule Thaqqa.Regex_Khhyl.Translator do
   defp translate_sub(%AST{type: :script, value: val}) do
     # 暫定的な処置。todo:scriptパーサ (テーブル実装後になります)
 
-    letter_list =
-      LetterRegister.get_letter()
-      |> Enum.reduce([], fn {_k, v}, acc -> acc = v ++ acc end)
-
-    letter_available =
-      Enum.reduce_while(letter_list, [], fn letter, acc ->
-        true_or_false = Thaqqa.Regex_Khhyl.Cond.convert(val, letter)
-
-        case true_or_false do
-          {:error, _msg} -> {:halt, true_or_false}
-          {:ok, nil} -> {:cont, acc}
-          {:ok, false} -> {:cont, acc}
-          {:ok, true} -> {:cont, [Thaqqa.Data.get_val(letter, @name) | acc]}
-        end
-      end)
-
-    case letter_available do
-      {:error, msg} -> letter_available
-      val -> "(?:" <> Enum.join(val, "|") <> ")"
+    LetterRegister.get_letter()
+    |> Enum.reduce([], fn {_k, v}, acc -> acc = v ++ acc end)
+    |> Enum.reduce_while([], fn letter, acc ->
+      Thaqqa.Regex_Khhyl.Cond.convert(val, letter)
+      |> case do
+        {:error, msg} -> {:halt, {:error, msg}}
+        {:ok, nil} -> {:cont, acc}
+        {:ok, false} -> {:cont, acc}
+        {:ok, true} -> {:cont, [Thaqqa.Data.get_val(letter, @name) | acc]}
+      end
+    end)
+    |> case do
+      {:error, msg} -> {:error, msg}
+      otherwize -> "(?:" <> Enum.join(otherwize, "|") <> ")"
     end
   end
 
@@ -84,9 +73,6 @@ defmodule Thaqqa.Regex_Khhyl.Translator do
 
   defp translate_sub(%AST{type: :brancket, value: val, children: children}),
     do: "(" <> val <> Enum.map_join(children, "", &translate_sub/1) <> ")"
-
-  # S(*), C(*)のようなvariantをこっちで実装する。
-  # *を取り出す方法……？
 
   defp translate_sub(%AST{type: :S = type, range: range, children: children} = ast) do
     case argument_number(children) do
@@ -195,11 +181,8 @@ defmodule Thaqqa.Regex_Khhyl.Translator do
 
   defp translate_sub(%AST{type: :X = type, range: range, children: children}) do
     case argument_number(children) do
-      2 ->
-        translate_brancket_sub("#{Atom.to_string(type)}\\(", children)
-
-      _ ->
-        Error.invalid_argument_num(type, range)
+      2 -> translate_brancket_sub("#{Atom.to_string(type)}\\(", children)
+      _ -> Error.invalid_argument_num(type, range)
     end
   end
 

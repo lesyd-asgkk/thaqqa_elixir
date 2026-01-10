@@ -11,14 +11,24 @@ defmodule Thaqqa.DataTable do
 
   defstruct [
     :name,
+    :global,
     :parent,
     column_list: [],
     data_list: [],
     desc: ""
   ]
 
-  def new(name, parent),
-    do: %__MODULE__{name: name, parent: parent, desc: "", column_list: [], data_list: []}
+  def new(name, global, parent),
+    do: %__MODULE__{
+      name: name,
+      global: global,
+      parent: parent,
+      desc: "",
+      column_list: [],
+      data_list: []
+    }
+
+  def is_global?(%__MODULE__{global: global}), do: global
 
   # 初期値設定のため
   # defp init_val(val, type), do: init_val(val, type, :none)
@@ -100,9 +110,6 @@ defmodule Thaqqa.DataTable do
 
   def get_column(%__MODULE__{column_list: columns}, filter_fun \\ fn _ -> true end),
     do: Enum.filter(columns, filter_fun)
-
-  # def get_column(%__MODULE__{column_list: cols}, column_name),
-  #  do: Enum.find(cols, fn %Column{name: name} -> name == column_name end)
 
   def add_column!(
         %__MODULE__{} = table,
@@ -323,35 +330,35 @@ defmodule Thaqqa.DataTable do
     end
   end
 
-  defp validate_data(table, new_value_map, column_list, :add, force) do
+  defp validate_data(table, new_value_map, column_list, :add = op, force) do
     case validate_value_map(new_value_map, column_list) do
       {:error, msg} ->
         {:error, msg}
 
       {:ok, _} ->
         if force do
-          unique_validation(table, new_value_map, :add)
+          unique_validation(table, new_value_map, op)
         else
-          case column_validation(table, new_value_map, :add) do
+          case column_validation(table, new_value_map, op) do
             {:error, msg} -> {:error, msg}
-            {:ok, _} -> unique_validation(table, new_value_map, :add)
+            {:ok, _} -> unique_validation(table, new_value_map, op)
           end
         end
     end
   end
 
-  defp validate_data(table, new_value_map, column_list, :edit, _force) do
+  defp validate_data(table, new_value_map, column_list, :edit = op, _force) do
     case validate_value_map(new_value_map, column_list) do
       {:error, msg} ->
         {:error, msg}
 
       {:ok, _} ->
-        case id_validation(table, new_value_map, :edit) do
+        case id_validation(table, new_value_map, op) do
           {:error, msg} ->
             {:error, msg}
 
           {:ok, _} ->
-            unique_validation(table, new_value_map, :edit)
+            unique_validation(table, new_value_map, op)
         end
     end
   end

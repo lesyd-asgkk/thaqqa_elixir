@@ -1,6 +1,9 @@
 defmodule Thaqqa.Font do
-  # fontの関数について、結果として名前が変更される/追加される/削除されるものは
+  # fontの関数について、結果としてtableの名前が変更される/追加される/削除されるものは
   # 直接APIを提供しないようにし、FontRegistryで編集するように変更する
+  # font内tableの整合性機能をつける？（root.jsonで定義されていないtableは削除したり、定義されたtableが存在しなかったら自動で追加する、読み込み時にcolumnのエラーをチェックする）
+  # それかいっそ「font= "Fontname"」のようなcolumnを必須にしてしまうか。
+
   alias Thaqqa.FontRegistry, as: FontRegistry
   alias Thaqqa.DataTable, as: DataTable
   alias Thaqqa.Regex_Khhyl.Error, as: Error
@@ -12,37 +15,16 @@ defmodule Thaqqa.Font do
     Enum.find(tables, fn table -> table.name == table_name end)
   end
 
-  defp check_tablename_conflict(name) do
-    case FontRegistry.get_static_table(name) do
-      {:error, reason} -> Error.genserver_error(reason)
-      {:ok, nil} -> {:ok, nil}
-      {:ok, _} -> Error.nominal_conflict_datatable(name, :add)
-    end
-  end
-
   def add_table!(%__MODULE__{} = font, %DataTable{} = table) do
-    case add_table(font, table) do
-      {:error, msg} -> raise msg
-      {:ok, val} -> val
-    end
+    add_table(font, table)
   end
 
   def add_table(
         %__MODULE__{table_list: tables, name: fontname} = font,
         %DataTable{name: name} = table
       ) do
-    case check_tablename_conflict(name) do
-      {:error, reason} ->
-        {:error, reason}
-
-      {:ok, _} ->
-        if get_table(font, name) != nil do
-          Error.nominal_conflict_datatable(name, :add)
-        else
-          table = %DataTable{table | parent: fontname}
-          {:ok, %{font | table_list: tables ++ [table]}}
-        end
-    end
+    table = %DataTable{table | parent: fontname}
+    %{font | table_list: tables ++ [table]}
   end
 
   def delete_table(%__MODULE__{table_list: tables} = font, table_name) do

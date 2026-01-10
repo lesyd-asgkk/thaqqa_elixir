@@ -6,13 +6,7 @@ defmodule Thaqqa.GposRegister do
   alias Thaqqa.Font, as: Font
   use Thaqqa.DataTable.Const
 
-  def get_gpos_table(fontname) do
-    case FontRegistry.get_font(fontname) do
-      {:error, msg} -> {:error, msg}
-      {:ok, nil} -> Error.font_not_found(fontname)
-      {:ok, font} -> {:ok, font |> Font.get_table(@gpos)}
-    end
-  end
+  def get_gpos_table(fontname), do: FontRegistry.get_table_from_font(fontname, @gpos)
 
   def get_gpos(fontname, filter_fun \\ fn _ -> true end) do
     case get_gpos_table(fontname) do

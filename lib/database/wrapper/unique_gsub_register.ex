@@ -6,13 +6,8 @@ defmodule Thaqqa.UniqueGsubRegister do
   alias Thaqqa.Font, as: Font
   use Thaqqa.DataTable.Const
 
-  def get_unique_gsub_table(fontname) do
-    case FontRegistry.get_font(fontname) do
-      {:error, msg} -> {:error, msg}
-      {:ok, nil} -> Error.font_not_found(fontname)
-      {:ok, font} -> {:ok, font |> Font.get_table(@unique_gsub)}
-    end
-  end
+  def get_unique_gsub_table(fontname),
+    do: FontRegistry.get_table_from_font(fontname, @unique_gsub)
 
   def get_unique_gsub(fontname, filter_fun \\ fn _ -> true end) do
     case get_unique_gsub_table(fontname) do
