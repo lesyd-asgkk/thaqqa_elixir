@@ -53,10 +53,7 @@ defmodule Thaqqa.FontIO do
 
     # 逆にArchtype表に存在しないテーブルの補完機能も実装する。
     Enum.reduce_while(data, nil, fn {k, v}, _acc ->
-      table_ =
-        if FontRegistry.get_static_table(k),
-          do: import_table(k, false, v),
-          else: {:error, "Archtype was not found"}
+      table_ = import_table(k, false, v)
 
       case table_ do
         {:error, _msg} ->
@@ -75,11 +72,19 @@ defmodule Thaqqa.FontIO do
     {:ok, json} = File.read(@font_folder <> filename <> ".json")
     {:ok, data} = Jason.decode(json)
 
-    # reduce_whileに書き換える
+    # archtype上に存在しないテーブルは削除処理。
     table =
       Enum.reduce_while(data, [], fn {k, v}, acc ->
-        case import_table(k, false, v) do
+        table_ =
+          case FontRegistry.get_static_table(k) do
+            {:ok, nil} -> {:enforced_continue, nil}
+            {:error, msg} -> {:error, msg}
+            _ -> import_table(k, false, v)
+          end
+
+        case table_ do
           {:error, msg} -> {:halt, {:error, msg}}
+          {:enforced_continue, nil} -> {:cont, acc}
           {:ok, value} -> {:cont, [value | acc]}
         end
       end)
