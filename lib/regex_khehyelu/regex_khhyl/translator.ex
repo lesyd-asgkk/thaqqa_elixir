@@ -53,7 +53,7 @@ defmodule Thaqqa.Regex_Khhyl.Translator do
     # 暫定的な処置。todo:scriptパーサ (テーブル実装後になります)
 
     LetterRegister.get_letter()
-    |> Enum.reduce([], fn {_k, v}, acc -> acc = v ++ acc end)
+    |> Enum.reduce([], fn {_k, v}, acc -> v ++ acc end)
     |> Enum.reduce_while([], fn letter, acc ->
       Thaqqa.Regex_Khhyl.Cond.convert(val, letter)
       |> case do

@@ -492,9 +492,11 @@ defmodule Thaqqa.DataTable do
         Enum.sort(
           datas,
           &cond do
-            Thaqqa.Data.get_val(&1, "Order") < Thaqqa.Data.get_val(&2, "Order") -> true
-            Thaqqa.Data.get_val(&1, "Order") > Thaqqa.Data.get_val(&2, "Order") -> false
-            true -> Thaqqa.Data.get_val(&1, "Priority") <= Thaqqa.Data.get_val(&2, "Priority")
+            Thaqqa.Data.get_val(&1, "Order") == Thaqqa.Data.get_val(&2, "Order") ->
+              Thaqqa.Data.get_val(&1, "Priority") <= Thaqqa.Data.get_val(&2, "Priority")
+
+            true ->
+              Thaqqa.Data.get_val(&1, "Order") < Thaqqa.Data.get_val(&2, "Order")
           end
         )
 

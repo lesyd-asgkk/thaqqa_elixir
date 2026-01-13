@@ -3,8 +3,11 @@ defmodule Thaqqa.FontIO do
   # ※impureな関数の塊
   # ファイルについては↓を変更すること
 
+  # ※import系統がバグりうる（中途半端な状態で保存されかねない）ので原子化を行う
+
   @root_file "data/root.json"
-  @font_folder "data/font/"
+  @font_folder "data/"
+  @font_file "/main.json"
 
   alias Thaqqa.FontRegistry, as: FontRegistry
   alias Thaqqa.Font, as: Font
@@ -18,32 +21,33 @@ defmodule Thaqqa.FontIO do
   alias Thaqqa.GposRegister, as: GposRegister
 
   def import() do
-    # json → structs
-    result_parsing_data = import_json_data()
+    # json → struct
 
-    case result_parsing_data do
-      {:error, _msg} ->
-        result_parsing_data
+    case import_json_data() do
+      {:error, msg} -> {:error, msg}
+      _ -> set_precompile()
+    end
+  end
+
+  defp set_precompile() do
+    precompiled_tables = [
+      ParserRegister.precompile_parser_all(),
+      GsubRegister.precompile_gsub_all()
+    ]
+
+    Enum.reduce_while(precompiled_tables, nil, fn table, acc ->
+      case table do
+        {:error, msg} -> {:halt, {:error, msg}}
+        {:ok, data} -> {:cont, data |> DataTable.update_fontregistry()}
+      end
+    end)
+    |> case do
+      {:error, msg} ->
+        FontRegistry.rollback()
+        {:error, msg}
 
       _ ->
-        checker_ = ParserRegister.precompile_parser_all()
-
-        case checker_ do
-          # 削除or差し戻し処理をここに追加予定。
-          {:error, _msg} ->
-            checker_
-
-          {:ok, data} ->
-            data |> DataTable.update_fontregistry()
-        end
-
-        checker_ = GsubRegister.precompile_gsub_all()
-
-        case checker_ do
-          # 削除or差し戻し処理をここに追加予定。
-          {:error, _msg} -> checker_
-          {:ok, data} -> data |> DataTable.update_fontregistry()
-        end
+        {:ok, FontRegistry.commit()}
     end
   end
 
@@ -68,66 +72,80 @@ defmodule Thaqqa.FontIO do
     end)
   end
 
-  def import(filename) do
-    {:ok, json} = File.read(@font_folder <> filename <> ".json")
-    {:ok, data} = Jason.decode(json)
+  defp extract_datatable_name(data), do: get_in(data, ["FONTDATA", "data", "0", "Fontname"])
 
-    # archtype上に存在しないテーブルは削除処理。
-    table =
-      Enum.reduce_while(data, [], fn {k, v}, acc ->
-        table_ =
-          case FontRegistry.get_static_table(k) do
-            {:ok, nil} -> {:enforced_continue, nil}
-            {:error, msg} -> {:error, msg}
-            _ -> import_table(k, false, v)
-          end
+  defp set_precompile(name) do
+    precompiled_tables = [
+      UniqueGsubRegister.precompile_unique_gsub_all(name),
+      GlyphRegister.precompile_glyph_all(name),
+      GposRegister.precompile_gpos_all(name)
+    ]
 
-        case table_ do
-          {:error, msg} -> {:halt, {:error, msg}}
-          {:enforced_continue, nil} -> {:cont, acc}
-          {:ok, value} -> {:cont, [value | acc]}
-        end
-      end)
-
-    case table do
-      {:error, _msg} ->
-        table
+    Enum.reduce_while(precompiled_tables, nil, fn table, acc ->
+      case table do
+        {:error, msg} -> {:halt, {:error, msg}}
+        {:ok, data} -> {:cont, data |> DataTable.update_fontregistry()}
+      end
+    end)
+    |> case do
+      {:error, msg} ->
+        FontRegistry.rollback()
+        {:error, msg}
 
       _ ->
-        name = Map.get(data, "FONTDATA") |> Map.get("data") |> Map.get("0") |> Map.get("Fontname")
+        {:ok, FontRegistry.commit()}
+    end
+  end
+
+  defp import_json_data(filename) do
+    {:ok, json} = File.read(@font_folder <> filename <> @font_file)
+    {:ok, data} = Jason.decode(json)
+
+    # 逆にroot上に存在しないテーブルの補完機能も実装する。
+    Enum.reduce_while(data, [], fn {k, v}, acc ->
+      table_ =
+        case FontRegistry.get_static_table(k) do
+          {:ok, nil} -> {:enforced_continue, nil}
+          {:error, msg} -> {:error, msg}
+          _ -> import_table(k, false, v)
+        end
+
+      case table_ do
+        {:error, msg} -> {:halt, {:error, msg}}
+        {:enforced_continue, nil} -> {:cont, acc}
+        {:ok, value} -> {:cont, [value | acc]}
+      end
+    end)
+    |> case do
+      {:error, msg} ->
+        {:error, msg}
+
+      table ->
+        name = extract_datatable_name(data)
 
         if name == nil do
           {:error, "Cannot load font: Fontname is not found"}
         else
-          font =
-            table
-            |> Enum.reduce(Font.new(filename, name, []), fn k, acc ->
-              acc |> Font.add_table!(k)
-            end)
-
-          FontRegistry.init_font(font)
-
-          checker_ = UniqueGsubRegister.precompile_unique_gsub_all(name)
-
-          case checker_ do
-            {:error, _msg} -> checker_
-            {:ok, data} -> data |> DataTable.update_fontregistry()
-          end
-
-          checker_ = GlyphRegister.precompile_glyph_all(name)
-
-          case checker_ do
-            {:error, _msg} -> checker_
-            {:ok, data} -> data |> DataTable.update_fontregistry()
-          end
-
-          checker_ = GposRegister.precompile_gpos_all(name)
-
-          case checker_ do
-            {:error, _msg} -> checker_
-            {:ok, data} -> data |> DataTable.update_fontregistry()
-          end
+          {:ok,
+           Enum.reduce(table, Font.new(filename, name, []), fn k, acc ->
+             acc |> Font.add_table!(k)
+           end), name}
         end
+    end
+  end
+
+  # root上に存在しないテーブルは削除処理。
+  # root上に存在するがファイル上に存在しないテーブルはroot上から補完する
+
+  def import(filename) do
+    case import_json_data(filename) do
+      {:error, msg} ->
+        {:error, msg}
+
+      {:ok, font, name} ->
+        FontRegistry.init_font(font)
+
+        set_precompile(name)
     end
   end
 
@@ -139,7 +157,6 @@ defmodule Thaqqa.FontIO do
         if k == "columnList" do
           column =
             Enum.reduce_while(v, ans, fn {_, v_}, ans_ ->
-              # todo:name,typeに不備がある場合は即エラー処理にする
               if Map.get(v_, "name") == nil or Map.get(v_, "type") == nil,
                 do: {:halt, {:error, "name or type is undefined"}},
                 else:

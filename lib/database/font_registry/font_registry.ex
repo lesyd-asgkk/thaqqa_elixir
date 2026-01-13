@@ -4,7 +4,8 @@ defmodule Thaqqa.FontRegistry do
   alias Thaqqa.Font, as: Font
   @fonts :fonts
   @static_tables :static_tables
-
+  @fonts_shadow :fonts_shadow_
+  @static_tables_shadow :static_tables_shadow
   ## API,直接呼び出せる関数群
   def start_link(_opts) do
     GenServer.start_link(__MODULE__, :ok, name: __MODULE__)
@@ -16,6 +17,14 @@ defmodule Thaqqa.FontRegistry do
       {:ok, nil} -> {:ok, nil}
       {:ok, _} -> Error.nominal_conflict_datatable(name, :add)
     end
+  end
+
+  def rollback() do
+    GenServer.call(__MODULE__, {:rollback}, 30_000)
+  end
+
+  def commit() do
+    GenServer.call(__MODULE__, {:commit}, 30_000)
   end
 
   def get_font(name, timeout \\ 5_000) do
@@ -98,9 +107,9 @@ defmodule Thaqqa.FontRegistry do
     end
   end
 
-  def add_static_table(name) do
+  def add_static_table(table) do
     try do
-      {:ok, GenServer.call(__MODULE__, {:add_static_table, name})}
+      {:ok, GenServer.call(__MODULE__, {:add_static_table, table})}
     catch
       :exit, {:noproc, _} -> {:error, :font_registry_restarting}
       :exit, {:timeout, _} -> {:error, :font_registry_timeout}
@@ -133,11 +142,39 @@ defmodule Thaqqa.FontRegistry do
   def init(:ok) do
     :ets.new(@fonts, [:named_table, :public, :set, read_concurrency: true])
     :ets.new(@static_tables, [:named_table, :public, :set, read_concurrency: true])
+    :ets.new(@fonts_shadow, [:named_table, :public, :set, read_concurrency: true])
+    :ets.new(@static_tables_shadow, [:named_table, :public, :set, read_concurrency: true])
     {:ok, %{}}
   end
 
+  def handle_call({:roll_back}, _from, state) do
+    :ets.delete_all_objects(@fonts_shadow)
+    :ets.delete_all_objects(@static_tables_shadow)
+
+    :ets.tab2list(@fonts)
+    |> Enum.each(&:ets.insert(@fonts_shadow, &1))
+
+    :ets.tab2list(@static_tables)
+    |> Enum.each(&:ets.insert(@static_tables_shadow, &1))
+
+    {:reply, :ok, state}
+  end
+
+  def handle_call({:commit}, _from, state) do
+    :ets.delete_all_objects(@fonts)
+    :ets.delete_all_objects(@static_tables)
+
+    :ets.tab2list(@fonts_shadow)
+    |> Enum.each(&:ets.insert(@fonts, &1))
+
+    :ets.tab2list(@static_tables_shadow)
+    |> Enum.each(&:ets.insert(@static_tables, &1))
+
+    {:reply, :ok, state}
+  end
+
   def handle_call({:init_font, %Thaqqa.Font{name: name} = font}, _from, state) do
-    :ets.insert(@fonts, {name, font})
+    :ets.insert(@fonts_shadow, {name, font})
     {:reply, :ok, state}
   end
 
@@ -148,13 +185,13 @@ defmodule Thaqqa.FontRegistry do
   end
 
   def handle_call({:delete_font, name}, _from, state) do
-    :ets.delete(@fonts, name)
+    :ets.delete(@fonts_shadow, name)
     {:reply, :ok, state}
   end
 
   def handle_call({:get_font, name}, _form, state) do
     reply =
-      case :ets.lookup(@fonts, name) do
+      case :ets.lookup(@fonts_shadow, name) do
         [{^name, font}] -> font
         [] -> nil
       end
@@ -163,25 +200,25 @@ defmodule Thaqqa.FontRegistry do
   end
 
   def handle_call({:edit_font, {name, new_font}}, _form, state) do
-    :ets.insert(@fonts, {name, new_font})
+    :ets.insert(@fonts_shadow, {name, new_font})
     {:reply, :ok, state}
   end
 
   ## static_table類
 
   def handle_call({:add_static_table, table}, _from, state) do
-    :ets.insert(@static_tables, {table.name, table})
+    :ets.insert(@static_tables_shadow, {table.name, table})
     {:reply, :ok, state}
   end
 
   def handle_call({:get_static_table_all}, _from, state) do
-    reply = :ets.tab2list(@static_tables)
+    reply = :ets.tab2list(@static_tables_shadow)
     {:reply, reply, state}
   end
 
   def handle_call({:get_static_table, name}, _from, state) do
     reply =
-      case :ets.lookup(@static_tables, name) do
+      case :ets.lookup(@static_tables_shadow, name) do
         [{^name, table}] -> table
         [] -> nil
       end
@@ -190,12 +227,12 @@ defmodule Thaqqa.FontRegistry do
   end
 
   def handle_call({:delete_static_table, name}, _from, state) do
-    :ets.delete(@static_tables, name)
+    :ets.delete(@static_tables_shadow, name)
     {:reply, :ok, state}
   end
 
   def handle_call({:edit_static_table, {name, new_table}}, _from, state) do
-    :ets.insert(@static_tables, {name, new_table})
+    :ets.insert(@static_tables_shadow, {name, new_table})
     {:reply, :ok, state}
   end
 
@@ -203,7 +240,7 @@ defmodule Thaqqa.FontRegistry do
 
   def handle_call({:get_table_from_font, {name, tablename}}, _form, state) do
     reply =
-      case :ets.lookup(@fonts, name) do
+      case :ets.lookup(@fonts_shadow, name) do
         [{^name, font}] -> font |> Font.get_table(tablename)
         [] -> nil
       end
