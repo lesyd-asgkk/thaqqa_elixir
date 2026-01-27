@@ -31,7 +31,7 @@ defmodule Thaqqa.DataTable do
   def is_global?(%__MODULE__{global: global}), do: global
 
   # 初期値設定のため
-  # defp init_val(val, type), do: init_val(val, type, :none)
+  defp init_val(val, type), do: init_val(val, type, :none)
 
   defp init_val(val, type, subtype) do
     val ||

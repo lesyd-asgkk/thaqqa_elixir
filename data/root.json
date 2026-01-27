@@ -2748,8 +2748,47 @@
         "Order": 0,
         "Priority": 140,
         "Name": "R(ー)",
-        "NameAlt": "P(minus0)"
-        
+        "NameAlt": "P(minus0)" 
+      },
+      "176": {
+        "ID": 176,        
+        "Language": "samlhta",
+        "Order": 0,
+        "Priority": -2,
+        "Name": "R(b)R(h)",
+        "NameAlt": "C(null,th0-d0-hd0)"
+      },
+      "177": {
+        "ID": 177,
+        "Language": "samlhta",
+        "Order": 0,
+        "Priority": -2,
+        "Name": "R(r)R(r)",
+        "NameAlt": "C(null,r0-d0)"
+      },
+      "178": {
+        "ID": 178,
+        "Language": "samlhta",
+        "Order": 0,
+        "Priority": -2,
+        "Name": "R(w)R(y)",
+        "NameAlt": "C(null,w0-sy0)"
+      },
+      "179": {
+        "ID": 179,
+        "Language": "samlhta",
+        "Order": 0,
+        "Priority": -2,
+        "Name": "R(y)R(w)",
+        "NameAlt": "C(null,y0-sw0)"
+      },
+      "180": {
+        "ID": 180,
+        "Language": "samlhta",
+        "Order": 0,
+        "Priority": -2,
+        "Name": "R(d)R(z)",
+        "NameAlt": "C(null,tl0-d0)"
       }
     }
   },

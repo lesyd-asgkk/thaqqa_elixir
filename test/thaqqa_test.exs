@@ -21,7 +21,7 @@ defmodule ThaqqaTest do
     |> Thaqqa.UniqueGsubRegister.unique_gsub!("Default", "horizontal")
     |> IO.inspect()
 
-    Thaqqa.ParserRegister.parse!("rlryo'i knngwahye", "samlhta")
+    Thaqqa.ParserRegister.parse!("rlryo'i adzara", "samlhta")
     |> Thaqqa.GsubRegister.gsub!("vertical")
     |> Thaqqa.UniqueGsubRegister.unique_gsub!("Default", "vertical")
     |> IO.inspect()

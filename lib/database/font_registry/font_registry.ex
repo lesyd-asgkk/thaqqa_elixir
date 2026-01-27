@@ -2,6 +2,7 @@ defmodule Thaqqa.FontRegistry do
   use GenServer
   alias Thaqqa.FontRegistry, as: FontRegistry
   alias Thaqqa.Font, as: Font
+  alias Thaqqa.FontIO, as: FontIO
   @fonts :fonts
   @static_tables :static_tables
   @fonts_shadow :fonts_shadow_
@@ -9,6 +10,21 @@ defmodule Thaqqa.FontRegistry do
   ## API,直接呼び出せる関数群
   def start_link(_opts) do
     GenServer.start_link(__MODULE__, :ok, name: __MODULE__)
+  end
+
+  defp safe_call(msg, timeout \\ 5_000) do
+    try do
+      case GenServer.call(__MODULE__, msg, timeout) do
+        t when is_tuple(t) and tuple_size(t) >= 2 -> t
+        {value} -> {:ok, value}
+        {} -> {:ok}
+        value -> {:ok, value}
+      end
+    catch
+      :exit, {:noproc, _} -> {:error, :font_registry_restarting}
+      :exit, {:timeout, _} -> {:error, :font_registry_timeout}
+      :exit, reason -> {:error, {:font_registry_exit, reason}}
+    end
   end
 
   defp check_tablename_conflict(name) do
@@ -19,135 +35,92 @@ defmodule Thaqqa.FontRegistry do
     end
   end
 
-  def rollback() do
-    GenServer.call(__MODULE__, {:rollback}, 30_000)
-  end
-
-  def commit() do
-    GenServer.call(__MODULE__, {:commit}, 30_000)
-  end
-
-  def get_font(name, timeout \\ 5_000) do
-    try do
-      {:ok, GenServer.call(__MODULE__, {:get_font, name})}
-    catch
-      :exit, {:noproc, _} -> {:error, :font_registry_restarting}
-      :exit, {:timeout, _} -> {:error, :font_registry_timeout}
-      :exit, reason -> {:error, {:font_registry_exit, reason}}
+  defp get_font_internal(name) do
+    case :ets.lookup(@fonts_shadow, name) do
+      [{^name, font}] -> font
+      [] -> nil
     end
   end
 
-  def get_table_from_font(name, tablename, timeout \\ 5_000) do
-    try do
-      {:ok, GenServer.call(__MODULE__, {:get_table_from_font, {name, tablename}})}
-    catch
-      :exit, {:noproc, _} -> {:error, :font_registry_restarting}
-      :exit, {:timeout, _} -> {:error, :font_registry_timeout}
-      :exit, reason -> {:error, {:font_registry_exit, reason}}
+  defp get_table_from_font_internal(name, tablename) do
+    case :ets.lookup(@fonts_shadow, name) do
+      [{^name, font}] -> font |> Font.get_table(tablename)
+      [] -> nil
     end
   end
 
-  def init_font(font, timeout \\ 5_000) do
-    try do
-      {:ok, GenServer.call(__MODULE__, {:init_font, font})}
-    catch
-      :exit, {:noproc, _} -> {:error, :font_registry_restarting}
-      :exit, {:timeout, _} -> {:error, :font_registry_timeout}
-      :exit, reason -> {:error, {:font_registry_exit, reason}}
+  def rollback(timeout \\ 30_000), do: safe_call({:rollback}, timeout)
+
+  def commit(timeout \\ 30_000), do: safe_call({:commit}, timeout)
+
+  def get_font(name), do: {:ok, get_font_internal(name)}
+
+  def get_table_from_font(name, tablename),
+    do: {:ok, get_table_from_font_internal(name, tablename)}
+
+  def get_font_managed(name, timeout \\ 5_000), do: safe_call({:get_font, name}, timeout)
+
+  def get_table_from_font_managed(name, tablename, timeout \\ 5_000),
+    do: safe_call({:get_table_from_font, {name, tablename}}, timeout)
+
+  def init_font(font, timeout \\ 5_000), do: safe_call({:init_font, font}, timeout)
+
+  def add_font(fontname, timeout \\ 5_000), do: safe_call({:add_font, fontname}, timeout)
+
+  def delete_font(name, timeout \\ 5_000), do: safe_call({:delete_font, name}, timeout)
+
+  def edit_font(name, new_font, timeout \\ 5_000),
+    do: safe_call({:edit_font, {name, new_font}}, timeout)
+
+  def get_static_table_all(), do: {:ok, :ets.tab2list(@static_tables_shadow)}
+
+  def get_static_table_global(),
+    do: {:ok, :ets.tab2list(@static_tables_shadow) |> Enum.filter(& &1.global)}
+
+  def get_static_table_local(),
+    do: {:ok, :ets.tab2list(@static_tables_shadow) |> Enum.filter(&(!&1.global))}
+
+  defp get_static_table_internal(name) do
+    case :ets.lookup(@static_tables_shadow, name) do
+      [{^name, table}] -> table
+      [] -> nil
     end
   end
 
-  def add_font(fontname, timeout \\ 5_000) do
-    try do
-      {:ok, GenServer.call(__MODULE__, {:add_font, fontname})}
-    catch
-      :exit, {:noproc, _} -> {:error, :font_registry_restarting}
-      :exit, {:timeout, _} -> {:error, :font_registry_timeout}
-      :exit, reason -> {:error, {:font_registry_exit, reason}}
-    end
-  end
+  def get_static_table(name), do: {:ok, get_static_table_internal(name)}
 
-  def delete_font(name, timeout \\ 5_000) do
-    try do
-      {:ok, GenServer.call(__MODULE__, {:delete_font, name})}
-    catch
-      :exit, {:noproc, _} -> {:error, :font_registry_restarting}
-      :exit, {:timeout, _} -> {:error, :font_registry_timeout}
-      :exit, reason -> {:error, {:font_registry_exit, reason}}
-    end
-  end
+  def get_static_table_all_managed(timeout \\ 5_000),
+    do: safe_call({:get_static_table_all}, timeout)
 
-  def edit_font(name, new_font, timeout \\ 5_000) do
-    try do
-      {:ok, GenServer.call(__MODULE__, {:edit_font, {name, new_font}})}
-    catch
-      :exit, {:noproc, _} -> {:error, :font_registry_restarting}
-      :exit, {:timeout, _} -> {:error, :font_registry_timeout}
-      :exit, reason -> {:error, {:font_registry_exit, reason}}
-    end
-  end
+  def get_static_table_global_managed(timeout \\ 5_000),
+    do: safe_call({:get_static_table_global}, timeout)
 
-  def get_static_table_all() do
-    try do
-      {:ok, GenServer.call(__MODULE__, {:get_static_table_all})}
-    catch
-      :exit, {:noproc, _} -> {:error, :font_registry_restarting}
-      :exit, {:timeout, _} -> {:error, :font_registry_timeout}
-      :exit, reason -> {:error, {:font_registry_exit, reason}}
-    end
-  end
+  def get_static_table_local_managed(timeout \\ 5_000),
+    do: safe_call({:get_static_table_local}, timeout)
 
-  def get_static_table(name) do
-    try do
-      {:ok, GenServer.call(__MODULE__, {:get_static_table, name})}
-    catch
-      :exit, {:noproc, _} -> {:error, :font_registry_restarting}
-      :exit, {:timeout, _} -> {:error, :font_registry_timeout}
-      :exit, reason -> {:error, {:font_registry_exit, reason}}
-    end
-  end
+  def get_static_table_managed(name, timeout \\ 5_000),
+    do: safe_call({:get_static_table, name}, timeout)
 
-  def add_static_table(table) do
-    try do
-      {:ok, GenServer.call(__MODULE__, {:add_static_table, table})}
-    catch
-      :exit, {:noproc, _} -> {:error, :font_registry_restarting}
-      :exit, {:timeout, _} -> {:error, :font_registry_timeout}
-      :exit, reason -> {:error, {:font_registry_exit, reason}}
-    end
-  end
+  def add_static_table(table, timeout \\ 5_000),
+    do: safe_call({:add_static_table, table}, timeout)
 
-  def delete_static_table(name) do
-    try do
-      {:ok, GenServer.call(__MODULE__, {:delete_static_table, name})}
-    catch
-      :exit, {:noproc, _} -> {:error, :font_registry_restarting}
-      :exit, {:timeout, _} -> {:error, :font_registry_timeout}
-      :exit, reason -> {:error, {:font_registry_exit, reason}}
-    end
-  end
+  def delete_static_table(name, timeout \\ 5_000),
+    do: safe_call({:delete_static_table, name}, timeout)
 
-  def edit_static_table(name, new_table) do
-    try do
-      {:ok, GenServer.call(__MODULE__, {:edit_static_table, {name, new_table}})}
-    catch
-      :exit, {:noproc, _} -> {:error, :font_registry_restarting}
-      :exit, {:timeout, _} -> {:error, :font_registry_timeout}
-      :exit, reason -> {:error, {:font_registry_exit, reason}}
-    end
-  end
+  def edit_static_table(name, new_table, timeout \\ 5_000),
+    do: safe_call({:edit_static_table, {name, new_table}}, timeout)
 
   ## 以下はCallbacks
 
   def init(:ok) do
-    :ets.new(@fonts, [:named_table, :public, :set, read_concurrency: true])
-    :ets.new(@static_tables, [:named_table, :public, :set, read_concurrency: true])
-    :ets.new(@fonts_shadow, [:named_table, :public, :set, read_concurrency: true])
-    :ets.new(@static_tables_shadow, [:named_table, :public, :set, read_concurrency: true])
+    :ets.new(@fonts, [:named_table, :protected, :set, read_concurrency: true])
+    :ets.new(@static_tables, [:named_table, :protected, :set, read_concurrency: true])
+    :ets.new(@fonts_shadow, [:named_table, :protected, :set, read_concurrency: true])
+    :ets.new(@static_tables_shadow, [:named_table, :protected, :set, read_concurrency: true])
     {:ok, %{}}
   end
 
-  def handle_call({:roll_back}, _from, state) do
+  def handle_call({:rollback}, _from, state) do
     :ets.delete_all_objects(@fonts_shadow)
     :ets.delete_all_objects(@static_tables_shadow)
 
@@ -173,6 +146,24 @@ defmodule Thaqqa.FontRegistry do
     {:reply, :ok, state}
   end
 
+  def handle_call({:import_root}, _from, state) do
+    result = FontIO.import()
+    {:reply, result, state}
+  end
+
+  def handle_call({:import_font, fontname}, _from, state) do
+    result = FontIO.import(fontname)
+    {:reply, result, state}
+  end
+
+  def handle_call({:push}, _from, state) do
+    # @fonts,@static_tablesに基づいてexportする
+    # fontfileの指定くらいか？　そもそも構造自体を変えるべきな気もするが。
+    # result = FontIO.export(@fonts,@static_tables)
+    result = :ok
+    {:reply, result, state}
+  end
+
   def handle_call({:init_font, %Thaqqa.Font{name: name} = font}, _from, state) do
     :ets.insert(@fonts_shadow, {name, font})
     {:reply, :ok, state}
@@ -190,11 +181,7 @@ defmodule Thaqqa.FontRegistry do
   end
 
   def handle_call({:get_font, name}, _form, state) do
-    reply =
-      case :ets.lookup(@fonts_shadow, name) do
-        [{^name, font}] -> font
-        [] -> nil
-      end
+    reply = get_font_internal(name)
 
     {:reply, reply, state}
   end
@@ -216,13 +203,25 @@ defmodule Thaqqa.FontRegistry do
     {:reply, reply, state}
   end
 
-  def handle_call({:get_static_table, name}, _from, state) do
+  # table.globalがtrueのやつだけ抜き出すver
+  def handle_call({:get_static_table_global}, _from, state) do
     reply =
-      case :ets.lookup(@static_tables_shadow, name) do
-        [{^name, table}] -> table
-        [] -> nil
-      end
+      :ets.tab2list(@static_tables_shadow)
+      |> Enum.filter(& &1.global)
 
+    {:reply, reply, state}
+  end
+
+  def handle_call({:get_static_table_local}, _from, state) do
+    reply =
+      :ets.tab2list(@static_tables_shadow)
+      |> Enum.filter(&(!&1.global))
+
+    {:reply, reply, state}
+  end
+
+  def handle_call({:get_static_table, name}, _from, state) do
+    reply = get_static_table_internal(name)
     {:reply, reply, state}
   end
 
@@ -239,11 +238,7 @@ defmodule Thaqqa.FontRegistry do
   ## table類
 
   def handle_call({:get_table_from_font, {name, tablename}}, _form, state) do
-    reply =
-      case :ets.lookup(@fonts_shadow, name) do
-        [{^name, font}] -> font |> Font.get_table(tablename)
-        [] -> nil
-      end
+    reply = get_table_from_font_internal(name, tablename)
 
     {:reply, reply, state}
   end
