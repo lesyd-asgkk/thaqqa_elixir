@@ -2,6 +2,7 @@ defmodule Thaqqa.LetterRegister do
   alias Thaqqa.DataTable, as: DataTable
   alias Thaqqa.FontRegistry, as: FontRegistry
   alias Thaqqa.FontRegistry.Error, as: Error
+  alias Thaqqa.DataValidator, as: DataValidator
   use Thaqqa.DataTable.Const
 
   def get_table() do
@@ -51,7 +52,7 @@ defmodule Thaqqa.LetterRegister do
           if v == nil do
             {:cont, [:ok | acc]}
           else
-            case DataTable.unique_validation(v, value_map, op) do
+            case DataValidator.unique_validation(v, value_map, op) do
               {:error, msg} -> {:halt, {:error, msg}}
               {:ok, _value} -> {:cont, [:ok | acc]}
             end

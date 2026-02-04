@@ -5,11 +5,14 @@ defmodule Thaqqa.Font do
   # それかいっそ「font= "Fontname"」のようなcolumnを必須にしてしまうか。
 
   alias Thaqqa.FontRegistry, as: FontRegistry
+  alias Thaqqa.FontRegisteryPrefab, as: FontRegisteryPrefab
   alias Thaqqa.DataTable, as: DataTable
   alias Thaqqa.Regex_Khhyl.Error, as: Error
   defstruct [:filename, :name, table_list: []]
 
   def new(filename, name, t), do: %__MODULE__{table_list: t, name: name, filename: filename}
+
+  def get_table_all(%__MODULE__{table_list: tables}), do: tables
 
   def get_table(%__MODULE__{table_list: tables}, table_name) do
     Enum.find(tables, fn table -> table.name == table_name end)
@@ -25,6 +28,10 @@ defmodule Thaqqa.Font do
       ) do
     table = %DataTable{table | parent: fontname}
     %{font | table_list: tables ++ [table]}
+  end
+
+  def delete_table!(%__MODULE__{} = font, %DataTable{} = table, table_name) do
+    add_table(font, table)
   end
 
   def delete_table(%__MODULE__{table_list: tables} = font, table_name) do
@@ -48,6 +55,11 @@ defmodule Thaqqa.Font do
 
   def update_fontregistry(%__MODULE__{name: name} = font) do
     FontRegistry.edit_font(name, font)
+    font
+  end
+
+  def update_prefab(%__MODULE__{name: name} = font, %FontRegisteryPrefab{} = prefab) do
+    FontRegisteryPrefab.edit_font(name, font)
     font
   end
 end

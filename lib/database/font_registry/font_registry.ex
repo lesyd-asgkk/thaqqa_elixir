@@ -5,7 +5,7 @@ defmodule Thaqqa.FontRegistry do
   alias Thaqqa.FontIO, as: FontIO
   @fonts :fonts
   @static_tables :static_tables
-  @fonts_shadow :fonts_shadow_
+  @fonts_shadow :fonts_shadow
   @static_tables_shadow :static_tables_shadow
   ## API,直接呼び出せる関数群
   def start_link(_opts) do
@@ -53,10 +53,27 @@ defmodule Thaqqa.FontRegistry do
 
   def commit(timeout \\ 30_000), do: safe_call({:commit}, timeout)
 
+  def create_prefab(),
+    do:
+      {:ok,
+       Thaqqa.FontRegisteryPrefab.new(
+         :ets.tab2list(@fonts_shadow),
+         :ets.tab2list(@static_tables_shadow)
+       )}
+
+  def create_prefab_managed(timeout \\ 5_000), do: safe_call({:create_prefab}, timeout)
+
+  def apply_prefab(%Thaqqa.FontRegisteryPrefab{} = prefab, timeout \\ 5_000),
+    do: safe_call({:apply_prefab, prefab}, timeout)
+
+  def get_font_all(), do: {:ok, :ets.tab2list(@fonts_shadow)}
+
   def get_font(name), do: {:ok, get_font_internal(name)}
 
   def get_table_from_font(name, tablename),
     do: {:ok, get_table_from_font_internal(name, tablename)}
+
+  def get_font_all_managed(timeout \\ 5_000), do: safe_call({:get_font_all}, timeout)
 
   def get_font_managed(name, timeout \\ 5_000), do: safe_call({:get_font, name}, timeout)
 
@@ -75,10 +92,10 @@ defmodule Thaqqa.FontRegistry do
   def get_static_table_all(), do: {:ok, :ets.tab2list(@static_tables_shadow)}
 
   def get_static_table_global(),
-    do: {:ok, :ets.tab2list(@static_tables_shadow) |> Enum.filter(& &1.global)}
+    do: {:ok, :ets.tab2list(@static_tables_shadow) |> Enum.filter(fn {_, val} -> val.global end)}
 
   def get_static_table_local(),
-    do: {:ok, :ets.tab2list(@static_tables_shadow) |> Enum.filter(&(!&1.global))}
+    do: {:ok, :ets.tab2list(@static_tables_shadow) |> Enum.filter(fn {_, val} -> !val.global end)}
 
   defp get_static_table_internal(name) do
     case :ets.lookup(@static_tables_shadow, name) do
@@ -146,6 +163,28 @@ defmodule Thaqqa.FontRegistry do
     {:reply, :ok, state}
   end
 
+  def handle_call(
+        {:apply_prefab, %Thaqqa.FontRegisteryPrefab{fonts: f, static_tables: t}},
+        _from,
+        state
+      ) do
+    :ets.delete_all_objects(@fonts_shadow)
+    :ets.delete_all_objects(@static_tables_shadow)
+    Enum.each(f, &:ets.insert(@fonts_shadow, &1))
+    Enum.each(t, &:ets.insert(@static_tables_shadow, &1))
+    {:reply, :ok, state}
+  end
+
+  def handle_call({:create_prefab}, _from, state) do
+    result =
+      Thaqqa.FontRegisteryPrefab.new(
+        :ets.tab2list(@fonts_shadow),
+        :ets.tab2list(@static_tables_shadow)
+      )
+
+    {:reply, result, state}
+  end
+
   def handle_call({:import_root}, _from, state) do
     result = FontIO.import()
     {:reply, result, state}
@@ -186,6 +225,11 @@ defmodule Thaqqa.FontRegistry do
     {:reply, reply, state}
   end
 
+  def handle_call({:get_font_all}, _form, state) do
+    reply = :ets.tab2list(@fonts_shadow)
+    {:reply, reply, state}
+  end
+
   def handle_call({:edit_font, {name, new_font}}, _form, state) do
     :ets.insert(@fonts_shadow, {name, new_font})
     {:reply, :ok, state}
@@ -207,7 +251,7 @@ defmodule Thaqqa.FontRegistry do
   def handle_call({:get_static_table_global}, _from, state) do
     reply =
       :ets.tab2list(@static_tables_shadow)
-      |> Enum.filter(& &1.global)
+      |> Enum.filter(fn {_, val} -> val.global end)
 
     {:reply, reply, state}
   end
@@ -215,7 +259,7 @@ defmodule Thaqqa.FontRegistry do
   def handle_call({:get_static_table_local}, _from, state) do
     reply =
       :ets.tab2list(@static_tables_shadow)
-      |> Enum.filter(&(!&1.global))
+      |> Enum.filter(fn {_, val} -> !val.global end)
 
     {:reply, reply, state}
   end

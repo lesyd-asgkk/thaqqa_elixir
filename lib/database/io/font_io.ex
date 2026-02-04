@@ -4,12 +4,15 @@ defmodule Thaqqa.FontIO do
   # ファイルについては↓を変更すること
 
   # ※import系統がバグりうる（中途半端な状態で保存されかねない）ので原子化を行う
+  # ※shadow_tableを更にshadowしたtable……のような構造体を作る
+  # %import_plan{ fonts: :fonts_shadow_に対応する部分 ,tables: :static_tables_shadowに対応する部分}
 
-  @root_file "data/root.json"
+  @root_file "data/main.json"
   @font_folder "data/"
   @font_file "/main.json"
 
   alias Thaqqa.FontRegistry, as: FontRegistry
+  alias Thaqqa.FontRegisteryPrefab, as: Prefab
   alias Thaqqa.Font, as: Font
   alias Thaqqa.Column, as: Column
   alias Thaqqa.Regex_Khhyl, as: Regex_Khhyl
@@ -20,13 +23,73 @@ defmodule Thaqqa.FontIO do
   alias Thaqqa.GlyphRegister, as: GlyphRegister
   alias Thaqqa.GposRegister, as: GposRegister
 
+  # json → struct
   def import() do
-    # json → struct
+    {:ok, prefab} = FontRegistry.create_prefab()
 
     case import_json_data() do
       {:error, msg} -> {:error, msg}
       _ -> set_precompile()
     end
+  end
+
+  defp import_json_data() do
+    file_path = @root_file
+
+    case read_and_decode_json(file_path) do
+      {:error, reason} ->
+        {:error, reason}
+
+      {:ok, data} ->
+        # local用のテーブルが増減した場合にfont側のテーブルも変更させる処理も後日付け足す。
+        # (local用テーブルが消えた場合にfont側のその名前のテーブルも削除する機能や逆に補完する機能)
+        Enum.reduce_while(data, nil, fn {k, v}, _acc ->
+          table_ = import_table(k, false, v)
+
+          case table_ do
+            {:error, _msg} ->
+              {:halt, table_}
+
+            # ここらへんもPrefabの方でinit_fontを行うよう変更（予定）
+            {:ok, value} ->
+              case FontRegistry.add_static_table(value) do
+                {:ok, _} -> {:cont, nil}
+                {:error, msg} -> {:halt, {:error, msg}}
+              end
+          end
+        end)
+    end
+    |> case do
+      {:error, msg} -> {:error, msg}
+      _ -> complement_local_table()
+    end
+  end
+
+  # tableの補完処理。
+  defp complement_local_table() do
+    # ここもPrefabの方で行うよう変更（予定）
+    {:ok, local_table_list} = FontRegistry.get_static_table_local()
+    {:ok, font_list} = FontRegistry.get_font_all()
+
+    Enum.reduce(font_list, nil, fn {font_name, font}, _acc ->
+      # font_listのtableがlocal_table_listに存在しなくなったら削除
+      Enum.each(font |> Font.get_table_all(), fn table ->
+        if Enum.find(local_table_list, fn {k, _v} -> k == table.name end) == nil do
+          # ここも変更（予定）
+          Font.delete_table!(font, table.name) |> Font.update_fontregistry()
+        end
+      end)
+
+      # 逆に、local_table_listに存在するようになったtableがfont_listに存在しなかったら補完
+      # こもPrefabの方で行うよう変更（予定）
+      Enum.each(local_table_list, fn {table_name, table} ->
+        if font |> Font.get_table(table_name) == nil do
+          Font.add_table!(font, table) |> Font.update_fontregistry()
+        end
+      end)
+    end)
+
+    nil
   end
 
   defp set_precompile() do
@@ -36,6 +99,7 @@ defmodule Thaqqa.FontIO do
     ]
 
     Enum.reduce_while(precompiled_tables, nil, fn table, acc ->
+      # ここらへんもPrefabの方でinit_fontを行うよう変更（予定）
       case table do
         {:error, msg} -> {:halt, {:error, msg}}
         {:ok, data} -> {:cont, data |> DataTable.update_fontregistry()}
@@ -51,25 +115,66 @@ defmodule Thaqqa.FontIO do
     end
   end
 
-  defp import_json_data() do
-    {:ok, json} = File.read(@root_file)
-    {:ok, data} = Jason.decode(json)
+  defp read_and_decode_json(file_path) do
+    case File.read(file_path) do
+      {:error, reason} -> {:error, reason}
+      {:ok, json} -> Jason.decode(json)
+    end
+  end
 
-    # 逆にArchtype表に存在しないテーブルの補完機能も実装する。
-    Enum.reduce_while(data, nil, fn {k, v}, _acc ->
-      table_ = import_table(k, false, v)
+  def import(filename) do
+    case import_json_data(filename) do
+      {:error, msg} ->
+        {:error, msg}
 
-      case table_ do
-        {:error, _msg} ->
-          {:halt, table_}
+      {:ok, font, name} ->
+        # Prefabの方でinit_fontを行うよう変更（予定）
+        FontRegistry.init_font(font)
+        set_precompile(name)
+    end
+  end
 
-        {:ok, value} ->
-          case FontRegistry.add_static_table(value) do
-            {:ok, _} -> {:cont, nil}
+  defp import_json_data(filename) do
+    filename_path = @font_folder <> filename <> @font_file
+
+    case read_and_decode_json(filename_path) do
+      {:error, reason} ->
+        {:error, reason}
+
+      {:ok, data} ->
+        {:ok, roottable} = FontRegistry.get_static_table_local()
+        # rootのlocal状態のテーブルを参照して
+        # 存在しないテーブルはそもそも読み込まなかったり、存在すべきテーブルを補完したりする
+        # （補完はlocalテーブルの情報をそのままコピペする）
+        Enum.reduce_while(roottable, [], fn {k, v}, acc ->
+          table_ =
+            case Map.get(data, k) do
+              nil -> {:ok, k}
+              value -> import_table(k, false, value)
+            end
+
+          case table_ do
             {:error, msg} -> {:halt, {:error, msg}}
+            {:ok, value} -> {:cont, [value | acc]}
           end
-      end
-    end)
+        end)
+        |> case do
+          {:error, msg} ->
+            {:error, msg}
+
+          table ->
+            name = extract_datatable_name(data)
+
+            if name == nil do
+              {:error, "Cannot load font: Fontname is not found"}
+            else
+              {:ok,
+               Enum.reduce(table, Font.new(filename, name, []), fn k, acc ->
+                 acc |> Font.add_table!(k)
+               end), name}
+            end
+        end
+    end
   end
 
   defp extract_datatable_name(data), do: get_in(data, ["FONTDATA", "data", "0", "Fontname"])
@@ -97,58 +202,6 @@ defmodule Thaqqa.FontIO do
     end
   end
 
-  defp import_json_data(filename) do
-    {:ok, json} = File.read(@font_folder <> filename <> @font_file)
-    {:ok, data} = Jason.decode(json)
-
-    # 逆にroot上に存在しないテーブルの補完機能も実装する。
-    Enum.reduce_while(data, [], fn {k, v}, acc ->
-      table_ =
-        case FontRegistry.get_static_table(k) do
-          {:ok, nil} -> {:enforced_continue, nil}
-          {:error, msg} -> {:error, msg}
-          _ -> import_table(k, false, v)
-        end
-
-      case table_ do
-        {:error, msg} -> {:halt, {:error, msg}}
-        {:enforced_continue, nil} -> {:cont, acc}
-        {:ok, value} -> {:cont, [value | acc]}
-      end
-    end)
-    |> case do
-      {:error, msg} ->
-        {:error, msg}
-
-      table ->
-        name = extract_datatable_name(data)
-
-        if name == nil do
-          {:error, "Cannot load font: Fontname is not found"}
-        else
-          {:ok,
-           Enum.reduce(table, Font.new(filename, name, []), fn k, acc ->
-             acc |> Font.add_table!(k)
-           end), name}
-        end
-    end
-  end
-
-  # root上に存在しないテーブルは削除処理。
-  # root上に存在するがファイル上に存在しないテーブルはroot上から補完する
-
-  def import(filename) do
-    case import_json_data(filename) do
-      {:error, msg} ->
-        {:error, msg}
-
-      {:ok, font, name} ->
-        FontRegistry.init_font(font)
-
-        set_precompile(name)
-    end
-  end
-
   defp import_table(name, global, struct) do
     table = DataTable.new(name, Map.get(struct, "global"), nil)
 
@@ -163,12 +216,14 @@ defmodule Thaqqa.FontIO do
                   {:cont,
                    DataTable.add_column!(
                      ans_,
-                     Map.get(v_, "name"),
-                     Map.get(v_, "type") |> String.to_atom(),
-                     Map.get(v_, "desc", ""),
-                     Map.get(v_, "order", 0),
-                     Map.get(v_, "subtype", "none") |> String.to_atom(),
-                     Map.get(v_, "dev", false)
+                     Column.new(
+                       Map.get(v_, "name"),
+                       Map.get(v_, "type") |> String.to_atom(),
+                       Map.get(v_, "desc", ""),
+                       Map.get(v_, "order", 0),
+                       Map.get(v_, "subtype", "none") |> String.to_atom(),
+                       Map.get(v_, "dev", false)
+                     )
                    )}
             end)
 
@@ -190,7 +245,7 @@ defmodule Thaqqa.FontIO do
                     ans__ |> Map.put(k, nil)
                   end)
 
-                data_ = ans_ |> DataTable.add_data(v_, true)
+                data_ = ans_ |> DataTable.init_data(v_)
 
                 case data_ do
                   {:error, _msg} -> {:halt, data_}

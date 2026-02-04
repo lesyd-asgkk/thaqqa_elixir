@@ -2789,6 +2789,30 @@
         "Priority": -2,
         "Name": "R(d)R(z)",
         "NameAlt": "C(null,tl0-d0)"
+      },
+      "181": {
+        "ID": 181,
+        "Language": "samlhta",
+        "Order": 0,
+        "Priority": -2,
+        "Name": "R(p)R(y)",
+        "NameAlt": "C(null,t0-hd0-sy0)"
+      },
+      "182": {
+        "ID": 182,
+        "Language": "samlhta",
+        "Order": 0,
+        "Priority": -2,
+        "Name": "R(w)R(w)",
+        "NameAlt": "C(null,w0-d0)"
+      },
+      "183": {
+        "ID": 183,
+        "Language": "samlhta",
+        "Order": 0,
+        "Priority": -2,
+        "Name": "R(y)R(y)",
+        "NameAlt": "C(null,y0-d0)"
       }
     }
   },
