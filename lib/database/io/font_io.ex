@@ -23,6 +23,31 @@ defmodule Thaqqa.FontIO do
   alias Thaqqa.GlyphRegister, as: GlyphRegister
   alias Thaqqa.GposRegister, as: GposRegister
 
+  # read_and_decode_jsonはfont_prefabの方にそっくり同じ関数を作る
+  # set_precompileも同様
+
+  # json→mapの部分。
+  # ここはIOで処理。
+  defp read_and_decode_json(file_path) do
+    case File.read(file_path) do
+      {:error, reason} -> {:error, reason}
+      {:ok, json} -> Jason.decode(json)
+    end
+  end
+
+  defp extract_datatable_name(data), do: get_in(data, ["FONTDATA", "data", "0", "Fontname"])
+
+  def import_as_root() do
+    {:ok, prefab} = FontRegistry.create_prefab()
+    file_path = @root_file
+
+    case read_and_decode_json(file_path) do
+      {:error, msg} -> {:error, msg}
+      {:ok, rootdata} -> Prefab.import_as_root(prefab, rootdata)
+    end
+  end
+
+  ########## ↓は修正前。
   # json → struct
   def import() do
     {:ok, prefab} = FontRegistry.create_prefab()
@@ -30,6 +55,18 @@ defmodule Thaqqa.FontIO do
     case import_json_data() do
       {:error, msg} -> {:error, msg}
       _ -> set_precompile()
+    end
+  end
+
+  def import(filename) do
+    case import_json_data(filename) do
+      {:error, msg} ->
+        {:error, msg}
+
+      {:ok, font, name} ->
+        # Prefabの方でinit_fontを行うよう変更（予定）
+        FontRegistry.init_font(font)
+        set_precompile(name)
     end
   end
 
@@ -41,6 +78,9 @@ defmodule Thaqqa.FontIO do
         {:error, reason}
 
       {:ok, data} ->
+        {:ok, prefab} = FontRegistry.create_prefab()
+        {:ok, prefab} = Prefab.import_as_root(prefab, data)
+
         # local用のテーブルが増減した場合にfont側のテーブルも変更させる処理も後日付け足す。
         # (local用テーブルが消えた場合にfont側のその名前のテーブルも削除する機能や逆に補完する機能)
         Enum.reduce_while(data, nil, fn {k, v}, _acc ->
@@ -62,6 +102,49 @@ defmodule Thaqqa.FontIO do
     |> case do
       {:error, msg} -> {:error, msg}
       _ -> complement_local_table()
+    end
+  end
+
+  defp import_json_data(filename) do
+    filename_path = @font_folder <> filename <> @font_file
+
+    case read_and_decode_json(filename_path) do
+      {:error, reason} ->
+        {:error, reason}
+
+      {:ok, data} ->
+        {:ok, roottable} = FontRegistry.get_static_table_local()
+        # rootのlocal状態のテーブルを参照して
+        # 存在しないテーブルはそもそも読み込まなかったり、存在すべきテーブルを補完したりする
+        # （補完はlocalテーブルの情報をそのままコピペする）
+        Enum.reduce_while(roottable, [], fn {k, v}, acc ->
+          table_ =
+            case Map.get(data, k) do
+              nil -> {:ok, k}
+              value -> import_table(k, false, value)
+            end
+
+          case table_ do
+            {:error, msg} -> {:halt, {:error, msg}}
+            {:ok, value} -> {:cont, [value | acc]}
+          end
+        end)
+        |> case do
+          {:error, msg} ->
+            {:error, msg}
+
+          table ->
+            name = extract_datatable_name(data)
+
+            if name == nil do
+              {:error, "Cannot load font: Fontname is not found"}
+            else
+              {:ok,
+               Enum.reduce(table, Font.new(filename, name, []), fn k, acc ->
+                 acc |> Font.add_table!(k)
+               end), name}
+            end
+        end
     end
   end
 
@@ -115,70 +198,6 @@ defmodule Thaqqa.FontIO do
     end
   end
 
-  defp read_and_decode_json(file_path) do
-    case File.read(file_path) do
-      {:error, reason} -> {:error, reason}
-      {:ok, json} -> Jason.decode(json)
-    end
-  end
-
-  def import(filename) do
-    case import_json_data(filename) do
-      {:error, msg} ->
-        {:error, msg}
-
-      {:ok, font, name} ->
-        # Prefabの方でinit_fontを行うよう変更（予定）
-        FontRegistry.init_font(font)
-        set_precompile(name)
-    end
-  end
-
-  defp import_json_data(filename) do
-    filename_path = @font_folder <> filename <> @font_file
-
-    case read_and_decode_json(filename_path) do
-      {:error, reason} ->
-        {:error, reason}
-
-      {:ok, data} ->
-        {:ok, roottable} = FontRegistry.get_static_table_local()
-        # rootのlocal状態のテーブルを参照して
-        # 存在しないテーブルはそもそも読み込まなかったり、存在すべきテーブルを補完したりする
-        # （補完はlocalテーブルの情報をそのままコピペする）
-        Enum.reduce_while(roottable, [], fn {k, v}, acc ->
-          table_ =
-            case Map.get(data, k) do
-              nil -> {:ok, k}
-              value -> import_table(k, false, value)
-            end
-
-          case table_ do
-            {:error, msg} -> {:halt, {:error, msg}}
-            {:ok, value} -> {:cont, [value | acc]}
-          end
-        end)
-        |> case do
-          {:error, msg} ->
-            {:error, msg}
-
-          table ->
-            name = extract_datatable_name(data)
-
-            if name == nil do
-              {:error, "Cannot load font: Fontname is not found"}
-            else
-              {:ok,
-               Enum.reduce(table, Font.new(filename, name, []), fn k, acc ->
-                 acc |> Font.add_table!(k)
-               end), name}
-            end
-        end
-    end
-  end
-
-  defp extract_datatable_name(data), do: get_in(data, ["FONTDATA", "data", "0", "Fontname"])
-
   defp set_precompile(name) do
     precompiled_tables = [
       UniqueGsubRegister.precompile_unique_gsub_all(name),
@@ -202,7 +221,7 @@ defmodule Thaqqa.FontIO do
     end
   end
 
-  defp import_table(name, global, struct) do
+  defp import_table(name, _global, struct) do
     table = DataTable.new(name, Map.get(struct, "global"), nil)
 
     table_altered =

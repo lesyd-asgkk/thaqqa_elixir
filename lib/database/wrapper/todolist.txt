@@ -1,0 +1,3 @@
+wrapperのregister系について
+・FontRegisteryPrefab経由のものに換える(FontRegisteryから移行するので当然)
+・Prefabを通したものにする
