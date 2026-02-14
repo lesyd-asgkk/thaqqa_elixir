@@ -47,6 +47,17 @@ defmodule Thaqqa.FontIO do
     end
   end
 
+  def import_as_font(filename) do
+    {:ok, prefab} = FontRegistry.create_prefab()
+
+    file_path = @font_folder <> filename <> @font_file
+
+    case read_and_decode_json(file_path) do
+      {:error, msg} -> {:error, msg}
+      {:ok, rootdata} -> Prefab.import_as_font(prefab, rootdata, filename)
+    end
+  end
+
   ########## ↓は修正前。
   # json → struct
   def import() do

@@ -57,8 +57,8 @@ defmodule Thaqqa.FontRegistry do
     do:
       {:ok,
        Thaqqa.FontRegisteryPrefab.new(
-         :ets.tab2list(@fonts_shadow),
-         :ets.tab2list(@static_tables_shadow)
+         :ets.tab2list(@fonts_shadow) |> Map.new(),
+         :ets.tab2list(@static_tables_shadow) |> Map.new()
        )}
 
   def create_prefab_managed(timeout \\ 5_000), do: safe_call({:create_prefab}, timeout)

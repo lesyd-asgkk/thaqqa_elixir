@@ -7,6 +7,10 @@ defmodule ThaqqaTest do
     {:ok, _pid} = Thaqqa.FontRegistry.start_link([])
 
     Thaqqa.FontIO.import()
+
+    Thaqqa.FontIO.import_as_font("default")
+    |> IO.inspect()
+
     Thaqqa.FontIO.import("default")
     # 上記の前処理で2.3秒
     {:ok, table} = Thaqqa.FontRegistry.get_font("Default")
