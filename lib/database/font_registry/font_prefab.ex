@@ -1,6 +1,7 @@
 defmodule Thaqqa.FontRegisteryPrefab do
   alias Thaqqa.Font, as: Font
   alias Thaqqa.DataTable, as: DataTable
+  alias Thaqqa.Data, as: Data
   alias Thaqqa.Column, as: Column
 
   defstruct fonts: %{}, static_tables: %{}
@@ -76,7 +77,7 @@ defmodule Thaqqa.FontRegisteryPrefab do
   ## static_tableの設定に合わせてfontの仕様を同期させる
   defp complement_table_by_column(
          %__MODULE__{} = self,
-         %Thaqqa.DataTable{name: table_name} = datatable,
+         %DataTable{name: table_name} = datatable,
          column_name
        ) do
     cond do
@@ -95,17 +96,22 @@ defmodule Thaqqa.FontRegisteryPrefab do
   defp complement_table(%__MODULE__{} = self, font_name, table_name) do
     font = get_font(self, font_name)
 
-    if is_nil(font) ||
-         get_static_table_list(self) |> Enum.find(fn {k, _} -> k == table_name end) == [] do
-      # 更新なし
-      self
-    else
-      # もしlocal_tableが削除された（＝見つからなかった）場合、fontのtableの方も削除する
-      if get_static_table_list_local(self)
-         |> Enum.find(fn {k, _} -> k == table_name end) == [] do
+    cond do
+      # フォントが見つからない場合。
+      is_nil(font) ->
+        self
+
+      # テーブルが見つからない場合。（
+      get_static_table_list(self) |> Enum.find(fn {k, _} -> k == table_name end) == [] ->
+        self
+
+      # loaclテーブル上に見つからない（すなわちglobal上にあると断定できる）場合
+      get_static_table_list_local(self)
+      |> Enum.find(fn {k, _} -> k == table_name end) == [] ->
         overwrite_font(self, font_name, Font.delete_table(font, table_name))
-        # 削除処理。
-      else
+
+      # 残り、すなわちlocalテーブル上にあると断定できる場合。
+      true ->
         table = get_table(self, font_name, table_name)
 
         if is_nil(table) do
@@ -123,25 +129,22 @@ defmodule Thaqqa.FontRegisteryPrefab do
 
           overwrite_font(self, font_name, altered_font)
         end
-
-        # 補完処理。
-      end
     end
   end
 
   ## 追加された(される)fontをstatic_tableの設定に合わせる
-  defp complement_font(%__MODULE__{} = self, font_name) do
-    Enum.reduce(get_static_table_list_local(self), self, fn {table_name, _}, acc ->
-      complement_table(self, font_name, table_name)
-    end)
-  end
+  defp complement_font(%__MODULE__{} = self, font_name),
+    do:
+      Enum.reduce(get_static_table_list_local(self), self, fn {table_name, _}, acc ->
+        complement_table(self, font_name, table_name)
+      end)
 
   # static_tableの変更に伴ってfontテーブル側を変更する
-  defp complement_by_static_table(%__MODULE__{} = self, table_name) do
-    Enum.reduce(get_font_list(self), self, fn {font_name, _}, acc ->
-      complement_table(self, font_name, table_name)
-    end)
-  end
+  defp complement_by_static_table(%__MODULE__{} = self, table_name),
+    do:
+      Enum.reduce(get_font_list(self), self, fn {font_name, _}, acc ->
+        complement_table(self, font_name, table_name)
+      end)
 
   def get_static_table(%__MODULE__{} = self, name), do: Map.get(get_static_table_list(self), name)
 
@@ -153,17 +156,17 @@ defmodule Thaqqa.FontRegisteryPrefab do
   def get_static_table_list_local(%__MODULE__{} = self),
     do: get_static_table_list(self) |> Enum.filter(fn {_, val} -> !val.global end)
 
-  def init_static_table(%__MODULE__{} = self, %Thaqqa.DataTable{name: name} = table),
+  def init_static_table(%__MODULE__{} = self, %DataTable{name: name} = table),
     do: update_static_tables(self, Map.put(get_static_table_list(self), name, table), name)
 
-  def add_static_table!(%__MODULE__{} = self, %Thaqqa.DataTable{} = table) do
+  def add_static_table!(%__MODULE__{} = self, %DataTable{} = table) do
     case add_static_table(self, table) do
       {:error, _} -> self.static_tables
       {:ok, value} -> value
     end
   end
 
-  def add_static_table(%__MODULE__{} = self, %Thaqqa.DataTable{name: name} = table) do
+  def add_static_table(%__MODULE__{} = self, %DataTable{name: name} = table) do
     if get_static_table(self, name) == nil do
       {:ok, update_static_tables(self, Map.put(self.static_tables, name, table), name)}
     else
@@ -172,14 +175,14 @@ defmodule Thaqqa.FontRegisteryPrefab do
     end
   end
 
-  def edit_static_table!(%__MODULE__{} = self, name, %Thaqqa.DataTable{} = table) do
+  def edit_static_table!(%__MODULE__{} = self, name, %DataTable{} = table) do
     case edit_static_table(self, name, table) do
       {:error, _} -> self.static_tables
       {:ok, value} -> value
     end
   end
 
-  def edit_static_table(%__MODULE__{} = self, name, %Thaqqa.DataTable{} = table) do
+  def edit_static_table(%__MODULE__{} = self, name, %DataTable{} = table) do
     if get_static_table(self, name) != nil do
       {:ok, update_static_tables(self, Map.put(self.static_tables, name, table), name)}
     else
@@ -226,38 +229,38 @@ defmodule Thaqqa.FontRegisteryPrefab do
     end
   end
 
-  def add_column!(%__MODULE__{} = self, name, %Thaqqa.Column{} = column) do
+  def add_column!(%__MODULE__{} = self, name, %Column{} = column) do
     case add_column(self, name, column) do
       {:error, msg} -> self
       {:ok, value} -> value
     end
   end
 
-  def add_column(%__MODULE__{} = self, name, %Thaqqa.Column{} = column) do
+  def add_column(%__MODULE__{} = self, name, %Column{} = column) do
     case get_static_table(self, name) do
       nil ->
         {:error, "static_table_not_found"}
 
-      %Thaqqa.DataTable{name: name} = datatable ->
-        dt = Thaqqa.DataTable.add_column(datatable, column)
+      %DataTable{name: name} = datatable ->
+        dt = DataTable.add_column(datatable, column)
         edit_static_table(self, name, dt)
     end
   end
 
-  def edit_column!(%__MODULE__{} = self, name, %Thaqqa.Column{} = column) do
+  def edit_column!(%__MODULE__{} = self, name, %Column{} = column) do
     case edit_column(self, name, column) do
       {:error, msg} -> self
       {:ok, value} -> value
     end
   end
 
-  def edit_column(%__MODULE__{} = self, name, %Thaqqa.Column{} = column) do
+  def edit_column(%__MODULE__{} = self, name, %Column{} = column) do
     case get_static_table(self, name) do
       nil ->
         {:error, "static_table_not_found"}
 
-      %Thaqqa.DataTable{name: name} = datatable ->
-        dt = Thaqqa.DataTable.edit_column(datatable, column)
+      %DataTable{name: name} = datatable ->
+        dt = DataTable.edit_column(datatable, column)
         edit_static_table(self, name, dt)
     end
   end
@@ -274,8 +277,8 @@ defmodule Thaqqa.FontRegisteryPrefab do
       nil ->
         {:error, "static_table_not_found"}
 
-      %Thaqqa.DataTable{name: name} = datatable ->
-        Thaqqa.DataTable.delete_column(datatable, column_name)
+      %DataTable{name: name} = datatable ->
+        DataTable.delete_column(datatable, column_name)
         |> then(&edit_static_table(self, name, &1))
     end
   end
@@ -317,15 +320,6 @@ defmodule Thaqqa.FontRegisteryPrefab do
           name -> {:ok, init_font(self, Font.new(filename, name, value))}
         end
     end
-  end
-
-  def set_precompile_as_root(%__MODULE__{} = self, tablename) do
-    # set_precompile_as_root/3をdatatable毎に回す
-    self
-  end
-
-  def set_precompile_as_root(%__MODULE__{} = self, tablename, data) do
-    self
   end
 
   defp import_table(name, struct) do
@@ -386,5 +380,119 @@ defmodule Thaqqa.FontRegisteryPrefab do
       {:error, msg} -> {:error, msg}
       value -> {:ok, value}
     end
+  end
+
+  def set_precompile_as_root_all!(%__MODULE__{} = self, tablename) do
+    case set_precompile_as_root_all(self, tablename) do
+      {:error, msg} -> self
+      {:ok, value} -> value
+    end
+  end
+
+  def set_precompile_as_root_all(%__MODULE__{} = self, tablename) do
+    case get_static_table(self, tablename) do
+      nil ->
+        {:error, "table_not_found"}
+
+      table ->
+        {:ok,
+         Enum.reduce(table.data_list, self, fn data, acc ->
+           set_precompile_internal(acc, table, data)
+         end)}
+    end
+  end
+
+  def set_precompile_as_root!(%__MODULE__{} = self, tablename, %Data{} = data) do
+    case set_precompile_as_root(self, tablename, data) do
+      {:error, msg} -> self
+      {:ok, value} -> value
+    end
+  end
+
+  def set_precompile_as_root(%__MODULE__{} = self, tablename, %Data{} = data) do
+    case get_static_table(self, tablename) do
+      nil -> {:error, "table_not_found"}
+      table -> {:ok, set_precompile_internal(self, nil, table, data)}
+    end
+  end
+
+  def set_precompile_as_root_all!(%__MODULE__{} = self, tablename) do
+    case set_precompile_as_root_all(self, tablename) do
+      {:error, msg} -> self
+      {:ok, value} -> value
+    end
+  end
+
+  def set_precompile_as_root_all(%__MODULE__{} = self, tablename) do
+    case get_static_table(self, tablename) do
+      nil ->
+        {:error, "table_not_found"}
+
+      table ->
+        {:ok,
+         Enum.reduce(table.data_list, self, fn data, acc ->
+           set_precompile_internal(acc, nil, table, data)
+         end)}
+    end
+  end
+
+  def set_precompile_as_font!(%__MODULE__{} = self, fontname, tablename, %Data{} = data) do
+    case set_precompile_as_font(self, fontname, tablename, data) do
+      {:error, msg} -> self
+      {:ok, value} -> value
+    end
+  end
+
+  def set_precompile_as_font(%__MODULE__{} = self, fontname, tablename, %Data{} = data) do
+    case {get_font(self, fontname), get_table(self, fontname, tablename)} do
+      {nil, _} -> {:error, "font_not_found"}
+      {_, nil} -> {:error, "table_not_found"}
+      {font, table} -> {:ok, set_precompile_internal(self, font, table, data)}
+    end
+  end
+
+  def set_precompile_as_font_all!(%__MODULE__{} = self, fontname, tablename) do
+    case set_precompile_as_font_all(self, fontname, tablename) do
+      {:error, msg} -> self
+      {:ok, value} -> value
+    end
+  end
+
+  def set_precompile_as_font_all(%__MODULE__{} = self, fontname, tablename) do
+    case {get_font(self, fontname), get_table(self, fontname, tablename)} do
+      {nil, _} ->
+        {:error, "font_not_found"}
+
+      {_, nil} ->
+        {:error, "table_not_found"}
+
+      {font, table} ->
+        {:ok,
+         Enum.reduce(table.data_list, self, fn data, acc ->
+           set_precompile_internal(acc, font, table, data)
+         end)}
+    end
+  end
+
+  defp set_precompile_internal(%__MODULE__{} = self, %DataTable{} = table, %Data{} = data),
+    do: set_precompile_internal(self, nil, table, data)
+
+  defp set_precompile_internal(%__MODULE__{} = self, nil, %DataTable{} = table, %Data{} = data) do
+    alter_data = data
+    alter_table = DataTable.edit_data!(table, alter_data, &(&1 == data))
+
+    self
+  end
+
+  defp set_precompile_internal(
+         %__MODULE__{} = self,
+         %Font{} = font,
+         %DataTable{} = table,
+         %Data{} = data
+       ) do
+    alter_data = data
+    alter_table = DataTable.edit_data!(table, alter_data, &(&1 == data))
+    alter_font = font
+    self
   end
 end

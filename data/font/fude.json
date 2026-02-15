@@ -1,4 +1,54 @@
 {
+      "FONTSYSDATA": {
+    "name": "FONTSYSDATA",
+        "global":false,
+    "columnList": {
+      "ID": {
+        "name": "ID",
+        "type": "int",
+        "order": 0,
+        "subtype": "id",
+        "dev": true
+      },
+      "VersionMajor": {
+        "name": "VersionMajor",
+        "type": "int",
+        "order": 400,
+        "subtype": "none",
+        "dev": true
+      },
+      "VersionMinor": {
+        "name": "VersionMinor",
+        "type": "int",
+        "order": 401,
+        "subtype": "none",
+        "dev": true
+      },
+      "VersionPatch": {
+        "name": "VersionPatch",
+        "type": "int",
+        "order": 402,
+        "subtype": "none",
+        "dev": true
+      },
+      "VersionPreRelease": {
+        "name": "VersionPreRelease",
+        "type": "string",
+        "order": 403,
+        "subtype": "none",
+        "dev": true
+      }
+    },
+    "data": {
+      "0": {
+        "ID": 0,
+        "VersionMajor": 0,
+        "VersionMinor": 0,
+        "VersionPatch": 0,
+        "VersionPreRelease": ""
+      }
+    }
+  },
   "FONTDATA": {
     "name": "FONTDATA",
     "columnList": {
@@ -72,10 +122,17 @@
         "subtype": "non_negative",
         "dev": false
       },
+            "VersionPreRelease": {
+        "name": "VersionPreRelease",
+        "type": "string",
+        "order": 403,
+        "subtype": "none",
+        "dev": true
+      },
       "Fontname": {
         "name": "Fontname",
         "type": "string",
-        "order": 403,
+        "order": 500,
         "subtype": "",
         "dev": false
       }
@@ -92,6 +149,7 @@
         "VersionMajor": 0,
         "VersionMinor": 0,
         "VersionPatch": 0,
+        "VersionPreRelease":"",
         "Fontname":"Fude"
       }
     }
