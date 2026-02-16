@@ -1,4 +1,6 @@
-defmodule Thaqqa.FontRegisteryPrefab do
+defmodule Thaqqa.FontRegistryPrefab do
+  alias Thaqqa.PrefabComplement, as: PrefabComplement
+  alias Thaqqa.PrefabCompiler, as: PrefabCompiler
   alias Thaqqa.Font, as: Font
   alias Thaqqa.DataTable, as: DataTable
   alias Thaqqa.Data, as: Data
@@ -20,7 +22,7 @@ defmodule Thaqqa.FontRegisteryPrefab do
   # こちらは既に存在する場合は反映しない
   # 「一応」エラーを返すverも作っとく。
   # エラー：重なりがあります　的な
-  def add_font!(%__MODULE__{} = self, %Thaqqa.Font{} = font) do
+  def add_font_if_enable(%__MODULE__{} = self, %Thaqqa.Font{} = font) do
     case add_font(self, font) do
       {:error, _} -> self
       {:ok, value} -> value
@@ -34,7 +36,7 @@ defmodule Thaqqa.FontRegisteryPrefab do
       else: {:error, "font_conflict"}
   end
 
-  def delete_font!(%__MODULE__{} = self, name) do
+  def delete_font_if_enable(%__MODULE__{} = self, name) do
     case delete_font(self, name) do
       {:error, _} -> self
       {:ok, value} -> value
@@ -51,10 +53,13 @@ defmodule Thaqqa.FontRegisteryPrefab do
   def get_font(%__MODULE__{} = self, name), do: Map.get(self.fonts, name)
   def get_font_list(%__MODULE__{} = self), do: self.fonts
 
-  def edit_font!(%__MODULE__{} = self, name, %Thaqqa.Font{} = font) do
+  def edit_font_if_enable(%__MODULE__{} = self, name, %Thaqqa.Font{} = font) do
     case edit_font(self, name, font) do
-      {:error, _} -> self
-      {:ok, value} -> value
+      {:error, _} ->
+        self
+
+      {:ok, value} ->
+        value
     end
   end
 
@@ -65,86 +70,9 @@ defmodule Thaqqa.FontRegisteryPrefab do
       else: {:error, "font_not_found"}
   end
 
-  # overwrite_fontは内部にしか使わないのでエラー処理はない
-  defp overwrite_font(%__MODULE__{} = self, name, %Thaqqa.Font{} = font) do
-    if get_font(self, name) != nil,
-      do: update_fonts(self, Map.put(self.fonts, name, font)),
-      else: self
-  end
-
   ## static_table類
 
-  ## static_tableの設定に合わせてfontの仕様を同期させる
-  defp complement_table_by_column(
-         %__MODULE__{} = self,
-         %DataTable{name: table_name} = datatable,
-         column_name
-       ) do
-    cond do
-      get_column(self, table_name, column_name) == [] ->
-        DataTable.delete_column(datatable, column_name)
-
-      get_column(self, table_name, column_name) != [] and
-          DataTable.get_column(datatable, fn %Column{name: name} -> name == column_name end) == [] ->
-        DataTable.add_column!(datatable, column_name)
-
-      true ->
-        datatable
-    end
-  end
-
-  defp complement_table(%__MODULE__{} = self, font_name, table_name) do
-    font = get_font(self, font_name)
-
-    cond do
-      # フォントが見つからない場合。
-      is_nil(font) ->
-        self
-
-      # テーブルが見つからない場合。（
-      get_static_table_list(self) |> Enum.find(fn {k, _} -> k == table_name end) == [] ->
-        self
-
-      # loaclテーブル上に見つからない（すなわちglobal上にあると断定できる）場合
-      get_static_table_list_local(self)
-      |> Enum.find(fn {k, _} -> k == table_name end) == [] ->
-        overwrite_font(self, font_name, Font.delete_table(font, table_name))
-
-      # 残り、すなわちlocalテーブル上にあると断定できる場合。
-      true ->
-        table = get_table(self, font_name, table_name)
-
-        if is_nil(table) do
-          # テーブル自体を補完
-          altered_font = Font.add_table(font, get_static_table(self, table_name))
-          overwrite_font(self, font_name, altered_font)
-        else
-          # column毎の補完・削除処理。
-          # complement_table_base_on_columnに分離するか。
-          altered_font =
-            Enum.reduce(get_column_list(self, table_name), font, fn column, font_alt ->
-              altered_table = complement_table_by_column(self, table, column.name)
-              Font.edit_table(font_alt, table_name, altered_table)
-            end)
-
-          overwrite_font(self, font_name, altered_font)
-        end
-    end
-  end
-
-  ## 追加された(される)fontをstatic_tableの設定に合わせる
-  defp complement_font(%__MODULE__{} = self, font_name),
-    do:
-      Enum.reduce(get_static_table_list_local(self), self, fn {table_name, _}, acc ->
-        complement_table(self, font_name, table_name)
-      end)
-
-  # static_tableの変更に伴ってfontテーブル側を変更する
-  defp complement_by_static_table(%__MODULE__{} = self, table_name),
-    do:
-      Enum.reduce(get_font_list(self), self, fn {font_name, _}, acc ->
-        complement_table(self, font_name, table_name)
-      end)
+  ## 以降、static_table系統の本体
 
   def get_static_table(%__MODULE__{} = self, name), do: Map.get(get_static_table_list(self), name)
 
@@ -159,7 +87,7 @@ defmodule Thaqqa.FontRegisteryPrefab do
   def init_static_table(%__MODULE__{} = self, %DataTable{name: name} = table),
     do: update_static_tables(self, Map.put(get_static_table_list(self), name, table), name)
 
-  def add_static_table!(%__MODULE__{} = self, %DataTable{} = table) do
+  def add_static_table_if_enable(%__MODULE__{} = self, %DataTable{} = table) do
     case add_static_table(self, table) do
       {:error, _} -> self.static_tables
       {:ok, value} -> value
@@ -175,7 +103,7 @@ defmodule Thaqqa.FontRegisteryPrefab do
     end
   end
 
-  def edit_static_table!(%__MODULE__{} = self, name, %DataTable{} = table) do
+  def edit_static_table_if_enable(%__MODULE__{} = self, name, %DataTable{} = table) do
     case edit_static_table(self, name, table) do
       {:error, _} -> self.static_tables
       {:ok, value} -> value
@@ -191,7 +119,7 @@ defmodule Thaqqa.FontRegisteryPrefab do
     end
   end
 
-  def delete_static_table!(%__MODULE__{} = self, name) do
+  def delete_static_table_if_enable(%__MODULE__{} = self, name) do
     case delete_static_table(self, name) do
       {:error, _} -> self.static_tables
       {:ok, value} -> value
@@ -229,7 +157,7 @@ defmodule Thaqqa.FontRegisteryPrefab do
     end
   end
 
-  def add_column!(%__MODULE__{} = self, name, %Column{} = column) do
+  def add_column_if_enable(%__MODULE__{} = self, name, %Column{} = column) do
     case add_column(self, name, column) do
       {:error, msg} -> self
       {:ok, value} -> value
@@ -247,7 +175,7 @@ defmodule Thaqqa.FontRegisteryPrefab do
     end
   end
 
-  def edit_column!(%__MODULE__{} = self, name, %Column{} = column) do
+  def edit_column_if_enable(%__MODULE__{} = self, name, %Column{} = column) do
     case edit_column(self, name, column) do
       {:error, msg} -> self
       {:ok, value} -> value
@@ -265,7 +193,7 @@ defmodule Thaqqa.FontRegisteryPrefab do
     end
   end
 
-  def delete_column!(%__MODULE__{} = self, name, column_name) do
+  def delete_column_if_enable(%__MODULE__{} = self, name, column_name) do
     case delete_column(self, name, column_name) do
       {:error, msg} -> self
       {:ok, value} -> value
@@ -291,12 +219,12 @@ defmodule Thaqqa.FontRegisteryPrefab do
       import_table(k, v)
       |> case do
         {:error, msg} -> {:halt, {:error, msg}}
-        {:ok, value} -> {:cont, init_static_table(self, value)}
+        {:ok, value} -> {:cont, init_static_table(acc, value)}
       end
     end)
     |> case do
       {:error, msg} -> {:error, msg}
-      value -> {:ok, value}
+      value -> set_precompile_as_root(value)
     end
   end
 
@@ -316,14 +244,17 @@ defmodule Thaqqa.FontRegisteryPrefab do
 
       value ->
         case extract_datatable_name(fontdata) do
-          nil -> {:error, "Cannot load font: Fontname is not found"}
-          name -> {:ok, init_font(self, Font.new(filename, name, value))}
+          nil ->
+            {:error, "Cannot load font: Fontname is not found"}
+
+          name ->
+            init_font(self, Font.new(filename, name, value)) |> set_precompile_as_font(name)
         end
     end
   end
 
   defp import_table(name, struct) do
-    table = DataTable.new(name, Map.get(struct, "global"), nil)
+    table = DataTable.new(name, Map.get(struct, "global"), nil, Map.get(struct, "compile_rule"))
 
     Enum.reduce_while(struct, table, fn {k, v}, ans ->
       if k == "columnList" do
@@ -382,117 +313,47 @@ defmodule Thaqqa.FontRegisteryPrefab do
     end
   end
 
-  def set_precompile_as_root_all!(%__MODULE__{} = self, tablename) do
-    case set_precompile_as_root_all(self, tablename) do
-      {:error, msg} -> self
-      {:ok, value} -> value
-    end
+  ## static_tableの設定に合わせてfontの仕様を同期させる
+  ## 本体は別モジュールで行っている
+  defp overwrite_font(%__MODULE__{} = self, name, %Thaqqa.Font{} = font) do
+    if get_font(self, name) != nil,
+      do: update_fonts(self, Map.put(self.fonts, name, font)),
+      else: self
   end
 
-  def set_precompile_as_root_all(%__MODULE__{} = self, tablename) do
-    case get_static_table(self, tablename) do
-      nil ->
-        {:error, "table_not_found"}
-
-      table ->
-        {:ok,
-         Enum.reduce(table.data_list, self, fn data, acc ->
-           set_precompile_internal(acc, table, data)
-         end)}
-    end
-  end
-
-  def set_precompile_as_root!(%__MODULE__{} = self, tablename, %Data{} = data) do
-    case set_precompile_as_root(self, tablename, data) do
-      {:error, msg} -> self
-      {:ok, value} -> value
-    end
-  end
-
-  def set_precompile_as_root(%__MODULE__{} = self, tablename, %Data{} = data) do
-    case get_static_table(self, tablename) do
-      nil -> {:error, "table_not_found"}
-      table -> {:ok, set_precompile_internal(self, nil, table, data)}
-    end
-  end
-
-  def set_precompile_as_root_all!(%__MODULE__{} = self, tablename) do
-    case set_precompile_as_root_all(self, tablename) do
-      {:error, msg} -> self
-      {:ok, value} -> value
-    end
-  end
-
-  def set_precompile_as_root_all(%__MODULE__{} = self, tablename) do
-    case get_static_table(self, tablename) do
-      nil ->
-        {:error, "table_not_found"}
-
-      table ->
-        {:ok,
-         Enum.reduce(table.data_list, self, fn data, acc ->
-           set_precompile_internal(acc, nil, table, data)
-         end)}
-    end
-  end
-
-  def set_precompile_as_font!(%__MODULE__{} = self, fontname, tablename, %Data{} = data) do
-    case set_precompile_as_font(self, fontname, tablename, data) do
-      {:error, msg} -> self
-      {:ok, value} -> value
-    end
-  end
-
-  def set_precompile_as_font(%__MODULE__{} = self, fontname, tablename, %Data{} = data) do
-    case {get_font(self, fontname), get_table(self, fontname, tablename)} do
-      {nil, _} -> {:error, "font_not_found"}
-      {_, nil} -> {:error, "table_not_found"}
-      {font, table} -> {:ok, set_precompile_internal(self, font, table, data)}
-    end
-  end
-
-  def set_precompile_as_font_all!(%__MODULE__{} = self, fontname, tablename) do
-    case set_precompile_as_font_all(self, fontname, tablename) do
-      {:error, msg} -> self
-      {:ok, value} -> value
-    end
-  end
-
-  def set_precompile_as_font_all(%__MODULE__{} = self, fontname, tablename) do
-    case {get_font(self, fontname), get_table(self, fontname, tablename)} do
-      {nil, _} ->
-        {:error, "font_not_found"}
-
-      {_, nil} ->
-        {:error, "table_not_found"}
-
-      {font, table} ->
-        {:ok,
-         Enum.reduce(table.data_list, self, fn data, acc ->
-           set_precompile_internal(acc, font, table, data)
-         end)}
-    end
-  end
-
-  defp set_precompile_internal(%__MODULE__{} = self, %DataTable{} = table, %Data{} = data),
-    do: set_precompile_internal(self, nil, table, data)
-
-  defp set_precompile_internal(%__MODULE__{} = self, nil, %DataTable{} = table, %Data{} = data) do
-    alter_data = data
-    alter_table = DataTable.edit_data!(table, alter_data, &(&1 == data))
-
-    self
-  end
-
-  defp set_precompile_internal(
+  defp complement_table_by_column(
          %__MODULE__{} = self,
-         %Font{} = font,
-         %DataTable{} = table,
-         %Data{} = data
-       ) do
-    alter_data = data
-    alter_table = DataTable.edit_data!(table, alter_data, &(&1 == data))
-    alter_font = font
-    self
-  end
+         %DataTable{name: table_name} = datatable,
+         column_name
+       ),
+       do: PrefabComplement.complement_table_by_column(self, datatable, column_name)
+
+  defp complement_table(%__MODULE__{} = self, font_name, table_name),
+    do: PrefabComplement.complement_table(self, font_name, table_name)
+
+  ## 追加された(される)fontをstatic_tableの設定に合わせる
+  defp complement_font(%__MODULE__{} = self, font_name),
+    do: PrefabComplement.complement_font(self, font_name)
+
+  # static_tableの変更に伴ってfontテーブル側を変更する
+  defp complement_by_static_table(%__MODULE__{} = self, table_name),
+    do: PrefabComplement.complement_by_static_table(self, table_name)
+
+  def set_precompile_as_root(%__MODULE__{} = self),
+    do: PrefabCompiler.set_precompile_as_root(self)
+
+  def set_precompile_as_root_by_table(%__MODULE__{} = self, tablename),
+    do: PrefabCompiler.set_precompile_as_root_by_table(self, tablename)
+
+  def set_precompile_as_root_by_data(%__MODULE__{} = self, tablename, %Data{} = data),
+    do: PrefabCompiler.set_precompile_as_root_by_data(self, data)
+
+  def set_precompile_as_font(%__MODULE__{} = self, fontname),
+    do: PrefabCompiler.set_precompile_as_font(self, fontname)
+
+  def set_precompile_as_font_by_table(%__MODULE__{} = self, fontname, tablename),
+    do: PrefabCompiler.set_precompile_as_font_by_table(self, fontname, tablename)
+
+  def set_precompile_as_font_by_data(%__MODULE__{} = self, fontname, tablename, %Data{} = data),
+    do: PrefabCompiler.set_precompile_as_font_by_data(self, fontname, tablename, data)
 end

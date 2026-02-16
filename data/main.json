@@ -2,6 +2,7 @@
   "ROOTSYSDATA": {
     "name": "ROOTSYSDATA",
         "global":true,
+        "compile_rule":"none",
     "columnList": {
       "ID": {
         "name": "ID",
@@ -53,6 +54,7 @@
   "FONTSYSDATA": {
     "name": "FONTSYSDATA",
         "global":false,
+        "compile_rule":"none",
     "columnList": {
       "ID": {
         "name": "ID",
@@ -103,6 +105,7 @@
   "ROOTDATA": {
     "name": "ROOTDATA",
         "global":true,
+        "compile_rule":"none",
     "columnList": {
       "ID": {
         "name": "ID",
@@ -145,6 +148,7 @@
   "VOWEL": {
     "name": "VOWEL",
     "global":true,
+    "compile_rule":"none",
     "columnList": {
       "ID": {
         "name": "ID",
@@ -424,6 +428,7 @@
   "CONSONANT": {
     "name": "CONSONANT",
     "global":true,
+    "compile_rule":"none",
     "columnList": {
       "ID": {
         "name": "ID",
@@ -698,6 +703,7 @@
   "PUNCTUATION": {
     "name": "PUNCTUATION",
     "global":true,
+    "compile_rule":"none",
     "columnList": {
       "ID": {
         "name": "ID",
@@ -932,6 +938,7 @@
   "DIACRITIC_V": {
     "name": "DIACRITIC_V",
     "global":true,
+    "compile_rule":"none",
     "columnList": {
       "ID": {
         "name": "ID",
@@ -1058,6 +1065,7 @@
   "DIACRITIC_C": {
     "name": "DIACRITIC_C",
     "global":true,
+    "compile_rule":"none",
     "columnList": {
       "ID": {
         "name": "ID",
@@ -1162,6 +1170,7 @@
   "DIACRITIC_P": {
     "name": "DIACRITIC_P",
     "global":true,
+    "compile_rule":"none",
     "columnList": {
       "ID": {
         "name": "ID",
@@ -1218,6 +1227,7 @@
   "PARSER": {
     "name": "PARSER",
     "global":true,
+    "compile_rule":"regex_0",
     "columnList": {
       "ID": {
         "name": "ID",
@@ -2920,6 +2930,7 @@
   "GSUB": {
     "name": "GSUB",
     "global":true,
+    "compile_rule":"regex_0",
     "columnList": {
       "ID": {
         "name": "ID",
@@ -3677,6 +3688,7 @@
   "FONTDATA": {
     "name": "FONTDATA",
     "global": false, 
+    "compile_rule":"none",
     "columnList": {
       "ID": {
         "name": "ID",
@@ -3776,6 +3788,7 @@
  "GPOS": {
     "name": "GPOS",
     "global": false, 
+    "compile_rule":"regex_0",
     "columnList": {
       "ID": {
         "name": "ID",
@@ -3866,6 +3879,7 @@
   "UniqueGSUB": {
     "name": "UniqueGSUB",
     "global": false, 
+    "compile_rule":"regex_0",
     "columnList": {
       "ID": {
         "name": "ID",
@@ -3931,6 +3945,7 @@
   "GLYPH": {
     "name": "GLYPH",
     "global": false, 
+    "compile_rule":"path_0",
     "columnList": {
       "ID": {
         "name": "ID",

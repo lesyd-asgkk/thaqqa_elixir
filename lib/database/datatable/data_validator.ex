@@ -1,4 +1,5 @@
 defmodule Thaqqa.DataValidator do
+  alias Thaqqa.FontRegistry.Error, as: Error
   alias Thaqqa.DataTable, as: DataTable
   alias Thaqqa.Column, as: Column
 

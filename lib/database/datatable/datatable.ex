@@ -16,16 +16,18 @@ defmodule Thaqqa.DataTable do
     :name,
     :global,
     :parent,
+    :compile_rule,
     column_list: [],
     data_list: [],
     desc: ""
   ]
 
-  def new(name, global, parent),
+  def new(name, global, parent, compile_rule),
     do: %__MODULE__{
       name: name,
       global: global,
       parent: parent,
+      compile_rule: compile_rule,
       desc: "",
       column_list: [],
       data_list: []
@@ -33,9 +35,7 @@ defmodule Thaqqa.DataTable do
 
   def is_global?(%__MODULE__{global: global}), do: global
 
-  # 初期値設定のため
-
-  # column系統。get_column以外は全部書き換える（見づらすぎ）
+  # column系統
 
   def get_column(%__MODULE__{column_list: columns}, filter_fun \\ fn _ -> true end),
     do: Enum.filter(columns, filter_fun)
@@ -74,20 +74,19 @@ defmodule Thaqqa.DataTable do
       ) do
     new_cols = Enum.filter(cols, fn %Column{name: name} -> name != column_name end)
 
-    new_datalist =
-      Enum.map(datalist, fn data ->
-        %{data | value_list: Map.delete(data.value_list, column_name)}
-      end)
+    new_datalist = Enum.map(datalist, fn data -> Data.delete_val(data, column_name) end)
 
     %{table | column_list: new_cols, data_list: new_datalist}
   end
 
+  # 書き直し対象（）
   def edit_column(
         %__MODULE__{column_list: col_list} = table,
         column_name,
         %Column{name: new_name} = column
       ) do
-    if get_column(table, fn %Column{name: name} -> name == column_name end) != [] do
+    if get_column(table, fn %Column{name: name} -> name == column_name end) != [] and
+         column_name != new_name do
       Error.nominal_conflict_column(column_name, :edit)
     else
       new_cols =
@@ -96,19 +95,21 @@ defmodule Thaqqa.DataTable do
           col -> col
         end)
 
-      if new_name != nil do
-        # データのキーも変更する
-        new_datas =
-          Enum.map(table.data_list, fn data ->
-            val = Data.get_val(data, column_name)
-            data = Data.set_val(data, new_name, val)
-            %{data | value_list: Map.delete(data.value_list, column_name)}
-          end)
+      # データのキーも変更する
+      new_datas =
+        Enum.map(table.data_list, fn data ->
+          raw_val = Data.get_val(data, column_name)
+          val = Column.adjust_val(column, raw_val)
 
-        %{table | column_list: new_cols, data_list: new_datas}
-      else
-        %{table | column_list: new_cols}
-      end
+          # そもそもtype、subtypeが変わった場合は値を書き換える処理を付け加える
+          data = Data.set_val(data, new_name, val)
+
+          if new_name != column_name,
+            do: %{data | value_list: Map.delete(data.value_list, column_name)},
+            else: %{data | value_list: Map.delete(data.value_list, column_name)}
+        end)
+
+      %{table | column_list: new_cols, data_list: new_datas}
     end
   end
 
@@ -155,8 +156,6 @@ defmodule Thaqqa.DataTable do
     end)
   end
 
-  # init_dataを付け加える
-
   def init_data(
         %__MODULE__{data_list: datas, column_list: column_list} = table,
         value_map
@@ -167,8 +166,7 @@ defmodule Thaqqa.DataTable do
         {:error, msg}
 
       {:ok, _v} ->
-        value_map = value_map |> modify_value_map(table) |> attach_id(table)
-        new_data = %Data{value_list: value_map}
+        new_data = value_map |> modify_value_map(table) |> attach_id(table) |> Data.new()
         {:ok, %{table | data_list: [new_data | datas]}}
     end
   end
@@ -192,7 +190,7 @@ defmodule Thaqqa.DataTable do
 
       {:ok, _v} ->
         value_map = value_map |> modify_value_map(table) |> attach_id(table)
-        new_data = %Data{value_list: value_map}
+        new_data = Data.new(value_map)
         {:ok, %{table | data_list: [new_data | datas]} |> Thaqqa.DataTable.sort()}
     end
   end
@@ -235,8 +233,9 @@ defmodule Thaqqa.DataTable do
       {:ok, _} ->
         new_datas =
           Enum.map(datas, fn %Data{} = data ->
+            ## ここ書き方が見苦しいから更新メソッドを後で追加する
             if filter_fun.(data),
-              do: %Data{data | value_list: Map.merge(data.value_list, new_value_map)},
+              do: Data.edit_val(data, Map.merge(data.value_list, new_value_map)),
               else: data
           end)
 
@@ -261,6 +260,8 @@ defmodule Thaqqa.DataTable do
     %__MODULE__{dt | data_list: sorted}
   end
 
+  #
+
   def update_fontregistry(%__MODULE__{name: name, parent: nil} = table),
     do: FontRegistry.edit_static_table(name, table)
 
@@ -271,21 +272,4 @@ defmodule Thaqqa.DataTable do
 
   def update_fontregistry(%{} = map),
     do: Enum.map(map, fn %__MODULE__{} = table -> update_fontregistry(table) end)
-
-  def update_prefab(
-        %__MODULE__{name: name, parent: nil} = table,
-        %FontRegisteryPrefab{} = prefab
-      ),
-      do: FontRegisteryPrefab.edit_static_table(prefab, name, table)
-
-  def update_prefab(
-        %__MODULE__{name: name, parent: parent} = table,
-        %FontRegisteryPrefab{} = prefab
-      ) do
-    {:ok, parent_font} = FontRegisteryPrefab.get_font(parent)
-    parent_font |> Font.edit_table(name, table) |> Font.update_prefab(prefab)
-  end
-
-  def update_prefab(%{} = map, %FontRegisteryPrefab{} = prefab),
-    do: Enum.map(map, fn %__MODULE__{} = table -> update_prefab(table, prefab) end)
 end

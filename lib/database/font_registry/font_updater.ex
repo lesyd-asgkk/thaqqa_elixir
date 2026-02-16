@@ -1,5 +1,5 @@
 defmodule Thaqqa.FontUpdater do
-  alias Thaqqa.FontRegisteryPrefab, as: Prefab
+  alias Thaqqa.FontRegistryPrefab, as: Prefab
   alias Thaqqa.Font, as: Font
   alias Thaqqa.DataTable, as: DataTable
   alias Thaqqa.Data, as: Data

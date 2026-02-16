@@ -56,14 +56,14 @@ defmodule Thaqqa.FontRegistry do
   def create_prefab(),
     do:
       {:ok,
-       Thaqqa.FontRegisteryPrefab.new(
+       Thaqqa.FontRegistryPrefab.new(
          :ets.tab2list(@fonts_shadow) |> Map.new(),
          :ets.tab2list(@static_tables_shadow) |> Map.new()
        )}
 
   def create_prefab_managed(timeout \\ 5_000), do: safe_call({:create_prefab}, timeout)
 
-  def apply_prefab(%Thaqqa.FontRegisteryPrefab{} = prefab, timeout \\ 5_000),
+  def apply_prefab(%Thaqqa.FontRegistryPrefab{} = prefab, timeout \\ 5_000),
     do: safe_call({:apply_prefab, prefab}, timeout)
 
   def get_font_all(), do: {:ok, :ets.tab2list(@fonts_shadow)}
@@ -164,20 +164,20 @@ defmodule Thaqqa.FontRegistry do
   end
 
   def handle_call(
-        {:apply_prefab, %Thaqqa.FontRegisteryPrefab{fonts: f, static_tables: t}},
+        {:apply_prefab, %Thaqqa.FontRegistryPrefab{fonts: f, static_tables: t}},
         _from,
         state
       ) do
     :ets.delete_all_objects(@fonts_shadow)
     :ets.delete_all_objects(@static_tables_shadow)
-    Enum.each(f, &:ets.insert(@fonts_shadow, &1))
-    Enum.each(t, &:ets.insert(@static_tables_shadow, &1))
+    Enum.each(Map.to_list(f), &:ets.insert(@fonts_shadow, &1))
+    Enum.each(Map.to_list(t), &:ets.insert(@static_tables_shadow, &1))
     {:reply, :ok, state}
   end
 
   def handle_call({:create_prefab}, _from, state) do
     result =
-      Thaqqa.FontRegisteryPrefab.new(
+      Thaqqa.FontRegistryPrefab.new(
         :ets.tab2list(@fonts_shadow),
         :ets.tab2list(@static_tables_shadow)
       )

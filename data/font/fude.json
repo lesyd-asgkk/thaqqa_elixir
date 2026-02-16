@@ -1,7 +1,7 @@
 {
       "FONTSYSDATA": {
     "name": "FONTSYSDATA",
-        "global":false,
+    "compile_rule":"none",
     "columnList": {
       "ID": {
         "name": "ID",
@@ -51,6 +51,7 @@
   },
   "FONTDATA": {
     "name": "FONTDATA",
+    "compile_rule":"none",
     "columnList": {
       "ID": {
         "name": "ID",
@@ -156,6 +157,7 @@
   },
   "GPOS": {
     "name": "GPOS",
+    "compile_rule":"regex_0",
     "columnList": {
       "ID": {
         "name": "ID",
@@ -8513,6 +8515,7 @@
   },
   "UniqueGSUB": {
     "name": "UniqueGSUB",
+    "compile_rule":"regex_0",
     "columnList": {
       "ID": {
         "name": "ID",
@@ -8578,6 +8581,7 @@
   },
   "GLYPH": {
     "name": "GLYPH",
+    "compile_rule":"path_0",
     "columnList": {
       "ID": {
         "name": "ID",

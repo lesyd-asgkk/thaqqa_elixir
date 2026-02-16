@@ -6,12 +6,15 @@ defmodule ThaqqaTest do
   test "creates a new point" do
     {:ok, _pid} = Thaqqa.FontRegistry.start_link([])
 
-    Thaqqa.FontIO.import()
-
+    Thaqqa.FontIO.import_as_root()
     Thaqqa.FontIO.import_as_font("default")
+
+    {:ok, data} = Thaqqa.FontRegistry.create_prefab()
+
+    data
+    |> Thaqqa.FontRegistryPrefab.get_static_table("PARSER")
     |> IO.inspect()
 
-    Thaqqa.FontIO.import("default")
     # 上記の前処理で2.3秒
     {:ok, table} = Thaqqa.FontRegistry.get_font("Default")
 

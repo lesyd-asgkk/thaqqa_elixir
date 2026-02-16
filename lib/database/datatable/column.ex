@@ -84,6 +84,13 @@ defmodule Thaqqa.Column do
   # :alig_x0,:alig_x1,:alig_y0は -1,0,1のみを取る
   # :non_negativeは0以上、:naturalは1以上
 
+  def adjust_val(%__MODULE__{} = self, val),
+    do:
+      if(is_value_range_valid?(self, val),
+        do: val,
+        else: init_val(self, nil)
+      )
+
   def is_value_range_valid?(%__MODULE__{type: :int, subtype: subtype}, val) do
     if !is_integer(val) do
       false

@@ -57,9 +57,4 @@ defmodule Thaqqa.Font do
     FontRegistry.edit_font(name, font)
     font
   end
-
-  def update_prefab(%__MODULE__{name: name} = font, %FontRegisteryPrefab{} = prefab) do
-    FontRegisteryPrefab.edit_font(name, font)
-    font
-  end
 end
