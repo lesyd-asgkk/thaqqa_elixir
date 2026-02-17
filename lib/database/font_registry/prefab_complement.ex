@@ -5,8 +5,9 @@ defmodule Thaqqa.PrefabComplement do
   alias Thaqqa.Data, as: Data
   alias Thaqqa.Column, as: Column
   alias Thaqqa.FontRegistry.Error, as: Error
+
   defp update_fonts(%Prefab{} = self, f), do: %Prefab{self | fonts: f}
-  # overwrite_fontは内部にしか使わないのでエラー処理はない
+  # overwrite_fontはどうせ内部にしか使わないのでエラー処理はない
   defp overwrite_font(%Prefab{} = self, name, %Thaqqa.Font{} = font) do
     if Prefab.get_font(self, name) != nil,
       do: update_fonts(self, Map.put(self.fonts, name, font)),
