@@ -5,7 +5,7 @@ defmodule Thaqqa.FontRegistryPrefab do
   alias Thaqqa.DataTable, as: DataTable
   alias Thaqqa.Data, as: Data
   alias Thaqqa.Column, as: Column
-
+  alias Thaqqa.FontRegistry.Error, as: Error
   defstruct fonts: %{}, static_tables: %{}
 
   def new(fonts, static_tables), do: %__MODULE__{fonts: fonts, static_tables: static_tables}
@@ -271,7 +271,12 @@ defmodule Thaqqa.FontRegistryPrefab do
               )
 
             if Map.get(v_, "name") == nil or Map.get(v_, "type") == nil,
-              do: {:halt, {:error, "name or type is undefined"}},
+              do:
+                {:halt,
+                 Error.requried_column_not_found(%{
+                   name: Map.get(v_, "name"),
+                   type: Map.get(v_, "type")
+                 })},
               else: {:cont, DataTable.add_column!(ans_, new_column)}
           end)
 

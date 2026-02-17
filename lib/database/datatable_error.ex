@@ -1,25 +1,47 @@
 defmodule Thaqqa.FontRegistry.Error do
   defexception [:class, :reason, :meta]
 
+  # 何かが存在していない
   @type class ::
           :not_found
+          # すでに存在している（重複）
           | :already_exists
+          # 値が無効
           | :invalid
+          # 重複。already_existsより深刻。
           | :conflict
+          # システム的に変更できない(ID系譜とか)
           | :locked
+          # 直接弄れない（precompiledとか）
           | :forbidden
+          # 変更対象が多すぎ
           | :limit_exceeded
+          # ...?
           | :internal
 
+  # フォントが
   @type reason ::
           :font
+          # データテーブルが
           | :datatable
+          # 列が
           | :column
+          # 値が
           | :subject
+          # データタイプ自体（無効な型）
           | :datatype
+          # サブタイプ自体（同上）
+          | :subtype
+          # データがタイプに違反している
           | :value_datatype
+          # データがサブタイプに違反している
           | :value_range
+          # 重複不可な列で重複しています
           | :unique
+          # インポート中
+          | :import
+          # genserverで
+          | :genserver
 
   @type t :: %__MODULE__{
           class: atom(),
@@ -37,6 +59,9 @@ defmodule Thaqqa.FontRegistry.Error do
     do: error(:internal, :genserver, %{detail: detail})
 
   # 名義衝突
+  def nominal_conflict_column(name, op),
+    do: error(:already_exists, :column, %{column_name: name, operation: op})
+
   def nominal_conflict_column(name, op),
     do: error(:already_exists, :column, %{column_name: name, operation: op})
 
@@ -83,12 +108,17 @@ defmodule Thaqqa.FontRegistry.Error do
   def edit_forbidden(column, subtype),
     do: error(:forbidden, :column, %{column_name: column, subtype: subtype})
 
+  # 多すぎ
   def too_many_subject(values, op),
     do: error(:limit_exceeded, :subject, %{subject_list: values, operation: op})
 
+  # 何も無い
   def table_not_found(tablename, fontname \\ nil),
     do: error(:not_found, :datatable, %{table_name: tablename, font_name: fontname})
 
   def font_not_found(fontname),
     do: error(:not_found, :font, %{font_name: fontname})
+
+  def requried_column_not_found(column_list),
+    do: error(:not_found, :import, %{column_list: column_list})
 end

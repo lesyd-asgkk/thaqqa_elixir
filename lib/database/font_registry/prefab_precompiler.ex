@@ -4,6 +4,7 @@ defmodule Thaqqa.PrefabCompiler do
   alias Thaqqa.DataTable, as: DataTable
   alias Thaqqa.Data, as: Data
   alias Thaqqa.Column, as: Column
+  alias Thaqqa.FontRegistry.Error, as: Error
 
   def set_precompile_as_root(%Prefab{} = self) do
     Enum.reduce_while(Prefab.get_static_table_list(self), self, fn {tablename, _}, acc ->
@@ -21,7 +22,7 @@ defmodule Thaqqa.PrefabCompiler do
   def set_precompile_as_root_by_table(%Prefab{} = self, tablename) do
     case Prefab.get_static_table(self, tablename) do
       nil ->
-        {:error, "table_not_found"}
+        Error.table_not_found(tablename)
 
       table ->
         Enum.reduce_while(table.data_list, self, fn data, acc ->
@@ -43,7 +44,7 @@ defmodule Thaqqa.PrefabCompiler do
 
   def set_precompile_as_root_by_data(%Prefab{} = self, tablename, %Data{} = data) do
     case Prefab.get_static_table(self, tablename) do
-      nil -> {:error, "table_not_found"}
+      nil -> Error.table_not_found(tablename)
       table -> set_precompile_internal(self, nil, table, data)
     end
   end
@@ -52,7 +53,7 @@ defmodule Thaqqa.PrefabCompiler do
     font = Prefab.get_font(self, fontname)
 
     if font == nil do
-      {:error, "font_not_found"}
+      Error.font_not_found(fontname)
     else
       Enum.reduce_while(font.table_list, self, fn %DataTable{name: tablename}, acc ->
         case set_precompile_as_font_by_table(acc, fontname, tablename) do
@@ -70,10 +71,10 @@ defmodule Thaqqa.PrefabCompiler do
   def set_precompile_as_font_by_table(%Prefab{} = self, fontname, tablename) do
     case {Prefab.get_font(self, fontname), Prefab.get_table(self, fontname, tablename)} do
       {nil, _} ->
-        {:error, "font_not_found"}
+        Error.font_not_found(fontname)
 
       {_, nil} ->
-        {:error, "table_not_found"}
+        Error.table_not_found(tablename)
 
       {font, table} ->
         Enum.reduce_while(table.data_list, self, fn data, acc ->
@@ -96,8 +97,8 @@ defmodule Thaqqa.PrefabCompiler do
 
   def set_precompile_as_font_by_data(%Prefab{} = self, fontname, tablename, %Data{} = data) do
     case {Prefab.get_font(self, fontname), Prefab.get_table(self, fontname, tablename)} do
-      {nil, _} -> {:error, "font_not_found"}
-      {_, nil} -> {:error, "table_not_found"}
+      {nil, _} -> Error.font_not_found(fontname)
+      {_, nil} -> Error.table_not_found(tablename, fontname)
       {font, table} -> set_precompile_internal(self, font, table, data)
     end
   end
