@@ -1,6 +1,13 @@
 # Thaqqa
 
-**TODO: Add description**
+## Description
+**TODO: more description**
+
+Supposed for rendering Khehyelu (Con-)Script as SVG path data.
+
+
+(架空文字の)東果文字をSVG Pathとして描画する為に作りました。
+
 
 ## Installation
 

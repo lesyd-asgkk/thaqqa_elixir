@@ -20,7 +20,7 @@ defmodule Thaqqa.Column do
   # :writing_directionはuniversal,vertical,horizontal(それぞれ共通、縦、横)のみを取る
   #
   # :nameは重複不可(※空文字に限って重複可)
-  # :idは編集不可
+  # :idは編集不可だし重複も不可
 
   # :bool ならば :none(特に判定しない)
 
@@ -38,6 +38,12 @@ defmodule Thaqqa.Column do
       subtype: subtype,
       dev: dev
     }
+
+  # rewritable?はシステム上で変更可能
+  # editable?はユーザーが編集可能
+  def is_editable?(%__MODULE__{subtype: subtype}), do: subtype not in [:path, :regex, :id]
+  def is_rewritable?(%__MODULE__{subtype: subtype}), do: subtype not in [:id]
+  def is_unique?(%__MODULE__{subtype: subtype}), do: subtype in [:name, :id]
 
   def is_available_type(type) when is_binary(type),
     do: type in ["string", "float", "int", "bool", "volatility"]

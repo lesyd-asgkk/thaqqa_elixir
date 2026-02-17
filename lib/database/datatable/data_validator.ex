@@ -25,7 +25,8 @@ defmodule Thaqqa.DataValidator do
     end
   end
 
-  # unique_column_conflictはtablenameを反映させるようにする
+  # TODO:unique_column_conflictはtablenameを反映させるようにする
+  # 「editの場合、変更者自身」である場合は当然無視する
   def unique_validation(%DataTable{name: tablename} = table, data_alt, op) do
     column_list =
       DataTable.get_column(table, fn %Column{subtype: st} -> st in [:name, :id] end)
@@ -34,16 +35,14 @@ defmodule Thaqqa.DataValidator do
     Enum.reduce(data_alt, [], fn {k, v}, acc ->
       k_str = if is_atom(k), do: Atom.to_string(k), else: k
 
-      if k_str in column_list do
-        if DataTable.get_data(
+      # 空文字かnilなら許す
+      if k_str in column_list and
+           DataTable.get_data(
              table,
              &(&1 |> Thaqqa.Data.get_val(k_str) == v and v not in ["", nil])
            ) != [],
-           do: [Error.unique_column_conflict(tablename, k_str, v, op) | acc],
-           else: [{:ok, nil} | acc]
-      else
-        [{:ok, nil} | acc]
-      end
+         do: [Error.unique_column_conflict(tablename, k_str, v, op) | acc],
+         else: [{:ok, nil} | acc]
     end)
     |> Enum.reduce_while({:ok, []}, fn
       {:ok, _str}, {:ok, acc} -> {:cont, {:ok, acc}}

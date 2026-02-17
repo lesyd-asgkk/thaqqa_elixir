@@ -227,6 +227,9 @@ defmodule Thaqqa.DataTable do
         safety_num \\ 1
       ) do
     case DataValidator.validate_data(table, new_value_map, :edit, false) do
+      # ↑のValidatorはUniqueに限っては変更対象を除外する
+      # （IDなどが指定されているが変更後で値が変化しないも当然含める）
+      # (２つ以上変更対象が指定されている場合、uniqueの指定は問答無用で弾く)
       {:error, msg} ->
         {:error, msg}
 
@@ -235,7 +238,7 @@ defmodule Thaqqa.DataTable do
 
         new_datas =
           Enum.map(sub_datas, fn %Data{} = data ->
-            ## ここ書き方が見苦しいから更新メソッドを後で追加する
+            ## TODO　ここ書き方が見苦しいから更新メソッドを後で追加する
             Data.edit_val(data, Map.merge(data.value_list, new_value_map))
           end)
 
