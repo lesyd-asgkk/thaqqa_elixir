@@ -33,8 +33,7 @@ defmodule Thaqqa.FontRegistryPrefab do
   def add_font(%__MODULE__{} = self, %Thaqqa.Font{name: name} = font) do
     if get_font(self, name) != nil,
       do: {:ok, update_fonts(self, Map.put(self.fonts, name, font)) |> complement_font(name)},
-      # 仮のエラー表示
-      else: {:error, "font_conflict"}
+      else: Error.nominal_conflict_font(name, :add)
   end
 
   def delete_font_if_enable(%__MODULE__{} = self, name) do
@@ -46,7 +45,7 @@ defmodule Thaqqa.FontRegistryPrefab do
 
   def delete_font(%__MODULE__{} = self, name) do
     case Map.get(self.fonts, name) do
-      nil -> {:error, "font_not_found"}
+      nil -> Error.font_not_found(name)
       _ -> update_fonts(self, Map.delete(self.fonts, name))
     end
   end
@@ -68,7 +67,7 @@ defmodule Thaqqa.FontRegistryPrefab do
     if get_font(self, name) != nil,
       do: {:ok, update_fonts(self, Map.put(self.fonts, name, font)) |> complement_font(name)},
       # 仮のエラー表示
-      else: {:error, "font_not_found"}
+      else: Error.font_not_found(name)
   end
 
   ## static_table類
@@ -100,7 +99,7 @@ defmodule Thaqqa.FontRegistryPrefab do
       {:ok, update_static_tables(self, Map.put(self.static_tables, name, table), name)}
     else
       # 仮エラー
-      {:error, "table_conflict"}
+      Error.nominal_conflict_datatable(name, :add)
     end
   end
 
@@ -116,7 +115,7 @@ defmodule Thaqqa.FontRegistryPrefab do
       {:ok, update_static_tables(self, Map.put(self.static_tables, name, table), name)}
     else
       # 仮エラー
-      {:error, "table_not_found"}
+      Error.table_not_found(name)
     end
   end
 
@@ -129,7 +128,7 @@ defmodule Thaqqa.FontRegistryPrefab do
 
   def delete_static_table(%__MODULE__{} = self, name) do
     case Map.get(self.static_tables, name) do
-      nil -> {:error, "table_not_found"}
+      nil -> Error.table_not_found(name)
       _ -> {:ok, update_static_tables(self, Map.delete(self.static_tables, name), name)}
     end
   end
@@ -168,7 +167,7 @@ defmodule Thaqqa.FontRegistryPrefab do
   def add_column(%__MODULE__{} = self, name, %Column{} = column) do
     case get_static_table(self, name) do
       nil ->
-        {:error, "static_table_not_found"}
+        Error.table_not_found(name)
 
       %DataTable{name: name} = datatable ->
         dt = DataTable.add_column(datatable, column)
@@ -186,7 +185,7 @@ defmodule Thaqqa.FontRegistryPrefab do
   def edit_column(%__MODULE__{} = self, name, %Column{} = column) do
     case get_static_table(self, name) do
       nil ->
-        {:error, "static_table_not_found"}
+        Error.table_not_found(name, :edit)
 
       %DataTable{name: name} = datatable ->
         dt = DataTable.edit_column(datatable, column)
@@ -204,7 +203,7 @@ defmodule Thaqqa.FontRegistryPrefab do
   def delete_column(%__MODULE__{} = self, name, column_name) do
     case get_static_table(self, name) do
       nil ->
-        {:error, "static_table_not_found"}
+        Error.table_not_found(name)
 
       %DataTable{name: name} = datatable ->
         DataTable.delete_column(datatable, column_name)

@@ -59,8 +59,8 @@ defmodule Thaqqa.FontRegistry.Error do
     do: error(:internal, :genserver, %{detail: detail})
 
   # 名義衝突
-  def nominal_conflict_column(name, op),
-    do: error(:already_exists, :column, %{column_name: name, operation: op})
+  def nominal_conflict_font(name, op),
+    do: error(:already_exists, :font, %{font_name: name, operation: op})
 
   def nominal_conflict_column(name, op),
     do: error(:already_exists, :column, %{column_name: name, operation: op})

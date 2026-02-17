@@ -26,8 +26,6 @@ defmodule Thaqqa.PrefabCompiler do
 
       table ->
         Enum.reduce_while(table.data_list, self, fn data, acc ->
-          {:ok, t} = set_precompile_internal(acc, table, data)
-
           # 　何故かここで機能していない
 
           case set_precompile_internal(acc, Prefab.get_static_table(acc, tablename), data) do
@@ -50,22 +48,21 @@ defmodule Thaqqa.PrefabCompiler do
   end
 
   def set_precompile_as_font(%Prefab{} = self, fontname) do
-    font = Prefab.get_font(self, fontname)
-    IO.inspect(font)
+    case Prefab.get_font(self, fontname) do
+      nil ->
+        Error.font_not_found(fontname)
 
-    if font == nil do
-      Error.font_not_found(fontname)
-    else
-      Enum.reduce_while(font.table_list, self, fn %DataTable{name: tablename}, acc ->
-        case set_precompile_as_font_by_table(acc, fontname, tablename) do
-          {:error, msg} -> {:halt, {:error, msg}}
-          {:ok, value} -> {:cont, value}
+      font ->
+        Enum.reduce_while(font.table_list, self, fn %DataTable{name: tablename}, acc ->
+          case set_precompile_as_font_by_table(acc, fontname, tablename) do
+            {:error, msg} -> {:halt, {:error, msg}}
+            {:ok, value} -> {:cont, value}
+          end
+        end)
+        |> case do
+          {:error, msg} -> {:error, msg}
+          otherwize -> {:ok, otherwize}
         end
-      end)
-      |> case do
-        {:error, msg} -> {:error, msg}
-        otherwize -> {:ok, otherwize}
-      end
     end
   end
 
@@ -128,10 +125,18 @@ defmodule Thaqqa.PrefabCompiler do
         {:error, msg}
 
       {:ok, %Data{value_list: v}} ->
-        alter_table =
-          DataTable.edit_data!(table, &(&1 == data), v |> Map.delete("ID") |> Map.delete("Name"))
+        if data == alter_data do
+          {:ok, self}
+        else
+          alter_table =
+            DataTable.edit_data!(
+              table,
+              &(&1 == data),
+              v |> Map.delete("ID") |> Map.delete("Name")
+            )
 
-        {:ok, Prefab.edit_static_table_if_enable(self, tablename, alter_table)}
+          {:ok, Prefab.edit_static_table_if_enable(self, tablename, alter_table)}
+        end
     end
   end
 
@@ -150,11 +155,19 @@ defmodule Thaqqa.PrefabCompiler do
         {:error, msg}
 
       {:ok, %Data{value_list: v}} ->
-        alter_table =
-          DataTable.edit_data!(table, &(&1 == data), v |> Map.delete("ID") |> Map.delete("Name"))
+        if alter_data == data do
+          {:ok, self}
+        else
+          alter_table =
+            DataTable.edit_data!(
+              table,
+              &(&1 == data),
+              v |> Map.delete("ID") |> Map.delete("Name")
+            )
 
-        alter_font = Font.edit_table(font, tablename, alter_table)
-        {:ok, Prefab.edit_font_if_enable(self, fontname, alter_font)}
+          alter_font = Font.edit_table(font, tablename, alter_table)
+          {:ok, Prefab.edit_font_if_enable(self, fontname, alter_font)}
+        end
     end
   end
 end

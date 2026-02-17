@@ -6,18 +6,15 @@ defmodule ThaqqaTest do
   test "creates a new point" do
     {:ok, _pid} = Thaqqa.FontRegistry.start_link([])
 
+    # 0.3秒ほど
     Thaqqa.FontIO.import_as_root()
+
+    # 2秒ほど　regex,pathの処理数が馬鹿多いので
     Thaqqa.FontIO.import_as_font("default")
 
-    {:ok, data} = Thaqqa.FontRegistry.create_prefab()
-
-    data
-    |> Thaqqa.FontRegistryPrefab.get_font("Default")
-    |> IO.inspect()
-
-    # 上記の前処理で2.3秒
     {:ok, table} = Thaqqa.FontRegistry.get_font("Default")
 
+    # この辺の変換は誤差
     Thaqqa.ParserRegister.parse!("suzusha koratl", "khehyelu")
     |> Thaqqa.GsubRegister.gsub!("vertical")
     |> Thaqqa.UniqueGsubRegister.unique_gsub!("Default", "vertical")

@@ -231,18 +231,18 @@ defmodule Thaqqa.DataTable do
         {:error, msg}
 
       {:ok, _} ->
+        {sub_datas, others} = Enum.split_with(datas, filter_fun)
+
         new_datas =
-          Enum.map(datas, fn %Data{} = data ->
+          Enum.map(sub_datas, fn %Data{} = data ->
             ## ここ書き方が見苦しいから更新メソッドを後で追加する
-            if filter_fun.(data),
-              do: Data.edit_val(data, Map.merge(data.value_list, new_value_map)),
-              else: data
+            Data.edit_val(data, Map.merge(data.value_list, new_value_map))
           end)
 
-        data_substraction = datas -- new_datas
+        new_datas == new_datas ++ others
 
-        if length(data_substraction) > safety_num,
-          do: Error.too_many_subject(data_substraction, :delete),
+        if length(sub_datas) > safety_num,
+          do: Error.too_many_subject(sub_datas, :delete),
           else: {:ok, %{table | data_list: new_datas} |> Thaqqa.DataTable.sort()}
     end
   end

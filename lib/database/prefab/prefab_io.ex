@@ -40,8 +40,6 @@ defmodule Thaqqa.PrefabIO do
             {:error, "Cannot load font: Fontname is not found"}
 
           name ->
-            IO.inspect(Prefab.init_font(self, Font.new(filename, name, value)))
-
             Prefab.init_font(self, Font.new(filename, name, value))
             |> Prefab.set_precompile_as_font(name)
         end
