@@ -14,15 +14,18 @@ defmodule Thaqqa.FontRegistryPrefab do
   defp update_static_tables(%__MODULE__{} = self, st, st_name),
     do: %__MODULE__{self | static_tables: st} |> complement_by_static_table(st_name)
 
-  defp update_fonts(%__MODULE__{} = self, f), do: %__MODULE__{self | fonts: f}
+  def update_fonts(%__MODULE__{} = self, f), do: %__MODULE__{self | fonts: f}
+
+  def overwrite_font(%__MODULE__{} = self, name, %Thaqqa.Font{} = font) do
+    if get_font(self, name) != nil,
+      do: update_fonts(self, Map.put(self.fonts, name, font)),
+      else: self
+  end
 
   def init_font(%__MODULE__{} = self, %Thaqqa.Font{name: name} = font) do
     update_fonts(self, Map.put(self.fonts, name, font)) |> complement_font(name)
   end
 
-  # こちらは既に存在する場合は反映しない
-  # 「一応」エラーを返すverも作っとく。
-  # エラー：重なりがあります　的な
   def add_font_if_enable(%__MODULE__{} = self, %Thaqqa.Font{} = font) do
     case add_font(self, font) do
       {:error, _} -> self
@@ -215,11 +218,6 @@ defmodule Thaqqa.FontRegistryPrefab do
 
   ## static_tableの設定に合わせてfontの仕様を同期させる
   ## 本体は別モジュールで行っている
-  def overwrite_font(%__MODULE__{} = self, name, %Thaqqa.Font{} = font) do
-    if get_font(self, name) != nil,
-      do: update_fonts(self, Map.put(self.fonts, name, font)),
-      else: self
-  end
 
   def complement_table_by_column(
         %__MODULE__{} = self,
