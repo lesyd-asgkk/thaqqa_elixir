@@ -37,6 +37,7 @@ defmodule Thaqqa.PrefabIO do
       value ->
         case extract_datatable_name(fontdata) do
           nil ->
+            # 仮ERROR
             {:error, "Cannot load font: Fontname is not found"}
 
           name ->

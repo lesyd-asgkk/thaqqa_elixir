@@ -135,6 +135,8 @@ defmodule Thaqqa.PrefabCompiler do
               v |> Map.delete("ID") |> Map.delete("Name")
             )
 
+          # ぶっちゃけこれ素通りできるようにする
+
           {:ok, Prefab.edit_static_table_if_enable(self, tablename, alter_table)}
         end
     end

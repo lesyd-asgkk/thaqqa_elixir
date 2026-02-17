@@ -12,7 +12,7 @@ defmodule Thaqqa.Font do
 
   def new(filename, name, t), do: %__MODULE__{table_list: t, name: name, filename: filename}
 
-  def get_table_all(%__MODULE__{table_list: tables}), do: tables
+  def get_table_list(%__MODULE__{table_list: tables}), do: tables
 
   def get_table(%__MODULE__{table_list: tables}, table_name) do
     Enum.find(tables, fn table -> table.name == table_name end)
@@ -31,7 +31,7 @@ defmodule Thaqqa.Font do
   end
 
   def delete_table!(%__MODULE__{} = font, %DataTable{} = table, table_name) do
-    add_table(font, table)
+    delete_table(font, table)
   end
 
   def delete_table(%__MODULE__{table_list: tables} = font, table_name) do
@@ -53,6 +53,7 @@ defmodule Thaqqa.Font do
     %{font | table_list: new_tables}
   end
 
+  # ↓はもう要らん（wrapperを改築したらだけど）
   def update_fontregistry(%__MODULE__{name: name} = font) do
     FontRegistry.edit_font(name, font)
     font

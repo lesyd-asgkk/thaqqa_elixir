@@ -3,30 +3,28 @@ defmodule Thaqqa.DataValidator do
   alias Thaqqa.DataTable, as: DataTable
   alias Thaqqa.Column, as: Column
 
+  # こちらも同じく。
   defp id_validation(%DataTable{} = table, data_alt, _op) do
     column_list =
       DataTable.get_column(table, fn %Column{subtype: st} -> st == :id end)
       |> Enum.map(fn %Column{name: name} -> name end)
 
-    Enum.reduce(data_alt, [], fn {k, _v}, acc ->
+    Enum.reduce_while(data_alt, nil, fn {k, _v}, acc ->
       k_str = if is_atom(k), do: Atom.to_string(k), else: k
 
       if k_str in column_list,
-        do: [Error.edit_locked(k_str, :id) | acc],
-        else: [{:ok, nil} | acc]
-    end)
-    |> Enum.reduce_while({:ok, []}, fn
-      {:ok, _str}, {:ok, acc} -> {:cont, {:ok, acc}}
-      {:error, reason}, _acc -> {:halt, {:error, reason}}
+        do: {:halt, Error.edit_locked(k_str, :id)},
+        else: {:cont, nil}
     end)
     |> case do
       {:error, reason} -> {:error, reason}
-      {:ok, _} -> {:ok, nil}
+      _ -> {:ok, nil}
     end
   end
 
   # TODO:unique_column_conflictはtablenameを反映させるようにする
-  # 「editの場合、変更者自身」である場合は当然無視する
+  # 「editの場合、変更者自身」である場合と全く同じ値は無視するように変更
+  #
   def unique_validation(%DataTable{name: tablename} = table, data_alt, op) do
     column_list =
       DataTable.get_column(table, fn %Column{subtype: st} -> st in [:name, :id] end)

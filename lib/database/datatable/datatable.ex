@@ -263,7 +263,7 @@ defmodule Thaqqa.DataTable do
     %__MODULE__{dt | data_list: sorted}
   end
 
-  #
+  # ↓はもう要らん（wrapperを改築したらだけど）
 
   def update_fontregistry(%__MODULE__{name: name, parent: nil} = table),
     do: FontRegistry.edit_static_table(name, table)
