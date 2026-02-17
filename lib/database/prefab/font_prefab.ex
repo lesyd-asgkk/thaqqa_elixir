@@ -1,6 +1,7 @@
 defmodule Thaqqa.FontRegistryPrefab do
   alias Thaqqa.PrefabComplement, as: PrefabComplement
   alias Thaqqa.PrefabCompiler, as: PrefabCompiler
+  alias Thaqqa.PrefabIO, as: PrefabIO
   alias Thaqqa.Font, as: Font
   alias Thaqqa.DataTable, as: DataTable
   alias Thaqqa.Data, as: Data
@@ -16,7 +17,7 @@ defmodule Thaqqa.FontRegistryPrefab do
   defp update_fonts(%__MODULE__{} = self, f), do: %__MODULE__{self | fonts: f}
 
   def init_font(%__MODULE__{} = self, %Thaqqa.Font{name: name} = font) do
-    update_fonts(self, Map.put(self, name, font)) |> complement_font(name)
+    update_fonts(self, Map.put(self.fonts, name, font)) |> complement_font(name)
   end
 
   # こちらは既に存在する場合は反映しない
@@ -212,136 +213,38 @@ defmodule Thaqqa.FontRegistryPrefab do
   end
 
   #
-  def import_as_root(%__MODULE__{} = self, rootdata) when is_map(rootdata) do
-    # local用のテーブルが増減した場合にfont側のテーブルも変更させる処理も後日付け足す。
-    # (local用テーブルが消えた場合にfont側のその名前のテーブルも削除する機能や逆に補完する機能)
-    Enum.reduce_while(rootdata, self, fn {k, v}, acc ->
-      import_table(k, v)
-      |> case do
-        {:error, msg} -> {:halt, {:error, msg}}
-        {:ok, value} -> {:cont, init_static_table(acc, value)}
-      end
-    end)
-    |> case do
-      {:error, msg} -> {:error, msg}
-      value -> set_precompile_as_root(value)
-    end
-  end
-
-  defp extract_datatable_name(data), do: get_in(data, ["FONTDATA", "data", "0", "Fontname"])
-
-  def import_as_font(%__MODULE__{} = self, fontdata, filename) when is_map(fontdata) do
-    Enum.reduce_while(fontdata, [], fn {k, v}, acc ->
-      import_table(k, v)
-      |> case do
-        {:error, msg} -> {:halt, {:error, msg}}
-        {:ok, value} -> {:cont, acc ++ [value]}
-      end
-    end)
-    |> case do
-      {:error, msg} ->
-        {:error, msg}
-
-      value ->
-        case extract_datatable_name(fontdata) do
-          nil ->
-            {:error, "Cannot load font: Fontname is not found"}
-
-          name ->
-            init_font(self, Font.new(filename, name, value)) |> set_precompile_as_font(name)
-        end
-    end
-  end
-
-  defp import_table(name, struct) do
-    table = DataTable.new(name, Map.get(struct, "global"), nil, Map.get(struct, "compile_rule"))
-
-    Enum.reduce_while(struct, table, fn {k, v}, ans ->
-      if k == "columnList" do
-        column =
-          Enum.reduce_while(v, ans, fn {_, v_}, ans_ ->
-            new_column =
-              Column.new(
-                Map.get(v_, "name"),
-                Map.get(v_, "type") |> String.to_atom(),
-                Map.get(v_, "desc", ""),
-                Map.get(v_, "order", 0),
-                Map.get(v_, "subtype", "none") |> String.to_atom(),
-                Map.get(v_, "dev", false)
-              )
-
-            if Map.get(v_, "name") == nil or Map.get(v_, "type") == nil,
-              do:
-                {:halt,
-                 Error.requried_column_not_found(%{
-                   name: Map.get(v_, "name"),
-                   type: Map.get(v_, "type")
-                 })},
-              else: {:cont, DataTable.add_column!(ans_, new_column)}
-          end)
-
-        case column do
-          {:error, _msg} -> {:halt, column}
-          _ -> {:cont, column}
-        end
-      else
-        if is_map(v) do
-          # volatilityとなっている値は追加しません　→ subtypeから考えます
-          column_volatility =
-            DataTable.get_column(ans, fn %Column{type: type} -> type == :volatility end)
-            |> Enum.map(fn %Column{name: name} -> name end)
-
-          data =
-            Enum.reduce_while(v, ans, fn {_, v_}, ans_ ->
-              v_ = Enum.reduce(column_volatility, v_, fn k, ans__ -> Map.put(ans__, k, nil) end)
-              data_ = ans_ |> DataTable.init_data(v_)
-
-              case data_ do
-                {:error, _msg} -> {:halt, data_}
-                {:ok, value} -> {:cont, value}
-                _ -> {:cont, data_}
-              end
-            end)
-
-          case data do
-            {:error, _msg} -> {:halt, data}
-            _ -> {:cont, data}
-          end
-        else
-          {:cont, ans}
-        end
-      end
-    end)
-    |> case do
-      {:error, msg} -> {:error, msg}
-      value -> {:ok, value}
-    end
-  end
 
   ## static_tableの設定に合わせてfontの仕様を同期させる
   ## 本体は別モジュールで行っている
-  defp overwrite_font(%__MODULE__{} = self, name, %Thaqqa.Font{} = font) do
+  def overwrite_font(%__MODULE__{} = self, name, %Thaqqa.Font{} = font) do
     if get_font(self, name) != nil,
       do: update_fonts(self, Map.put(self.fonts, name, font)),
       else: self
   end
 
-  defp complement_table_by_column(
-         %__MODULE__{} = self,
-         %DataTable{name: table_name} = datatable,
-         column_name
-       ),
-       do: PrefabComplement.complement_table_by_column(self, datatable, column_name)
+  def complement_table_by_column(
+        %__MODULE__{} = self,
+        %DataTable{name: table_name} = datatable,
+        column_name
+      ),
+      do: PrefabComplement.complement_table_by_column(self, datatable, column_name)
 
-  defp complement_table(%__MODULE__{} = self, font_name, table_name),
+  def complement_table(%__MODULE__{} = self, font_name, table_name),
     do: PrefabComplement.complement_table(self, font_name, table_name)
 
   ## 追加された(される)fontをstatic_tableの設定に合わせる
-  defp complement_font(%__MODULE__{} = self, font_name),
+  def complement_font(%__MODULE__{} = self, font_name),
     do: PrefabComplement.complement_font(self, font_name)
 
+  # 読み込み系
+  def import_as_root(%__MODULE__{} = self, rootdata) when is_map(rootdata),
+    do: PrefabIO.import_as_root(self, rootdata)
+
+  def import_as_font(%__MODULE__{} = self, fontdata, filename) when is_map(fontdata),
+    do: PrefabIO.import_as_font(self, fontdata, filename)
+
   # static_tableの変更に伴ってfontテーブル側を変更する
-  defp complement_by_static_table(%__MODULE__{} = self, table_name),
+  def complement_by_static_table(%__MODULE__{} = self, table_name),
     do: PrefabComplement.complement_by_static_table(self, table_name)
 
   def set_precompile_as_root(%__MODULE__{} = self),

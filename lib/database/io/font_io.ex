@@ -64,8 +64,12 @@ defmodule Thaqqa.FontIO do
 
       {:ok, rootdata} ->
         case Prefab.import_as_font(prefab, rootdata, filename) do
-          {:error, msg} -> {:error, msg}
-          {:ok, prefab} -> FontRegistry.apply_prefab(prefab)
+          {:error, msg} ->
+            IO.inspect(msg)
+            {:error, msg}
+
+          {:ok, prefab} ->
+            FontRegistry.apply_prefab(prefab)
         end
     end
   end

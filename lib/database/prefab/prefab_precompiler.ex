@@ -51,6 +51,7 @@ defmodule Thaqqa.PrefabCompiler do
 
   def set_precompile_as_font(%Prefab{} = self, fontname) do
     font = Prefab.get_font(self, fontname)
+    IO.inspect(font)
 
     if font == nil do
       Error.font_not_found(fontname)

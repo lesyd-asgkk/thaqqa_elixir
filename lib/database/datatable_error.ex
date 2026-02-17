@@ -119,6 +119,6 @@ defmodule Thaqqa.FontRegistry.Error do
   def font_not_found(fontname),
     do: error(:not_found, :font, %{font_name: fontname})
 
-  def requried_column_not_found(column_list),
-    do: error(:not_found, :import, %{column_list: column_list})
+  def requried_status_not_found(status_list),
+    do: error(:not_found, :import, %{status_list: status_list})
 end

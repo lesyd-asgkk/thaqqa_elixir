@@ -12,7 +12,7 @@ defmodule ThaqqaTest do
     {:ok, data} = Thaqqa.FontRegistry.create_prefab()
 
     data
-    |> Thaqqa.FontRegistryPrefab.get_static_table("PARSER")
+    |> Thaqqa.FontRegistryPrefab.get_font("Default")
     |> IO.inspect()
 
     # 上記の前処理で2.3秒
