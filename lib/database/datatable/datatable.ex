@@ -19,7 +19,8 @@ defmodule Thaqqa.DataTable do
     :compile_rule,
     column_list: [],
     data_list: [],
-    desc: ""
+    desc: "",
+    unique_index: %{}
   ]
 
   def new(name, global, parent, compile_rule),
@@ -30,7 +31,8 @@ defmodule Thaqqa.DataTable do
       compile_rule: compile_rule,
       desc: "",
       column_list: [],
-      data_list: []
+      data_list: [],
+      unique_index: %{}
     }
 
   def is_global?(%__MODULE__{global: global}), do: global
@@ -161,7 +163,7 @@ defmodule Thaqqa.DataTable do
         value_map
       )
       when is_map(value_map) do
-    case DataValidator.validate_data(table, value_map, :add, true) do
+    case DataValidator.validate_data(table, value_map, :add) do
       {:error, msg} ->
         {:error, msg}
 
@@ -184,36 +186,37 @@ defmodule Thaqqa.DataTable do
         value_map
       )
       when is_map(value_map) do
-    case DataValidator.validate_data(table, value_map, :add, false) do
+    case DataValidator.validate_data(table, value_map, :add) do
       {:error, msg} ->
         {:error, msg}
 
       {:ok, _v} ->
         value_map = value_map |> modify_value_map(table) |> attach_id(table)
         new_data = Data.new(value_map)
-        {:ok, %{table | data_list: [new_data | datas]} |> Thaqqa.DataTable.sort()}
+        {:ok, %{table | data_list: [new_data | datas]}}
     end
   end
 
-  def delete_data!(%__MODULE__{} = table, filter_fun, safety_num \\ 1) do
-    delete_data(table, filter_fun, safety_num)
+  def delete_data!(%__MODULE__{} = table, data) do
+    delete_data(table, data)
     |> case do
       {:error, msg} -> raise msg
       {:ok, v} -> v
     end
   end
 
-  def delete_data(%__MODULE__{data_list: datas} = table, filter_fun, safety_num \\ 1) do
-    new_datas = Enum.filter(datas, filter_fun)
-    data_sub = datas -- new_datas
+  def delete_data(%__MODULE__{data_list: datas} = table, data) do
+    new_datas = Enum.filter(datas, &(&1 != data))
+    # data_sub = datas -- new_datas
 
-    if length(data_sub) > safety_num,
-      do: Error.too_many_subject(data_sub, :delete),
-      else: {:ok, %{table | data_list: new_datas}}
+    # if length(data_sub) > safety_num and safety_num >= 0,
+    #   do: Error.too_many_subject(data_sub, :delete),
+    #  else:
+    {:ok, %{table | data_list: new_datas}}
   end
 
-  def edit_data!(%__MODULE__{} = table, filter_fun, new_value_map, safety_num \\ 1) do
-    edit_data(table, filter_fun, new_value_map, safety_num)
+  def edit_data!(%__MODULE__{} = table, data, new_value_map) do
+    edit_data(table, data, new_value_map)
     |> case do
       {:error, msg} -> raise msg
       {:ok, v} -> v
@@ -221,12 +224,11 @@ defmodule Thaqqa.DataTable do
   end
 
   def edit_data(
-        %__MODULE__{data_list: datas, column_list: column_list} = table,
-        filter_fun,
-        new_value_map,
-        safety_num \\ 1
+        %__MODULE__{column_list: column_list, data_list: data_list} = table,
+        data,
+        new_value_map
       ) do
-    case DataValidator.validate_data(table, new_value_map, :edit, false) do
+    case DataValidator.validate_data(table, new_value_map, :edit, data) do
       # ↑のValidatorはUniqueに限っては変更対象を除外する
       # （IDなどが指定されているが変更後で値が変化しないも当然含める）
       # (２つ以上変更対象が指定されている場合、uniqueの指定は問答無用で弾く)
@@ -234,22 +236,13 @@ defmodule Thaqqa.DataTable do
         {:error, msg}
 
       {:ok, _} ->
-        {sub_datas, others} = Enum.split_with(datas, filter_fun)
+        new_data = Data.new(new_value_map)
 
-        new_datas =
-          Enum.map(sub_datas, fn %Data{} = data ->
-            ## TODO　ここ書き方が見苦しいから更新メソッドを後で追加する
-            Data.edit_val(data, Map.merge(data.value_list, new_value_map))
-          end)
-
-        new_datas == new_datas ++ others
-
-        if length(sub_datas) > safety_num,
-          do: Error.too_many_subject(sub_datas, :delete),
-          else: {:ok, %{table | data_list: new_datas} |> Thaqqa.DataTable.sort()}
+        {:ok, %{table | data_list: [new_data | List.delete(data_list, data)]}}
     end
   end
 
+  # |> Thaqqa.DataTable.sort()
   def sort(%__MODULE__{data_list: datas} = dt) do
     sorted =
       Enum.sort(
@@ -263,7 +256,7 @@ defmodule Thaqqa.DataTable do
     %__MODULE__{dt | data_list: sorted}
   end
 
-  # ↓はもう要らん（wrapperを改築したらだけど）
+  # ↓はもう要らん（）
 
   def update_fontregistry(%__MODULE__{name: name, parent: nil} = table),
     do: FontRegistry.edit_static_table(name, table)

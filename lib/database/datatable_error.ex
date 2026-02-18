@@ -77,16 +77,15 @@ defmodule Thaqqa.FontRegistry.Error do
       error(:conflict, :unique, %{
         table_name: tablename,
         column_name: column,
-        name: name,
+        value: name,
         operation: op
       })
 
-  def column_not_found(tablename, column, name, op),
+  def column_not_found(tablename, column, op),
     do:
       error(:not_found, :column, %{
         table_name: tablename,
         column_name: column,
-        name: name,
         operation: op
       })
 

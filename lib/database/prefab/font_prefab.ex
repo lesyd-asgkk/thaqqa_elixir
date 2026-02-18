@@ -58,11 +58,8 @@ defmodule Thaqqa.FontRegistryPrefab do
 
   def edit_font_if_enable(%__MODULE__{} = self, name, %Thaqqa.Font{} = font) do
     case edit_font(self, name, font) do
-      {:error, _} ->
-        self
-
-      {:ok, value} ->
-        value
+      {:error, _} -> self
+      {:ok, value} -> value
     end
   end
 
@@ -261,4 +258,23 @@ defmodule Thaqqa.FontRegistryPrefab do
 
   def set_precompile_as_font_by_data(%__MODULE__{} = self, fontname, tablename, %Data{} = data),
     do: PrefabCompiler.set_precompile_as_font_by_data(self, fontname, tablename, data)
+
+  def sort_as_static(%__MODULE__{} = self, tablename) do
+    case get_static_table(self, tablename) do
+      nil -> self
+      table -> edit_static_table_if_enable(self, tablename, DataTable.sort(table))
+    end
+  end
+
+  def sort_as_font(%__MODULE__{} = self, fontname, tablename) do
+    case get_table(self, fontname, tablename) do
+      nil ->
+        self
+
+      table ->
+        font = get_font(self, fontname)
+        Font.edit_table(font, tablename, DataTable.sort(table))
+        edit_font_if_enable(self, tablename, font)
+    end
+  end
 end

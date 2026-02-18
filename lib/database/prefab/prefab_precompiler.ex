@@ -35,7 +35,7 @@ defmodule Thaqqa.PrefabCompiler do
         end)
         |> case do
           {:error, msg} -> {:error, msg}
-          otherwize -> {:ok, otherwize}
+          otherwize -> {:ok, otherwize |> Prefab.sort_as_static(tablename)}
         end
     end
   end
@@ -88,7 +88,7 @@ defmodule Thaqqa.PrefabCompiler do
         end)
         |> case do
           {:error, msg} -> {:error, msg}
-          otherwize -> {:ok, otherwize}
+          otherwize -> {:ok, otherwize |> Prefab.sort_as_font(font, tablename)}
         end
     end
   end
@@ -131,8 +131,8 @@ defmodule Thaqqa.PrefabCompiler do
           alter_table =
             DataTable.edit_data!(
               table,
-              &(&1 == data),
-              v |> Map.delete("ID") |> Map.delete("Name")
+              data,
+              v |> Map.delete("ID")
             )
 
           # ぶっちゃけこれ素通りできるようにする
@@ -163,8 +163,8 @@ defmodule Thaqqa.PrefabCompiler do
           alter_table =
             DataTable.edit_data!(
               table,
-              &(&1 == data),
-              v |> Map.delete("ID") |> Map.delete("Name")
+              data,
+              v |> Map.delete("ID")
             )
 
           alter_font = Font.edit_table(font, tablename, alter_table)
