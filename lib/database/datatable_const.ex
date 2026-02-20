@@ -2,6 +2,11 @@ defmodule Thaqqa.DataTable.Const do
   # 指定column名
   defmacro __using__(_) do
     quote do
+      # トークンの類
+      @id_subtype :id
+      @unique_subtypes [:name, :id]
+      @valid_type [:string, :bool, :float, :int, :volatility]
+      @primal_type [:string, :bool, :float, :int]
       # 頻出column名
       @id "ID"
       @name "Name"
@@ -13,6 +18,7 @@ defmodule Thaqqa.DataTable.Const do
       @gpos_type "GPOSType"
       # table名
       @rootdata "ROOTDATA"
+      @fontdata "FONTDATA"
 
       @vowel "VOWEL"
       @consonant "CONSONANT"

@@ -1,3 +1,12 @@
+# 本東果文字変換用正規表現は汎用正規表現の完全代替を目指さない
+
+# 実装は段階的変換構造。
+# []をstruct、→変換モジュール→　を　変換モジュールによる対象の変換として
+# [raw string] →Tokenizer → [list of raw string] →  Normalizer → [AST] → Translator → [string] ないし [regex]）。
+
+# 言語仕様は定義済
+#
+
 defmodule Thaqqa.Regex_Khhyl.AST do
   # , include: nil
   defstruct type: nil, value: nil, layer: nil, children: [], range: nil

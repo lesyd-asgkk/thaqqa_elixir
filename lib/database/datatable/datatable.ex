@@ -81,7 +81,6 @@ defmodule Thaqqa.DataTable do
     %{table | column_list: new_cols, data_list: new_datalist}
   end
 
-  # 書き直し対象（）
   def edit_column(
         %__MODULE__{column_list: col_list} = table,
         column_name,
@@ -101,13 +100,12 @@ defmodule Thaqqa.DataTable do
       new_datas =
         Enum.map(table.data_list, fn data ->
           raw_val = Data.get_val(data, column_name)
+          # Columnのtype,subtypeが変わった場合の値の補正。
           val = Column.adjust_val(column, raw_val)
-
-          # そもそもtype、subtypeが変わった場合は値を書き換える処理を付け加える
           data = Data.set_val(data, new_name, val)
 
-          if new_name != column_name,
-            do: %{data | value_list: Map.delete(data.value_list, column_name)},
+          if new_name == column_name,
+            do: %{data | value_list: data.value_list},
             else: %{data | value_list: Map.delete(data.value_list, column_name)}
         end)
 
@@ -255,17 +253,4 @@ defmodule Thaqqa.DataTable do
 
     %__MODULE__{dt | data_list: sorted}
   end
-
-  # ↓はもう要らん（）
-
-  def update_fontregistry(%__MODULE__{name: name, parent: nil} = table),
-    do: FontRegistry.edit_static_table(name, table)
-
-  def update_fontregistry(%__MODULE__{name: name, parent: parent} = table) do
-    {:ok, parent_font} = FontRegistry.get_font(parent)
-    parent_font |> Font.edit_table(name, table) |> Font.update_fontregistry()
-  end
-
-  def update_fontregistry(%{} = map),
-    do: Enum.map(map, fn %__MODULE__{} = table -> update_fontregistry(table) end)
 end

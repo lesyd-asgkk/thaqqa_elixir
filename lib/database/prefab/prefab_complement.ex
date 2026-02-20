@@ -21,6 +21,7 @@ defmodule Thaqqa.PrefabComplement do
         column_name
       ) do
     cond do
+      # ここもcolumn_exist?に変更したうえでwithにする
       Prefab.get_column(self, table_name, column_name) == [] ->
         DataTable.delete_column(datatable, column_name)
 
@@ -34,48 +35,46 @@ defmodule Thaqqa.PrefabComplement do
   end
 
   def complement_table(%Prefab{} = self, font_name, table_name) do
-    font = Prefab.get_font(self, font_name)
+    with %Font{} = font <- Prefab.get_font(self, font_name),
+         true <- Prefab.static_table_exists?(self, table_name) do
+      case Prefab.local_static_table_exists?(self, table_name) do
+        false -> overwrite_font(self, font_name, Font.delete_table(font, table_name))
+        true -> complement_local_table(self, font, font_name, table_name)
+      end
+    else
+      _ -> self
+    end
+  end
 
-    cond do
-      # フォントが見つからない場合。
-      is_nil(font) ->
-        self
+  defp complement_local_table(self, font, font_name, table_name) do
+    case Prefab.get_table(self, font_name, table_name) do
+      nil ->
+        altered_font =
+          Font.add_table(font, Prefab.get_static_table(self, table_name))
 
-      # テーブルが見つからない場合。（
-      Prefab.get_static_table_list(self) |> Enum.find(fn {k, _} -> k == table_name end) == [] ->
-        self
+        overwrite_font(self, font_name, altered_font)
 
-      # loaclテーブル上に見つからない（すなわちglobal上にあると断定できる）場合
-      Prefab.get_static_table_list_local(self)
-      |> Enum.find(fn {k, _} -> k == table_name end) == [] ->
-        overwrite_font(self, font_name, Font.delete_table(font, table_name))
+      table ->
+        altered_font =
+          Enum.reduce(
+            Prefab.get_column_list(self, table_name),
+            font,
+            fn column, font_acc ->
+              altered_table =
+                complement_table_by_column(self, table, column.name)
 
-      # 残り、すなわちlocalテーブル上にあると断定できる場合。
-      true ->
-        table = Prefab.get_table(self, font_name, table_name)
+              Font.edit_table(font_acc, table_name, altered_table)
+            end
+          )
 
-        if is_nil(table) do
-          # テーブル自体を補完
-          altered_font = Font.add_table(font, Prefab.get_static_table(self, table_name))
-          overwrite_font(self, font_name, altered_font)
-        else
-          # column毎の補完・削除処理。
-          # complement_table_base_on_columnに分離するか。
-          altered_font =
-            Enum.reduce(Prefab.get_column_list(self, table_name), font, fn column, font_alt ->
-              altered_table = complement_table_by_column(self, table, column.name)
-              Font.edit_table(font_alt, table_name, altered_table)
-            end)
-
-          overwrite_font(self, font_name, altered_font)
-        end
+        overwrite_font(self, font_name, altered_font)
     end
   end
 
   ## 追加された(される)fontをstatic_tableの設定に合わせる
   def complement_font(%Prefab{} = self, font_name),
     do:
-      Enum.reduce(Prefab.get_static_table_list_local(self), self, fn {table_name, _}, acc ->
+      Enum.reduce(Prefab.get_local_static_table_list(self), self, fn {table_name, _}, acc ->
         complement_table(self, font_name, table_name)
       end)
 

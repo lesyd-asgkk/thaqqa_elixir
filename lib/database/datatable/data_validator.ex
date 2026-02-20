@@ -2,19 +2,20 @@ defmodule Thaqqa.DataValidator do
   alias Thaqqa.FontRegistry.Error, as: Error
   alias Thaqqa.DataTable, as: DataTable
   alias Thaqqa.Column, as: Column
+  use Thaqqa.DataTable.Const
 
   # こちらも同じく、editの場合は端折る
   defp id_validation(%DataTable{} = table, data_alt, _op, subject_data \\ nil) do
     column_set =
-      DataTable.get_column(table, fn %Column{subtype: st} -> st == :id end)
+      DataTable.get_column(table, fn %Column{subtype: st} -> st == @id_subtype end)
       |> Enum.map(& &1.name)
       |> MapSet.new()
 
-    Enum.reduce_while(data_alt, nil, fn {k, v}, acc ->
+    Enum.find_value(data_alt, fn {k, v} ->
       k_str = if is_atom(k), do: Atom.to_string(k), else: k
 
       if MapSet.member?(column_set, k_str) and Thaqqa.Data.get_val(subject_data, k_str) != v,
-        do: {:halt, Error.edit_locked(k_str, :id)},
+        do: {:halt, Error.edit_locked(k_str, @id_subtype)},
         else: {:cont, nil}
     end)
     |> case do
@@ -23,15 +24,12 @@ defmodule Thaqqa.DataValidator do
     end
   end
 
-  # TODO:unique_column_conflictはtablenameを反映させるようにする
-  # 「editの場合、変更者自身」である場合と全く同じ値は無視するように変更
-  #
   def unique_validation(%DataTable{name: tablename} = table, data_alt, op, subject_data \\ nil) do
     column_list =
-      DataTable.get_column(table, fn %Column{subtype: st} -> st in [:name, :id] end)
+      DataTable.get_column(table, fn %Column{subtype: st} -> st in @unique_subtypes end)
       |> Enum.map(fn %Column{name: name} -> name end)
 
-    Enum.reduce(data_alt, [], fn {k, v}, acc ->
+    Enum.reduce_while(data_alt, [], fn {k, v}, acc ->
       k_str = if is_atom(k), do: Atom.to_string(k), else: k
 
       # 空文字かnilなら許す
@@ -40,30 +38,27 @@ defmodule Thaqqa.DataValidator do
              table,
              &(&1 |> Thaqqa.Data.get_val(k_str) == v and v not in ["", nil])
            ) != [] and Thaqqa.Data.get_val(subject_data, k_str) != v,
-         do: [Error.unique_column_conflict(tablename, k_str, v, op) | acc],
-         else: [{:ok, nil} | acc]
-    end)
-    |> Enum.reduce_while({:ok, []}, fn
-      {:ok, _str}, {:ok, acc} -> {:cont, {:ok, acc}}
-      {:error, reason}, _acc -> {:halt, {:error, reason}}
+         do: {:halt, Error.unique_column_conflict(tablename, k_str, v, op)},
+         else: {:cont, nil}
     end)
     |> case do
       {:error, reason} -> {:error, reason}
-      {:ok, _} -> {:ok, nil}
+      _ -> {:ok, nil}
     end
   end
 
   # 追加時、最低限idがあるか(ないと破綻するので)
   def column_validation(%DataTable{name: tablename} = table, data_alt, op) do
     column_validate_list =
-      DataTable.get_column(table, fn %Column{subtype: st} -> st in [:name, :id] end)
+      DataTable.get_column(table, fn %Column{subtype: st} -> st in @unique_subtypes end)
       |> Enum.map(fn %Column{name: name} -> name end)
 
     column_list =
-      Enum.reduce(data_alt, [], fn {k, _v}, acc ->
+      Enum.reduce(data_alt, [], fn {k, _}, acc ->
         if is_atom(k), do: Atom.to_string(k), else: [k | acc]
       end)
 
+    # 軽量化の為にMapSetに一度変換している
     if MapSet.subset?(MapSet.new(column_validate_list), MapSet.new(column_list)) do
       {:ok, nil}
     else
@@ -71,7 +66,7 @@ defmodule Thaqqa.DataValidator do
         Enum.reduce(column_validate_list, [], fn k, acc ->
           if k in column_list,
             do: acc,
-            else: [acc | k]
+            else: [k | acc]
         end)
 
       Error.column_not_found(tablename, column_list, op)
@@ -85,17 +80,9 @@ defmodule Thaqqa.DataValidator do
                                              column,
                                            acc ->
       if Map.has_key?(value_map, name) do
-        val = Map.get(value_map, name)
-
-        cond do
-          !Column.is_value_valid?(column, val) ->
-            {:halt, Error.invalid_value_type(val, type)}
-
-          !Column.is_value_range_valid?(column, val) ->
-            {:halt, Error.invalid_value_range(val, type, subtype)}
-
-          true ->
-            {:cont, nil}
+        case Column.validate(column, Map.get(value_map, name)) do
+          :ok -> {:cont, nil}
+          {:error, reason} -> {:halt, {:error, reason}}
         end
       else
         {:cont, nil}
@@ -107,38 +94,34 @@ defmodule Thaqqa.DataValidator do
     end
   end
 
+  # 受け取ったvalue_mapのチェック
+  # columnチェック(idの存在チェック。ないと破綻するので)
+  # unique列チェック
   def validate_data(
         %DataTable{column_list: column_list} = table,
         new_value_map,
         :add = op
       ) do
-    case validate_value_map(new_value_map, column_list) do
-      {:error, msg} ->
-        {:error, msg}
-
-      {:ok, _} ->
-        case column_validation(table, new_value_map, op) do
-          {:error, msg} -> {:error, msg}
-          {:ok, _} -> unique_validation(table, new_value_map, op)
-        end
+    with {:ok, _} <- validate_value_map(new_value_map, column_list),
+         {:ok, _} <- column_validation(table, new_value_map, op),
+         {:ok, _} <- unique_validation(table, new_value_map, op) do
+      {:ok, nil}
     end
   end
 
+  # 受け取ったvalue_mapのチェック
+  # idチェック
+  # unique列チェック
   def validate_data(
         %DataTable{column_list: column_list} = table,
         new_value_map,
         :edit = op,
         subject_data
       ) do
-    case validate_value_map(new_value_map, column_list) do
-      {:error, msg} ->
-        {:error, msg}
-
-      {:ok, _} ->
-        case id_validation(table, new_value_map, op, subject_data) do
-          {:error, msg} -> {:error, msg}
-          {:ok, _} -> unique_validation(table, new_value_map, op, subject_data)
-        end
+    with {:ok, _} <- validate_value_map(new_value_map, column_list),
+         {:ok, _} <- id_validation(table, new_value_map, op, subject_data),
+         {:ok, _} <- unique_validation(table, new_value_map, op, subject_data) do
+      {:ok, nil}
     end
   end
 end

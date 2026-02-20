@@ -3,9 +3,11 @@ defmodule Thaqqa.Regex_Khhyl.Translator do
   alias Thaqqa.Regex_Khhyl.Error, as: Error
   alias Thaqqa.Regex_Khhyl.Normalizer, as: Normalizer
   alias Thaqqa.Regex_Khhyl.Tokenizer, as: Tokenizer
-  alias Thaqqa.LetterRegister, as: LetterRegister
+  alias Thaqqa.LetterManager, as: LetterManager
   use Thaqqa.DataTable.Const
 
+  # ※仕様変更につき、Translator系統はPrefab系統を引数として取るようにする
+  # regex_khhylの一部関数にも適応する
   def translate!(ast) when is_list(ast) do
     case translate(ast) do
       {:ok, val} -> val
@@ -50,9 +52,8 @@ defmodule Thaqqa.Regex_Khhyl.Translator do
   end
 
   defp translate_sub(%AST{type: :script, value: val}) do
-    # 暫定的な処置。todo:scriptパーサ (テーブル実装後になります)
-
-    LetterRegister.get_letter()
+    # 仕様変更につき、Translator系統はPrefab系統を取るようにする
+    LetterManager.get_letter()
     |> Enum.reduce([], fn {_k, v}, acc -> v ++ acc end)
     |> Enum.reduce_while([], fn letter, acc ->
       Thaqqa.Regex_Khhyl.Cond.convert(val, letter)

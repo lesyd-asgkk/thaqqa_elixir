@@ -6,12 +6,18 @@ defmodule Thaqqa.PrefabCompiler do
   alias Thaqqa.Column, as: Column
   alias Thaqqa.FontRegistry.Error, as: Error
 
-  def set_precompile_as_root(%Prefab{} = self) do
-    Enum.reduce_while(Prefab.get_static_table_list(self), self, fn {tablename, _}, acc ->
-      case set_precompile_as_root_by_table(acc, tablename) do
-        {:error, msg} -> {:halt, {:error, msg}}
+  defp reduce_while_ok(enum, acc, fun) do
+    Enum.reduce_while(enum, acc, fn item, acc ->
+      case fun.(item, acc) do
+        {:error, _} = err -> {:halt, err}
         {:ok, value} -> {:cont, value}
       end
+    end)
+  end
+
+  def set_precompile_as_root(%Prefab{} = self) do
+    reduce_while_ok(Prefab.get_static_table_list(self), self, fn {tablename, _}, acc ->
+      set_precompile_as_root_by_table(acc, tablename)
     end)
     |> case do
       {:error, msg} -> {:error, msg}
@@ -25,13 +31,8 @@ defmodule Thaqqa.PrefabCompiler do
         Error.table_not_found(tablename)
 
       table ->
-        Enum.reduce_while(table.data_list, self, fn data, acc ->
-          # 　何故かここで機能していない
-
-          case set_precompile_internal(acc, Prefab.get_static_table(acc, tablename), data) do
-            {:error, msg} -> {:halt, {:error, msg}}
-            {:ok, value} -> {:cont, value}
-          end
+        reduce_while_ok(table.data_list, self, fn data, acc ->
+          set_precompile_internal(acc, Prefab.get_static_table(acc, tablename), data)
         end)
         |> case do
           {:error, msg} -> {:error, msg}
@@ -53,11 +54,8 @@ defmodule Thaqqa.PrefabCompiler do
         Error.font_not_found(fontname)
 
       font ->
-        Enum.reduce_while(font.table_list, self, fn %DataTable{name: tablename}, acc ->
-          case set_precompile_as_font_by_table(acc, fontname, tablename) do
-            {:error, msg} -> {:halt, {:error, msg}}
-            {:ok, value} -> {:cont, value}
-          end
+        reduce_while_ok(font.table_list, self, fn %DataTable{name: tablename}, acc ->
+          set_precompile_as_font_by_table(acc, fontname, tablename)
         end)
         |> case do
           {:error, msg} -> {:error, msg}
@@ -67,29 +65,23 @@ defmodule Thaqqa.PrefabCompiler do
   end
 
   def set_precompile_as_font_by_table(%Prefab{} = self, fontname, tablename) do
-    case {Prefab.get_font(self, fontname), Prefab.get_table(self, fontname, tablename)} do
-      {nil, _} ->
-        Error.font_not_found(fontname)
-
-      {_, nil} ->
-        Error.table_not_found(tablename)
-
-      {font, table} ->
-        Enum.reduce_while(table.data_list, self, fn data, acc ->
-          case set_precompile_internal(
-                 acc,
-                 Prefab.get_font(acc, fontname),
-                 Prefab.get_table(acc, fontname, tablename),
-                 data
-               ) do
-            {:error, msg} -> {:halt, {:error, msg}}
-            {:ok, value} -> {:cont, value}
-          end
-        end)
-        |> case do
-          {:error, msg} -> {:error, msg}
-          otherwize -> {:ok, otherwize |> Prefab.sort_as_font(font, tablename)}
-        end
+    with %Font{} = font <- Prefab.get_font(self, fontname) || Error.font_not_found(fontname),
+         %DataTable{} = table <-
+           Prefab.get_table(self, fontname, tablename) || Error.table_not_found(tablename) do
+      reduce_while_ok(table.data_list, self, fn data, acc ->
+        set_precompile_internal(
+          acc,
+          Prefab.get_font(acc, fontname),
+          Prefab.get_table(acc, fontname, tablename),
+          data
+        )
+      end)
+      |> case do
+        {:error, msg} -> {:error, msg}
+        otherwize -> {:ok, otherwize |> Prefab.sort_as_font_table(font, tablename)}
+      end
+    else
+      {:error, _} = err -> err
     end
   end
 
@@ -124,18 +116,11 @@ defmodule Thaqqa.PrefabCompiler do
       {:error, msg} ->
         {:error, msg}
 
-      {:ok, %Data{value_list: v}} ->
-        if data == alter_data do
+      {:ok, %Data{value_list: v} = alter_data_} ->
+        if data == alter_data_ do
           {:ok, self}
         else
-          alter_table =
-            DataTable.edit_data!(
-              table,
-              data,
-              v |> Map.delete("ID")
-            )
-
-          # ぶっちゃけこれ素通りできるようにする
+          alter_table = DataTable.edit_data!(table, data, v)
 
           {:ok, Prefab.edit_static_table_if_enable(self, tablename, alter_table)}
         end
@@ -156,17 +141,11 @@ defmodule Thaqqa.PrefabCompiler do
       {:error, msg} ->
         {:error, msg}
 
-      {:ok, %Data{value_list: v}} ->
-        if alter_data == data do
+      {:ok, %Data{value_list: v} = alter_data_} ->
+        if alter_data_ == data do
           {:ok, self}
         else
-          alter_table =
-            DataTable.edit_data!(
-              table,
-              data,
-              v |> Map.delete("ID")
-            )
-
+          alter_table = DataTable.edit_data!(table, data, v)
           alter_font = Font.edit_table(font, tablename, alter_table)
           {:ok, Prefab.edit_font_if_enable(self, fontname, alter_font)}
         end

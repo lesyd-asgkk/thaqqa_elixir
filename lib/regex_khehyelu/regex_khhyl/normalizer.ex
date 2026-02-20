@@ -7,6 +7,7 @@ defmodule Thaqqa.Regex_Khhyl.Normalizer do
   # *などの記号は階層毎によって処理を変えている
   # 都合の悪い記号を吐いたり括弧が閉じてなかったらエラー
   # todo:{}系統のエラーを作る (括弧が閉じていない、中身が不正etc)
+  # 純粋な記号ミス等はどのみちtranslator段階でエラーを吐くのでこの段階では訂正しない
 
   @brancket_forward ["(?:", "(", "(?=", "(?<=", "(?!", "(?<!"]
   @brancket_backward [")"]

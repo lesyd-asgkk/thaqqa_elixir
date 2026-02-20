@@ -52,10 +52,4 @@ defmodule Thaqqa.Font do
 
     %{font | table_list: new_tables}
   end
-
-  # ↓はもう要らん（wrapperを改築したらだけど）
-  def update_fontregistry(%__MODULE__{name: name} = font) do
-    FontRegistry.edit_font(name, font)
-    font
-  end
 end

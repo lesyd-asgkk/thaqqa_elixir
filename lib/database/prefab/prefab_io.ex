@@ -47,6 +47,17 @@ defmodule Thaqqa.PrefabIO do
     end
   end
 
+  defp import_column(v),
+    do:
+      Column.new(
+        Map.get(v, "name"),
+        Map.get(v, "type", "none") |> String.to_atom(),
+        Map.get(v, "desc", ""),
+        Map.get(v, "order", 0),
+        Map.get(v, "subtype", "none") |> String.to_atom(),
+        Map.get(v, "dev", false)
+      )
+
   defp import_table(name, struct) do
     table = DataTable.new(name, Map.get(struct, "global"), nil, Map.get(struct, "compile_rule"))
 
@@ -60,16 +71,6 @@ defmodule Thaqqa.PrefabIO do
     Enum.reduce_while(columns, table, fn {k, v}, ans ->
       column =
         Enum.reduce_while(v, ans, fn {_, v_}, ans_ ->
-          new_column =
-            Column.new(
-              Map.get(v_, "name"),
-              Map.get(v_, "type", "none") |> String.to_atom(),
-              Map.get(v_, "desc", ""),
-              Map.get(v_, "order", 0),
-              Map.get(v_, "subtype", "none") |> String.to_atom(),
-              Map.get(v_, "dev", false)
-            )
-
           if Map.get(v_, "name") == nil or Map.get(v_, "type") == nil,
             do:
               {:halt,
@@ -77,7 +78,7 @@ defmodule Thaqqa.PrefabIO do
                  name: Map.get(v_, "name"),
                  type: Map.get(v_, "type")
                })},
-            else: {:cont, DataTable.add_column!(ans_, new_column)}
+            else: {:cont, DataTable.add_column!(ans_, import_column(v_))}
         end)
         |> case do
           {:error, msg} -> {:halt, {:error, msg}}

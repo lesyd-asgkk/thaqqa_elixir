@@ -77,6 +77,19 @@ defmodule Thaqqa.Column do
       end
   end
 
+  def validate(%__MODULE__{} = column, val) do
+    cond do
+      !is_value_valid?(column, val) ->
+        Error.invalid_value_type(val, column.type)
+
+      !is_value_range_valid?(column, val) ->
+        Error.invalid_value_range(val, column.type, column.subtype)
+
+      true ->
+        :ok
+    end
+  end
+
   def is_value_valid?(%__MODULE__{type: type}, val) do
     case type do
       :string -> is_binary(val)

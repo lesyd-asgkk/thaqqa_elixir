@@ -47,9 +47,9 @@ defmodule Thaqqa.Regex_Khhyl.Cond do
     do: Enum.at(stack, 0)
 
   def translate_sub([], letter, stack) when is_list(stack) and length(stack) != 1,
-    do: translate_calc([], letter, stack)
+    do: Error.invalid_stack_at_end(stack)
 
-  # Error.invalid_stack_at_end(stack)
+  #
 
   def translate_sub(ast, %Data{} = letter_data, stack) when is_list(ast) do
     [head | tail] = ast
@@ -69,6 +69,9 @@ defmodule Thaqqa.Regex_Khhyl.Cond do
     second = if AST.is_ast?(second), do: AST.get_val(second), else: second
     third = if AST.is_ast?(third), do: AST.get_val(third), else: third
 
+    # a == !b のようなとき
+    # [!,==,a]の時点では演算しない
+    # [b,!,==,a]の時に演算する
     if first != "!" do
       case second do
         "!" ->
@@ -116,7 +119,7 @@ defmodule Thaqqa.Regex_Khhyl.Cond do
   end
 
   def translate_sub(
-        %AST{type: type, value: val, children: children},
+        %AST{type: type, value: val, children: children} = _ast,
         %Data{} = letter_data,
         _stack
       ) do
@@ -125,7 +128,16 @@ defmodule Thaqqa.Regex_Khhyl.Cond do
         translate_sub(children, letter_data, [])
 
       type == :underbar ->
-        Data.get_val(letter_data, val)
+        # int string bool float 以外は受け付けない
+        # 現状、他の値が飛んできた場合は無条件でfalseにする
+        # nilとか特にそう（「なるわけがない」）
+        # string == boolみたいなものも演算式として例外判定にしない。
+        # というのも、本モジュールは長文を想定していない為。
+        value = Data.get_val(letter_data, val)
+
+        if is_integer(value) || is_float(value) || is_boolean(value) || is_binary(value),
+          do: value,
+          else: false
 
       true ->
         val
