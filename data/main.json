@@ -3,6 +3,7 @@
     "name": "ROOTSYSDATA",
         "global":true,
         "compile_rule":"none",
+                "single":true,
     "columnList": {
       "ID": {
         "name": "ID",
@@ -40,7 +41,7 @@
         "dev": true
       }
     },
-    "data": {
+    "dataList": {
       "0": {
         "ID": 0,
         "VersionMajor": 0,
@@ -55,6 +56,7 @@
     "name": "FONTSYSDATA",
         "global":false,
         "compile_rule":"none",
+                "single":true,
     "columnList": {
       "ID": {
         "name": "ID",
@@ -92,7 +94,7 @@
         "dev": true
       }
     },
-    "data": {
+    "dataList": {
       "0": {
         "ID": 0,
         "VersionMajor": 0,
@@ -106,6 +108,7 @@
     "name": "ROOTDATA",
         "global":true,
         "compile_rule":"none",
+        "single":true,
     "columnList": {
       "ID": {
         "name": "ID",
@@ -136,7 +139,7 @@
         "dev": false
       }
     },
-    "data": {
+    "dataList": {
       "0": {
         "ID": 0,
         "VersionMajor": 0,
@@ -149,6 +152,7 @@
     "name": "VOWEL",
     "global":true,
     "compile_rule":"none",
+            "single":false,
     "columnList": {
       "ID": {
         "name": "ID",
@@ -161,7 +165,7 @@
         "name": "Name",
         "type": "string",
         "order": 2,
-        "subtype": "name",
+        "subtype": "token",
         "dev": false
       },
       "LoadName": {
@@ -242,7 +246,7 @@
         "dev": false
       }
     },
-    "data": {
+    "dataList": {
       "0": {
         "ID": 0,
         "Name": "a",
@@ -429,6 +433,7 @@
     "name": "CONSONANT",
     "global":true,
     "compile_rule":"none",
+    "single":false,
     "columnList": {
       "ID": {
         "name": "ID",
@@ -441,7 +446,7 @@
         "name": "Name",
         "type": "string",
         "order": 2,
-        "subtype": "name",
+        "subtype": "token",
         "dev": false
       },
       "LoadName": {
@@ -487,7 +492,7 @@
         "dev": false
       }
     },
-    "data": {
+    "dataList": {
       "0": {
         "ID": 0,
         "Name": "t",
@@ -704,6 +709,7 @@
     "name": "PUNCTUATION",
     "global":true,
     "compile_rule":"none",
+    "single":false,
     "columnList": {
       "ID": {
         "name": "ID",
@@ -716,7 +722,7 @@
         "name": "Name",
         "type": "string",
         "order": 2,
-        "subtype": "name",
+        "subtype": "token",
         "dev": false
       },
       "LoadName": {
@@ -748,7 +754,7 @@
         "dev": true
       }
     },
-    "data": {
+    "dataList": {
       "0": {
         "ID": 0,
         "Name": "comma",
@@ -939,6 +945,7 @@
     "name": "DIACRITIC_V",
     "global":true,
     "compile_rule":"none",
+    "single":false,
     "columnList": {
       "ID": {
         "name": "ID",
@@ -951,7 +958,7 @@
         "name": "Name",
         "type": "string",
         "order": 2,
-        "subtype": "name",
+        "subtype": "token",
         "dev": false
       },
       "LoadName": {
@@ -1011,7 +1018,7 @@
         "dev": false
       }
     },
-    "data": {
+    "dataList": {
       "0": {
         "ID": 0,
         "Name": "sone",
@@ -1066,6 +1073,7 @@
     "name": "DIACRITIC_C",
     "global":true,
     "compile_rule":"none",
+    "single":false,
     "columnList": {
       "ID": {
         "name": "ID",
@@ -1078,7 +1086,7 @@
         "name": "Name",
         "type": "string",
         "order": 2,
-        "subtype": "name",
+        "subtype": "token",
         "dev": false
       },
       "LoadName": {
@@ -1124,7 +1132,7 @@
         "dev": false
       }
     },
-    "data": {
+    "dataList": {
       "0": {
         "ID": 0,
         "Name": "d",
@@ -1171,6 +1179,7 @@
     "name": "DIACRITIC_P",
     "global":true,
     "compile_rule":"none",
+    "single":false,
     "columnList": {
       "ID": {
         "name": "ID",
@@ -1183,7 +1192,7 @@
         "name": "Name",
         "type": "string",
         "order": 2,
-        "subtype": "name",
+        "subtype": "token",
         "dev": false
       },
       "LoadName": {
@@ -1222,12 +1231,13 @@
         "dev": false
       }
     },
-    "data": {}
+    "dataList": {}
   },
   "PARSER": {
     "name": "PARSER",
     "global":true,
     "compile_rule":"regex_0",
+    "single":false,
     "columnList": {
       "ID": {
         "name": "ID",
@@ -1277,7 +1287,7 @@
         "dev": false
       }
     },
-    "data": {
+    "dataList": {
       "0": {
         "ID": 0,
         "Language": "samlhta",
@@ -2931,6 +2941,7 @@
     "name": "GSUB",
     "global":true,
     "compile_rule":"regex_0",
+    "single":false,
     "columnList": {
       "ID": {
         "name": "ID",
@@ -2979,7 +2990,7 @@
         "dev": false
       }
     },
-    "data": {
+    "dataList": {
       "0": {
         "ID": 0,
         "WritingDirection": "universal",
@@ -3689,6 +3700,7 @@
     "name": "FONTDATA",
     "global": false, 
     "compile_rule":"none",
+    "single":true,
     "columnList": {
       "ID": {
         "name": "ID",
@@ -3769,7 +3781,7 @@
       }
 
     },
-    "data": {
+    "dataList": {
       "0": {
         "ID": 0,
         "Thickness": 0,
@@ -3789,6 +3801,7 @@
     "name": "GPOS",
     "global": false, 
     "compile_rule":"regex_0",
+    "single":false,
     "columnList": {
       "ID": {
         "name": "ID",
@@ -3861,7 +3874,7 @@
         "dev": false
       }
     },
-    "data": {
+    "dataList": {
       "0": {
         "ID": 0,
         "WritingDirection": "universal",
@@ -3880,6 +3893,7 @@
     "name": "UniqueGSUB",
     "global": false, 
     "compile_rule":"regex_0",
+    "single":false,
     "columnList": {
       "ID": {
         "name": "ID",
@@ -3931,7 +3945,7 @@
         "dev": false
       }
     },
-    "data": {
+    "dataList": {
       "0": {
         "ID": 0,
         "WritingDirection": "universal",
@@ -3946,6 +3960,7 @@
     "name": "GLYPH",
     "global": false, 
     "compile_rule":"path_0",
+    "single":false,
     "columnList": {
       "ID": {
         "name": "ID",
@@ -3970,7 +3985,7 @@
         
       }
     },
-    "data": {
+    "dataList": {
       "0": {
         "ID": 0,
         "Name": "",

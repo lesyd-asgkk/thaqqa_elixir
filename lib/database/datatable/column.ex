@@ -133,6 +133,7 @@ defmodule Thaqqa.Column do
         :language -> val in @language_list
         :writing_direction -> val in @writing_direction_list
         :gpos -> val in @gpos_list
+        :token -> Regex.match?(~r/^([A-Za-z])*$/, val)
         _ -> true
       end
     end

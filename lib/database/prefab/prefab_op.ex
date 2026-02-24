@@ -1,3 +1,5 @@
+# Prefabに処理を加えるモジュール
+
 defmodule Thaqqa.PrefabOp do
   alias Thaqqa.PrefabComplement, as: PrefabComplement
 
@@ -244,7 +246,7 @@ defmodule Thaqqa.PrefabOp do
   defp get_global_static_table_list(%Prefab{} = self),
     do: Prefab.get_global_static_table_list(self)
 
-  defp get_static_table_list_local(%Prefab{} = self), do: Prefab.get_static_table_list_local(self)
+  defp get_local_static_table_list(%Prefab{} = self), do: Prefab.get_local_static_table_list(self)
 
   defp get_table(%Prefab{} = self, fontname, tablename),
     do: Prefab.get_table(self, fontname, tablename)

@@ -12,9 +12,18 @@ defmodule ThaqqaTest do
     # 0.4秒ほど　regex,pathの処理数が馬鹿多いので
     Thaqqa.FontIO.import_as_font("default")
 
-    {:ok, value} = Thaqqa.FontRegistry.create_prefab()
+    {:ok, prefab} = Thaqqa.FontRegistry.create_prefab()
 
-    Thaqqa.LetterManager.get_table(value) |> IO.inspect()
+    p = prefab |> Thaqqa.ParserManager.parse!("suzusha koratl", "khehyelu")
+
+    p =
+      prefab
+      |> Thaqqa.GsubManager.gsub!(p, "vertical")
+
+    prefab
+    |> Thaqqa.UniqueGposManager.gpos("Default", "S(mid,t0,e0,t0)", "vertical", "internal")
+    |> IO.inspect()
+
     # この辺の変換は誤差
 
     # Supervisor.start_link(Thaqqa.FontRegistry, strategy: :one_for_one)

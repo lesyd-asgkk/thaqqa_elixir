@@ -2,6 +2,7 @@
     "FONTSYSDATA": {
     "name": "FONTSYSDATA",
         "compile_rule":"none",
+        "single":true,
     "columnList": {
       "ID": {
         "name": "ID",
@@ -39,7 +40,7 @@
         "dev": true
       }
     },
-    "data": {
+    "dataList": {
       "0": {
         "ID": 0,
         "VersionMajor": 0,
@@ -52,6 +53,7 @@
   "FONTDATA": {
     "name": "FONTDATA",
     "compile_rule":"none",
+    "single":true,
     "columnList": {
       "ID": {
         "name": "ID",
@@ -139,7 +141,7 @@
       }
 
     },
-    "data": {
+    "dataList": {
       "0": {
         "ID": 0,
         "Thickness": 4.6875,
@@ -159,6 +161,7 @@
   "GPOS": {
     "name": "GPOS",
     "compile_rule":"regex_0",
+    "single":false,
     "columnList": {
       "ID": {
         "name": "ID",
@@ -231,7 +234,7 @@
         "dev": false
       }
     },
-    "data": {
+    "dataList": {
       "0": {
         "ID": 0,
         "WritingDirection": "universal",
@@ -8565,6 +8568,7 @@
   "UniqueGSUB": {
     "name": "UniqueGSUB",
     "compile_rule":"regex_0",
+    "single":false,
     "columnList": {
       "ID": {
         "name": "ID",
@@ -8616,7 +8620,7 @@
         "dev": false
       }
     },
-    "data": {
+    "dataList": {
       "0": {
         "ID": 0,
         "WritingDirection": "universal",
@@ -8630,6 +8634,7 @@
   "GLYPH": {
     "name": "GLYPH",
     "compile_rule":"path_0",
+    "single":false,
     "columnList": {
       "ID": {
         "name": "ID",
@@ -8653,7 +8658,7 @@
         
       }
     },
-    "data": {
+    "dataList": {
       "0": {
         "ID": 0,
         "Name": "abig_fin_0",

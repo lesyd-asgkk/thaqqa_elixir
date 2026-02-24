@@ -3,9 +3,10 @@ defmodule Thaqqa.FontIO do
   # ※impureな関数の塊
   # ファイルについては↓を変更すること
 
-  # ※import系統がバグりうる（中途半端な状態で保存されかねない）ので原子化を行う
-  # ※shadow_tableを更にshadowしたtable……のような構造体を作る
-  # %import_plan{ fonts: :fonts_shadow_に対応する部分 ,tables: :static_tables_shadowに対応する部分}
+  # import系統:jsonファイルを読み込み、FontやDataTableのMap構造体に変換したうえでFontRegistryに登録する。
+  # export系統:FontRegitryのMap構造体をjson形式に変換した上で保存する。
+  # jsonデータ⇔Map構造への変換はPrefabIO内にて行われる。
+  #
 
   @root_file "data/main.json"
   @font_folder "data/"
@@ -17,11 +18,6 @@ defmodule Thaqqa.FontIO do
   alias Thaqqa.Column, as: Column
   alias Thaqqa.Regex_Khhyl, as: Regex_Khhyl
   alias Thaqqa.DataTable, as: DataTable
-  alias Thaqqa.ParserRegister, as: ParserRegister
-  alias Thaqqa.GsubRegister, as: GsubRegister
-  alias Thaqqa.UniqueGsubRegister, as: UniqueGsubRegister
-  alias Thaqqa.GlyphRegister, as: GlyphRegister
-  alias Thaqqa.GposRegister, as: GposRegister
 
   # read_and_decode_jsonはfont_prefabの方にそっくり同じ関数を作る
   # set_precompileも同様
@@ -68,5 +64,11 @@ defmodule Thaqqa.FontIO do
           {:ok, prefab} -> FontRegistry.apply_prefab(prefab)
         end
     end
+  end
+
+  def export_as_root() do
+  end
+
+  def export_as_font(fontname) do
   end
 end

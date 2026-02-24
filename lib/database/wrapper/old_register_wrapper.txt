@@ -832,5 +832,3 @@ defmodule Thaqqa.UniqueGsubRegister do
     end
   end
 end
-
-

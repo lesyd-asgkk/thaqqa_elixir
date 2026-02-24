@@ -1,9 +1,4 @@
 defmodule Thaqqa.Font do
-  # fontの関数について、結果としてtableの名前が変更される/追加される/削除されるものは
-  # 直接APIを提供しないようにし、FontRegistryで編集するように変更する
-  # font内tableの整合性機能をつける？（root.jsonで定義されていないtableは削除したり、定義されたtableが存在しなかったら自動で追加する、読み込み時にcolumnのエラーをチェックする）
-  # それかいっそ「font= "Fontname"」のようなcolumnを必須にしてしまうか。
-
   alias Thaqqa.FontRegistry, as: FontRegistry
   alias Thaqqa.FontRegisteryPrefab, as: FontRegisteryPrefab
   alias Thaqqa.DataTable, as: DataTable

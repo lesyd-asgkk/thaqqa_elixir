@@ -1,4 +1,4 @@
-# todo too_many_subjectの適応、かつ初期制限(safety_num)引数の追加
+#
 
 defmodule Thaqqa.DataTable do
   alias Thaqqa.FontRegisteryPrefab, as: FontRegisteryPrefab
@@ -20,10 +20,11 @@ defmodule Thaqqa.DataTable do
     column_list: [],
     data_list: [],
     desc: "",
-    unique_index: %{}
+    single: false
+    # unique_index: %{}
   ]
 
-  def new(name, global, parent, compile_rule),
+  def new(name, global, parent, compile_rule, single),
     do: %__MODULE__{
       name: name,
       global: global,
@@ -32,7 +33,8 @@ defmodule Thaqqa.DataTable do
       desc: "",
       column_list: [],
       data_list: [],
-      unique_index: %{}
+      single: single
+      # unique_index: %{}
     }
 
   def is_global?(%__MODULE__{global: global}), do: global
@@ -81,6 +83,13 @@ defmodule Thaqqa.DataTable do
     %{table | column_list: new_cols, data_list: new_datalist}
   end
 
+  def edit_column!(%__MODULE__{} = table, column_name, %Column{name: new_name} = column) do
+    case edit_column(table, column_name, column) do
+      {:ok, val} -> val
+      {:error, msg} -> raise msg
+    end
+  end
+
   def edit_column(
         %__MODULE__{column_list: col_list} = table,
         column_name,
@@ -109,7 +118,7 @@ defmodule Thaqqa.DataTable do
             else: %{data | value_list: Map.delete(data.value_list, column_name)}
         end)
 
-      %{table | column_list: new_cols, data_list: new_datas}
+      {:ok, %{table | column_list: new_cols, data_list: new_datas}}
     end
   end
 
@@ -184,12 +193,14 @@ defmodule Thaqqa.DataTable do
         value_map
       )
       when is_map(value_map) do
+    value_map = value_map |> attach_id(table)
+
     case DataValidator.validate_data(table, value_map, :add) do
       {:error, msg} ->
         {:error, msg}
 
       {:ok, _v} ->
-        value_map = value_map |> modify_value_map(table) |> attach_id(table)
+        value_map = value_map |> modify_value_map(table)
         new_data = Data.new(value_map)
         {:ok, %{table | data_list: [new_data | datas]}}
     end

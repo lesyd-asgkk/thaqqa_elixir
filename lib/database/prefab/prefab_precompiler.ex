@@ -36,7 +36,7 @@ defmodule Thaqqa.PrefabCompiler do
         end)
         |> case do
           {:error, msg} -> {:error, msg}
-          otherwize -> {:ok, otherwize |> Prefab.sort_as_static(tablename)}
+          otherwize -> {:ok, otherwize |> Prefab.sort_as_static_if_enable(tablename)}
         end
     end
   end
@@ -78,7 +78,7 @@ defmodule Thaqqa.PrefabCompiler do
       end)
       |> case do
         {:error, msg} -> {:error, msg}
-        otherwize -> {:ok, otherwize |> Prefab.sort_as_font_table(font, tablename)}
+        otherwize -> {:ok, otherwize |> Prefab.sort_as_font_table_if_enable(font, tablename)}
       end
     else
       {:error, _} = err -> err
@@ -110,7 +110,7 @@ defmodule Thaqqa.PrefabCompiler do
          %Data{} = data
        ) do
     # ここに加工ロジックを追加
-    alter_data = Data.set_precompile(data, table)
+    alter_data = Data.set_precompile(data, table, self)
 
     case alter_data do
       {:error, msg} ->
@@ -135,7 +135,7 @@ defmodule Thaqqa.PrefabCompiler do
        ) do
     # ここに加工ロジックを追加
 
-    alter_data = Data.set_precompile(data, table)
+    alter_data = Data.set_precompile(data, table, self)
 
     case alter_data do
       {:error, msg} ->

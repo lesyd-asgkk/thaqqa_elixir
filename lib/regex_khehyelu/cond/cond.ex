@@ -186,8 +186,11 @@ defmodule Thaqqa.Regex_Khhyl.Cond do
             name = String.slice(head, 1..-2//1)
             normalize_sub(tail, [%AST{type: :string, value: name} | acum])
 
-          true ->
+          Regex.match?(~r/^-?(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?$/, head) ->
             normalize_sub(tail, [%AST{type: :number, value: head} | acum])
+
+          true ->
+            normalize_sub(tail, [%AST{type: :bool, value: head} | acum])
         end
     end
   end

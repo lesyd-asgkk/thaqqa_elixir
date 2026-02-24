@@ -20,7 +20,7 @@ defmodule Thaqqa.PrefabIO do
     end
   end
 
-  defp extract_datatable_name(data), do: get_in(data, ["FONTDATA", "data", "0", "Fontname"])
+  defp extract_datatable_name(data), do: get_in(data, ["FONTDATA", "dataList", "0", "Fontname"])
 
   def import_as_font(%Prefab{} = self, fontdata, filename) when is_map(fontdata) do
     Enum.reduce_while(fontdata, [], fn {k, v}, acc ->
@@ -59,7 +59,14 @@ defmodule Thaqqa.PrefabIO do
       )
 
   defp import_table(name, struct) do
-    table = DataTable.new(name, Map.get(struct, "global"), nil, Map.get(struct, "compile_rule"))
+    table =
+      DataTable.new(
+        name,
+        Map.get(struct, "global"),
+        nil,
+        Map.get(struct, "compile_rule"),
+        Map.get(struct, "single")
+      )
 
     # ↓の順序を変える。かならずcolumnListが先に処理されるように。
     {columns, others} =
