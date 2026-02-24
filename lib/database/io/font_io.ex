@@ -31,38 +31,44 @@ defmodule Thaqqa.FontIO do
     end
   end
 
-  defp extract_datatable_name(data), do: get_in(data, ["FONTDATA", "data", "0", "Fontname"])
+  defp extract_datatable_name(data) do
+    with data_0_list when is_list(data_0_list) <- get_in(data, ["FONTDATA", "data"]),
+         data_0 when is_binary(data_0) <- Enum.at(data_0_list, 0) do
+      Map.get(data_0, "Fontname")
+    else
+      value -> value
+    end
+  end
 
   def import_as_root() do
-    {:ok, prefab} = FontRegistry.create_prefab()
     file_path = @root_file
 
-    case read_and_decode_json(file_path) do
+    with {:ok, prefab} <- FontRegistry.create_prefab(),
+         {:ok, rootdata} <- read_and_decode_json(file_path),
+         {:ok, prefab} <- Prefab.import_as_root(prefab, rootdata),
+         {:ok, _} <- FontRegistry.apply_prefab(prefab),
+         {:ok, val} <- FontRegistry.commit() do
+      {:ok, val}
+    else
       {:error, msg} ->
+        FontRegistry.rollback()
         {:error, msg}
-
-      {:ok, rootdata} ->
-        case Prefab.import_as_root(prefab, rootdata) do
-          {:error, msg} -> {:error, msg}
-          {:ok, prefab} -> FontRegistry.apply_prefab(prefab)
-        end
     end
   end
 
   def import_as_font(filename) do
-    {:ok, prefab} = FontRegistry.create_prefab()
-
     file_path = @font_folder <> filename <> @font_file
 
-    case read_and_decode_json(file_path) do
+    with {:ok, prefab} <- FontRegistry.create_prefab(),
+         {:ok, fontdata} <- read_and_decode_json(file_path),
+         {:ok, prefab} <- Prefab.import_as_font(prefab, fontdata, filename),
+         {:ok, _} <- FontRegistry.apply_prefab(prefab),
+         {:ok, val} <- FontRegistry.commit() do
+      {:ok, val}
+    else
       {:error, msg} ->
+        FontRegistry.rollback()
         {:error, msg}
-
-      {:ok, rootdata} ->
-        case Prefab.import_as_font(prefab, rootdata, filename) do
-          {:error, msg} -> {:error, msg}
-          {:ok, prefab} -> FontRegistry.apply_prefab(prefab)
-        end
     end
   end
 
