@@ -61,6 +61,22 @@ defmodule Thaqqa.FontRegistryPrefab do
     end
   end
 
+  def get_single_data(%__MODULE__{} = self, fontname, tablename) do
+    case get_table(self, fontname, tablename) do
+      nil -> nil
+      # どのみち
+      table -> table.data_list |> Enum.at(0)
+    end
+  end
+
+  def get_single_data_value(%__MODULE__{} = self, fontname, tablename, column) do
+    case get_single_data(self, fontname, tablename) do
+      nil -> nil
+      # どのみち
+      data -> Data.get_val(data, column)
+    end
+  end
+
   def get_column_list(%__MODULE__{} = self, name) do
     case get_static_table(self, name) do
       nil -> nil

@@ -2,14 +2,14 @@
 # Registryから直接読み取る方式のままか
 # Prefabの加工・読み取りラッパーにするか
 
-defmodule Thaqqa.UniqueGposManager do
+defmodule Thaqqa.GposManager do
   alias Thaqqa.DataTable, as: DataTable
   alias Thaqqa.Font, as: Font
   alias Thaqqa.FontRegistryPrefab, as: Prefab
   alias Thaqqa.FontRegistry.Error, as: Error
   alias Thaqqa.DataValidator, as: DataValidator
   use Thaqqa.DataTable.Const
-
+  #
   def get_gpos_table!(%Prefab{} = prefab, fontname),
     do: Prefab.get_table(prefab, fontname, @gpos)
 

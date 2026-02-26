@@ -21,9 +21,13 @@ defmodule ThaqqaTest do
       |> Thaqqa.GsubManager.gsub!(p, "vertical")
 
     prefab
-    |> Thaqqa.UniqueGposManager.gpos("Default", "S(mid,t0,e0,t0)", "vertical", "internal")
-    |> IO.inspect()
 
+    Thaqqa.FontRegistryPrefab.get_single_data(prefab, "Default", "FONTDATA") |> IO.inspect()
+
+    # Thaqqa.Glyph.new(prefab, "Default", "C(onset,t0-hd0)", "vertical") |> IO.inspect()
+
+    # Thaqqa.Glyph.new(prefab, "Default", "P(two0)", "vertical") |> IO.inspect()
+    Thaqqa.Glyph.new(prefab, "Default", "S(mid,n0,a0,n0)", "vertical") |> IO.inspect()
     # この辺の変換は誤差
 
     # Supervisor.start_link(Thaqqa.FontRegistry, strategy: :one_for_one)

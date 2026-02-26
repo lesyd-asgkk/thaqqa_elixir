@@ -93,16 +93,16 @@ defmodule Thaqqa.UniqueGsubManager do
     end
   end
 
-  def unique_gsub!(%Prefab{} = prefab, fontname, string, writing_direction)
+  def unique_gsub!(%Prefab{} = prefab, string, fontname, writing_direction)
       when writing_direction in [@vertical, @horizontal] do
-    case unique_gsub(prefab, fontname, string, writing_direction) do
+    case unique_gsub(prefab, string, fontname, writing_direction) do
       {:error, msg} -> raise msg
       {:ok, val} -> val
     end
   end
 
   # todo with文-化
-  def unique_gsub(%Prefab{} = prefab, fontname, string, writing_direction)
+  def unique_gsub(%Prefab{} = prefab, string, fontname, writing_direction)
       when writing_direction in [@vertical, @horizontal] do
     get_unique_gsub(prefab, fontname, fn %Thaqqa.Data{} = data ->
       Thaqqa.Data.get_val(data, @writing_direction) in [writing_direction, @universal_language]
