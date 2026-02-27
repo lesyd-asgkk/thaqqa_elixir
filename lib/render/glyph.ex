@@ -20,21 +20,26 @@ defmodule Thaqqa.Glyph do
 
   # element_internalは内部処理で保持しておくと楽な値の一覧。
 
+  # 明らかに肥大化しすぎているので、今後にモジュールの区画化を取り行う
+
   # relativeな高さにしたい場合の処理。　音節の場合
 
   def render_with_relative_height(
         %Prefab{} = prefab,
-        %__MODULE__{name: %{type: "S"}, font: font} = self,
+        %__MODULE__{name: %{type: "S"}, font: font, element_internal: %{is_null: true}} = self,
         height,
         vowel_height
       ) do
-    # is_null_vowel = is_null_vowel?(self.children_glyph_list |> Enum.at(1))
-
-    # if is_null_vowel do
-    #  nil
-    # else
     nil
-    # end
+  end
+
+  def render_with_relative_height(
+        %Prefab{} = prefab,
+        %__MODULE__{name: %{type: "S"}, font: font, element_internal: %{is_null: false}} = self,
+        height,
+        vowel_height
+      ) do
+    nil
   end
 
   # そんなことはない場合
