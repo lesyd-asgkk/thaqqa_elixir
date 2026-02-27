@@ -73,6 +73,15 @@ defmodule Thaqqa.Glyph do
     nil
   end
 
+  ############
+  ############
+  ############
+  ############
+  ############
+  ############
+  ############ ↓まずはここから
+  ############
+
   # path設定
   def set_path(%__MODULE__{name: %{type: "S"}, children_glyph_list: children, path: path} = self) do
     [onset_glyph, vowel_glyph, coda_glyph] =
@@ -85,22 +94,58 @@ defmodule Thaqqa.Glyph do
     %__MODULE__{self | height: %{y0: t, y1: t, y2: b, y3: b}}
   end
 
-  def set_path(%__MODULE__{name: %{type: type}, children_glyph_list: children, path: path} = self) do
+  def set_path(
+        %__MODULE__{
+          name: %{type: type, form: form},
+          children_glyph_list: children,
+          path: top_path
+        } = self
+      ) do
     top_glyph = %__MODULE__{self | children_glyph_list: []} |> set_path()
     child = Enum.at(children, 0)
     sub_glyph = child |> set_path()
 
-    # #mergeNonSyllableの処理をここに
+    dir = if type in ["C", "Cd"] and form == "coda", do: -1, else: 1
+    off = calc_offset(top_glyph, sub_glyph)
+    IO.inspect(off)
+    child_path = child.path
+    %{left: l, top: t, right: r, bottom: b} = SVG.Path.get_border(child_path)
 
-    %{left: _, top: t, right: _, bottom: b} = SVG.Path.get_border(path)
-    %__MODULE__{self | height: %{y0: t, y1: t, y2: b, y3: b}}
+    off_child_x = dir * (r + l) / 2
+
+    off_child_y = dir * (t + b) / 2
+
+    path_new =
+      merge_path_2(
+        top_path,
+        child_path,
+        off_child_x + off.x,
+        off_child_y + off.y
+      )
+      |> to_relative()
+
+    %{left: _, top: t, right: _, bottom: b} = SVG.Path.get_border(path_new)
+    %__MODULE__{self | height: %{y0: t, y1: t, y2: b, y3: b}, path: path_new}
   end
 
   # 無の場合。そのまま初期値のM0,0が帰ります
   def set_path(%__MODULE__{name: %{glyph: "", variant: "", type: "", form: ""}} = self), do: self
 
   #
-  def calc_offset(%__MODULE__{} = top_glyph, %__MODULE__{} = sub_glyph) do
+
+  def calc_offset(
+        %__MODULE__{name: %{type: type, form: form}, path: top_path} = top_glyph,
+        %__MODULE__{offset: sub_offset, aligment: sub_aligment} = sub_glyph
+      ) do
+    %{left: l, top: t, right: r, bottom: b} = SVG.Path.get_border(top_path)
+    dir = if type in ["C", "Cd"] and form == "coda", do: -1, else: 1
+
+    %{
+      x:
+        l * (1 - sub_aligment.x * dir) / 2 + r * (1 + sub_aligment.x * dir) / 2 +
+          sub_offset.x * dir,
+      y: t * (1 - sub_aligment.y) / 2 + b * (1 + sub_aligment.y) / 2
+    }
   end
 
   def calc_offset(
@@ -172,7 +217,7 @@ defmodule Thaqqa.Glyph do
     %__MODULE__{
       offset: %{x: 0, y: 0},
       aligment: aligment,
-      path: path,
+      path: SVG.Path.new(path),
       children_glyph_list: [],
       font: font,
       name: glyph_name,

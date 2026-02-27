@@ -22,12 +22,17 @@ defmodule ThaqqaTest do
 
     prefab
 
-    Thaqqa.FontRegistryPrefab.get_single_data(prefab, "Default", "FONTDATA") |> IO.inspect()
+    # Thaqqa.FontRegistryPrefab.get_single_data(prefab, "Default", "FONTDATA") |> IO.inspect()
 
-    # Thaqqa.Glyph.new(prefab, "Default", "C(onset,t0-hd0)", "vertical") |> IO.inspect()
+    glyph =
+      Thaqqa.Glyph.new(prefab, "Default", "C(onset,t0-hd0)", "vertical")
+      |> Thaqqa.Glyph.set_path()
+
+    SVG.Path.export_as_string(glyph.path)
+    |> IO.inspect()
 
     # Thaqqa.Glyph.new(prefab, "Default", "P(two0)", "vertical") |> IO.inspect()
-    Thaqqa.Glyph.new(prefab, "Default", "S(mid,n0,a0,n0)", "vertical") |> IO.inspect()
+    # Thaqqa.Glyph.new(prefab, "Default", "S(mid,n0,a0,n0)", "vertical") |> IO.inspect()
     # この辺の変換は誤差
 
     # Supervisor.start_link(Thaqqa.FontRegistry, strategy: :one_for_one)
