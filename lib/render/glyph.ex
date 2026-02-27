@@ -20,7 +20,7 @@ defmodule Thaqqa.Glyph do
 
   # element_internalは内部処理で保持しておくと楽な値の一覧。
 
-  # 明らかに肥大化しすぎているので、今後にモジュールの区画化を取り行う
+  # 明らかに肥大化しすぎているので、今後にモジュールの区画化を取り行う。
 
   # relativeな高さにしたい場合の処理。　音節の場合
 
@@ -74,18 +74,30 @@ defmodule Thaqqa.Glyph do
   end
 
   ############
-  ############
-  ############
-  ############
-  ############
-  ############
-  ############ ↓まずはここから
-  ############
 
   # path設定
   def set_path(%__MODULE__{name: %{type: "S"}, children_glyph_list: children, path: path} = self) do
+    %{top: tv, bottom: bv} = Enum.at(children, 1).path |> SVG.Path.get_border()
+
     [onset_glyph, vowel_glyph, coda_glyph] =
       Enum.map(children, fn k -> set_path(k) end)
+
+    [off_onset, off_coda] = calc_offset(onset_glyph, vowel_glyph, coda_glyph)
+
+    path_new =
+      SVG.Path.merge_path_3(
+        vowel_glyph.path,
+        onset_glyph.path,
+        coda_glyph.path,
+        0,
+        off_onset.y,
+        0,
+        off_coda.y
+      )
+
+    %{top: t, bottom: b} = SVG.Path.get_border(path_new)
+    height = %{y0: t, y1: tv, y2: bv, y3: b}
+    %__MODULE__{self | height: height, path: path_new}
   end
 
   # S以外の時の設定(再帰処理)
@@ -107,13 +119,11 @@ defmodule Thaqqa.Glyph do
 
     dir = if type in ["C", "Cd"] and form == "coda", do: -1, else: 1
     off = calc_offset(top_glyph, sub_glyph)
-    IO.inspect(off)
     child_path = child.path
     %{left: l, top: t, right: r, bottom: b} = SVG.Path.get_border(child_path)
 
     off_child_x = dir * (r + l) / 2
-
-    off_child_y = dir * (t + b) / 2
+    off_child_y = -(t + b) / 2
 
     path_new =
       merge_path_2(
@@ -128,38 +138,87 @@ defmodule Thaqqa.Glyph do
     %__MODULE__{self | height: %{y0: t, y1: t, y2: b, y3: b}, path: path_new}
   end
 
-  # 無の場合。そのまま初期値のM0,0が帰ります
+  # 無の場合。そのまま初期値のm0,0が帰ります
   def set_path(%__MODULE__{name: %{glyph: "", variant: "", type: "", form: ""}} = self), do: self
 
   #
 
-  def calc_offset(
-        %__MODULE__{name: %{type: type, form: form}, path: top_path} = top_glyph,
-        %__MODULE__{offset: sub_offset, aligment: sub_aligment} = sub_glyph
-      ) do
+  defp calc_offset(
+         %__MODULE__{name: %{type: type, form: form}, path: top_path} = top_glyph,
+         %__MODULE__{offset: sub_offset, aligment: sub_aligment} = sub_glyph
+       ) do
     %{left: l, top: t, right: r, bottom: b} = SVG.Path.get_border(top_path)
-    dir = if type in ["C", "Cd"] and form == "coda", do: -1, else: 1
 
-    %{
-      x:
-        l * (1 - sub_aligment.x * dir) / 2 + r * (1 + sub_aligment.x * dir) / 2 +
-          sub_offset.x * dir,
-      y: t * (1 - sub_aligment.y) / 2 + b * (1 + sub_aligment.y) / 2
-    }
+    if type in ["C", "Cd"] do
+      dir = if form == "coda", do: -1, else: 1
+
+      # C,Cdの場合はxの位置を補正（0:「グリフの」中央、1:グリフの外側、-1:グリフの内側(母音側) ）
+      %{
+        x:
+          l * (1 - sub_aligment.x * dir) / 2 + r * (1 + sub_aligment.x * dir) / 2 +
+            sub_offset.x * dir,
+        y: t * (1 - sub_aligment.y) / 2 + b * (1 + sub_aligment.y) / 2 + sub_offset.y
+      }
+    else
+      # V,Vd,P,Pdの場合はxの位置を補正（0:中央、1:母音の左側、-1:母音の右側　
+      # これについては不適切な演算式の可能性がある。検証した上で値を変えて全てへと変えることも検討。
+      # （Vd,Pdは使用頻度が少ないので早急に対処する必要性はない） ）
+      %{
+        x: l * sub_aligment.x / 2 + r * -sub_aligment.x / 2 + sub_offset.x,
+        y: t * (1 - sub_aligment.y) / 2 + b * (1 + sub_aligment.y) / 2 + sub_offset.y
+      }
+    end
   end
 
-  def calc_offset(
-        %__MODULE__{} = onset_glyph,
-        %__MODULE__{element_internal: %{is_null: true}} = vowel_glyph,
-        %__MODULE__{} = coda_glyph
-      ) do
+  defp calc_offset(
+         %__MODULE__{offset: onset_offset, path: onset_path},
+         %__MODULE__{element_internal: %{is_null: true}, path: vowel_path},
+         %__MODULE__{offset: coda_offset, path: coda_path}
+       ) do
+    %{top: t_onset, bottom: b_onset} = SVG.Path.get_border(onset_path)
+    %{top: t_coda, bottom: b_coda} = SVG.Path.get_border(coda_path)
+    %{bottom: b_vowel} = SVG.Path.get_border(vowel_path)
+
+    topgap = min(t_onset, t_coda)
+    bottomgap = max(b_onset, b_coda)
+
+    [
+      %{x: onset_offset.x, y: b_vowel + topgap - bottomgap + onset_offset.y},
+      %{x: coda_offset.x, y: b_vowel + topgap - bottomgap + coda_offset.y}
+    ]
   end
 
-  def calc_offset(
-        %__MODULE__{} = onset_glyph,
-        %__MODULE__{element_internal: %{is_null: false}} = vowel_glyph,
-        %__MODULE__{} = coda_glyph
-      ) do
+  defp calc_offset(
+         %__MODULE__{offset: onset_offset, path: onset_path},
+         %__MODULE__{element_internal: %{is_null: false}, name: %{form: form}, path: vowel_path},
+         %__MODULE__{offset: coda_offset, path: coda_path} = coda_glyph
+       ) do
+    %{top: t_onset, bottom: b_onset} = SVG.Path.get_border(onset_path)
+    %{top: t_coda, bottom: b_coda} = SVG.Path.get_border(coda_path)
+    %{top: t_vowel, bottom: b_vowel} = SVG.Path.get_border(vowel_path)
+
+    topgap = min(t_onset, t_coda)
+    bottomgap = max(b_onset, b_coda)
+
+    case form do
+      "init" ->
+        [
+          %{x: onset_offset.x, y: b_vowel + topgap + onset_offset.y},
+          %{x: coda_offset.x, y: b_vowel + topgap + coda_offset.y}
+        ]
+
+      _mid when _mid in ["sol", "mid"] ->
+        [
+          %{x: onset_offset.x, y: t_vowel - b_onset + onset_offset.y},
+          %{x: coda_offset.x, y: b_vowel + t_coda + coda_offset.y}
+        ]
+
+      "fin" ->
+        [
+          %{x: onset_offset.x, y: t_vowel - bottomgap + onset_offset.y},
+          %{x: coda_offset.x, y: t_vowel - bottomgap + coda_offset.y}
+        ]
+    end
   end
 
   # 単独グリフの場合。
@@ -294,8 +353,6 @@ defmodule Thaqqa.Glyph do
 
     child_glyph = %__MODULE__{child_glyph | offset: offset}
 
-    # pathは空
-    # 仮
     %__MODULE__{top_glyph | children_glyph_list: [child_glyph]}
   end
 
@@ -309,7 +366,6 @@ defmodule Thaqqa.Glyph do
         {:error, msg}
 
       {:ok, divided_name} ->
-        # IO.inspect(divided_name)
         create_glyph(prefab, font, glyphname, writing_direction, divided_name)
     end
   end

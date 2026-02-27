@@ -25,7 +25,7 @@ defmodule ThaqqaTest do
     # Thaqqa.FontRegistryPrefab.get_single_data(prefab, "Default", "FONTDATA") |> IO.inspect()
 
     glyph =
-      Thaqqa.Glyph.new(prefab, "Default", "C(onset,t0-hd0)", "vertical")
+      Thaqqa.Glyph.new(prefab, "Default", "S(mid,t0-d0,e1,n0)", "vertical")
       |> Thaqqa.Glyph.set_path()
 
     SVG.Path.export_as_string(glyph.path)
