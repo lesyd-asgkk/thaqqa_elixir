@@ -10,13 +10,19 @@ defmodule Thaqqa.GlyphList do
 end
 
 # 合成方針
-# horizontal、veritcal共に「3文字づつkerningの値の処理」
+# horizontal、veritcal共に「3文字づつkerning用の値の処理」
 # ダミーデータとして「None()」に該当するGlyphを前後に挿入。
 # glyphs = glyphs ++ [None()]
 # glyphs = [ None() | glyphs]
 # |> Stream.chunk_every(3, 1, :discard)
 # |> Stream.map(&calc_kerning/1)
 # のような形。
+
+#
+#
+#
+#
+#
 
 defmodule Thaqqa.SvgRenderer do
   import SVG.Path
