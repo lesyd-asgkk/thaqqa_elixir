@@ -425,6 +425,13 @@ defmodule SVG.Path do
   end
 
   @doc """
+  Sets end position (as M command)
+  """
+  def set_end_position(%__MODULE__{commands: commands}, x, y) do
+    %__MODULE__{commands: [commands ++ Command.new_m_absolute(x, y)]}
+  end
+
+  @doc """
     Merges three pathes into one path.
     x0,y0,x1,y1 specifies offset of path1 or path2。
   """

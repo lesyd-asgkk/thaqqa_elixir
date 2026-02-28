@@ -22,11 +22,32 @@ defmodule Thaqqa.Glyph do
 
   # 明らかに肥大化しすぎているので、今後にモジュールの区画化を取り行う。
 
-  # relativeな高さにしたい場合の処理。　音節の場合
+  # rectangleを描画する用（）
+  defp draw_rectangle(x0, y0, x1, y1) do
+    if y0 >= y1 || x0 >= x1 do
+      %SVG.Path{}
+    else
+      %SVG.Path{
+        commands: [
+          SVG.Command.new_m_absolute(x0, y0),
+          SVG.Command.new_l_absolute(x0, y1),
+          SVG.Command.new_l_absolute(x1, y1),
+          SVG.Command.new_l_absolute(x1, y0),
+          SVG.Command.new_z_absolute()
+        ]
+      }
+    end
+  end
+
+  # relativeな高さにしたい場合の処理。　音節の場合から
 
   def render_with_relative_height(
         %Prefab{} = prefab,
-        %__MODULE__{name: %{type: "S"}, font: font, element_internal: %{is_null: true}} = self,
+        %__MODULE__{
+          name: %{type: "S", form: form},
+          font: font,
+          element_internal: %{is_null: false}
+        } = self,
         height,
         vowel_height
       ) do
@@ -35,11 +56,45 @@ defmodule Thaqqa.Glyph do
 
   def render_with_relative_height(
         %Prefab{} = prefab,
-        %__MODULE__{name: %{type: "S"}, font: font, element_internal: %{is_null: false}} = self,
-        height,
-        vowel_height
+        %__MODULE__{
+          name: %{type: "S", form: form},
+          height: %{y0: y0, y3: y3},
+          font: font,
+          element_internal: %{is_null: true},
+          path: path
+        } = self,
+        top_gap,
+        bottom_gap
       ) do
-    nil
+    # 下からどれだけ、という値なのを、上からどれだけ、に換算する。
+    top_gap = -top_gap
+    thickness_raw = Prefab.get_single_data_value(prefab, font, "FONTDATA", "Thickness")
+
+    # 将来用。1のところに倍率指定を置く
+    thickness = thickness_raw * 1
+    th_half = thickness / 2
+
+    case form do
+      "sol" ->
+        path =
+          SVG.Path.to_relative(path)
+          |> SVG.Path.set_end_position(0, y3)
+          |> SVG.Path.set_start_position(0, top_gap + y0)
+          |> SVG.Path.to_relative()
+
+        %__MODULE__{self | path: path}
+
+      _ ->
+        skewer = draw_rectangle(-th_half, top_gap + y0, th_half, y3 + bottom_gap)
+
+        path =
+          SVG.Path.to_relative(path)
+          |> SVG.Path.set_start_position(0, 0)
+          |> SVG.Path.concat_path(skewer)
+          |> SVG.Path.to_relative()
+
+        %__MODULE__{self | path: path}
+    end
   end
 
   # そんなことはない場合
@@ -56,21 +111,97 @@ defmodule Thaqqa.Glyph do
   # まずは音節の場合から
   def render_with_absolute_height(
         %Prefab{} = prefab,
-        %__MODULE__{name: %{type: "S"}, font: font} = self,
+        %__MODULE__{
+          name: %{type: "S", form: form},
+          font: font,
+          height: %{y0: y0, y1: y1, y2: y2, y3: y3},
+          path: path
+        } = self,
         height,
         vowel_height
       ) do
-    thickness = Prefab.get_single_data_value(prefab, font, "FONTDATA", "Thickness")
+    thickness_raw = Prefab.get_single_data_value(prefab, font, "FONTDATA", "Thickness")
+
+    # 将来用。1のところに倍率指定を置く
+    thickness = thickness_raw * 1
+    th_half = thickness / 2
+
+    vowel_height_half = (y2 - y1) / 2
+    glyph_height_half = (-y3 - y0) / 2
+
+    case form do
+      "sol" ->
+        path =
+          SVG.Path.to_relative(path)
+          |> SVG.Path.set_start_position(0, vowel_height - vowel_height_half)
+          |> SVG.Path.toRelativeAll()
+
+        %__MODULE__{self | path: path}
+
+      "init" ->
+        skewer = draw_rectangle(-th_half, y2, th_half, height)
+
+        path =
+          SVG.Path.to_relative(path)
+          |> SVG.Path.set_start_position(0, 0)
+          |> SVG.Path.to_relative()
+          |> concat_path(skewer)
+          |> SVG.Path.to_relative()
+
+        %__MODULE__{self | path: path}
+
+      "mid" ->
+        glyph_gap = vowel_height + glyph_height_half - vowel_height_half
+
+        skewer_top = draw_rectangle(-th_half, 0, th_half, glyph_gap)
+        skewer_bottom = draw_rectangle(-th_half, y2 + glyph_gap, th_half, height)
+
+        path =
+          SVG.Path.to_relative(path)
+          |> SVG.Path.set_start_position(0, glyph_gap)
+          |> SVG.Path.to_relative()
+          |> concat_path(skewer_top)
+          |> concat_path(skewer_bottom)
+          |> SVG.Path.to_relative()
+
+        %__MODULE__{self | path: path}
+
+      "fin" ->
+        skewer = draw_rectangle(-th_half, 0, th_half, height - (y3 - y1))
+
+        path =
+          SVG.Path.to_relative(path)
+          |> SVG.Path.set_start_position(0, height - (y3 - y1))
+          |> SVG.Path.to_relative()
+          |> concat_path(skewer)
+          |> SVG.Path.to_relative()
+
+        %__MODULE__{self | path: path}
+
+      _ ->
+        raise "fatal: invalid form found at render_with_absolute_height/4"
+    end
   end
 
   # その他の場合。
   def render_with_absolute_height(
         %Prefab{} = prefab,
-        %__MODULE__{font: font} = self,
+        %__MODULE__{font: font, height: %{y1: y1, y2: y2}, path: path} = self,
         height,
         vowel_height
       ) do
-    nil
+    thickness_raw = Prefab.get_single_data_value(prefab, font, "FONTDATA", "Thickness")
+    glyph_height_half = (y2 - y1) / 2
+    # 将来用。1のところに倍率指定を置く
+    thickness = thickness_raw * 1
+    th_half = thickness / 2
+
+    path =
+      SVG.Path.to_relative(path)
+      |> SVG.Path.set_start_position(0, vowel_height - glyph_height_half)
+      |> SVG.Path.to_relative()
+
+    %__MODULE__{self | path: path}
   end
 
   ############
@@ -253,7 +384,8 @@ defmodule Thaqqa.Glyph do
         Thaqqa.Data.get_val(data, "isNullVowel") == true and
           Thaqqa.Data.get_val(data, @name) == name
       end)
-      |> Enum.reduce([], fn {_, v}, acc -> acc ++ v end) != []
+
+    is_null_vowel = is_null_vowel |> Enum.reduce([], fn {_, v}, acc -> acc ++ v end) != []
 
     aligment =
       LetterManager.get_letter!(prefab, fn %Thaqqa.Data{} = data ->
@@ -305,6 +437,8 @@ defmodule Thaqqa.Glyph do
     %{x0: off_onset_x, x1: off_coda_x, y0: off_onset_y, y1: off_coda_y} =
       GposManager.gpos!(prefab, font, glyphname, writing_direction, @internal)
 
+    is_null_vowel = vowel_glyph.element_internal.is_null
+
     off_onset = %{x: off_onset_x, y: off_onset_y}
     off_coda = %{x: off_coda_x, y: off_coda_y}
 
@@ -319,6 +453,7 @@ defmodule Thaqqa.Glyph do
       children_glyph_list: [onset_glyph, vowel_glyph, coda_glyph],
       font: font,
       name: glyph_name,
+      element_internal: %{is_null: is_null_vowel},
       # ↓ここでは設定しない
       height: %{y0: 0, y1: 0, y2: 0, y3: 0}
     }
