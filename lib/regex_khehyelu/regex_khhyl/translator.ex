@@ -55,6 +55,9 @@ defmodule Thaqqa.Regex_Khhyl.Translator do
   defp translate_sub(%AST{type: :script, value: val}, %Prefab{} = prefab) do
     # 仕様変更につき、Translator系統はPrefab系統を取るようにする
     # ※0文字の@nameを持つ文字は除外（バグの温床でしかないので）
+    # TODO:欄に応じてVOWEL/DIACRITICAL_Vのみ、のように変換する（regex長を縮める目的。*とは異なり個別指定なので。）
+    # *や+、._がテーブル上にない文字を受け付けてしまう問題は現状は無視する
+    # （regex長が伸びる、かつどの道最終的に不正なグリフを得た場合はglyphにエラーを検知する責務を果たさせる予定なので）
     case LetterManager.get_letter(prefab) do
       {:error, msg} ->
         {:error, msg}

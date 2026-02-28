@@ -166,7 +166,9 @@
   条件式に合致する全ての文字を返す。
   <DataTable参照子> _.<VOWEL,CONSONANT,PUNCTUATION,V_DIACRITICAL,C_DIACRITICAL,P_DIACRITICAL TABLEのcolumn名>
   の形でDataTableからcolumnを参照する。
-  例えば、母音を表す箇所にて「[_.Name!="a"]_」ならばa以外のあらゆる母音という意味になる。
+  例えば、「[_.Name!="a"]_」ならばa以外のあらゆる文字という意味になる。
+  
+  
 
 
   <汎素グリフ列> := * | + | ?

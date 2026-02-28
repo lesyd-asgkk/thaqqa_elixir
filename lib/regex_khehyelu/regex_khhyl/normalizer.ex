@@ -38,8 +38,6 @@ defmodule Thaqqa.Regex_Khhyl.Normalizer do
     next_layer = :syllable
 
     case head do
-      # S(*),S(form,*) のようなものも実装したい
-
       h when h in ["S", "V", "C", "Cd", "Vd", "P", "Pd", "L", "X", "R", "Sep", "Null"] ->
         normalize_branckets(:"#{h}", nil, acum_all, tail, next_layer, current_layer)
 
