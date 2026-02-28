@@ -18,7 +18,8 @@ defmodule Khhyl.Render do
     end
   end
 
-  def convert_into_khhyl_letter(string, font, language, writing_direction) do
+  # prefabを持たない場合、FontRegistryから直接読み込む。
+  def convert_into_khhyl_letter!(string, font, language, writing_direction) do
     case Thaqqa.FontRegistry.create_prefab() do
       {:ok, prefab} ->
         convert_into_khhyl_letter(prefab, string, font, language, writing_direction)

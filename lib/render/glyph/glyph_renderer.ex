@@ -21,7 +21,7 @@ defmodule Thaqqa.GlyphRenderer do
     end
   end
 
-  def render_with_relative_height(
+  def render_by_relative_height(
         %Prefab{} = prefab,
         %Glyph{
           name: %{type: "S", form: form},
@@ -47,7 +47,7 @@ defmodule Thaqqa.GlyphRenderer do
           |> SVG.Path.set_end_position(0, bottom_gap + y3)
           |> SVG.Path.toRelativeAll()
 
-        %Glyph{self | path: path}
+        %Glyph{self | path: path, glyph_height: bottom_gap + y3}
 
       "init" ->
         skewer = draw_rectangle(-th_half, top_gap + y2, th_half, bottom_gap + y3)
@@ -60,7 +60,7 @@ defmodule Thaqqa.GlyphRenderer do
           |> concat_path(skewer)
           |> SVG.Path.to_relative()
 
-        %Glyph{self | path: path}
+        %Glyph{self | path: path, glyph_height: bottom_gap + y3}
 
       "mid" ->
         skewer_top = draw_rectangle(-th_half, y0, th_half, y1)
@@ -75,7 +75,7 @@ defmodule Thaqqa.GlyphRenderer do
           |> concat_path(skewer_bottom)
           |> SVG.Path.to_relative()
 
-        %Glyph{self | path: path}
+        %Glyph{self | path: path, glyph_height: bottom_gap + y3}
 
       "fin" ->
         skewer = draw_rectangle(-th_half, y0, th_half, y1)
@@ -88,14 +88,14 @@ defmodule Thaqqa.GlyphRenderer do
           |> concat_path(skewer)
           |> SVG.Path.to_relative()
 
-        %Glyph{self | path: path}
+        %Glyph{self | path: path, glyph_height: bottom_gap + y3}
 
       _ ->
-        raise "fatal: invalid form found at render_with_absolute_height/4"
+        raise "fatal: invalid form found at render_by_absolute_height/4"
     end
   end
 
-  def render_with_relative_height(
+  def render_by_relative_height(
         %Prefab{} = prefab,
         %Glyph{
           name: %{type: "S", form: form},
@@ -135,12 +135,12 @@ defmodule Thaqqa.GlyphRenderer do
           |> SVG.Path.concat_path(skewer)
           |> SVG.Path.to_relative()
 
-        %Glyph{self | path: path}
+        %Glyph{self | path: path, glyph_height: bottom_gap + y3}
     end
   end
 
   # そんなことはない場合
-  def render_with_relative_height(
+  def render_by_relative_height(
         %Prefab{} = _prefab,
         %Glyph{name: %{type: type}, height: %{y0: y0, y3: y3}, font: font, path: path} = self,
         top_gap,
@@ -152,12 +152,12 @@ defmodule Thaqqa.GlyphRenderer do
       |> SVG.Path.set_start_position(0, top_gap)
       |> SVG.Path.to_relative()
 
-    %Glyph{self | path: path}
+    %Glyph{self | path: path, glyph_height: bottom_gap + y3}
   end
 
   # absoluteな高さにしたい場合の処理。
   # まずは音節の場合から
-  def render_with_absolute_height(
+  def render_by_absolute_height(
         %Prefab{} = prefab,
         %Glyph{
           name: %{type: "S", form: form},
@@ -177,6 +177,7 @@ defmodule Thaqqa.GlyphRenderer do
     vowel_height_half = (y2 - y1) / 2
     glyph_height_half = (-y3 - y0) / 2
 
+    # TODO: 文字幅がheightを超えてしまった場合の処理を追加。
     case form do
       "sol" ->
         path =
@@ -184,7 +185,7 @@ defmodule Thaqqa.GlyphRenderer do
           |> SVG.Path.set_start_position(0, vowel_height - vowel_height_half)
           |> SVG.Path.toRelativeAll()
 
-        %Glyph{self | path: path}
+        %Glyph{self | path: path, glyph_height: height}
 
       "init" ->
         skewer = draw_rectangle(-th_half, y2, th_half, height)
@@ -196,7 +197,7 @@ defmodule Thaqqa.GlyphRenderer do
           |> concat_path(skewer)
           |> SVG.Path.to_relative()
 
-        %Glyph{self | path: path}
+        %Glyph{self | path: path, glyph_height: height}
 
       "mid" ->
         glyph_gap = vowel_height + glyph_height_half - vowel_height_half
@@ -212,7 +213,7 @@ defmodule Thaqqa.GlyphRenderer do
           |> concat_path(skewer_bottom)
           |> SVG.Path.to_relative()
 
-        %Glyph{self | path: path}
+        %Glyph{self | path: path, glyph_height: height}
 
       "fin" ->
         skewer = draw_rectangle(-th_half, 0, th_half, height - (y3 - y1))
@@ -224,15 +225,15 @@ defmodule Thaqqa.GlyphRenderer do
           |> concat_path(skewer)
           |> SVG.Path.to_relative()
 
-        %Glyph{self | path: path}
+        %Glyph{self | path: path, glyph_height: height}
 
       _ ->
-        raise "fatal: invalid form found at render_with_absolute_height/4"
+        raise "fatal: invalid form found at render_by_absolute_height/4"
     end
   end
 
   # その他の場合。
-  def render_with_absolute_height(
+  def render_by_absolute_height(
         %Prefab{} = prefab,
         %Glyph{font: font, height: %{y1: y1, y2: y2}, path: path} = self,
         height,
@@ -249,6 +250,6 @@ defmodule Thaqqa.GlyphRenderer do
       |> SVG.Path.set_start_position(0, vowel_height - glyph_height_half)
       |> SVG.Path.to_relative()
 
-    %Glyph{self | path: path}
+    %Glyph{self | path: path, glyph_height: height}
   end
 end
