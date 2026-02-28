@@ -14,18 +14,16 @@ defmodule ThaqqaTest do
 
     {:ok, prefab} = Thaqqa.FontRegistry.create_prefab()
 
-    p = prefab |> Thaqqa.ParserManager.parse!("suzusha koratl", "khehyelu")
+    # p = prefab |> Thaqqa.ParserManager.parse!("suzusha koratl", "khehyelu")
 
-    p =
-      prefab
-      |> Thaqqa.GsubManager.gsub!(p, "vertical")
-
-    prefab
+    # p =
+    #  prefab
+    #  |> Thaqqa.GsubManager.gsub!(p, "vertical")
 
     # Thaqqa.FontRegistryPrefab.get_single_data(prefab, "Default", "FONTDATA") |> IO.inspect()
 
     glyph =
-      Thaqqa.Glyph.new(prefab, "Default", "S(mid,t0-d0,a0,n0)", "vertical")
+      Thaqqa.Glyph.new(prefab, "Default", "S(init,t0-d0,e0,n0)", "vertical")
       |> Thaqqa.Glyph.set_path()
 
     glyph = Thaqqa.Glyph.render_with_relative_height(prefab, glyph, 10, 10)
