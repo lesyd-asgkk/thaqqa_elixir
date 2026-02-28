@@ -3,10 +3,11 @@
 ## Description
 **TODO: more description**
 
-Supposed for rendering Khehyelu (Con-)Script as SVG path data.
+複雑な処理を必要とする文字をレンダリングするシステムをバックエンドとして実装したもの。
+軽量プロセスと高い並行処理性能を持つBEAM上で動作し、保守性と可読性がより高いElixirを選択。
+今後のチーム開発も見据えている。
+細かい粒度の処理を独立プロセスに分解し、マルチパイプライン的に並列実行することでスループットを改善した。
 
-
-(架空文字の)東果文字をSVG Pathとして描画する為に作りました。
 
 
 ## Installation

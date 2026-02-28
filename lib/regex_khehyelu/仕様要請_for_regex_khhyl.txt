@@ -1,9 +1,51 @@
 
-<syllable>        ::= "S(" <form_v> "," <glyph_list> "," <glyph_list> "," <glyph_list> ")" |
+<vowel> ::= <vowel_plain> | <vowel_any> | <vowel_any_glyph> 
+
+<vowel_plain>  ::= "V(" <form_v> "," <glyph_list> ")" 
+<vowel_any> ::= "V(*)"
+<vowel_any_glyph> ::= "V("<form_v>",*)"
+
+<vowel_diacritical> ::= <vowel_diacritical_plain> | <vowel_diacritical_any> | <vowel_diacritical_any_glyph> 
+
+<vowel_diacritical_plain>  ::= "Vd(" <form_v> "," <glyph_list> ")" 
+<vowel_diacritical_any> ::= "Vd(*)"
+<vowel_diacritical_any_glyph> ::= "Vd("<form_v>",*)"
+
+<consonant> ::= <consonant_plain> | <consonant_any> | <consonant_any_glyph> 
+
+<consonant_plain>   ::= "C(" <form_c> "," <glyph_list> ")" 
+<consonant_any> ::= "C(*)"
+<consonant_any_glyph> ::= "C("<form_c>",*)"
+
+<consonant_diacritical> ::= <consonant_diacritical_plain> | <consonant_diacritical_any> | <consonant_diacritical_any_glyph> 
+
+<consonant_diacritical_plain>  ::= "Cd(" <form_c> "," <glyph_list> ")" 
+<consonant_diacritical_any> ::= "Cd(*)"
+<consonant_diacritical_any_glyph> ::= "Cd("<form_c>",*)"
+
+<punctuation> ::= <punctuation_plain> | <punctuation_any> 
+
+<punctuation_plain>  ::= "P(" <glyph_list> ")" 
+<punctuation_any> ::= "P(*)"
+
+<punctuation_diacritical> ::= <punctuation_diacritical_plain> | <punctuation_diacritical_any> 
+
+<punctuation_diacritical_plain>  ::= "Pd(" <glyph_list> ")" 
+<punctuation_diacritical_any> ::= "Pd(*)"
+
+
+<syllable> ::= <syllable_plain> | <syllable_any> | <syllable_any_glyph> 
+
+<syllable_plain>        ::= "S(" <form_v> "," <glyph_list> "," <glyph_list> "," <glyph_list> ")" 
+<syllable_any> ::= "S(*)"
+<syllable_any_glyph> ::= "S("<form_v>",*)"
+
 
 <form_v> ::= "*" | <form_v_raw> ("|" <form_v_raw>)*
 <form_v_raw> ::= "init" | "mid" | "fin" | "sol" | "null"
 
+<form_c> ::= "*" | <form_c_raw> ("|" <form_c_raw>)*
+<form_c_raw> ::= "onset" | "coda" |  "null"
 
 <glyph_list> ::= <glyph_item>+
 
@@ -139,19 +181,19 @@
   内部上は(?:S(form,*,*,*))に変換される。
 
   C(*) あらゆる子音を表す。
-  (?:C(*,*))と等価。
+  処理内部では(?:C(*,*))に変換すること。
 
   V(*) あらゆる母音を表す。
-  (?:V(*,*))と等価。
+  処理内部では(?:V(*,*))に変換すること。
 
   Cd(*) あらゆる子音用ダイアクリティカルマークを表す。
-  (?:Cd(*,*))と等価。
+  処理内部では(?:Cd(*,*))に変換すること。
 
   Vd(*) あらゆる母音用ダイアクリティカルマークを表す。
-  (?:Vd(*,*))と等価。
+  処理内部では(?:Vd(*,*))に変換すること。
 
   <東果文字汎用> := L() 東果文字の範疇のあらゆる一文字を表す。
-  (?:S(*)|V(*)|C(*)|P(*)|Vd(*)|Cd(*)|Pd(*))と等価であり、処理上でも変換される。
+  処理内部では(?:S(*)|V(*)|C(*)|P(*)|Vd(*)|Cd(*)|Pd(*))に変換すること。
 
   Null() 何の文字もないことを表す。一部処理に使用。
   Sep() C,Vなどを音節へと変換する際の処理に使用。
