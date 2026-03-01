@@ -26,7 +26,7 @@ defmodule ThaqqaTest do
       Thaqqa.Glyph.new(prefab, "Default", "S(init,t0-d0,e0,n0)", "vertical")
       |> Thaqqa.Glyph.set_path()
 
-    glyph = Thaqqa.Glyph.render_with_relative_height(prefab, glyph, 10, 10)
+    glyph = Thaqqa.Glyph.render_by_relative_height(prefab, glyph, 10, 10)
 
     SVG.Path.export_as_string(glyph.path)
     |> IO.inspect()

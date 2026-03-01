@@ -1,4 +1,4 @@
-defmodule Thaqqa.GlyphRenderer do
+defmodule Thaqqa.Glyph.GlyphRenderer do
   import SVG.Path
   alias Thaqqa.FontRegistryPrefab, as: Prefab
   alias Thaqqa.Glyph, as: Glyph

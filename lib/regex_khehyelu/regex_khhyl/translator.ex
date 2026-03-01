@@ -52,11 +52,15 @@ defmodule Thaqqa.Regex_Khhyl.Translator do
     end
   end
 
-  defp translate_sub(%AST{type: :script, value: val}, %Prefab{} = prefab) do
+  defp translate_sub(
+         %AST{type: :script, value: val, table_range: table_range},
+         %Prefab{} = prefab
+       ) do
     # 仕様変更につき、Translator系統はPrefab系統を取るようにする
     # ※0文字の@nameを持つ文字は除外（バグの温床でしかないので）
-    # TODO:欄に応じてVOWEL/DIACRITICAL_Vのみ、のように変換する（regex長を縮める目的。*とは異なり個別指定なので。）
-    # *や+、._がテーブル上にない文字を受け付けてしまう問題は現状は無視する
+    # TODO:欄に応じてVOWEL/DIACRITICAL_Vのみ、のように変換する（regex長を縮める目的。*とは異なり個別指定なので、a|e|...|sのような長さとなると流石にハゲる ）
+    # 技術的に困難である(S(init, ,a0,) だと init , , a0 , のようになってしまい
+    # onset vowel codaの位置がばらばらになる)ことと、regex長の影響は小さいので優先度は低。
     # （regex長が伸びる、かつどの道最終的に不正なグリフを得た場合はglyphにエラーを検知する責務を果たさせる予定なので）
     case LetterManager.get_letter(prefab) do
       {:error, msg} ->
@@ -64,7 +68,11 @@ defmodule Thaqqa.Regex_Khhyl.Translator do
 
       {:ok, table_map} ->
         table_map
-        |> Enum.reduce([], fn {_k, v}, acc -> v ++ acc end)
+        |> Enum.reduce([], fn {k, v}, acc ->
+          v ++ acc
+          # if k in table_range, do: v ++ acc, else: acc
+          # (set_table_rangeを真面目に実装した場合、こちらに切り替える)
+        end)
         |> Enum.filter(fn %Thaqqa.Data{} = data -> Thaqqa.Data.get_val(data, @name) != "" end)
         |> Enum.reduce_while([], fn letter, acc ->
           Thaqqa.Regex_Khhyl.Cond.convert(val, letter)
@@ -94,14 +102,20 @@ defmodule Thaqqa.Regex_Khhyl.Translator do
     case argument_number(children) do
       4 ->
         [head | tail] = children
+        # |> Enum.map(&set_table_range(&1,))
 
-        if AST.has_astarisk_for_form?(head),
-          do:
-            translate_sub(
-              %AST{type: :S, children: [AST.replace_astarisk_as_form(head) | tail]},
-              %Prefab{} = prefab
-            ),
-          else: translate_brancket_sub("#{Atom.to_string(type)}\\(", children, %Prefab{} = prefab)
+        if AST.has_astarisk_for_form?(head) do
+          translate_sub(
+            %AST{type: :S, children: [AST.replace_astarisk_as_form(head) | tail]},
+            %Prefab{} = prefab
+          )
+        else
+          translate_brancket_sub(
+            "#{Atom.to_string(type)}\\(",
+            [head | tail],
+            %Prefab{} = prefab
+          )
+        end
 
       2 ->
         [head | tail] = children
