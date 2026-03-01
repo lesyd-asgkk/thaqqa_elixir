@@ -1,4 +1,155 @@
 
+1.概要
+  Regex_Khhyl
+
+  東果文字のRegex拡張DSL(正規表現の糖衣構文)を通常の正規表現に変換するModuleである。
+  例： S(*) -> S(init,,a0,)やS(mid,t0,a0-sfour0,c0),...など、全てのSyllableを受け付ける
+
+  本DSLは東果文字の内部表現および処理に特化した糖衣構文の提供を目的とする。
+  汎用言語を目指すものではない。
+
+  実装の単純性および移植の容易性を重視した仕様とする。
+
+  本DSLは最終的に標準正規表現へと展開される。
+  そのため最終的な挙動は実行環境の正規表現エンジンに依存する。
+  　本DSLは仕様優先であり、実装はその一例である。
+
+2.内部表現
+
+東果文字は以下の抽象単位から構成される。
+
+vowel vowel_diacritial
+consonant consonant_diacritical
+punctuation punctuation_diacritical
+syllable
+
+vowelは母音字母、consonantは子音字母、punctuationは約物を表し、_diacriticは各々に結合するダイアクリティカルマークを示す。
+syllableは音節字母である。
+
+
+
+各単位は、単位ごとに0つか1つのform と 、単位ごとに定められた数のglyph_list を持つ。
+glyph_listは 1つ以上のglyphを持ち、-によって文字列として結合される。
+syllable,vowel,consonant,punctuationであれば語頭のglyphは字母を表し、以降のglyphは結合ダイアクリティカルマークを示す。
+vowel_diacritial,consonant_diacritial,punctuation_diacritialは全てを結合ダイアクリティカルマークとする。
+
+glyph は name + variant で構成される。nameは大文字小文字を問わない1文字以上の文字列、variantは任意の0以上の整数。
+nameはglyph名を、variantは異字体用の番号を表す。例： e0,e1
+variantは000や001等の指定も可能であるが、
+システム全体の実装としてvariantが000,001のような過剰な0を含む値を取らないため非推奨とする。
+
+syllableはS(v_form,onset,vowel,coda)と表記。ここでonset,vowel,codaはglyph_list、v_formはsyllableの字形の定義を執り行う。
+（v_formはinit,mid,fin,solを取る。以下同上）
+onset,vowel,codaは文字上で頭子音字母、母音字母、尾子音字母を意味する。
+onset,codaは空でもよい（onset/codaに該当する文字スロットに文字が存在していない、長さ0のglyph列であると見做す）
+
+vowel、vowel_diacriticalはそれぞれ V(v_form,glyph_list),Vd(v_form,glyph_list)を取る。
+
+consonant、consonant_diacriticalはそれぞれ C(c_form,glyph_list),Cd(c_form,glyph_list)を取る。
+（c_formはonset,codaを取る）
+
+punctuation、punctuation_diacriticalはそれぞれ P(glyph_list),Pd(glyph_list)を取る。
+
+複数のvowel vowel_diacritialconsonant consonant_diacritical punctuation punctuation_diacritical syllable 
+を文字として並べることによって東果文字による「文章」が完成する。
+
+
+3一意表記BNF(開発者向け)
+ここでは単にBNF表記を記すものとする。
+
+<khehyelu_sentence_construct> ::= <khehyelu_letter_construct>*
+<khehyelu_letter_construct> ::= <vowel_construct> | <vowel_diacritical_construct> | <consonant_construct> | <consonant_diacritical_construct> | <punctuation_construct> | <punctuation_diacritical_construct> | <syllable_construct>
+
+<vowel_construct>  ::= "V(" <form_v_construct> "," <glyph_list_construct> ")" 
+<vowel_diacritical_construct>  ::= "Vd(" <form_v_construct> "," <glyph_list_construct> ")" 
+<consonant_construct>  ::= "C(" <form_c_construct> "," <glyph_list_construct> ")" 
+<consonant_diacritical_construct>  ::= "Cd(" <form_c_construct> "," <glyph_list_construct> ")" 
+<punctuation_construct>  ::= "P(" <glyph_list_construct> ")" 
+<punctuation_diacritical_construct>  ::= "Pd(" <glyph_list_construct> ")" 
+
+<syllable_construct> ::= "S(" <form_v_construct> "," <opt_glyph_list_construct> "," <glyph_list_construct> "," <opt_glyph_list_construct> ")" 
+
+<form_v_construct> ::= "init" | "mid" | "fin" | "sol" 
+<form_c_construct> ::= "onset" | "coda" 
+
+<opt_glyph_list_construct> ::= ε | <glyph_list_construct>
+<glyph_list_construct> ::= <glyph_construct> <glyph_modifier_construct>*
+<glyph_modifier_construct> ::= "-" <glyph_construct>
+<glyph_construct>           ::= <glyph_name_construct><variant_construct> 
+
+<glyph_name_construct>      ::= r/[A-Za-z]+/ 
+<variant_construct>  ::= r/[0-9]+/ 
+
+4.Regex拡張DSL
+regex拡張ではワイルドカードや条件式が使用可能。
+
+各スロットに指定される form, glyph, variant は正規表現フラグメントを許容する。
+
+なお、<regex_...>の形で示される項目については構文として受理されるもののみを記し、
+アンカーの位置妥当性、量指定子の適用可能性、正規表現としての意味的整合性は保証しない。
+パターンの整合性保証は実装エンジンに委ねるものとする。
+
+
+現実世界の任意の一文字（エスケープ文字を含めてもよい。例：R(\\n)は改行文字と扱い、R(\\))は「)」を表す。）。
+<real> ::= "R(" <a_real_letter> ")"
+<a_real_letter> ::= r/(\\)?./
+
+
+
+
+
+
+
+#東果文字のregex表記。
+
+##sentence 
+<khehyelu_sentence> ::=  "^"? <khehyelu_letter>* "$"? 
+<khehyelu_sentence_atom> ::= <khehyelu_sentence> | <khehyelu_sentence_regex_group>
+
+<khehyelu_sentence_regex_group> ::= <regex_sentence>
+
+<regex_sentence> ::= <regex_alternative>
+
+<regex_alternative> ::= 
+      <regex_sequence>
+    | <regex_sequence> "|" <regex_alternative>
+
+<regex_sequence> ::= <regex_term>*
+
+<regex_term> ::= 
+      "^"
+    | "$"
+    | <regex_factor> <regex_quantifier>?
+
+<regex_factor> ::= 
+      <khehyelu_sentence>
+    | "(" <regex_sentence> ")"
+    | "(?:" <regex_sentence> ")"
+    | "(?<" <name> ">" <regex_sentence> ")"
+
+    <regex_quantifier> ::= 
+      "*"
+    | "+"
+    | "?"
+    | "*?"
+    | "+?"
+    | "??"
+    | "{" <range_body> "}"
+
+<range_body> ::= 
+      <number>
+    | <number> ","
+    | "," <number>
+    | <number> "," <number>
+
+    <number> ::= r/[0-9]|[1-9][0-9]+/
+
+#letter
+<khehyelu_letter> ::= <letter_any> | <vowel> | <vowel_diacritical> | <consonant> | <consonant_diacritical> | <punctuation> | <punctuation_diacritical> | <syllable>
+
+<letter_any> ::= "L()" 
+
+
 <vowel> ::= <vowel_plain> | <vowel_any> | <vowel_any_glyph> 
 
 <vowel_plain>  ::= "V(" <form_v> "," <glyph_list> ")" 
@@ -36,35 +187,85 @@
 
 <syllable> ::= <syllable_plain> | <syllable_any> | <syllable_any_glyph> 
 
-<syllable_plain>        ::= "S(" <form_v> "," <glyph_list> "," <glyph_list> "," <glyph_list> ")" 
+<syllable_plain> ::= "S(" <form_v> "," <opt_glyph_list> "," <glyph_list> "," <opt_glyph_list> ")" 
+
 <syllable_any> ::= "S(*)"
 <syllable_any_glyph> ::= "S("<form_v>",*)"
 
+###form
+<form_v> ::= "*" | <regex_form>
 
-<form_v> ::= "*" | <form_v_raw> ("|" <form_v_raw>)*
-<form_v_raw> ::= "init" | "mid" | "fin" | "sol" | "null"
+<form_c> ::= "*" | <regex_form>
 
-<form_c> ::= "*" | <form_c_raw> ("|" <form_c_raw>)*
-<form_c_raw> ::= "onset" | "coda" |  "null"
+<regex_form>::= r/<some engine-compatible group content>/
 
-<glyph_list> ::= <glyph_item>+
+##glyph
 
-<glyph_item> ::= <glyph_atom> <glyph_modifier>*
+<opt_glyph_list> ::= ε | <glyph_list>
 
-<glyph_atom> ::= <glyph> | <glyph_list_quantifier>
+<glyph_list> ::= <glyph_expr>
 
-<glyph_modifier> ::= "-" <glyph_atom>
+<glyph_expr> ::= <glyph_seq> 
 
-<glyph>           ::= <glyph_name><variant> 
+<glyph_seq> ::= <glyph_term> ( <glyph_link> )*
 
-<glyph_list_quantifier> ::= "*" | "+" | "?" | "*?" | "+?" | "??"
+<glyph_link> ::= "-" <glyph_term_hyphen>
+
+<glyph_term_hyphen> ::= <glyph_atom> <glyph_quantifier_general>? <glyph_quantifier_range>?
+
+<glyph_term> ::= <glyph_atom> <glyph_quantifier_general>?
+
+<glyph_atom> ::= <glyph>
+               | <regex_group>
+
+<glyph_regex_group> ::=  r/<some engine-compatible group content>/
+
+<glyph_regex_group> は実装する正規表現エンジンが受理する構文の一部を許容する。
+以下の構文は動作保証対象とする：
+
+(...)
+
+(?:...)
+
+(?<name>...)
+
+x | y
+
+{n} {n,} {,m} {n,m}
+
++ * ? +? *? ??
+
+先読み・後読み・否定先読み等のアサーション構文は構文上受理するが、DSLの構造保証対象外とする。
 
 
-<glyph_name> ::= <glyph_name_raw> ("|" <glyph_name_raw>)*
-<glyph_name_raw>      ::= r/[A-Za-z]+/ | "."  | <bool_eval> 
 
-<variant> ::= "_" | <variant_raw> ("|" <variant_raw>)*
-<variant_raw>  ::= r/[0-9]+/  | "_"
+
+<glyph> ::= <glyph_name> <variant>
+<glyph_quantifier_general> ::= "*" | "+" | "?" | "*?" | "+?" | "??"
+<glyph_quantifier_range> ::= "{" <range_body> "}"
+
+<range_body> ::= <number>
+               | <number> ","
+               | "," <number>
+               | <number> "," <number>
+
+
+<glyph_name> ::= <glyph_name_raw>
+               | <glyph_name_raw> "|" <glyph_name>
+
+
+
+
+<glyph_name_raw> ::= r/[A-Za-z]+/
+                   | "."
+                   | <bool_eval>
+
+<variant> ::= "_"
+            | <variant_raw>
+            | <variant_raw> "|" <variant>
+
+<variant_raw> ::= r/[0-9]+/
+                | "_"
 
 
 
@@ -103,18 +304,6 @@
 
 
 
-
-  東果文字の処理に適したDSL(正規表現の糖衣構文)を通常の正規表現に変換するModuleである。
-  例： S(*) -> S(init,,a0,)やS(mid,t0,a0-sfour0,c0),...など、全てのSyllableを受け付ける
-
-  本DSLは東果文字の内部表現および処理に特化した糖衣構文の提供を目的とする。
-  汎用言語を目指すものではない。
-
-  実装の単純性および移植の容易性を重視した仕様とする。
-
-  本DSLは最終的に標準正規表現へと展開される。
-  そのため最終的な挙動は実行環境の正規表現エンジンに依存する。
-  　本DSLは仕様優先であり、実装はその一例である。
 
   <グリフ名> := [A-Za-z]+
   <異体字セレクタ> := [0-9]+

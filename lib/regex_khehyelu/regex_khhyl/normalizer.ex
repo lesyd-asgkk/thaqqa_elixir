@@ -232,6 +232,22 @@ defmodule Thaqqa.Regex_Khhyl.Normalizer do
           Regex.match?(~r/^\[.*$/, head) ->
             Error.unclosed_brancket_forward(head)
 
+          Regex.match?(~r/[A-Za-z]+/, head) ->
+            normalize_sub(
+              tail,
+              [AST.new(:finite, current_layer, head, head) | acum_all],
+              current_layer
+            )
+
+          Regex.match?(~r/[0-9]+/, head) ->
+            %{"valid" => value} = Regex.named_captures(~r/(?<valid>[0-9]|[1-9][0-9]+)/, head)
+
+            normalize_sub(
+              tail,
+              [AST.new(:finite, current_layer, head, value) | acum_all],
+              current_layer
+            )
+
           true ->
             normalize_sub(
               tail,
