@@ -15,8 +15,14 @@ defmodule Thaqqa.PrefabIO do
       end
     end)
     |> case do
-      {:error, msg} -> {:error, msg}
-      value -> Prefab.set_precompile_as_root(value)
+      {:error, msg} ->
+        {:error, msg}
+
+      value ->
+        case Prefab.set_precompile_as_root(value) do
+          {:error, msg} -> {:error, msg}
+          {:ok, prefab} -> init_const_table(prefab)
+        end
     end
   end
 
@@ -129,6 +135,22 @@ defmodule Thaqqa.PrefabIO do
           {:error, msg} -> {:error, msg}
           value -> {:ok, value}
         end
+    end
+  end
+
+  @regex_const "REGEX_CONST"
+  defp init_const_table(%Prefab{} = prefab) do
+    case Prefab.get_static_table(prefab, @regex_const) do
+      nil ->
+        Error.table_not_found(@regex_const)
+
+      table ->
+        dh =
+          table.data_list
+          |> Map.new(fn %Thaqqa.Data{value_list: vl} = table -> {Map.get(vl, "Name"), table} end)
+
+        table = %DataTable{table | data_hash: dh}
+        Prefab.edit_static_table(prefab, @regex_const, table)
     end
   end
 end

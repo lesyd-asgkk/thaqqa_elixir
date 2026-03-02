@@ -21,13 +21,8 @@ defmodule Thaqqa.ConstRegexManager do
   end
 
   def get_const(%Prefab{} = prefab, name) do
-    [value] =
-      Prefab.get_static_table(prefab, @regex_const)
-      |> Thaqqa.DataTable.get_data(fn data ->
-        Thaqqa.Data.get_val(data, @name) == name
-      end)
-
-    value
+    Prefab.get_static_table(prefab, @regex_const).data_hash
+    |> Map.get(name)
   end
 
   def match?(%Prefab{} = prefab, name, string) do

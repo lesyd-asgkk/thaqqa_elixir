@@ -18,11 +18,10 @@ defmodule Thaqqa.DataTable do
     :parent,
     :compile_rule,
     column_list: [],
-    # todo:data_listのmap化（検索時間短縮のため）
     data_list: [],
     desc: "",
-    single: false
-    # unique_index: %{}
+    single: false,
+    data_hash: %{}
   ]
 
   def new(name, global, parent, compile_rule, single),
@@ -34,8 +33,8 @@ defmodule Thaqqa.DataTable do
       desc: "",
       column_list: [],
       data_list: [],
-      single: single
-      # unique_index: %{}
+      single: single,
+      data_hash: %{}
     }
 
   def is_global?(%__MODULE__{global: global}), do: global
