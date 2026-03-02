@@ -3698,7 +3698,6 @@
 
   "FONTDATA": {
     "name": "FONTDATA",
-    "global": false, 
     "compile_rule":"none",
     "single":true,
     "columnList": {
@@ -3772,13 +3771,21 @@
         "subtype": "n>=0",
         "dev": false
       },
+      "VersionPreRelease": {
+        "name": "VersionPreRelease",
+        "type": "string",
+        "order": 403,
+        "subtype": "none",
+        "dev": true
+      },
       "Fontname": {
         "name": "Fontname",
         "type": "string",
-        "order": 403,
+        "order": 500,
         "subtype": "",
         "dev": false
       }
+
 
     },
     "dataList": {
@@ -3793,6 +3800,7 @@
         "VersionMajor": 0,
         "VersionMinor": 0,
         "VersionPatch": 0,
+        "VersionPreRelease":"",
         "Fontname":""
       }
     }
