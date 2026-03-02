@@ -3,6 +3,7 @@ defmodule Thaqqa.PrefabIO do
   alias Thaqqa.Column, as: Column
   alias Thaqqa.DataTable, as: DataTable
   alias Thaqqa.Font, as: Font
+  alias Thaqqa.ConstRegexManager, as: ConstRegexManager
 
   def import_as_root(%Prefab{} = self, rootdata) when is_map(rootdata) do
     # local用のテーブルが増減した場合にfont側のテーブルも変更させる処理も後日付け足す。
@@ -138,19 +139,6 @@ defmodule Thaqqa.PrefabIO do
     end
   end
 
-  @regex_const "REGEX_CONST"
-  defp init_const_table(%Prefab{} = prefab) do
-    case Prefab.get_static_table(prefab, @regex_const) do
-      nil ->
-        Error.table_not_found(@regex_const)
-
-      table ->
-        dh =
-          table.data_list
-          |> Map.new(fn %Thaqqa.Data{value_list: vl} = table -> {Map.get(vl, "Name"), table} end)
-
-        table = %DataTable{table | data_hash: dh}
-        Prefab.edit_static_table(prefab, @regex_const, table)
-    end
-  end
+  defp init_const_table(%Prefab{} = prefab),
+    do: ConstRegexManager.set_datalist_hash(prefab)
 end
