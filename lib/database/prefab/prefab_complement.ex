@@ -32,6 +32,7 @@ defmodule Thaqqa.PrefabComplement do
   end
 
   ## static_tableの設定に合わせてfontの仕様を同期させる
+
   def complement_table_by_column(
         %Prefab{} = self,
         %DataTable{name: table_name} = datatable,
@@ -87,9 +88,6 @@ defmodule Thaqqa.PrefabComplement do
     end
   end
 
-  # あとはここ（columnがおかしい）を治すだけ
-  # 不足columnの追加処理は済んだ。
-  # 過剰なcolumnをすく方の処理を付け加える。
   defp complement_local_table(self, font, font_name, table_name) do
     case Prefab.get_table(self, font_name, table_name) do
       nil ->
