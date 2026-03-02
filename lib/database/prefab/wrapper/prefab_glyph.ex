@@ -1,7 +1,3 @@
-# これどうしよう？
-# Registryから直接読み取る方式のままか
-# Prefabの加工・読み取りラッパーにするか
-
 defmodule Thaqqa.GlyphManager do
   alias Thaqqa.DataTable, as: DataTable
   alias Thaqqa.Font, as: Font

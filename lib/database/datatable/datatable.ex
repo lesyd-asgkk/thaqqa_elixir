@@ -18,6 +18,7 @@ defmodule Thaqqa.DataTable do
     :parent,
     :compile_rule,
     column_list: [],
+    # todo:data_listのmap化（検索時間短縮のため）
     data_list: [],
     desc: "",
     single: false

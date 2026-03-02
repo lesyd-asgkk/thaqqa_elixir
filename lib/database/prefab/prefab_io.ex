@@ -89,7 +89,7 @@ defmodule Thaqqa.PrefabIO do
         end)
         |> case do
           {:error, msg} -> {:halt, {:error, msg}}
-          otherwize -> {:cont, otherwize}
+          otherwise -> {:cont, otherwise}
         end
     end)
     |> case do

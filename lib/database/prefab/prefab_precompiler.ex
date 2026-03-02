@@ -21,7 +21,7 @@ defmodule Thaqqa.PrefabCompiler do
     end)
     |> case do
       {:error, msg} -> {:error, msg}
-      otherwize -> {:ok, otherwize}
+      otherwise -> {:ok, otherwise}
     end
   end
 
@@ -36,7 +36,7 @@ defmodule Thaqqa.PrefabCompiler do
         end)
         |> case do
           {:error, msg} -> {:error, msg}
-          otherwize -> {:ok, otherwize |> Prefab.sort_as_static_if_enable(tablename)}
+          otherwise -> {:ok, otherwise |> Prefab.sort_as_static_if_enable(tablename)}
         end
     end
   end
@@ -59,7 +59,7 @@ defmodule Thaqqa.PrefabCompiler do
         end)
         |> case do
           {:error, msg} -> {:error, msg}
-          otherwize -> {:ok, otherwize}
+          otherwise -> {:ok, otherwise}
         end
     end
   end
@@ -78,7 +78,7 @@ defmodule Thaqqa.PrefabCompiler do
       end)
       |> case do
         {:error, msg} -> {:error, msg}
-        otherwize -> {:ok, otherwize |> Prefab.sort_as_font_table_if_enable(font, tablename)}
+        otherwise -> {:ok, otherwise |> Prefab.sort_as_font_table_if_enable(font, tablename)}
       end
     else
       {:error, _} = err -> err
