@@ -1271,7 +1271,7 @@
         "name": "Name",
         "type": "string",
         "order": 4,
-        "dev": true
+        "dev": false
       },
       "NameAlt": {
         "name": "NameAlt",
@@ -1284,7 +1284,7 @@
         "type": "volatility",
         "subtype": "regex",
         "order": 6,
-        "dev": false
+        "dev": true
       }
     },
     "dataList": {
@@ -2974,7 +2974,7 @@
         "name": "Name",
         "type": "string",
         "order": 4,
-        "dev": true
+        "dev": false
       },
       "NameAlt": {
         "name": "NameAlt",
@@ -2987,7 +2987,7 @@
         "type": "volatility",
         "subtype": "regex",
         "order": 6,
-        "dev": false
+        "dev": true
       }
     },
     "dataList": {
@@ -3990,6 +3990,62 @@
         "ID": 0,
         "Name": "",
         "Path": ""
+      }
+    }
+  },
+  "REGEX_CONST": {
+    "name": "REGEX_CONST",
+    "global":true,
+    "compile_rule":"regex_0",
+    "single":false,
+    "columnList": {
+      "ID": {
+        "name": "ID",
+        "type": "int",
+        "order": 0,
+        "subtype": "id",
+        "dev": true
+      },
+      "Order": {
+        "name": "Order",
+        "type": "int",
+        "order": 2,
+        "subtype": "order",
+        "dev": false
+      },
+      "Priority": {
+        "name": "Priority",
+        "type": "int",
+        "order": 3,
+        "subtype": "priority",
+        "dev": false
+      },
+      "Name": {
+        "name": "Name",
+        "type": "string",
+        "order": 2,
+        "dev": false
+      },
+      "PreCompile": {
+        "name": "PreCompile",
+        "type": "volatility",
+        "subtype": "regex",
+        "order": 5,
+        "dev": true
+      }
+    },
+    "dataList": {
+      "0": {
+        "ID": 0,
+        "Order": 0,
+        "Priority": 0,
+        "Name": "(L())(L())"
+      }, 
+      "1": {
+        "ID": 1,
+        "Order": 0,
+        "Priority": 0,
+        "Name": "V(*,[_.isNullVowel])"
       }
     }
   }

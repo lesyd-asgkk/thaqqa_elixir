@@ -192,7 +192,7 @@
         "type": "string",
         "order": 4,
         "subtype": "none",
-        "dev": true
+        "dev": false
       },
       "OffsetX0": {
         "name": "OffsetX0",
@@ -227,7 +227,7 @@
         "type": "volatility",
         "order": 9,
         "subtype": "regex",
-        "dev": false
+        "dev": true
       }
     },
     "data": {
@@ -8550,7 +8550,7 @@
         "type": "string",
         "order": 4,
         "subtype": "string",
-        "dev": true
+        "dev": false
       },
       "NameAlt": {
         "name": "NameAlt",
@@ -8564,7 +8564,7 @@
         "type": "volatility",
         "order": 6,
         "subtype": "regex",
-        "dev": false
+        "dev": true
       }
     },
     "data": {
