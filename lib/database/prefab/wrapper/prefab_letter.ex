@@ -7,6 +7,7 @@ defmodule Thaqqa.LetterManager do
   alias Thaqqa.FontRegistryPrefab, as: Prefab
   alias Thaqqa.FontRegistry.Error, as: Error
   alias Thaqqa.DataValidator, as: DataValidator
+  alias Thaqqa.ConstRegexManager, as: ConstRegexManager
   use Thaqqa.DataTable.Const
 
   def get_table(%Prefab{} = prefab) do
@@ -112,8 +113,9 @@ defmodule Thaqqa.LetterManager do
       when table_name in @lettertable_list do
     with {:ok} <- unique_letter_validation(prefab, value_map, table_name, :add),
          {:ok, %DataTable{} = table} <- get_internal(prefab, table_name),
-         {:ok, %DataTable{} = table} <- DataTable.add_data(table, value_map) do
-      Prefab.edit_static_table(prefab, table_name, table)
+         {:ok, %DataTable{} = table} <- DataTable.add_data(table, value_map),
+         {:ok, %Prefab{} = prefab} <- Prefab.edit_static_table(prefab, table_name, table) do
+      ConstRegexManager.set_datalist_hash(prefab)
     else
       {:error, msg} -> {:error, msg}
     end
@@ -130,8 +132,9 @@ defmodule Thaqqa.LetterManager do
   def delete_letter(%Prefab{} = prefab, table_name, %Thaqqa.Data{} = data)
       when table_name in @lettertable_list do
     with {:ok, %DataTable{} = table} <- get_internal(prefab, table_name),
-         {:ok, %DataTable{} = table} <- DataTable.delete_data(table, data) do
-      Prefab.edit_static_table(prefab, table_name, table)
+         {:ok, %DataTable{} = table} <- DataTable.delete_data(table, data),
+         {:ok, %Prefab{} = prefab} <- Prefab.edit_static_table(prefab, table_name, table) do
+      ConstRegexManager.set_datalist_hash(prefab)
     else
       {:error, msg} -> {:error, msg}
     end
@@ -149,8 +152,9 @@ defmodule Thaqqa.LetterManager do
       when table_name in @lettertable_list do
     with {:ok} <- unique_letter_validation(prefab, value_map, table_name, :edit, data),
          {:ok, %DataTable{} = table} <- get_internal(prefab, table_name),
-         {:ok, %DataTable{} = table} <- DataTable.edit_data(table, data, value_map) do
-      Prefab.edit_static_table(prefab, table_name, table)
+         {:ok, %DataTable{} = table} <- DataTable.edit_data(table, data, value_map),
+         {:ok, %Prefab{} = prefab} <- Prefab.edit_static_table(prefab, table_name, table) do
+      ConstRegexManager.set_datalist_hash(prefab)
     else
       {:error, msg} -> {:error, msg}
     end
