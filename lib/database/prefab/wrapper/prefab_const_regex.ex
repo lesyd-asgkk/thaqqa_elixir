@@ -9,7 +9,23 @@ defmodule Thaqqa.ConstRegexManager do
   alias Thaqqa.FontRegistry.Error, as: Error
   use Thaqqa.DataTable.Const
   #
+
   @regex_const "REGEX_CONST"
+  def set_datalist_hash(%Prefab{} = prefab) do
+    case get_static_table(prefab) do
+      {:error, msg} ->
+        {:error, msg}
+
+      {:ok, table} ->
+        dh =
+          table.data_list
+          |> Map.new(fn %Thaqqa.Data{value_list: vl} = table -> {Map.get(vl, "Name"), table} end)
+
+        table = %DataTable{table | data_hash: dh}
+        Prefab.edit_static_table(prefab, @regex_const, table)
+    end
+  end
+
   def get_const_table!(%Prefab{} = prefab),
     do: Prefab.get_static_table(prefab, @regex_const)
 
