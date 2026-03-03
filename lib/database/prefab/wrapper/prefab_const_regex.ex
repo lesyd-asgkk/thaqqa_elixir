@@ -19,7 +19,7 @@ defmodule Thaqqa.ConstRegexManager do
       {:ok, table} ->
         dh =
           table.data_list
-          |> Map.new(fn %Thaqqa.Data{value_list: vl} = table -> {Map.get(vl, "Name"), table} end)
+          |> Map.new(fn %Thaqqa.Data{value_list: vl} = table -> {Map.get(vl, @name), table} end)
 
         table = %DataTable{table | data_hash: dh}
         Prefab.edit_static_table(prefab, @regex_const, table)
@@ -38,18 +38,16 @@ defmodule Thaqqa.ConstRegexManager do
 
   def get_const(%Prefab{} = prefab, name) do
     Prefab.get_static_table(prefab, @regex_const).data_hash
-    |> Map.get(name)
+    |> case do
+      %{} -> set_datalist_hash(prefab) |> get_const(name)
+      hash -> Map.get(hash, name)
+    end
   end
 
   def match?(%Prefab{} = prefab, name, string) do
     case get_const(prefab, name) do
-      nil ->
-        {:error, "(仮) data_not_found"}
-
-      otherwise ->
-        otherwise
-        |> Thaqqa.Data.get_val(@precompile)
-        |> Regex.match?(string)
+      nil -> {:error, "(仮) data_not_found"}
+      data -> Thaqqa.Data.get_val(data, @precompile) |> Regex.match?(string)
     end
   end
 

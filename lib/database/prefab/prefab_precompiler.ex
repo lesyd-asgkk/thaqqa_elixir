@@ -1,3 +1,6 @@
+# 使用頻度が想像以上に高くなりそう。
+# または単に(ただletter情報を変えたetcでは)リアルタイム反映をせず、
+# 「テスト動作」「」時にprecompilerを呼び出す仕様とするか。
 defmodule Thaqqa.PrefabCompiler do
   alias Thaqqa.FontRegistryPrefab, as: Prefab
   alias Thaqqa.Font, as: Font

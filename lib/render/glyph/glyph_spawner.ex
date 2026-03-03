@@ -5,6 +5,7 @@ defmodule Thaqqa.Glyph.GlyphSpawner do
   alias Thaqqa.GlyphManager, as: GlyphManager
   alias Thaqqa.GposManager, as: GposManager
   alias Thaqqa.LetterManager, as: LetterManager
+  alias Thaqqa.ConstRegexManager, as: ConstRegexManager
   use Thaqqa.DataTable.Const
 
   def new(%Prefab{} = prefab, font, glyphname, writing_direction) do
@@ -20,7 +21,7 @@ defmodule Thaqqa.Glyph.GlyphSpawner do
   # 単独グリフの場合。
   # create_glyphで用いられている「!系は後々通常verに戻してエラーハンドリングを付け加えるか
   # そもそも「実行時のみに使用Managerに異常がないかを判断する」で対処する。
-  defp create_glyph(%Prefab{} = prefab, font, _glyphname, _writing_direction, %{
+  defp create_glyph(%Prefab{} = prefab, font, glyphname, _writing_direction, %{
          "child" => nil,
          "vowel" => nil,
          "onset" => nil,
@@ -44,13 +45,10 @@ defmodule Thaqqa.Glyph.GlyphSpawner do
         data -> Thaqqa.Data.get_val(data, @precompile)
       end
 
+    # ここはregexによる判定にする。
+    # 同等の関数が今後よく現れるので、ConstRegexManagerにて処理を担当させるつもり。
     is_null_vowel =
-      LetterManager.get_letter!(prefab, fn %Thaqqa.Data{} = data ->
-        Thaqqa.Data.get_val(data, "isNullVowel") == true and
-          Thaqqa.Data.get_val(data, @name) == name
-      end)
-
-    is_null_vowel = is_null_vowel |> Enum.reduce([], fn {_, v}, acc -> acc ++ v end) != []
+      ConstRegexManager.match?(prefab, "V(*,[_.isNullVowel])", "V(#{form},#{name})")
 
     aligment =
       LetterManager.get_letter!(prefab, fn %Thaqqa.Data{} = data ->
@@ -153,7 +151,9 @@ defmodule Thaqqa.Glyph.GlyphSpawner do
 
     child_glyph = %Glyph{child_glyph | offset: offset}
 
-    %Glyph{top_glyph | children_glyph_list: [child_glyph]}
+    glyph_name = %{top_glyph.name | glyph: glyphname}
+
+    %Glyph{top_glyph | name: glyph_name, children_glyph_list: [child_glyph]}
   end
 
   defp create_glyph(%Prefab{} = _prefab, _font, _glyphname, _writing_direction, %{}),
