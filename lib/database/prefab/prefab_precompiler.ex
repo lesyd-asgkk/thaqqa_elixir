@@ -1,6 +1,8 @@
-# 使用頻度が想像以上に高くなりそう。
-# または単に(ただletter情報を変えたetcでは)リアルタイム反映をせず、
-# 「テスト動作」「」時にprecompilerを呼び出す仕様とするか。
+# 全設定は使用頻度が想像以上に高くなりそうな上、いくらなんでも現時点で0.5秒近く掛かってるのは結構まずい。
+# まずgposなりgsubなりを追加した場合は必ず「set_precompile_as_root_by_data」を使う。
+# 単に(ただletter情報を変えたetcでは)リアルタイム反映をせず、
+# 「テスト動作」「」時にprecompilerを呼び出す仕様とするか？
+#  それかいっそ並列対応。
 defmodule Thaqqa.PrefabCompiler do
   alias Thaqqa.FontRegistryPrefab, as: Prefab
   alias Thaqqa.Font, as: Font
@@ -119,11 +121,11 @@ defmodule Thaqqa.PrefabCompiler do
       {:error, msg} ->
         {:error, msg}
 
-      {:ok, %Data{value_list: v} = alter_data_} ->
+      {:ok, %Data{} = alter_data_} ->
         if data == alter_data_ do
           {:ok, self}
         else
-          alter_table = DataTable.edit_data!(table, data, v)
+          alter_table = DataTable.edit_data!(table, data, alter_data_)
 
           {:ok, Prefab.edit_static_table_if_enable(self, tablename, alter_table)}
         end
@@ -144,11 +146,11 @@ defmodule Thaqqa.PrefabCompiler do
       {:error, msg} ->
         {:error, msg}
 
-      {:ok, %Data{value_list: v} = alter_data_} ->
+      {:ok, %Data{} = alter_data_} ->
         if alter_data_ == data do
           {:ok, self}
         else
-          alter_table = DataTable.edit_data!(table, data, v)
+          alter_table = DataTable.edit_data!(table, data, alter_data_)
           alter_font = Font.edit_table(font, tablename, alter_table)
           {:ok, Prefab.edit_font_if_enable(self, fontname, alter_font)}
         end

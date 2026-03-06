@@ -7,7 +7,6 @@ defmodule Thaqqa.GposManager do
   alias Thaqqa.Font, as: Font
   alias Thaqqa.FontRegistryPrefab, as: Prefab
   alias Thaqqa.FontRegistry.Error, as: Error
-  alias Thaqqa.DataValidator, as: DataValidator
   use Thaqqa.DataTable.Const
   #
   def get_gpos_table!(%Prefab{} = prefab, fontname),
@@ -41,15 +40,14 @@ defmodule Thaqqa.GposManager do
     end
   end
 
-  # ぶっちゃけ直接加工＋単にsortにしてしまったほうが早い
-  # 　ただし変更の優先順位は低め
   def add_gpos(%Prefab{} = prefab, fontname, value_map) do
     with {:ok, %DataTable{} = table} <- get_gpos_table(prefab, fontname),
-         {:ok, %DataTable{} = table} <- DataTable.add_data(table, value_map),
+         {:ok, %Data{} = data} <- Data.new(value_map, table, prefab),
+         {:ok, %DataTable{} = table} <- DataTable.add_data(table, data),
          %Font{} = font <- Prefab.get_font(prefab, fontname),
          {:ok, %Prefab{} = new_prefab} <-
            Prefab.edit_font(prefab, fontname, Font.edit_table(font, @gpos, table)) do
-      complement(new_prefab, fontname)
+      {:ok, sort_gpos(new_prefab, fontname)}
     else
       nil -> Error.font_not_found(fontname)
       {:error, msg} -> {:error, msg}
@@ -83,11 +81,12 @@ defmodule Thaqqa.GposManager do
 
   def edit_gpos(%Prefab{} = prefab, fontname, value_map, %Thaqqa.Data{} = data) do
     with {:ok, %DataTable{} = table} <- get_gpos_table(prefab, fontname),
-         {:ok, %DataTable{} = table} <- DataTable.edit_data(table, data, value_map),
+         {:ok, %Data{} = new_data} <- Data.new(value_map, table, prefab),
+         {:ok, %DataTable{} = table} <- DataTable.edit_data(table, data, new_data),
          %Font{} = font <- Prefab.get_font(prefab, fontname),
          {:ok, %Prefab{} = new_prefab} <-
            Prefab.edit_font(prefab, fontname, Font.edit_table(font, @gpos, table)) do
-      complement(new_prefab, fontname)
+      {:ok, sort_gpos(new_prefab, fontname)}
     else
       {:error, msg} -> {:error, msg}
     end

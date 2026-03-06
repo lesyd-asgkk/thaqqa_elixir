@@ -3,7 +3,7 @@
 defmodule Thaqqa.DataTable do
   alias Thaqqa.FontRegisteryPrefab, as: FontRegisteryPrefab
 
-  alias Thaqqa.DataValidator, as: DataValidator
+  alias Thaqqa.DataMapValidator, as: DataMapValidator
   alias Thaqqa.FontRegistry, as: FontRegistry
   alias Thaqqa.FontRegistry.Error, as: Error
   alias Thaqqa.Column, as: Column
@@ -170,7 +170,7 @@ defmodule Thaqqa.DataTable do
         value_map
       )
       when is_map(value_map) do
-    case DataValidator.validate_data(table, value_map, :add) do
+    case DataMapValidator.validate_data(table, value_map, :add) do
       {:error, msg} ->
         {:error, msg}
 
@@ -180,41 +180,31 @@ defmodule Thaqqa.DataTable do
     end
   end
 
-  def add_data!(%__MODULE__{} = table, value_map) when is_map(value_map) do
-    add_data(table, value_map)
-    |> case do
+  # add_data系統とかそういうのくらいはdataを直接くっつけるようにする
+
+  def add_data!(%__MODULE__{} = table, %Data{} = data) do
+    case add_data(table, data) do
       {:error, msg} -> raise msg
       {:ok, v} -> v
     end
   end
 
-  def add_data(
-        %__MODULE__{data_list: datas, column_list: column_list} = table,
-        value_map
-      )
-      when is_map(value_map) do
-    value_map = value_map |> attach_id(table)
-
-    case DataValidator.validate_data(table, value_map, :add) do
-      {:error, msg} ->
-        {:error, msg}
-
-      {:ok, _v} ->
-        value_map = value_map |> modify_value_map(table)
-        new_data = Data.new(value_map)
-        {:ok, %{table | data_list: [new_data | datas]}}
+  def add_data(%__MODULE__{data_list: datas} = table, %Data{value_list: value_map} = data) do
+    case DataMapValidator.validate_data(table, value_map, :add) do
+      {:error, msg} -> {:error, msg}
+      {:ok, _v} -> {:ok, %{table | data_list: [data | datas]}}
     end
   end
 
-  def delete_data!(%__MODULE__{} = table, data) do
-    delete_data(table, data)
-    |> case do
+  def delete_data!(%__MODULE__{} = table, %Data{} = data) do
+    case delete_data(table, data) do
       {:error, msg} -> raise msg
       {:ok, v} -> v
     end
   end
 
-  def delete_data(%__MODULE__{data_list: datas} = table, data) do
+  def delete_data(%__MODULE__{data_list: datas} = table, %Data{} = data) do
+    # 削除したいdataが見つからない場合に律儀にエラーを返すようにするか？
     new_datas = Enum.filter(datas, &(&1 != data))
     # data_sub = datas -- new_datas
 
@@ -224,8 +214,8 @@ defmodule Thaqqa.DataTable do
     {:ok, %{table | data_list: new_datas}}
   end
 
-  def edit_data!(%__MODULE__{} = table, data, new_value_map) do
-    edit_data(table, data, new_value_map)
+  def edit_data!(%__MODULE__{} = table, %Data{} = data, %Data{} = new_data) do
+    edit_data(table, data, new_data)
     |> case do
       {:error, msg} -> raise msg
       {:ok, v} -> v
@@ -234,20 +224,12 @@ defmodule Thaqqa.DataTable do
 
   def edit_data(
         %__MODULE__{column_list: column_list, data_list: data_list} = table,
-        data,
-        new_value_map
+        %Data{} = data,
+        %Data{value_list: new_value_map} = new_data
       ) do
-    case DataValidator.validate_data(table, new_value_map, :edit, data) do
-      # ↑のValidatorはUniqueに限っては変更対象を除外する
-      # （IDなどが指定されているが変更後で値が変化しないも当然含める）
-      # (２つ以上変更対象が指定されている場合、uniqueの指定は問答無用で弾く)
-      {:error, msg} ->
-        {:error, msg}
-
-      {:ok, _} ->
-        new_data = Data.new(new_value_map)
-
-        {:ok, %{table | data_list: [new_data | List.delete(data_list, data)]}}
+    case DataMapValidator.validate_data(table, new_value_map, :edit, data) do
+      {:error, msg} -> {:error, msg}
+      {:ok, _} -> {:ok, %{table | data_list: [new_data | List.delete(data_list, data)]}}
     end
   end
 

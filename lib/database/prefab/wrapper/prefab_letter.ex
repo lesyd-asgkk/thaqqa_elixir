@@ -6,7 +6,7 @@ defmodule Thaqqa.LetterManager do
   alias Thaqqa.DataTable, as: DataTable
   alias Thaqqa.FontRegistryPrefab, as: Prefab
   alias Thaqqa.FontRegistry.Error, as: Error
-  alias Thaqqa.DataValidator, as: DataValidator
+  alias Thaqqa.DataMapValidator, as: DataMapValidator
   alias Thaqqa.ConstRegexManager, as: ConstRegexManager
   use Thaqqa.DataTable.Const
 
@@ -88,7 +88,7 @@ defmodule Thaqqa.LetterManager do
             # IDだけは全てのテーブルと照合せず、table_nameの個体とのみ判断
             value_map = if table_name == k, do: value_map, else: Map.delete(value_map, @id)
 
-            case DataValidator.unique_validation(v, value_map, op, subject_data) do
+            case DataMapValidator.unique_validation(v, value_map, op, subject_data) do
               {:error, msg} -> {:halt, {:error, msg}}
               {:ok, _value} -> {:cont, [:ok | acc]}
             end

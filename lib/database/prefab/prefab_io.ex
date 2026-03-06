@@ -116,7 +116,7 @@ defmodule Thaqqa.PrefabIO do
                 v_ = Enum.reduce(column_volatility, v_, fn k, ans__ -> Map.put(ans__, k, nil) end)
 
                 ans_
-                |> DataTable.add_data(v_)
+                |> DataTable.init_data(v_)
                 |> case do
                   {:error, msg} -> {:halt, {:error, msg}}
                   {:ok, value} -> {:cont, value}

@@ -6,7 +6,6 @@ defmodule Thaqqa.GsubManager do
   alias Thaqqa.DataTable, as: DataTable
   alias Thaqqa.FontRegistryPrefab, as: Prefab
   alias Thaqqa.FontRegistry.Error, as: Error
-  alias Thaqqa.DataValidator, as: DataValidator
   use Thaqqa.DataTable.Const
 
   def get_gsub_table!(%Prefab{} = prefab), do: Prefab.get_static_table(prefab, @gsub)
@@ -39,14 +38,12 @@ defmodule Thaqqa.GsubManager do
     end
   end
 
-  # ぶっちゃけ直接加工＋単にsortにしてしまったほうが早い
-  # 　ただし変更の優先順位は低め
   def add_gsub(%Prefab{} = prefab, value_map) do
     with {:ok, %DataTable{} = table} <- get_gsub_table(prefab),
-         {:ok, %DataTable{} = table} <- DataTable.add_data(table, value_map),
-         # {:ok, %DataTable{} = table} <- DataTable.add_data(table, value_map),
+         {:ok, %Data{} = data} <- Data.new(value_map, table, prefab),
+         {:ok, %DataTable{} = table} <- DataTable.add_data(table, data),
          {:ok, %Prefab{} = new_prefab} <- Prefab.edit_static_table(prefab, @gsub, table) do
-      complement(new_prefab)
+      {:ok, sort_gsub(new_prefab)}
     else
       {:error, msg} -> {:error, msg}
     end
@@ -77,9 +74,10 @@ defmodule Thaqqa.GsubManager do
 
   def edit_gsub(%Prefab{} = prefab, value_map, %Thaqqa.Data{} = data) do
     with {:ok, %DataTable{} = table} <- get_gsub_table(prefab),
-         {:ok, %DataTable{} = table} <- DataTable.edit_data(table, data, value_map),
+         {:ok, %Data{} = new_data} <- Data.new(value_map, table, prefab),
+         {:ok, %DataTable{} = table} <- DataTable.edit_data(table, data, new_data),
          {:ok, %Prefab{} = new_prefab} <- Prefab.edit_static_table(prefab, @gsub, table) do
-      complement(new_prefab)
+      {:ok, sort_gsub(new_prefab)}
     else
       {:error, msg} -> {:error, msg}
     end

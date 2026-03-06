@@ -16,11 +16,14 @@ defmodule ThaqqaTest do
     {:ok, prefab} = Thaqqa.FontRegistry.create_prefab()
 
     # prefab |> Thaqqa.PrefabCompiler.set_precompile_as_font("Default")
-    # p = prefab |> Thaqqa.ParserManager.parse!("suzusha koratl", "khehyelu")
+    p =
+      prefab
+      |> Thaqqa.ParserManager.parse!("suzusha koratl", "khehyelu")
 
-    # p =
-    #  prefab
-    #  |> Thaqqa.GsubManager.gsub!(p, "vertical")
+    p =
+      prefab
+      |> Thaqqa.GsubManager.gsub!(p, "vertical")
+      |> IO.inspect()
 
     # Thaqqa.FontRegistryPrefab.get_single_data(prefab, "Default", "FONTDATA") |> IO.inspect()
 

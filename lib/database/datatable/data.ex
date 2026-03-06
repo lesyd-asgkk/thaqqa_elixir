@@ -1,12 +1,36 @@
 defmodule Thaqqa.Data do
   alias Thaqqa.Regex_Khhyl, as: Regex_Khhyl
   alias Thaqqa.DataTable, as: DataTable
+  alias Thaqqa.Column, as: Column
   alias Thaqqa.FontRegistryPrefab, as: Prefab
   use Thaqqa.DataTable.Const
 
   defstruct [:value_list]
 
   def new(v) when is_map(v), do: %__MODULE__{value_list: v}
+
+  def new(v, %DataTable{} = table) when is_map(v),
+    do: %__MODULE__{value_list: v |> modify_value_map(table) |> attach_id(table)}
+
+  def new(v, %DataTable{} = table, %Prefab{} = prefab) when is_map(v),
+    do: %__MODULE__{
+      value_list:
+        v |> modify_value_map(table) |> attach_id(table) |> set_precompile(table, prefab)
+    }
+
+  def attach_id(value_map, %DataTable{} = table) when is_map(value_map) do
+    if Map.has_key?(value_map, @id) and Map.get(value_map, @id) != nil,
+      do: value_map,
+      else: Map.put(value_map, @id, DataTable.get_least_available_id(table))
+  end
+
+  def modify_value_map(value_map, %DataTable{} = table) when is_map(value_map) do
+    Enum.reduce(table.column_list, value_map, fn %Column{name: name} = column, acc ->
+      if Map.has_key?(acc, name), do: acc, else: Map.put(acc, name, Column.init_val(column, nil))
+    end)
+  end
+
+  # valは見栄え悪いのでvalueにしときたい
 
   def set_val(%__MODULE__{value_list: v} = data, key, val),
     do: %{data | value_list: Map.put(v, key, val)}
@@ -56,7 +80,7 @@ defmodule Thaqqa.Data do
         {:ok, val} -> {:ok, set_val(self, @precompile, val)}
       end
     else
-      {:error, "path_not_found"}
+      {:error, "仮error:path_not_found"}
     end
   end
 end
