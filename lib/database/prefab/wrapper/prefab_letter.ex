@@ -116,7 +116,7 @@ defmodule Thaqqa.LetterManager do
          {:ok, %DataTable{} = table} <- get_internal(prefab, table_name),
          {:ok, %DataTable{} = table} <- DataTable.add_data(table, value_map),
          {:ok, %Prefab{} = prefab} <- Prefab.edit_static_table(prefab, table_name, table) do
-      ConstRegexManager.set_datalist_hash(prefab)
+      {:ok, sort_letter(prefab)}
     else
       {:error, msg} -> {:error, msg}
     end
@@ -133,9 +133,8 @@ defmodule Thaqqa.LetterManager do
   def delete_letter(%Prefab{} = prefab, table_name, %Thaqqa.Data{} = data)
       when table_name in @lettertable_list do
     with {:ok, %DataTable{} = table} <- get_internal(prefab, table_name),
-         {:ok, %DataTable{} = table} <- DataTable.delete_data(table, data),
-         {:ok, %Prefab{} = prefab} <- Prefab.edit_static_table(prefab, table_name, table) do
-      ConstRegexManager.set_datalist_hash(prefab)
+         {:ok, %DataTable{} = table} <- DataTable.delete_data(table, data) do
+      Prefab.edit_static_table(prefab, table_name, table)
     else
       {:error, msg} -> {:error, msg}
     end
@@ -155,7 +154,29 @@ defmodule Thaqqa.LetterManager do
          {:ok, %DataTable{} = table} <- get_internal(prefab, table_name),
          {:ok, %DataTable{} = table} <- DataTable.edit_data(table, data, value_map),
          {:ok, %Prefab{} = prefab} <- Prefab.edit_static_table(prefab, table_name, table) do
-      ConstRegexManager.set_datalist_hash(prefab)
+      {:ok, sort_letter(prefab)}
+    else
+      {:error, msg} -> {:error, msg}
+    end
+  end
+
+  def sort_letter(%Prefab{} = prefab),
+    do:
+      Prefab.sort_as_static(prefab, @vowel)
+      |> Prefab.sort_as_static(prefab, @consonant)
+      |> Prefab.sort_as_static(prefab, @punctuation)
+      |> Prefab.sort_as_static(prefab, @diacritic_v)
+      |> Prefab.sort_as_static(prefab, @diacritic_c)
+      |> Prefab.sort_as_static(prefab, @diacritic_p)
+
+  def complement(%Prefab{} = prefab) do
+    with {:ok, %Prefab{} = prefab} <- Prefab.complement_by_static_table(prefab, @vowel),
+         {:ok, %Prefab{} = prefab} <- Prefab.complement_by_static_table(prefab, @consonant),
+         {:ok, %Prefab{} = prefab} <- Prefab.complement_by_static_table(prefab, @punctuation),
+         {:ok, %Prefab{} = prefab} <- Prefab.complement_by_static_table(prefab, @diacritic_v),
+         {:ok, %Prefab{} = prefab} <- Prefab.complement_by_static_table(prefab, @diacritic_c),
+         {:ok, %Prefab{} = prefab} <- Prefab.complement_by_static_table(prefab, @diacritic_p) do
+      {:ok, prefab}
     else
       {:error, msg} -> {:error, msg}
     end
