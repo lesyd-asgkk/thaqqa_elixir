@@ -3,6 +3,7 @@
 # Prefabの加工・読み取りラッパーにするか
 
 defmodule Thaqqa.GposManager do
+  alias Thaqqa.Data, as: Data
   alias Thaqqa.DataTable, as: DataTable
   alias Thaqqa.Font, as: Font
   alias Thaqqa.FontRegistryPrefab, as: Prefab

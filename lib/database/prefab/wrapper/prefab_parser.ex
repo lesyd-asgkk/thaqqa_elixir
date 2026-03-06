@@ -4,6 +4,7 @@
 
 defmodule Thaqqa.ParserManager do
   alias Thaqqa.DataTable, as: DataTable
+  alias Thaqqa.Data, as: Data
   alias Thaqqa.FontRegistryPrefab, as: Prefab
   alias Thaqqa.FontRegistry.Error, as: Error
   use Thaqqa.DataTable.Const

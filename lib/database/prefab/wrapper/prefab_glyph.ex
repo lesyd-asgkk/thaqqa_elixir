@@ -1,4 +1,5 @@
 defmodule Thaqqa.GlyphManager do
+  alias Thaqqa.Data, as: Data
   alias Thaqqa.DataTable, as: DataTable
   alias Thaqqa.Font, as: Font
   alias Thaqqa.FontRegistryPrefab, as: Prefab

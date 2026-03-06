@@ -3,6 +3,7 @@
 # Prefabの加工・読み取りラッパーにするか
 
 defmodule Thaqqa.GsubManager do
+  alias Thaqqa.Data, as: Data
   alias Thaqqa.DataTable, as: DataTable
   alias Thaqqa.FontRegistryPrefab, as: Prefab
   alias Thaqqa.FontRegistry.Error, as: Error

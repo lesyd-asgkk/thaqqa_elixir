@@ -3,6 +3,7 @@
 # add,delete等の機能の拡張は必要に応じて行う(内部でしか使用せず、rootファイルを直接編集で事足りるため必要に乏しい)
 
 defmodule Thaqqa.ConstRegexManager do
+  alias Thaqqa.Data, as: Data
   alias Thaqqa.DataTable, as: DataTable
   alias Thaqqa.Font, as: Font
   alias Thaqqa.FontRegistryPrefab, as: Prefab
@@ -37,17 +38,29 @@ defmodule Thaqqa.ConstRegexManager do
   end
 
   def get_const(%Prefab{} = prefab, name) do
-    Prefab.get_static_table(prefab, @regex_const).data_hash
-    |> case do
-      %{} -> set_datalist_hash(prefab) |> get_const(name)
-      hash -> Map.get(hash, name)
+    case get_static_table(prefab) do
+      {:error, msg} ->
+        {:error, msg}
+
+      {:ok, table} ->
+        case table.data_hash do
+          #   %{} ->
+          #     case set_datalist_hash(prefab) do
+          #       {:error, msg} -> {:error, msg}
+          #       {:ok, prefab} -> get_const(prefab, name)
+          #     end
+
+          hash ->
+            {:ok, Map.get(hash, name)}
+        end
     end
   end
 
   def match?(%Prefab{} = prefab, name, string) do
     case get_const(prefab, name) do
-      nil -> {:error, "(仮) data_not_found"}
-      data -> Thaqqa.Data.get_val(data, @precompile) |> Regex.match?(string)
+      {:error, msg} -> {:error, msg}
+      {:ok, nil} -> {:error, "(仮) data_not_found"}
+      {:ok, data} -> Thaqqa.Data.get_val(data, @precompile) |> Regex.match?(string)
     end
   end
 

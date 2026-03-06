@@ -4,6 +4,7 @@
 
 defmodule Thaqqa.LetterManager do
   alias Thaqqa.DataTable, as: DataTable
+
   alias Thaqqa.FontRegistryPrefab, as: Prefab
   alias Thaqqa.FontRegistry.Error, as: Error
   alias Thaqqa.DataMapValidator, as: DataMapValidator
