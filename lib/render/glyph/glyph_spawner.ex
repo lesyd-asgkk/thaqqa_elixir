@@ -35,50 +35,54 @@ defmodule Thaqqa.Glyph.GlyphSpawner do
     variant = if variant == nil, do: nil, else: variant |> Enum.at(0)
     glyph_name = %{glyph: name, variant: variant, type: type, form: form}
 
-    path =
-      GlyphManager.get_glyph!(prefab, font, fn %Thaqqa.Data{} = data ->
-        Thaqqa.Data.get_val(data, @name) == glyph_name_for_query
-      end)
-      |> Enum.at(0)
-      |> case do
-        nil -> []
-        data -> Thaqqa.Data.get_val(data, @precompile)
-      end
+    with {:ok, glyph_data} =
+           GlyphManager.get_glyph(prefab, font, fn %Thaqqa.Data{} = data ->
+             Thaqqa.Data.get_val(data, @name) == glyph_name_for_query
+           end),
+         {:ok, is_null_vowel} =
+           ConstRegexManager.match?(prefab, "V(*,[_.isNullVowel])", "V(#{form},#{name})"),
+         {:ok, letter_data} =
+           LetterManager.get_letter(prefab, fn %Thaqqa.Data{} = data ->
+             Thaqqa.Data.get_val(data, @name) == name
+           end) do
+      path =
+        glyph_data
+        |> Enum.at(0)
+        |> case do
+          nil -> []
+          data -> Thaqqa.Data.get_val(data, @precompile)
+        end
 
-    # ここはregexによる判定にする。
-    # 同等の関数が今後よく現れるので、ConstRegexManagerにて処理を担当させるつもり。
-    # エラー処理は現状適当（todoで追加。）
-    {:ok, is_null_vowel} =
-      ConstRegexManager.match?(prefab, "V(*,[_.isNullVowel])", "V(#{form},#{name})")
+      aligment =
+        letter_data
+        |> Enum.reduce([], fn {_, v}, acc -> acc ++ v end)
+        |> Enum.at(0)
+        |> case do
+          nil ->
+            %{x: 0, y: 0}
 
-    aligment =
-      LetterManager.get_letter!(prefab, fn %Thaqqa.Data{} = data ->
-        Thaqqa.Data.get_val(data, @name) == name
-      end)
-      |> Enum.reduce([], fn {_, v}, acc -> acc ++ v end)
-      |> Enum.at(0)
-      |> case do
-        nil ->
-          %{x: 0, y: 0}
+          data ->
+            case {Thaqqa.Data.get_val(data, "x_Align"), Thaqqa.Data.get_val(data, "y_Align")} do
+              {nil, _} -> %{x: 0, y: 0}
+              {_, nil} -> %{x: 0, y: 0}
+              {x, y} -> %{x: x, y: y}
+            end
+        end
 
-        data ->
-          case {Thaqqa.Data.get_val(data, "x_Align"), Thaqqa.Data.get_val(data, "y_Align")} do
-            {nil, _} -> %{x: 0, y: 0}
-            {_, nil} -> %{x: 0, y: 0}
-            {x, y} -> %{x: x, y: y}
-          end
-      end
-
-    %Glyph{
-      offset: %{x: 0, y: 0},
-      aligment: aligment,
-      path: SVG.Path.new(path),
-      children_glyph_list: [],
-      font: font,
-      name: glyph_name,
-      height: %{y0: 0, y1: 0, y2: 0, y3: 0},
-      internal_attribution: %{is_null: is_null_vowel}
-    }
+      {:ok,
+       %Glyph{
+         offset: %{x: 0, y: 0},
+         aligment: aligment,
+         path: SVG.Path.new(path),
+         children_glyph_list: [],
+         font: font,
+         name: glyph_name,
+         height: %{y0: 0, y1: 0, y2: 0, y3: 0},
+         internal_attribution: %{is_null: is_null_vowel}
+       }}
+    else
+      {:error, msg} -> {:error, msg}
+    end
   end
 
   # Sの場合
@@ -98,29 +102,34 @@ defmodule Thaqqa.Glyph.GlyphSpawner do
         new(prefab, font, k, writing_direction)
       end)
 
-    %{x0: off_onset_x, x1: off_coda_x, y0: off_onset_y, y1: off_coda_y} =
-      GposManager.gpos!(prefab, font, glyphname, writing_direction, @internal)
+    with {:ok, %{x0: off_onset_x, x1: off_coda_x, y0: off_onset_y, y1: off_coda_y}} <-
+           GposManager.gpos(prefab, font, glyphname, writing_direction, @internal),
+         {:ok, onset_glyph} <- onset_glyph,
+         {:ok, vowel_glyph} <- vowel_glyph,
+         {:ok, coda_glyph} <- coda_glyph do
+      is_null_vowel = vowel_glyph.internal_attribution.is_null
 
-    is_null_vowel = vowel_glyph.internal_attribution.is_null
+      off_onset = %{x: off_onset_x, y: off_onset_y}
+      off_coda = %{x: off_coda_x, y: off_coda_y}
 
-    off_onset = %{x: off_onset_x, y: off_onset_y}
-    off_coda = %{x: off_coda_x, y: off_coda_y}
-
-    onset_glyph = %Glyph{onset_glyph | offset: off_onset}
-    coda_glyph = %Glyph{coda_glyph | offset: off_coda}
-    # pathは空
-    # 仮
-    %Glyph{
-      offset: %{x: 0, y: 0},
-      aligment: %{x: 0, y: 0},
-      path: %SVG.Path{},
-      children_glyph_list: [onset_glyph, vowel_glyph, coda_glyph],
-      font: font,
-      name: glyph_name,
-      internal_attribution: %{is_null: is_null_vowel},
-      # ↓ここでは設定しない
-      height: %{y0: 0, y1: 0, y2: 0, y3: 0}
-    }
+      onset_glyph = %Glyph{onset_glyph | offset: off_onset}
+      coda_glyph = %Glyph{coda_glyph | offset: off_coda}
+      # pathデータは空
+      {:ok,
+       %Glyph{
+         offset: %{x: 0, y: 0},
+         aligment: %{x: 0, y: 0},
+         path: %SVG.Path{},
+         children_glyph_list: [onset_glyph, vowel_glyph, coda_glyph],
+         font: font,
+         name: glyph_name,
+         internal_attribution: %{is_null: is_null_vowel},
+         # ↓ここでは設定しない
+         height: %{y0: 0, y1: 0, y2: 0, y3: 0}
+       }}
+    else
+      {:error, msg} -> {:error, msg}
+    end
   end
 
   # グリフ列の場合。単純な再帰処理とする
@@ -145,16 +154,18 @@ defmodule Thaqqa.Glyph.GlyphSpawner do
 
     child_glyph = new(prefab, font, child, writing_direction)
 
-    %{x0: off_x, x1: _, y0: off_y, y1: _} =
-      GposManager.gpos!(prefab, font, glyphname, writing_direction, @diacritical)
+    with {:ok, %{x0: off_x, x1: _, y0: off_y, y1: _}} <-
+           GposManager.gpos(prefab, font, glyphname, writing_direction, @diacritical),
+         {:ok, top_glyph} <- top_glyph,
+         {:ok, child_glyph} <- child_glyph do
+      offset = %{x: off_x, y: off_y}
 
-    offset = %{x: off_x, y: off_y}
+      child_glyph = %Glyph{child_glyph | offset: offset}
 
-    child_glyph = %Glyph{child_glyph | offset: offset}
+      glyph_name = %{top_glyph.name | glyph: glyphname}
 
-    glyph_name = %{top_glyph.name | glyph: glyphname}
-
-    %Glyph{top_glyph | name: glyph_name, children_glyph_list: [child_glyph]}
+      {:ok, %Glyph{top_glyph | name: glyph_name, children_glyph_list: [child_glyph]}}
+    end
   end
 
   defp create_glyph(%Prefab{} = _prefab, _font, _glyphname, _writing_direction, %{}),

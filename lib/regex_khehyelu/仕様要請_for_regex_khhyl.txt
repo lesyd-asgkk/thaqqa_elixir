@@ -1,4 +1,7 @@
 
+※現時点で信頼してよいのは3.までです。
+※
+
 1.概要
   Regex_Khhyl
 
@@ -184,6 +187,7 @@ regex拡張ではワイルドカードや条件式が使用可能。
 <punctuation_diacritical_plain>  ::= "Pd(" <glyph_list> ")" 
 <punctuation_diacritical_any> ::= "Pd(*)"
 
+(以降は要検討)
 
 <syllable> ::= <syllable_plain> | <syllable_any> | <syllable_any_glyph> 
 

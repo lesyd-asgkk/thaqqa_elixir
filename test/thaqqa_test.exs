@@ -39,14 +39,14 @@ defmodule ThaqqaTest do
 
     # Thaqqa.FontRegistryPrefab.get_single_data(prefab, "Default", "FONTDATA") |> IO.inspect()
 
-    # glyph =
-    # Thaqqa.Glyph.new(prefab, "Default", "S(mid,t0-d0,a0,n0)", "vertical")
-    # |> Thaqqa.Glyph.set_path()
+    glyph =
+      Thaqqa.Glyph.new(prefab, "Default", "S(mid,t0-d0,a0,n0)", "vertical")
+      # |> Thaqqa.Glyph.set_path()
 
-    # glyph = Thaqqa.Glyph.render_by_relative_height(prefab, glyph, 10, 10)
-    #
-    #  SVG.Path.export_as_string(glyph.path)
-    # |> IO.inspect()
+      # glyph = Thaqqa.Glyph.render_by_relative_height(prefab, glyph, 10, 10)
+      #
+      #  SVG.Path.export_as_string(glyph.path)
+      |> IO.inspect()
 
     # Thaqqa.Glyph.new(prefab, "Default", "P(two0)", "vertical") |> IO.inspect()
     # Thaqqa.Glyph.new(prefab, "Default", "S(mid,n0,a0,n0)", "vertical") |> IO.inspect()
