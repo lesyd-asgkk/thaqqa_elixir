@@ -22,8 +22,7 @@ defmodule Thaqqa.ConstRegexManager do
           table.data_list
           |> Map.new(fn %Thaqqa.Data{value_list: vl} = table -> {Map.get(vl, @name), table} end)
 
-        table = %DataTable{table | data_hash: dh}
-        Prefab.edit_static_table(prefab, @regex_const, table)
+        Prefab.edit_static_table(prefab, @regex_const, %DataTable{table | data_hash: dh})
     end
   end
 
@@ -56,11 +55,48 @@ defmodule Thaqqa.ConstRegexManager do
     end
   end
 
+  def whole_of_string_match_at_once?(%Prefab{} = prefab, name, string) do
+    case get_const(prefab, name) do
+      {:error, msg} ->
+        {:error, msg}
+
+      {:ok, nil} ->
+        {:error, "(仮) data_not_found"}
+
+      {:ok, data} ->
+        case Thaqqa.Data.get_val(data, @precompile) |> Regex.replace(string, "", global: false) do
+          "" -> {:ok, true}
+          otherwise -> {:ok, otherwise}
+        end
+    end
+  end
+
+  def whole_of_string_match?(%Prefab{} = prefab, name, string) do
+    case get_const(prefab, name) do
+      {:error, msg} ->
+        {:error, msg}
+
+      {:ok, nil} ->
+        {:error, "(仮) data_not_found"}
+
+      {:ok, data} ->
+        case Thaqqa.Data.get_val(data, @precompile) |> Regex.replace(string, "") do
+          "" -> {:ok, true}
+          otherwise -> {:ok, otherwise}
+        end
+    end
+  end
+
   def match?(%Prefab{} = prefab, name, string) do
     case get_const(prefab, name) do
-      {:error, msg} -> {:error, msg}
-      {:ok, nil} -> {:error, "(仮) data_not_found"}
-      {:ok, data} -> Thaqqa.Data.get_val(data, @precompile) |> Regex.match?(string)
+      {:error, msg} ->
+        {:error, msg}
+
+      {:ok, nil} ->
+        {:error, "(仮) data_not_found"}
+
+      {:ok, data} ->
+        {:ok, Thaqqa.Data.get_val(data, @precompile) |> Regex.match?(string)}
     end
   end
 

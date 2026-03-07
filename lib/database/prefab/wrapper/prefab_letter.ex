@@ -4,7 +4,7 @@
 
 defmodule Thaqqa.LetterManager do
   alias Thaqqa.DataTable, as: DataTable
-
+  alias Thaqqa.Font, as: Font
   alias Thaqqa.FontRegistryPrefab, as: Prefab
   alias Thaqqa.FontRegistry.Error, as: Error
   alias Thaqqa.DataMapValidator, as: DataMapValidator
@@ -177,6 +177,29 @@ defmodule Thaqqa.LetterManager do
          {:ok, %Prefab{} = prefab} <- Prefab.complement_by_static_table(prefab, @diacritic_c),
          {:ok, %Prefab{} = prefab} <- Prefab.complement_by_static_table(prefab, @diacritic_p) do
       {:ok, prefab}
+    else
+      {:error, msg} -> {:error, msg}
+    end
+  end
+
+  defp apply_letter_font_sub(%Prefab{fonts: fonts} = prefab) do
+    Enum.reduce_while(fonts, prefab, fn %Font{name: fontname} = f, acc ->
+      case Prefab.set_precompile_as_font(acc, fontname) do
+        {:error, msg} -> {:halt, {:error, msg}}
+        {:ok, new_f} -> {:cont, Prefab.edit_font_if_enable(acc, fontname, new_f)}
+      end
+    end)
+    |> case do
+      {:error, msg} -> {:error, msg}
+      otherwise -> {:ok, otherwise}
+    end
+  end
+
+  # 変更し終わった後に一括で変更する
+  def apply_letter(%Prefab{} = prefab) do
+    with {:ok, %Prefab{} = prefab} <- Prefab.set_precompile_as_root(prefab),
+         {:ok, %Prefab{} = prefab} <- apply_letter_font_sub(prefab) do
+      ConstRegexManager.set_datalist_hash(prefab)
     else
       {:error, msg} -> {:error, msg}
     end

@@ -47,8 +47,8 @@ defmodule Thaqqa.Glyph.GlyphSpawner do
 
     # ここはregexによる判定にする。
     # 同等の関数が今後よく現れるので、ConstRegexManagerにて処理を担当させるつもり。
-
-    is_null_vowel =
+    # エラー処理は現状適当（todoで追加。）
+    {:ok, is_null_vowel} =
       ConstRegexManager.match?(prefab, "V(*,[_.isNullVowel])", "V(#{form},#{name})")
 
     aligment =
