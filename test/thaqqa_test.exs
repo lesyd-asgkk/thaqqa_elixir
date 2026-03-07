@@ -30,7 +30,7 @@ defmodule ThaqqaTest do
 
     {:ok, list} = Thaqqa.Render.split_by_syllable(prefab, string)
 
-    Thaqqa.Render.validate_syllable(prefab, list)
+    Thaqqa.Render.verficate_syllable(prefab, list)
     |> IO.inspect()
 
     # p =

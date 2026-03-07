@@ -8,7 +8,7 @@ defmodule Thaqqa.Render do
   alias Thaqqa.ConstRegexManager, as: ConstRegexManager
   use Thaqqa.DataTable.Const
 
-  def validate_syllable(%Prefab{} = prefab, syllable_list) when is_list(syllable_list) do
+  def verficate_syllable(%Prefab{} = prefab, syllable_list) when is_list(syllable_list) do
     Enum.reduce_while(syllable_list, nil, fn syl, acc ->
       case ConstRegexManager.whole_of_string_match_at_once?(prefab, "L()", syl) do
         {:error, msg} ->
