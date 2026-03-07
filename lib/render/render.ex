@@ -9,6 +9,16 @@ defmodule Thaqqa.Render do
   alias Thaqqa.Glyph, as: Glyph
   use Thaqqa.DataTable.Const
 
+  # 合成方針（未実装部分）
+  # horizontal、veritcal共に「3文字づつkerning用の値の処理」
+  # ダミーデータとして「None()」に該当するGlyphを前後に挿入。
+  # glyphs =[ None() |  glyphs ++ [None()]]
+  # |> Stream.chunk_every(3, 1, :discard)
+  # |> Stream.map(&calc_kerning/1)
+  # のような形。ただし音節数が知れてる場合は素直にEnum.mapで処理。
+  # %{glyph_height:float top_gap:float,bottom_gap: float,left_gap:float, bottom_gap:float ,
+  # is_newline:false} 、のようなmapのlistを生成した上で、その情報を元にglyphのpath同士を合成。
+  #
   def build_path_data(%Prefab{} = prefab, syllable_list, font, writing_direction)
       when is_list(syllable_list) do
     Enum.reduce_while(syllable_list, {:ok, []}, fn syl, {:ok, acc} ->
@@ -17,24 +27,28 @@ defmodule Thaqqa.Render do
         # 今後エラー処理が必要になった場合を鑑みてwith文とする
         {:cont, {:ok, [Glyph.set_path(glyph) | acc]}}
       else
-        {:error, msg} -> {:halt, {:error, msg}}
+        {:error, reason} -> {:halt, {:error, reason}}
       end
     end)
+    |> case do
+      {:error, reason} -> {:error, reason}
+      {:ok, glyph_list} -> Enum.reverse(glyph_list)
+    end
   end
 
   def verficate_syllable(%Prefab{} = prefab, syllable_list) when is_list(syllable_list) do
-    Enum.reduce_while(syllable_list, nil, fn syl, acc ->
+    Enum.reduce_while(syllable_list, nil, fn syl, _ ->
       case ConstRegexManager.whole_of_string_match_at_once?(prefab, "L()", syl) do
-        {:error, msg} ->
-          {:halt, {:error, msg}}
+        {:error, reason} ->
+          {:halt, {:error, reason}}
 
         {:ok, true} ->
           {:cont, nil}
 
-        {:ok, otherwise} ->
+        {:ok, _} ->
           case ConstRegexManager.whole_of_string_match?(prefab, "L()", syl) do
-            {:error, msg} ->
-              {:halt, {:error, msg}}
+            {:error, reason} ->
+              {:halt, {:error, reason}}
 
             {:ok, true} ->
               {:halt,
@@ -46,53 +60,41 @@ defmodule Thaqqa.Render do
       end
     end)
     |> case do
-      {:error, msg} -> {:error, msg}
+      {:error, reason} -> {:error, reason}
       _ -> {:ok, syllable_list}
     end
   end
 
   def split_by_syllable(%Prefab{} = prefab, string) do
     case ConstRegexManager.get_const(prefab, "(L())(L())") do
-      {:error, msg} ->
-        {:error, msg}
+      {:error, reason} ->
+        {:error, reason}
 
       {:ok, const} ->
         regex = const |> Thaqqa.Data.get_val(@precompile)
-        # Sep()を付け加える
-        string = Regex.replace(regex, string, "\\g{1}Sep()\\g{2}")
-        string = Regex.replace(regex, string, "\\g{1}Sep()\\g{2}")
-        # Sep()を音節間に付け足してSep()を基準に分けているだけなので
-        # ここでエラーが起きる＝fatalと判断（即終了）
-        {:ok, String.split(string, "Sep()")}
+        {:ok, Regex.scan(regex, string) |> Enum.at(-1)}
     end
   end
 
   def convert_into_khhyl_letter(%Prefab{} = prefab, string, font, language, writing_direction)
       when language in [@khehyelu, @samlhta] and writing_direction in [@vertical, @horizontal] do
-    IO.inspect(Thaqqa.ParserManager.parse(prefab, string, language))
-
-    with {:ok, parsed_string} <- Thaqqa.ParserManager.parse(prefab, string, language),
-         {:ok, gsub_string} <- Thaqqa.GsubManager.gsub(prefab, parsed_string, writing_direction),
+    with {:ok, parsed_string} <- ParserManager.parse(prefab, string, language),
+         {:ok, gsub_string} <- GsubManager.gsub(prefab, parsed_string, writing_direction),
          {:ok, unique_gsub_string} <-
-           Thaqqa.UniqueGsubManager.unique_gsub(prefab, gsub_string, font, writing_direction) do
+           UniqueGsubManager.unique_gsub(prefab, gsub_string, font, writing_direction) do
       {:ok, unique_gsub_string}
     else
-      {:error, msg} -> {:error, msg}
+      {:error, reason} -> {:error, reason}
     end
   end
 
   # prefabを持たない場合、FontRegistryから直接読み込む。
   def convert_into_khhyl_letter!(string, font, language, writing_direction) do
-    case Thaqqa.FontRegistry.create_prefab() do
+    case FontRegistry.create_prefab() do
+      # {:error, reason} ->
+      # {:error, reason}
       {:ok, prefab} ->
         convert_into_khhyl_letter(prefab, string, font, language, writing_direction)
-
-      {:error, msg} ->
-        {:error, msg}
     end
-
-    # prefab
-    # |> Thaqqa.UniqueGposManager.gpos("Default", "S(mid,t0,e0,t0)", "vertical", "internal")
-    # |> IO.inspect()
   end
 end

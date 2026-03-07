@@ -1,8 +1,5 @@
 defmodule Thaqqa.Font do
-  alias Thaqqa.FontRegistry, as: FontRegistry
-  alias Thaqqa.FontRegisteryPrefab, as: FontRegisteryPrefab
   alias Thaqqa.DataTable, as: DataTable
-  alias Thaqqa.Regex_Khhyl.Error, as: Error
   defstruct [:filename, :name, table_list: []]
 
   def new(filename, name, t), do: %__MODULE__{table_list: t, name: name, filename: filename}
@@ -19,14 +16,10 @@ defmodule Thaqqa.Font do
 
   def add_table(
         %__MODULE__{table_list: tables, name: fontname} = font,
-        %DataTable{name: name} = table
+        %DataTable{} = table
       ) do
     table = %DataTable{table | parent: fontname}
     %{font | table_list: tables ++ [table]}
-  end
-
-  def delete_table!(%__MODULE__{} = font, %DataTable{} = table, table_name) do
-    delete_table(font, table)
   end
 
   def delete_table(%__MODULE__{table_list: tables} = font, table_name) do
@@ -34,11 +27,7 @@ defmodule Thaqqa.Font do
     %{font | table_list: new_tables}
   end
 
-  def edit_table(
-        %__MODULE__{table_list: tables} = font,
-        table_name,
-        %DataTable{name: new_name} = new_table
-      ) do
+  def edit_table(%__MODULE__{table_list: tables} = font, table_name, %DataTable{} = new_table) do
     new_tables =
       Enum.map(tables, fn
         table when table.name == table_name -> new_table

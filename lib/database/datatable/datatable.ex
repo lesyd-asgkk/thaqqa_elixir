@@ -47,7 +47,7 @@ defmodule Thaqqa.DataTable do
   def add_column!(%__MODULE__{} = table, %Column{} = column, val_init \\ nil) do
     case add_column(table, column, val_init) do
       {:ok, val} -> val
-      {:error, msg} -> raise msg
+      {:error, reason} -> raise reason
     end
   end
 
@@ -86,7 +86,7 @@ defmodule Thaqqa.DataTable do
   def edit_column!(%__MODULE__{} = table, column_name, %Column{name: new_name} = column) do
     case edit_column(table, column_name, column) do
       {:ok, val} -> val
-      {:error, msg} -> raise msg
+      {:error, reason} -> raise reason
     end
   end
 
@@ -171,8 +171,8 @@ defmodule Thaqqa.DataTable do
       )
       when is_map(value_map) do
     case DataMapValidator.validate_data(table, value_map, :add) do
-      {:error, msg} ->
-        {:error, msg}
+      {:error, reason} ->
+        {:error, reason}
 
       {:ok, _v} ->
         new_data = value_map |> modify_value_map(table) |> attach_id(table) |> Data.new()
@@ -184,21 +184,21 @@ defmodule Thaqqa.DataTable do
 
   def add_data!(%__MODULE__{} = table, %Data{} = data) do
     case add_data(table, data) do
-      {:error, msg} -> raise msg
+      {:error, reason} -> raise reason
       {:ok, v} -> v
     end
   end
 
   def add_data(%__MODULE__{data_list: datas} = table, %Data{value_list: value_map} = data) do
     case DataMapValidator.validate_data(table, value_map, :add) do
-      {:error, msg} -> {:error, msg}
+      {:error, reason} -> {:error, reason}
       {:ok, _v} -> {:ok, %{table | data_list: [data | datas]}}
     end
   end
 
   def delete_data!(%__MODULE__{} = table, %Data{} = data) do
     case delete_data(table, data) do
-      {:error, msg} -> raise msg
+      # {:error, reason} -> raise reason
       {:ok, v} -> v
     end
   end
@@ -217,7 +217,7 @@ defmodule Thaqqa.DataTable do
   def edit_data!(%__MODULE__{} = table, %Data{} = data, %Data{} = new_data) do
     edit_data(table, data, new_data)
     |> case do
-      {:error, msg} -> raise msg
+      {:error, reason} -> raise reason
       {:ok, v} -> v
     end
   end
@@ -228,7 +228,7 @@ defmodule Thaqqa.DataTable do
         %Data{value_list: new_value_map} = new_data
       ) do
     case DataMapValidator.validate_data(table, new_value_map, :edit, data) do
-      {:error, msg} -> {:error, msg}
+      {:error, reason} -> {:error, reason}
       {:ok, _} -> {:ok, %{table | data_list: [new_data | List.delete(data_list, data)]}}
     end
   end

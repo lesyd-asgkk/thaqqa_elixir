@@ -45,7 +45,7 @@ defmodule Thaqqa.Glyph.GlyphRenderer do
           SVG.Path.to_relative(path)
           |> SVG.Path.set_start_position(0, top_gap)
           |> SVG.Path.set_end_position(0, bottom_gap + y3)
-          |> SVG.Path.toRelativeAll()
+          |> SVG.Path.to_relative()
 
         %Glyph{self | path: path, glyph_height: bottom_gap + y3}
 
@@ -142,7 +142,7 @@ defmodule Thaqqa.Glyph.GlyphRenderer do
   # そんなことはない場合
   def render_by_relative_height(
         %Prefab{} = _prefab,
-        %Glyph{name: %{type: type}, height: %{y0: y0, y3: y3}, font: font, path: path} = self,
+        %Glyph{name: %{}, height: %{y0: _y0, y3: y3}, path: path} = self,
         top_gap,
         bottom_gap
       ) do
@@ -183,7 +183,7 @@ defmodule Thaqqa.Glyph.GlyphRenderer do
         path =
           SVG.Path.to_relative(path)
           |> SVG.Path.set_start_position(0, vowel_height - vowel_height_half)
-          |> SVG.Path.toRelativeAll()
+          |> SVG.Path.to_relative()
 
         %Glyph{self | path: path, glyph_height: height}
 
@@ -239,12 +239,8 @@ defmodule Thaqqa.Glyph.GlyphRenderer do
         height,
         vowel_height
       ) do
-    thickness_raw = Prefab.get_single_data_value(prefab, font, "FONTDATA", "Thickness")
     glyph_height_half = (y2 - y1) / 2
     # 将来用。1のところに倍率指定を置く
-    thickness = thickness_raw * 1
-    th_half = thickness / 2
-
     path =
       SVG.Path.to_relative(path)
       |> SVG.Path.set_start_position(0, vowel_height - glyph_height_half)

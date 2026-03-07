@@ -27,11 +27,11 @@ end
 defmodule Thaqqa.SvgRenderer do
   import SVG.Path
   alias Thaqqa.Glyph, as: Glyph
-  alias Thaqqa.GlyphList, as: GlyphList
-  alias Thaqqa.FontRegistryPrefab, as: Prefab
-  alias Thaqqa.GlyphManager, as: GlyphManager
-  alias Thaqqa.GposManager, as: GposManager
-  alias Thaqqa.LetterManager, as: LetterManager
+  # alias Thaqqa.GlyphList, as: GlyphList
+  # alias Thaqqa.FontRegistryPrefab, as: Prefab
+  # alias Thaqqa.GlyphManager, as: GlyphManager
+  # alias Thaqqa.GposManager, as: GposManager
+  # alias Thaqqa.LetterManager, as: LetterManager
   use Thaqqa.DataTable.Const
 
   # None()に該当するダミーデータ

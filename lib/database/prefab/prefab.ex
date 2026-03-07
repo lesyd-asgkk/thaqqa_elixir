@@ -149,12 +149,8 @@ defmodule Thaqqa.FontRegistryPrefab do
   ## static_tableの設定に合わせてfontの仕様を同期させる
   ## 本体は別モジュールで行っている
 
-  def complement_table_by_column(
-        %__MODULE__{} = self,
-        %DataTable{name: table_name} = datatable,
-        column_name
-      ),
-      do: PrefabComplement.complement_table_by_column(self, datatable, column_name)
+  def complement_table_by_column(%__MODULE__{} = self, %DataTable{} = datatable, column_name),
+    do: PrefabComplement.complement_table_by_column(self, datatable, column_name)
 
   def complement_table(%__MODULE__{} = self, font_name, table_name),
     do: PrefabComplement.complement_table(self, font_name, table_name)
@@ -181,7 +177,7 @@ defmodule Thaqqa.FontRegistryPrefab do
     do: PrefabCompiler.set_precompile_as_root_by_table(self, tablename)
 
   def set_precompile_as_root_by_data(%__MODULE__{} = self, tablename, %Data{} = data),
-    do: PrefabCompiler.set_precompile_as_root_by_data(self, data)
+    do: PrefabCompiler.set_precompile_as_root_by_data(self, tablename, data)
 
   def set_precompile_as_font(%__MODULE__{} = self, fontname),
     do: PrefabCompiler.set_precompile_as_font(self, fontname)
@@ -225,11 +221,4 @@ defmodule Thaqqa.FontRegistryPrefab do
         edit_font(self, tablename, font)
     end
   end
-
-  # 読み込み系
-  def import_as_root(%__MODULE__{} = self, rootdata) when is_map(rootdata),
-    do: PrefabIO.import_as_root(self, rootdata)
-
-  def import_as_font(%__MODULE__{} = self, fontdata, filename) when is_map(fontdata),
-    do: PrefabIO.import_as_font(self, fontdata, filename)
 end

@@ -159,11 +159,11 @@ defmodule Thaqqa.LetterManager do
   def sort_letter(%Prefab{} = prefab),
     do:
       Prefab.sort_as_static(prefab, @vowel)
-      |> Prefab.sort_as_static(prefab, @consonant)
-      |> Prefab.sort_as_static(prefab, @punctuation)
-      |> Prefab.sort_as_static(prefab, @diacritic_v)
-      |> Prefab.sort_as_static(prefab, @diacritic_c)
-      |> Prefab.sort_as_static(prefab, @diacritic_p)
+      |> Prefab.sort_as_static(@consonant)
+      |> Prefab.sort_as_static(@punctuation)
+      |> Prefab.sort_as_static(@diacritic_v)
+      |> Prefab.sort_as_static(@diacritic_c)
+      |> Prefab.sort_as_static(@diacritic_p)
 
   def complement(%Prefab{} = prefab) do
     with {:ok, %Prefab{} = prefab} <- Prefab.complement_by_static_table(prefab, @vowel),
@@ -179,7 +179,7 @@ defmodule Thaqqa.LetterManager do
   end
 
   defp apply_letter_font_sub(%Prefab{fonts: fonts} = prefab) do
-    Enum.reduce_while(fonts, {:ok, prefab}, fn %Font{name: fontname} = f, {:ok, acc} ->
+    Enum.reduce_while(fonts, {:ok, prefab}, fn %Font{name: fontname}, {:ok, acc} ->
       case Prefab.set_precompile_as_font(acc, fontname) do
         {:error, reason} -> {:halt, {:error, reason}}
         {:ok, new_f} -> {:cont, {:ok, Prefab.edit_font_if_enable(acc, fontname, new_f)}}

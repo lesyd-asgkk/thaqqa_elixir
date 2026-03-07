@@ -104,9 +104,9 @@ defmodule Thaqqa.Glyph.GlyphSpawner do
 
     with {:ok, %{x0: off_onset_x, x1: off_coda_x, y0: off_onset_y, y1: off_coda_y}} <-
            GposManager.gpos(prefab, font, glyphname, writing_direction, @internal),
-         {:ok, onset_glyph} <- onset_glyph,
-         {:ok, vowel_glyph} <- vowel_glyph,
-         {:ok, coda_glyph} <- coda_glyph do
+         {:ok, %Glyph{} = onset_glyph} <- onset_glyph,
+         {:ok, %Glyph{} = vowel_glyph} <- vowel_glyph,
+         {:ok, %Glyph{} = coda_glyph} <- coda_glyph do
       is_null_vowel = vowel_glyph.internal_attribution.is_null
 
       off_onset = %{x: off_onset_x, y: off_onset_y}
@@ -156,8 +156,8 @@ defmodule Thaqqa.Glyph.GlyphSpawner do
 
     with {:ok, %{x0: off_x, x1: _, y0: off_y, y1: _}} <-
            GposManager.gpos(prefab, font, glyphname, writing_direction, @diacritical),
-         {:ok, top_glyph} <- top_glyph,
-         {:ok, child_glyph} <- child_glyph do
+         {:ok, %Glyph{} = top_glyph} <- top_glyph,
+         {:ok, %Glyph{} = child_glyph} <- child_glyph do
       offset = %{x: off_x, y: off_y}
 
       child_glyph = %Glyph{child_glyph | offset: offset}
@@ -171,13 +171,13 @@ defmodule Thaqqa.Glyph.GlyphSpawner do
   defp create_glyph(%Prefab{} = _prefab, _font, _glyphname, _writing_direction, %{}),
     do: %Glyph{}
 
-  defp divide_name(""), do: {:ok, %{}}
-  defp divide_name(_name) when is_nil(_name), do: {:ok, %{}}
-
   defp set_name(_type, ""), do: nil
   defp set_name(type, glyphname), do: "#{type}(#{glyphname})"
   defp set_name(_type, _form, ""), do: nil
   defp set_name(type, form, glyphname), do: "#{type}(#{form},#{glyphname})"
+
+  defp divide_name(""), do: {:ok, %{}}
+  defp divide_name(nil), do: {:ok, %{}}
 
   defp divide_name(name) do
     [type | rest] = Regex.split(~r/[\(\)]/, name)
@@ -223,7 +223,7 @@ defmodule Thaqqa.Glyph.GlyphSpawner do
 
       # 再帰的に処理できるように、最初か最初以外に分けたうえで最初以外のものは繋げる
       case form do
-        _k when _k in ["onset", "coda"] ->
+        k when k in ["onset", "coda"] ->
           {:ok,
            %{
              "type" => type,
@@ -250,7 +250,7 @@ defmodule Thaqqa.Glyph.GlyphSpawner do
       glyph_list = set_name("Vd", form, Enum.join(glyph_list, "-"))
 
       case form do
-        _k when _k in ["init", "mid", "fin", "sol"] ->
+        k when k in ["init", "mid", "fin", "sol"] ->
           {:ok,
            %{
              "type" => type,

@@ -1,11 +1,8 @@
 # font設定etcは必要ないと判断。
 
 defmodule Thaqqa.Glyph do
-  import SVG.Path
+  alias SVG.Path, as: Path
   alias Thaqqa.FontRegistryPrefab, as: Prefab
-  alias Thaqqa.GlyphManager, as: GlyphManager
-  alias Thaqqa.GposManager, as: GposManager
-  alias Thaqqa.LetterManager, as: LetterManager
   use Thaqqa.DataTable.Const
 
   defstruct offset: %{x: 0, y: 0},
@@ -15,7 +12,7 @@ defmodule Thaqqa.Glyph do
             children_glyph_list: [],
             name: %{glyph: "", variant: "", type: "", form: ""},
             font: "",
-            path: SVG.Path.parse_string!("m0,0"),
+            path: Path.parse_string!("m0,0"),
             attribution: %{},
             internal_attribution: %{is_null: false}
 

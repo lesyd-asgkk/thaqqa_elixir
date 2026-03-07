@@ -18,9 +18,7 @@ defmodule Thaqqa.PrefabComplement do
   alias Thaqqa.FontRegistryPrefab, as: Prefab
   alias Thaqqa.Font, as: Font
   alias Thaqqa.DataTable, as: DataTable
-  alias Thaqqa.Data, as: Data
   alias Thaqqa.Column, as: Column
-  alias Thaqqa.FontRegistry.Error, as: Error
 
   defp update_fonts(%Prefab{} = self, f), do: %Prefab{self | fonts: f}
 
@@ -102,21 +100,20 @@ defmodule Thaqqa.PrefabComplement do
         if column_list == table.column_list do
           self
         else
-          altered_prefab =
-            Enum.reduce(
-              column_list ++ table.column_list,
-              self,
-              fn %Column{name: column_name}, acc ->
-                table_alt = Prefab.get_table(acc, font_name, table_name)
-                font_alt = Prefab.get_font(acc, font_name)
+          Enum.reduce(
+            column_list ++ table.column_list,
+            self,
+            fn %Column{name: column_name}, acc ->
+              table_alt = Prefab.get_table(acc, font_name, table_name)
+              font_alt = Prefab.get_font(acc, font_name)
 
-                altered_table =
-                  complement_table_by_column(acc, table_alt, column_name)
+              altered_table =
+                complement_table_by_column(acc, table_alt, column_name)
 
-                altered_font = Font.edit_table(font_alt, table_name, altered_table)
-                overwrite_font(acc, font_name, altered_font)
-              end
-            )
+              altered_font = Font.edit_table(font_alt, table_name, altered_table)
+              overwrite_font(acc, font_name, altered_font)
+            end
+          )
         end
     end
   end

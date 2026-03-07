@@ -7,7 +7,7 @@ defmodule Thaqqa.DataMapValidator do
   use Thaqqa.DataTable.Const
 
   # こちらも同じく、editの場合は端折る
-  defp id_validation(%DataTable{} = table, data_alt, _op, subject_data \\ nil) do
+  defp id_validation(%DataTable{} = table, data_alt, _op, subject_data) do
     column_set =
       DataTable.get_column(table, fn %Column{subtype: st} -> st == @id_subtype end)
       |> Enum.map(& &1.name)
@@ -31,7 +31,7 @@ defmodule Thaqqa.DataMapValidator do
       DataTable.get_column(table, fn %Column{subtype: st} -> st in @unique_subtypes end)
       |> Enum.map(fn %Column{name: name} -> name end)
 
-    Enum.reduce_while(data_alt, {:ok, nil}, fn {k, v}, {:ok, acc} ->
+    Enum.reduce_while(data_alt, {:ok, nil}, fn {k, v}, {:ok, _} ->
       k_str = if is_atom(k), do: Atom.to_string(k), else: k
 
       # 空文字かnilなら許す
@@ -80,7 +80,7 @@ defmodule Thaqqa.DataMapValidator do
                                                           subtype: subtype
                                                         } =
                                                           column,
-                                                        {:ok, acc} ->
+                                                        {:ok, _} ->
       if Map.has_key?(value_map, name) do
         case Column.validate(column, Map.get(value_map, name)) do
           :ok -> {:cont, {:ok, value_map}}
