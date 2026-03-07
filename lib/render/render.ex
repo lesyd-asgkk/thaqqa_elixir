@@ -12,9 +12,10 @@ defmodule Thaqqa.Render do
   def build_path_data(%Prefab{} = prefab, syllable_list, font, writing_direction)
       when is_list(syllable_list) do
     Enum.reduce_while(syllable_list, {:ok, []}, fn syl, {:ok, acc} ->
-      with {:ok, glyph} <- Glyph.new(prefab, font, syl, writing_direction),
-           {:ok, glyph} <- Glyph.set_path(glyph) do
-        {:cont, {:ok, [glyph | acc]}}
+      with {:ok, glyph} <- Glyph.new(prefab, font, syl, writing_direction) do
+        # 現状set_pathにエラーを吐く要因はないが
+        # 今後エラー処理が必要になった場合を鑑みてwith文とする
+        {:cont, {:ok, [Glyph.set_path(glyph) | acc]}}
       else
         {:error, msg} -> {:halt, {:error, msg}}
       end
@@ -68,6 +69,8 @@ defmodule Thaqqa.Render do
 
   def convert_into_khhyl_letter(%Prefab{} = prefab, string, font, language, writing_direction)
       when language in [@khehyelu, @samlhta] and writing_direction in [@vertical, @horizontal] do
+    IO.inspect(Thaqqa.ParserManager.parse(prefab, string, language))
+
     with {:ok, parsed_string} <- Thaqqa.ParserManager.parse(prefab, string, language),
          {:ok, gsub_string} <- Thaqqa.GsubManager.gsub(prefab, parsed_string, writing_direction),
          {:ok, unique_gsub_string} <-

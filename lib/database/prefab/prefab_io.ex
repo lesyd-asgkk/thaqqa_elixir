@@ -106,7 +106,7 @@ defmodule Thaqqa.PrefabIO do
       {:ok, table} ->
         Enum.reduce_while(others, {:ok, table}, fn {k, v}, {:ok, ans} ->
           if is_map(v) do
-            # volatilityとなっている値は追加しません　→ subtypeから考えます
+            # volatilityとなっている値は追加しない（新たに計算し直す）
             column_volatility =
               DataTable.get_column(ans, fn %Column{type: type} -> type == :volatility end)
               |> Enum.map(fn %Column{name: name} -> name end)
@@ -120,7 +120,6 @@ defmodule Thaqqa.PrefabIO do
                 |> case do
                   {:error, reason} -> {:halt, {:error, reason}}
                   {:ok, value} -> {:cont, {:ok, value}}
-                  value -> {:cont, {:ok, value}}
                 end
               end)
               |> case do
@@ -131,6 +130,10 @@ defmodule Thaqqa.PrefabIO do
             {:cont, {:ok, ans}}
           end
         end)
+    end
+    |> case do
+      {:error, reason} -> {:error, reason}
+      {:ok, table} -> {:ok, DataTable.sort(table)}
     end
   end
 

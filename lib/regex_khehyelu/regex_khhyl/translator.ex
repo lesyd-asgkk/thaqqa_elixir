@@ -39,11 +39,8 @@ defmodule Thaqqa.Regex_Khhyl.Translator do
 
   defp argument_number([]), do: 0
 
-  defp argument_number(list) when is_list(list) do
-    Enum.reduce(list, 1, fn x, acc ->
-      if AST.has_comma?(x), do: acc + 1, else: acc
-    end)
-  end
+  defp argument_number(list) when is_list(list),
+    do: Enum.reduce(list, 1, fn x, acc -> if AST.has_comma?(x), do: acc + 1, else: acc end)
 
   defp export_as_string!(string, %Prefab{} = prefab) when is_binary(string) do
     case string |> Tokenizer.tokenize() |> Normalizer.normalize() do

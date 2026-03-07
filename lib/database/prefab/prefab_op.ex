@@ -63,7 +63,6 @@ defmodule Thaqqa.PrefabOp do
   def edit_font(%Prefab{} = self, name, %Thaqqa.Font{} = font) do
     if Prefab.get_font(self, name) != nil,
       do: {:ok, update_fonts(self, Map.put(self.fonts, name, font)) |> complement_font(name)},
-      # 仮のエラー表示
       else: Error.font_not_found(name)
   end
 
