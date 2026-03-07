@@ -50,9 +50,9 @@ defmodule Thaqqa.FontIO do
          {:ok, val} <- FontRegistry.commit() do
       {:ok, val}
     else
-      {:error, msg} ->
+      {:error, reason} ->
         FontRegistry.rollback()
-        {:error, msg}
+        {:error, reason}
     end
   end
 
@@ -66,9 +66,9 @@ defmodule Thaqqa.FontIO do
          {:ok, val} <- FontRegistry.commit() do
       {:ok, val}
     else
-      {:error, msg} ->
+      {:error, reason} ->
         FontRegistry.rollback()
-        {:error, msg}
+        {:error, reason}
     end
   end
 

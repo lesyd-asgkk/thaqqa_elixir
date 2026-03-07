@@ -14,8 +14,8 @@ defmodule Thaqqa.ConstRegexManager do
   @regex_const "REGEX_CONST"
   def set_datalist_hash(%Prefab{} = prefab) do
     case get_static_table(prefab) do
-      {:error, msg} ->
-        {:error, msg}
+      {:error, reason} ->
+        {:error, reason}
 
       {:ok, table} ->
         dh =
@@ -38,14 +38,14 @@ defmodule Thaqqa.ConstRegexManager do
 
   def get_const(%Prefab{} = prefab, name) do
     case get_static_table(prefab) do
-      {:error, msg} ->
-        {:error, msg}
+      {:error, reason} ->
+        {:error, reason}
 
       {:ok, table} ->
         case table.data_hash do
           #   %{} ->
           #     case set_datalist_hash(prefab) do
-          #       {:error, msg} -> {:error, msg}
+          #       {:error, reason} -> {:error, reason}
           #       {:ok, prefab} -> get_const(prefab, name)
           #     end
 
@@ -57,8 +57,8 @@ defmodule Thaqqa.ConstRegexManager do
 
   def whole_of_string_match_at_once?(%Prefab{} = prefab, name, string) do
     case get_const(prefab, name) do
-      {:error, msg} ->
-        {:error, msg}
+      {:error, reason} ->
+        {:error, reason}
 
       {:ok, nil} ->
         {:error, "(仮) data_not_found"}
@@ -73,8 +73,8 @@ defmodule Thaqqa.ConstRegexManager do
 
   def whole_of_string_match?(%Prefab{} = prefab, name, string) do
     case get_const(prefab, name) do
-      {:error, msg} ->
-        {:error, msg}
+      {:error, reason} ->
+        {:error, reason}
 
       {:ok, nil} ->
         {:error, "(仮) data_not_found"}
@@ -89,8 +89,8 @@ defmodule Thaqqa.ConstRegexManager do
 
   def match?(%Prefab{} = prefab, name, string) do
     case get_const(prefab, name) do
-      {:error, msg} ->
-        {:error, msg}
+      {:error, reason} ->
+        {:error, reason}
 
       {:ok, nil} ->
         {:error, "(仮) data_not_found"}

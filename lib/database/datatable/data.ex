@@ -59,7 +59,7 @@ defmodule Thaqqa.Data do
 
     if name != nil do
       case Regex_Khhyl.compile(name, prefab) do
-        {:error, msg} -> {:error, msg}
+        {:error, reason} -> {:error, reason}
         {:ok, val} -> {:ok, set_val(self, @precompile, val)}
       end
     else
@@ -76,7 +76,7 @@ defmodule Thaqqa.Data do
 
     if path != nil do
       case SVG.Path.parse_string(path) do
-        {:error, msg} -> {:error, msg}
+        {:error, reason} -> {:error, reason}
         {:ok, val} -> {:ok, set_val(self, @precompile, val)}
       end
     else

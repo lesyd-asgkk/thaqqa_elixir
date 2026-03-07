@@ -12,10 +12,10 @@ defmodule Thaqqa.PrefabCompiler do
   alias Thaqqa.FontRegistry.Error, as: Error
 
   defp reduce_while_ok(enum, acc, fun) do
-    Enum.reduce_while(enum, acc, fn item, acc ->
+    Enum.reduce_while(enum, {:ok, acc}, fn item, {:ok, acc} ->
       case fun.(item, acc) do
         {:error, _} = err -> {:halt, err}
-        {:ok, value} -> {:cont, value}
+        {:ok, value} -> {:cont, {:ok, value}}
       end
     end)
   end
@@ -24,10 +24,6 @@ defmodule Thaqqa.PrefabCompiler do
     reduce_while_ok(Prefab.get_static_table_list(self), self, fn {tablename, _}, acc ->
       set_precompile_as_root_by_table(acc, tablename)
     end)
-    |> case do
-      {:error, msg} -> {:error, msg}
-      otherwise -> {:ok, otherwise}
-    end
   end
 
   def set_precompile_as_root_by_table(%Prefab{} = self, tablename) do
@@ -39,10 +35,6 @@ defmodule Thaqqa.PrefabCompiler do
         reduce_while_ok(table.data_list, self, fn data, acc ->
           set_precompile_internal(acc, Prefab.get_static_table(acc, tablename), data)
         end)
-        |> case do
-          {:error, msg} -> {:error, msg}
-          otherwise -> {:ok, otherwise |> Prefab.sort_as_static_if_enable(tablename)}
-        end
     end
   end
 
@@ -62,10 +54,6 @@ defmodule Thaqqa.PrefabCompiler do
         reduce_while_ok(font.table_list, self, fn %DataTable{name: tablename}, acc ->
           set_precompile_as_font_by_table(acc, fontname, tablename)
         end)
-        |> case do
-          {:error, msg} -> {:error, msg}
-          otherwise -> {:ok, otherwise}
-        end
     end
   end
 
@@ -82,8 +70,8 @@ defmodule Thaqqa.PrefabCompiler do
         )
       end)
       |> case do
-        {:error, msg} -> {:error, msg}
-        otherwise -> {:ok, otherwise |> Prefab.sort_as_font_table_if_enable(font, tablename)}
+        {:error, reason} -> {:error, reason}
+        {:ok, prefab} -> {:ok, prefab |> Prefab.sort_as_font_table_if_enable(font, tablename)}
       end
     else
       {:error, _} = err -> err
@@ -118,8 +106,8 @@ defmodule Thaqqa.PrefabCompiler do
     alter_data = Data.set_precompile(data, table, self)
 
     case alter_data do
-      {:error, msg} ->
-        {:error, msg}
+      {:error, reason} ->
+        {:error, reason}
 
       {:ok, %Data{} = alter_data_} ->
         if data == alter_data_ do
@@ -143,8 +131,8 @@ defmodule Thaqqa.PrefabCompiler do
     alter_data = Data.set_precompile(data, table, self)
 
     case alter_data do
-      {:error, msg} ->
-        {:error, msg}
+      {:error, reason} ->
+        {:error, reason}
 
       {:ok, %Data{} = alter_data_} ->
         if alter_data_ == data do

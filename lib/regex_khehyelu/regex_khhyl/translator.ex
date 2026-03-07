@@ -12,7 +12,7 @@ defmodule Thaqqa.Regex_Khhyl.Translator do
   def translate!(ast, %Prefab{} = prefab) when is_list(ast) do
     case translate(ast, prefab) do
       {:ok, val} -> val
-      {:error, msg} -> raise msg
+      {:error, reason} -> raise reason
     end
   end
 
@@ -32,7 +32,7 @@ defmodule Thaqqa.Regex_Khhyl.Translator do
     t = translate_sub(ast, prefab)
 
     case t do
-      {:error, _msg} -> t
+      {:error, _reason} -> t
       _ -> {:ok, t}
     end
   end
@@ -48,7 +48,7 @@ defmodule Thaqqa.Regex_Khhyl.Translator do
   defp export_as_string!(string, %Prefab{} = prefab) when is_binary(string) do
     case string |> Tokenizer.tokenize() |> Normalizer.normalize() do
       {:ok, val} -> translate!(val, %Prefab{} = prefab)
-      {:error, msg} -> raise msg
+      {:error, reason} -> raise reason
     end
   end
 
@@ -63,8 +63,8 @@ defmodule Thaqqa.Regex_Khhyl.Translator do
     # onset vowel codaの位置がばらばらになる)ことと、regex長の影響は小さいので優先度は低。
     # （regex長が伸びる、かつどの道最終的に不正なグリフを得た場合はglyphにエラーを検知する責務を果たさせる予定なので）
     case LetterManager.get_letter(prefab) do
-      {:error, msg} ->
-        {:error, msg}
+      {:error, reason} ->
+        {:error, reason}
 
       {:ok, table_map} ->
         table_map
@@ -74,18 +74,18 @@ defmodule Thaqqa.Regex_Khhyl.Translator do
           # (set_table_rangeを真面目に実装した場合、こちらに切り替える)
         end)
         |> Enum.filter(fn %Thaqqa.Data{} = data -> Thaqqa.Data.get_val(data, @name) != "" end)
-        |> Enum.reduce_while([], fn letter, acc ->
+        |> Enum.reduce_while({:ok, []}, fn letter, {:ok, acc} ->
           Thaqqa.Regex_Khhyl.Cond.convert(val, letter)
           |> case do
-            {:error, msg} -> {:halt, {:error, msg}}
-            {:ok, nil} -> {:cont, acc}
-            {:ok, false} -> {:cont, acc}
-            {:ok, true} -> {:cont, [Thaqqa.Data.get_val(letter, @name) | acc]}
+            {:error, reason} -> {:halt, {:error, reason}}
+            {:ok, nil} -> {:cont, {:ok, acc}}
+            {:ok, false} -> {:cont, {:ok, acc}}
+            {:ok, true} -> {:cont, {:ok, [Thaqqa.Data.get_val(letter, @name) | acc]}}
           end
         end)
         |> case do
-          {:error, msg} -> {:error, msg}
-          otherwize -> "(?:" <> Enum.join(otherwize, "|") <> ")"
+          {:error, reason} -> {:error, reason}
+          {:ok, otherwize} -> "(?:" <> Enum.join(otherwize, "|") <> ")"
         end
     end
   end

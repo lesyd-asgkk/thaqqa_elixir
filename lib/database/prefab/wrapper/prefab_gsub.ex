@@ -20,21 +20,21 @@ defmodule Thaqqa.GsubManager do
 
   def get_gsub!(%Prefab{} = prefab, filter_fun \\ fn _ -> true end) do
     case get_gsub(prefab, filter_fun) do
-      {:error, msg} -> raise msg
+      {:error, reason} -> raise reason
       {:ok, value} -> value
     end
   end
 
   def get_gsub(%Prefab{} = prefab, filter_fun \\ fn _ -> true end) do
     case get_gsub_table(prefab) do
-      {:error, msg} -> {:error, msg}
+      {:error, reason} -> {:error, reason}
       {:ok, table} -> {:ok, DataTable.get_data(table, filter_fun)}
     end
   end
 
   def add_gsub!(%Prefab{} = prefab, value_map) do
     case add_gsub(prefab, value_map) do
-      {:error, msg} -> raise msg
+      {:error, reason} -> raise reason
       {:ok, val} -> val
     end
   end
@@ -46,13 +46,13 @@ defmodule Thaqqa.GsubManager do
          {:ok, %Prefab{} = new_prefab} <- Prefab.edit_static_table(prefab, @gsub, table) do
       {:ok, sort_gsub(new_prefab)}
     else
-      {:error, msg} -> {:error, msg}
+      {:error, reason} -> {:error, reason}
     end
   end
 
   def delete_gsub!(%Prefab{} = prefab, %Thaqqa.Data{} = data) do
     case delete_gsub(prefab, data) do
-      {:error, msg} -> raise msg
+      {:error, reason} -> raise reason
       {:ok, val} -> val
     end
   end
@@ -62,13 +62,13 @@ defmodule Thaqqa.GsubManager do
          {:ok, %DataTable{} = table} <- DataTable.delete_data(table, data) do
       Prefab.edit_static_table(prefab, @gsub, table)
     else
-      {:error, msg} -> {:error, msg}
+      {:error, reason} -> {:error, reason}
     end
   end
 
   def edit_gsub!(%Prefab{} = prefab, value_map, %Thaqqa.Data{} = data) do
     case edit_gsub(prefab, value_map, data) do
-      {:error, msg} -> raise msg
+      {:error, reason} -> raise reason
       {:ok, val} -> val
     end
   end
@@ -80,14 +80,14 @@ defmodule Thaqqa.GsubManager do
          {:ok, %Prefab{} = new_prefab} <- Prefab.edit_static_table(prefab, @gsub, table) do
       {:ok, sort_gsub(new_prefab)}
     else
-      {:error, msg} -> {:error, msg}
+      {:error, reason} -> {:error, reason}
     end
   end
 
   def gsub!(%Prefab{} = prefab, string, writing_direction)
       when writing_direction in [@vertical, @horizontal] do
     case gsub(prefab, string, writing_direction) do
-      {:error, msg} -> raise msg
+      {:error, reason} -> raise reason
       {:ok, val} -> val
     end
   end
@@ -99,8 +99,8 @@ defmodule Thaqqa.GsubManager do
       Thaqqa.Data.get_val(data, @writing_direction) in [writing_direction, @universal_language]
     end)
     |> case do
-      {:error, msg} ->
-        {:error, msg}
+      {:error, reason} ->
+        {:error, reason}
 
       {:ok, val} ->
         {:ok,

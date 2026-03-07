@@ -17,7 +17,7 @@ defmodule Thaqqa.Regex_Khhyl.Normalizer do
   def normalize!(list) when is_list(list) do
     case normalize(list) do
       {:ok, val} -> val
-      {:error, msg} -> raise msg
+      {:error, reason} -> raise reason
     end
   end
 
@@ -25,7 +25,7 @@ defmodule Thaqqa.Regex_Khhyl.Normalizer do
     t = normalize_sub(list, [], :sentence)
 
     case t do
-      {:error, _msg} -> t
+      {:error, _reason} -> t
       _ -> {:ok, t}
     end
   end

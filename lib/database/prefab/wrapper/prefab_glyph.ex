@@ -18,21 +18,21 @@ defmodule Thaqqa.GlyphManager do
 
   def get_glyph!(%Prefab{} = prefab, fontname, filter_fun \\ fn _ -> true end) do
     case get_glyph(prefab, fontname, filter_fun) do
-      {:error, msg} -> raise msg
+      {:error, reason} -> raise reason
       {:ok, value} -> value
     end
   end
 
   def get_glyph(%Prefab{} = prefab, fontname, filter_fun \\ fn _ -> true end) do
     case get_glyph_table(prefab, fontname) do
-      {:error, msg} -> {:error, msg}
+      {:error, reason} -> {:error, reason}
       {:ok, table} -> {:ok, DataTable.get_data(table, filter_fun)}
     end
   end
 
   def add_glyph!(%Prefab{} = prefab, fontname, value_map) do
     case add_glyph(prefab, fontname, value_map) do
-      {:error, msg} -> raise msg
+      {:error, reason} -> raise reason
       {:ok, val} -> val
     end
   end
@@ -49,13 +49,13 @@ defmodule Thaqqa.GlyphManager do
       {:ok, sort_glyph(new_prefab, fontname)}
     else
       nil -> Error.font_not_found(fontname)
-      {:error, msg} -> {:error, msg}
+      {:error, reason} -> {:error, reason}
     end
   end
 
   def delete_glyph!(%Prefab{} = prefab, fontname, %Thaqqa.Data{} = data) do
     case delete_glyph(prefab, fontname, data) do
-      {:error, msg} -> raise msg
+      {:error, reason} -> raise reason
       {:ok, val} -> val
     end
   end
@@ -69,13 +69,13 @@ defmodule Thaqqa.GlyphManager do
       {:ok, sort_glyph(new_prefab, fontname)}
     else
       nil -> Error.font_not_found(fontname)
-      {:error, msg} -> {:error, msg}
+      {:error, reason} -> {:error, reason}
     end
   end
 
   def edit_glyph!(%Prefab{} = prefab, fontname, value_map, %Thaqqa.Data{} = data) do
     case edit_glyph(prefab, fontname, value_map, data) do
-      {:error, msg} -> raise msg
+      {:error, reason} -> raise reason
       {:ok, val} -> val
     end
   end
@@ -89,7 +89,7 @@ defmodule Thaqqa.GlyphManager do
            Prefab.edit_font(prefab, fontname, Font.edit_table(font, @glyph, table)) do
       {:ok, sort_glyph(new_prefab, fontname)}
     else
-      {:error, msg} -> {:error, msg}
+      {:error, reason} -> {:error, reason}
     end
   end
 

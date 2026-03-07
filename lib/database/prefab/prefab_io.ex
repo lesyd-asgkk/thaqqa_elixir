@@ -8,20 +8,20 @@ defmodule Thaqqa.PrefabIO do
   def import_as_root(%Prefab{} = self, rootdata) when is_map(rootdata) do
     # local用のテーブルが増減した場合にfont側のテーブルも変更させる処理も後日付け足す。
     # (local用テーブルが消えた場合にfont側のその名前のテーブルも削除する機能や逆に補完する機能)
-    Enum.reduce_while(rootdata, self, fn {k, v}, acc ->
+    Enum.reduce_while(rootdata, {:ok, self}, fn {k, v}, {:ok, acc} ->
       import_table(k, v)
       |> case do
-        {:error, msg} -> {:halt, {:error, msg}}
-        {:ok, value} -> {:cont, Prefab.init_static_table(acc, value)}
+        {:error, reason} -> {:halt, {:error, reason}}
+        {:ok, value} -> {:cont, {:ok, Prefab.init_static_table(acc, value)}}
       end
     end)
     |> case do
-      {:error, msg} ->
-        {:error, msg}
+      {:error, reason} ->
+        {:error, reason}
 
-      value ->
-        case Prefab.set_precompile_as_root(value) do
-          {:error, msg} -> {:error, msg}
+      {:ok, prefab} ->
+        case Prefab.set_precompile_as_root(prefab) do
+          {:error, reason} -> {:error, reason}
           {:ok, prefab} -> init_const_table(prefab)
         end
     end
@@ -30,25 +30,25 @@ defmodule Thaqqa.PrefabIO do
   defp extract_datatable_name(data), do: get_in(data, ["FONTDATA", "dataList", "0", "Fontname"])
 
   def import_as_font(%Prefab{} = self, fontdata, filename) when is_map(fontdata) do
-    Enum.reduce_while(fontdata, [], fn {k, v}, acc ->
+    Enum.reduce_while(fontdata, {:ok, []}, fn {k, v}, {:ok, acc} ->
       import_table(k, v)
       |> case do
-        {:error, msg} -> {:halt, {:error, msg}}
-        {:ok, value} -> {:cont, acc ++ [value]}
+        {:error, reason} -> {:halt, {:error, reason}}
+        {:ok, value} -> {:cont, {:ok, acc ++ [value]}}
       end
     end)
     |> case do
-      {:error, msg} ->
-        {:error, msg}
+      {:error, reason} ->
+        {:error, reason}
 
-      value ->
+      {:ok, prefab} ->
         case extract_datatable_name(fontdata) do
           nil ->
             # 仮ERROR
             {:error, "Cannot load font: Fontname is not found"}
 
           name ->
-            Prefab.init_font(self, Font.new(filename, name, value))
+            Prefab.init_font(self, Font.new(filename, name, prefab))
             |> Prefab.set_precompile_as_font(name)
         end
     end
@@ -82,9 +82,9 @@ defmodule Thaqqa.PrefabIO do
         _ -> false
       end)
 
-    Enum.reduce_while(columns, table, fn {k, v}, ans ->
+    Enum.reduce_while(columns, {:ok, table}, fn {k, v}, {:ok, ans} ->
       column =
-        Enum.reduce_while(v, ans, fn {_, v_}, ans_ ->
+        Enum.reduce_while(v, {:ok, ans}, fn {_, v_}, {:ok, ans_} ->
           if Map.get(v_, "name") == nil or Map.get(v_, "type") == nil,
             do:
               {:halt,
@@ -92,19 +92,19 @@ defmodule Thaqqa.PrefabIO do
                  name: Map.get(v_, "name"),
                  type: Map.get(v_, "type")
                })},
-            else: {:cont, DataTable.add_column!(ans_, import_column(v_))}
+            else: {:cont, {:ok, DataTable.add_column!(ans_, import_column(v_))}}
         end)
         |> case do
-          {:error, msg} -> {:halt, {:error, msg}}
-          otherwise -> {:cont, otherwise}
+          {:error, reason} -> {:halt, {:error, reason}}
+          {:ok, table} -> {:cont, {:ok, table}}
         end
     end)
     |> case do
-      {:error, msg} ->
-        {:halt, {:error, msg}}
+      {:error, reason} ->
+        {:halt, {:error, reason}}
 
-      table ->
-        Enum.reduce_while(others, table, fn {k, v}, ans ->
+      {:ok, table} ->
+        Enum.reduce_while(others, {:ok, table}, fn {k, v}, {:ok, ans} ->
           if is_map(v) do
             # volatilityとなっている値は追加しません　→ subtypeから考えます
             column_volatility =
@@ -112,30 +112,25 @@ defmodule Thaqqa.PrefabIO do
               |> Enum.map(fn %Column{name: name} -> name end)
 
             data =
-              Enum.reduce_while(v, ans, fn {_, v_}, ans_ ->
+              Enum.reduce_while(v, {:ok, ans}, fn {_, v_}, {:ok, ans_} ->
                 v_ = Enum.reduce(column_volatility, v_, fn k, ans__ -> Map.put(ans__, k, nil) end)
 
                 ans_
                 |> DataTable.init_data(v_)
                 |> case do
-                  {:error, msg} -> {:halt, {:error, msg}}
-                  {:ok, value} -> {:cont, value}
-                  value -> {:cont, value}
+                  {:error, reason} -> {:halt, {:error, reason}}
+                  {:ok, value} -> {:cont, {:ok, value}}
+                  value -> {:cont, {:ok, value}}
                 end
               end)
-
-            case data do
-              {:error, _msg} -> {:halt, data}
-              _ -> {:cont, data}
-            end
+              |> case do
+                {:error, reason} -> {:halt, {:error, reason}}
+                {:ok, table} -> {:cont, {:ok, table}}
+              end
           else
-            {:cont, ans}
+            {:cont, {:ok, ans}}
           end
         end)
-        |> case do
-          {:error, msg} -> {:error, msg}
-          value -> {:ok, value}
-        end
     end
   end
 

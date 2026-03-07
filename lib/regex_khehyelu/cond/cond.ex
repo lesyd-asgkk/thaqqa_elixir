@@ -16,21 +16,21 @@ defmodule Thaqqa.Regex_Khhyl.Cond do
   def convert!(string, %Data{} = letter_data) when is_binary(string) do
     case convert(string, letter_data) do
       {:ok, val} -> val
-      {:error, msg} -> raise msg
+      {:error, reason} -> raise reason
     end
   end
 
   def convert(string, %Data{} = letter_data) when is_binary(string) do
     case string |> tokenize() |> normalize() do
       {:ok, val} -> translate(val, letter_data)
-      {:error, msg} -> {:error, msg}
+      {:error, reason} -> {:error, reason}
     end
   end
 
   def translate!(ast, %Data{} = letter_data) when is_list(ast) do
     case translate(ast, letter_data) do
       {:ok, val} -> val
-      {:error, msg} -> raise msg
+      {:error, reason} -> raise reason
     end
   end
 
@@ -38,7 +38,7 @@ defmodule Thaqqa.Regex_Khhyl.Cond do
     t = translate_sub(ast, letter_data, [])
 
     case t do
-      {:error, _msg} -> t
+      {:error, _reason} -> t
       _ -> {:ok, t}
     end
   end
@@ -147,7 +147,7 @@ defmodule Thaqqa.Regex_Khhyl.Cond do
   def normalize!(list) when is_list(list) do
     case normalize(list) do
       {:ok, val} -> val
-      {:error, msg} -> raise msg
+      {:error, reason} -> raise reason
     end
   end
 
@@ -155,7 +155,7 @@ defmodule Thaqqa.Regex_Khhyl.Cond do
     t = normalize_sub(list, [])
 
     case t do
-      {:error, _msg} -> t
+      {:error, _reason} -> t
       _ -> {:ok, t}
     end
   end

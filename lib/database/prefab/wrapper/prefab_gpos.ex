@@ -22,21 +22,21 @@ defmodule Thaqqa.GposManager do
 
   def get_gpos!(%Prefab{} = prefab, fontname, filter_fun \\ fn _ -> true end) do
     case get_gpos(prefab, fontname, filter_fun) do
-      {:error, msg} -> raise msg
+      {:error, reason} -> raise reason
       {:ok, value} -> value
     end
   end
 
   def get_gpos(%Prefab{} = prefab, fontname, filter_fun \\ fn _ -> true end) do
     case get_gpos_table(prefab, fontname) do
-      {:error, msg} -> {:error, msg}
+      {:error, reason} -> {:error, reason}
       {:ok, table} -> {:ok, DataTable.get_data(table, filter_fun)}
     end
   end
 
   def add_gpos!(%Prefab{} = prefab, fontname, value_map) do
     case add_gpos(prefab, fontname, value_map) do
-      {:error, msg} -> raise msg
+      {:error, reason} -> raise reason
       {:ok, val} -> val
     end
   end
@@ -51,13 +51,13 @@ defmodule Thaqqa.GposManager do
       {:ok, sort_gpos(new_prefab, fontname)}
     else
       nil -> Error.font_not_found(fontname)
-      {:error, msg} -> {:error, msg}
+      {:error, reason} -> {:error, reason}
     end
   end
 
   def delete_gpos!(%Prefab{} = prefab, fontname, %Thaqqa.Data{} = data) do
     case delete_gpos(prefab, fontname, data) do
-      {:error, msg} -> raise msg
+      {:error, reason} -> raise reason
       {:ok, val} -> val
     end
   end
@@ -69,13 +69,13 @@ defmodule Thaqqa.GposManager do
       Prefab.edit_font(prefab, fontname, Font.edit_table(font, @gpos, table))
     else
       nil -> Error.font_not_found(fontname)
-      {:error, msg} -> {:error, msg}
+      {:error, reason} -> {:error, reason}
     end
   end
 
   def edit_gpos!(%Prefab{} = prefab, fontname, value_map, %Thaqqa.Data{} = data) do
     case edit_gpos(prefab, fontname, value_map, data) do
-      {:error, msg} -> raise msg
+      {:error, reason} -> raise reason
       {:ok, val} -> val
     end
   end
@@ -89,14 +89,14 @@ defmodule Thaqqa.GposManager do
            Prefab.edit_font(prefab, fontname, Font.edit_table(font, @gpos, table)) do
       {:ok, sort_gpos(new_prefab, fontname)}
     else
-      {:error, msg} -> {:error, msg}
+      {:error, reason} -> {:error, reason}
     end
   end
 
   def gpos!(%Prefab{} = prefab, fontname, string, writing_direction, gpos_type)
       when writing_direction in [@vertical, @horizontal] do
     case gpos(prefab, fontname, string, writing_direction, gpos_type) do
-      {:error, msg} -> raise msg
+      {:error, reason} -> raise reason
       {:ok, val} -> val
     end
   end
@@ -109,8 +109,8 @@ defmodule Thaqqa.GposManager do
         Thaqqa.Data.get_val(data, @gpos_type) == gpos_type
     end)
     |> case do
-      {:error, msg} ->
-        {:error, msg}
+      {:error, reason} ->
+        {:error, reason}
 
       {:ok, val} ->
         {:ok,

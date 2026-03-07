@@ -6,9 +6,19 @@ defmodule Thaqqa.Render do
   alias Thaqqa.GsubManager, as: GsubManager
   alias Thaqqa.UniqueGsubManager, as: UniqueGsubManager
   alias Thaqqa.ConstRegexManager, as: ConstRegexManager
+  alias Thaqqa.Glyph, as: Glyph
   use Thaqqa.DataTable.Const
 
-  def build_path_data(%Prefab{} = prefab, string, font, language, writing_direction) do
+  def build_path_data(%Prefab{} = prefab, syllable_list, font, writing_direction)
+      when is_list(syllable_list) do
+    Enum.reduce_while(syllable_list, {:ok, []}, fn syl, {:ok, acc} ->
+      with {:ok, glyph} <- Glyph.new(prefab, font, syl, writing_direction),
+           {:ok, glyph} <- Glyph.set_path(glyph) do
+        {:cont, {:ok, [glyph | acc]}}
+      else
+        {:error, msg} -> {:halt, {:error, msg}}
+      end
+    end)
   end
 
   def verficate_syllable(%Prefab{} = prefab, syllable_list) when is_list(syllable_list) do

@@ -31,7 +31,7 @@ defmodule Thaqqa.DataMapValidator do
       DataTable.get_column(table, fn %Column{subtype: st} -> st in @unique_subtypes end)
       |> Enum.map(fn %Column{name: name} -> name end)
 
-    Enum.reduce_while(data_alt, [], fn {k, v}, acc ->
+    Enum.reduce_while(data_alt, {:ok, nil}, fn {k, v}, {:ok, acc} ->
       k_str = if is_atom(k), do: Atom.to_string(k), else: k
 
       # 空文字かnilなら許す
@@ -41,12 +41,8 @@ defmodule Thaqqa.DataMapValidator do
              &(&1 |> Thaqqa.Data.get_val(k_str) == v and v not in ["", nil])
            ) != [] and Thaqqa.Data.get_val(subject_data, k_str) != v,
          do: {:halt, Error.unique_column_conflict(tablename, k_str, v, op)},
-         else: {:cont, nil}
+         else: {:cont, {:ok, nil}}
     end)
-    |> case do
-      {:error, reason} -> {:error, reason}
-      _ -> {:ok, nil}
-    end
   end
 
   # 追加時、最低限idがあるか(ないと破綻するので)
@@ -78,22 +74,22 @@ defmodule Thaqqa.DataMapValidator do
   defp validate_value_map(value_map, column_list) do
     # ※volatilityの編集拒否はwrapper module側(LetterEditorとか)で行う
 
-    Enum.reduce_while(column_list, nil, fn %Column{name: name, type: type, subtype: subtype} =
-                                             column,
-                                           acc ->
+    Enum.reduce_while(column_list, {:ok, value_map}, fn %Column{
+                                                          name: name,
+                                                          type: type,
+                                                          subtype: subtype
+                                                        } =
+                                                          column,
+                                                        {:ok, acc} ->
       if Map.has_key?(value_map, name) do
         case Column.validate(column, Map.get(value_map, name)) do
-          :ok -> {:cont, nil}
+          :ok -> {:cont, {:ok, value_map}}
           {:error, reason} -> {:halt, {:error, reason}}
         end
       else
-        {:cont, nil}
+        {:cont, {:ok, value_map}}
       end
     end)
-    |> case do
-      {:error, reason} -> {:error, reason}
-      _ -> {:ok, value_map}
-    end
   end
 
   # 受け取ったvalue_mapのチェック
