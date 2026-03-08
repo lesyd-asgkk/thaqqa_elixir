@@ -11,13 +11,13 @@ defmodule Thaqqa.PrefabIO do
     Enum.reduce_while(rootdata, {:ok, self}, fn {k, v}, {:ok, acc} ->
       import_table(k, v)
       |> case do
-        {:error, reason} -> {:halt, {:error, reason}}
+        {:error, _} = err -> {:halt, err}
         {:ok, value} -> {:cont, {:ok, Prefab.init_static_table(acc, value)}}
       end
     end)
     |> case do
-      {:error, reason} ->
-        {:error, reason}
+      {:error, _} = err ->
+        err
 
       {:ok, prefab} ->
         case Prefab.set_precompile_as_root(prefab) do
@@ -33,13 +33,13 @@ defmodule Thaqqa.PrefabIO do
     Enum.reduce_while(fontdata, {:ok, []}, fn {k, v}, {:ok, acc} ->
       import_table(k, v)
       |> case do
-        {:error, reason} -> {:halt, {:error, reason}}
+        {:error, _} = err -> {:halt, err}
         {:ok, value} -> {:cont, {:ok, acc ++ [value]}}
       end
     end)
     |> case do
-      {:error, reason} ->
-        {:error, reason}
+      {:error, _} = err ->
+        err
 
       {:ok, prefab} ->
         case extract_datatable_name(fontdata) do
@@ -95,13 +95,13 @@ defmodule Thaqqa.PrefabIO do
             else: {:cont, {:ok, DataTable.add_column!(ans_, import_column(v_))}}
         end)
         |> case do
-          {:error, reason} -> {:halt, {:error, reason}}
+          {:error, _} = err -> {:halt, err}
           {:ok, table} -> {:cont, {:ok, table}}
         end
     end)
     |> case do
-      {:error, reason} ->
-        {:halt, {:error, reason}}
+      {:error, _} = err ->
+        {:halt, err}
 
       {:ok, table} ->
         Enum.reduce_while(others, {:ok, table}, fn {k, v}, {:ok, ans} ->
@@ -118,12 +118,12 @@ defmodule Thaqqa.PrefabIO do
                 ans_
                 |> DataTable.init_data(v_)
                 |> case do
-                  {:error, reason} -> {:halt, {:error, reason}}
+                  {:error, _} = err -> {:halt, err}
                   {:ok, value} -> {:cont, {:ok, value}}
                 end
               end)
               |> case do
-                {:error, reason} -> {:halt, {:error, reason}}
+                {:error, _} = err -> {:halt, err}
                 {:ok, table} -> {:cont, {:ok, table}}
               end
           else
@@ -132,7 +132,7 @@ defmodule Thaqqa.PrefabIO do
         end)
     end
     |> case do
-      {:error, reason} -> {:error, reason}
+      {:error, _} = err -> err
       {:ok, table} -> {:ok, DataTable.sort(table)}
     end
   end

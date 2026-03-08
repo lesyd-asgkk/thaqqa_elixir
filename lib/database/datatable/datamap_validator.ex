@@ -21,7 +21,7 @@ defmodule Thaqqa.DataMapValidator do
         else: {:cont, nil}
     end)
     |> case do
-      {:error, reason} -> {:error, reason}
+      {:error, _} = err -> err
       _ -> {:ok, nil}
     end
   end
@@ -84,7 +84,7 @@ defmodule Thaqqa.DataMapValidator do
       if Map.has_key?(value_map, name) do
         case Column.validate(column, Map.get(value_map, name)) do
           :ok -> {:cont, {:ok, value_map}}
-          {:error, reason} -> {:halt, {:error, reason}}
+          {:error, _} = err -> {:halt, err}
         end
       else
         {:cont, {:ok, value_map}}

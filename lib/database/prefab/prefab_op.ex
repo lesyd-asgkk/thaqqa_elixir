@@ -123,7 +123,7 @@ defmodule Thaqqa.PrefabOp do
 
   def add_column_if_enable(%Prefab{} = self, name, %Column{} = column) do
     case add_column(self, name, column) do
-      {:error, reason} -> self
+      {:error, _} -> self
       {:ok, value} -> value
     end
   end
@@ -141,7 +141,7 @@ defmodule Thaqqa.PrefabOp do
 
   def edit_column_if_enable(%Prefab{} = self, name, %Column{} = column) do
     case edit_column(self, name, column) do
-      {:error, reason} -> self
+      {:error, _} -> self
       {:ok, value} -> value
     end
   end
@@ -159,7 +159,7 @@ defmodule Thaqqa.PrefabOp do
 
   def delete_column_if_enable(%Prefab{} = self, name, column_name) do
     case delete_column(self, name, column_name) do
-      {:error, reason} -> self
+      {:error, _} -> self
       {:ok, value} -> value
     end
   end

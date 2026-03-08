@@ -33,65 +33,69 @@ defmodule Thaqqa.Glyph.GlyphRenderer do
         top_gap,
         bottom_gap
       ) do
-    thickness_raw = Prefab.get_single_data_value(prefab, font, "FONTDATA", "Thickness")
+    case Prefab.get_single_data_value(prefab, font, "FONTDATA", "Thickness") do
+      nil ->
+        {:error, "（仮）Thickness not found in FONTDATA"}
 
-    # 将来用。1のところに倍率指定を置く
-    thickness = thickness_raw * 1
-    th_half = thickness / 2
+      thickness_raw ->
+        # 将来用。1のところに倍率指定を置く
+        thickness = thickness_raw * 1
+        th_half = thickness / 2
 
-    case form do
-      "sol" ->
-        path =
-          SVG.Path.to_relative(path)
-          |> SVG.Path.set_start_position(0, top_gap)
-          |> SVG.Path.set_end_position(0, bottom_gap + y3)
-          |> SVG.Path.to_relative()
+        case form do
+          "sol" ->
+            path =
+              SVG.Path.to_relative(path)
+              |> SVG.Path.set_start_position(0, top_gap)
+              |> SVG.Path.set_end_position(0, bottom_gap + y3)
+              |> SVG.Path.to_relative()
 
-        %Glyph{self | path: path, glyph_height: bottom_gap + y3}
+            {:ok, %Glyph{self | path: path, glyph_height: bottom_gap + y3}}
 
-      "init" ->
-        skewer = draw_rectangle(-th_half, top_gap + y2, th_half, bottom_gap + y3)
+          "init" ->
+            skewer = draw_rectangle(-th_half, top_gap + y2, th_half, bottom_gap + y3)
 
-        path =
-          SVG.Path.to_relative(path)
-          |> SVG.Path.set_start_position(0, top_gap)
-          |> SVG.Path.set_end_position(0, bottom_gap + y3)
-          |> SVG.Path.to_relative()
-          |> concat_path(skewer)
-          |> SVG.Path.to_relative()
+            path =
+              SVG.Path.to_relative(path)
+              |> SVG.Path.set_start_position(0, top_gap)
+              |> SVG.Path.set_end_position(0, bottom_gap + y3)
+              |> SVG.Path.to_relative()
+              |> concat_path(skewer)
+              |> SVG.Path.to_relative()
 
-        %Glyph{self | path: path, glyph_height: bottom_gap + y3}
+            {:ok, %Glyph{self | path: path, glyph_height: bottom_gap + y3}}
 
-      "mid" ->
-        skewer_top = draw_rectangle(-th_half, y0, th_half, y1)
-        skewer_bottom = draw_rectangle(-th_half, y2, th_half, bottom_gap + y3)
+          "mid" ->
+            skewer_top = draw_rectangle(-th_half, y0, th_half, y1)
+            skewer_bottom = draw_rectangle(-th_half, y2, th_half, bottom_gap + y3)
 
-        path =
-          SVG.Path.to_relative(path)
-          |> SVG.Path.set_start_position(0, top_gap)
-          |> SVG.Path.set_end_position(0, bottom_gap + y3)
-          |> SVG.Path.to_relative()
-          |> concat_path(skewer_top)
-          |> concat_path(skewer_bottom)
-          |> SVG.Path.to_relative()
+            path =
+              SVG.Path.to_relative(path)
+              |> SVG.Path.set_start_position(0, top_gap)
+              |> SVG.Path.set_end_position(0, bottom_gap + y3)
+              |> SVG.Path.to_relative()
+              |> concat_path(skewer_top)
+              |> concat_path(skewer_bottom)
+              |> SVG.Path.to_relative()
 
-        %Glyph{self | path: path, glyph_height: bottom_gap + y3}
+            {:ok, %Glyph{self | path: path, glyph_height: bottom_gap + y3}}
 
-      "fin" ->
-        skewer = draw_rectangle(-th_half, y0, th_half, y1)
+          "fin" ->
+            skewer = draw_rectangle(-th_half, y0, th_half, y1)
 
-        path =
-          SVG.Path.to_relative(path)
-          |> SVG.Path.set_start_position(0, top_gap)
-          |> SVG.Path.set_end_position(0, bottom_gap + y3)
-          |> SVG.Path.to_relative()
-          |> concat_path(skewer)
-          |> SVG.Path.to_relative()
+            path =
+              SVG.Path.to_relative(path)
+              |> SVG.Path.set_start_position(0, top_gap)
+              |> SVG.Path.set_end_position(0, bottom_gap + y3)
+              |> SVG.Path.to_relative()
+              |> concat_path(skewer)
+              |> SVG.Path.to_relative()
 
-        %Glyph{self | path: path, glyph_height: bottom_gap + y3}
+            {:ok, %Glyph{self | path: path, glyph_height: bottom_gap + y3}}
 
-      _ ->
-        raise "fatal: invalid form found at render_by_absolute_height/4"
+          _ ->
+            {:error, "invalid form found at render_by_relative_height/4"}
+        end
     end
   end
 
@@ -109,50 +113,63 @@ defmodule Thaqqa.Glyph.GlyphRenderer do
       ) do
     # 下からどれだけ、という値なのを、上からどれだけ、に換算する。
 
-    thickness_raw = Prefab.get_single_data_value(prefab, font, "FONTDATA", "Thickness")
+    case Prefab.get_single_data_value(prefab, font, "FONTDATA", "Thickness") do
+      nil ->
+        {:error, "（仮）Thickness not found in FONTDATA"}
 
-    # 将来用。1のところに倍率指定を置く
-    thickness = thickness_raw * 1
-    th_half = thickness / 2
+      thickness_raw ->
+        # 将来用。1のところに倍率指定を置く
+        thickness = thickness_raw * 1
+        th_half = thickness / 2
 
-    case form do
-      "sol" ->
-        path =
-          SVG.Path.to_relative(path)
-          |> SVG.Path.set_start_position(0, top_gap)
-          |> SVG.Path.set_end_position(0, bottom_gap + y3)
-          |> SVG.Path.to_relative()
+        case form do
+          "sol" ->
+            path =
+              SVG.Path.to_relative(path)
+              |> SVG.Path.set_start_position(0, top_gap)
+              |> SVG.Path.set_end_position(0, bottom_gap + y3)
+              |> SVG.Path.to_relative()
 
-        %Glyph{self | path: path}
+            {:ok, %Glyph{self | path: path}}
 
-      _ ->
-        skewer = draw_rectangle(-th_half, y0, th_half, y3 + bottom_gap)
+          k when k in ["init", "mid", "fin"] ->
+            skewer = draw_rectangle(-th_half, y0, th_half, y3 + bottom_gap)
 
-        path =
-          SVG.Path.to_relative(path)
-          |> SVG.Path.set_start_position(0, 0)
-          |> SVG.Path.set_end_position(0, bottom_gap + y3)
-          |> SVG.Path.concat_path(skewer)
-          |> SVG.Path.to_relative()
+            path =
+              SVG.Path.to_relative(path)
+              |> SVG.Path.set_start_position(0, 0)
+              |> SVG.Path.set_end_position(0, bottom_gap + y3)
+              |> SVG.Path.concat_path(skewer)
+              |> SVG.Path.to_relative()
 
-        %Glyph{self | path: path, glyph_height: bottom_gap + y3}
+            {:ok, %Glyph{self | path: path, glyph_height: bottom_gap + y3}}
+
+          _ ->
+            {:error, "invalid form found at render_by_relative_height/4"}
+        end
     end
   end
 
   # そんなことはない場合
   def render_by_relative_height(
         %Prefab{} = _prefab,
-        %Glyph{name: %{}, height: %{y0: _y0, y3: y3}, path: path} = self,
+        %Glyph{name: %{form: form}, height: %{y0: _y0, y3: y3}, path: path} = self,
         top_gap,
         bottom_gap
       ) do
-    path =
-      SVG.Path.to_relative(path)
-      |> SVG.Path.set_end_position(0, bottom_gap + y3)
-      |> SVG.Path.set_start_position(0, top_gap)
-      |> SVG.Path.to_relative()
+    case form do
+      k when k in ["init", "mid", "fin", "onset", "coda", "sol"] ->
+        path =
+          SVG.Path.to_relative(path)
+          |> SVG.Path.set_end_position(0, bottom_gap + y3)
+          |> SVG.Path.set_start_position(0, top_gap)
+          |> SVG.Path.to_relative()
 
-    %Glyph{self | path: path, glyph_height: bottom_gap + y3}
+        {:ok, %Glyph{self | path: path, glyph_height: bottom_gap + y3}}
+
+      _ ->
+        {:error, "invalid form found at render_by_relative_height/4"}
+    end
   end
 
   # absoluteな高さにしたい場合の処理。
@@ -168,84 +185,94 @@ defmodule Thaqqa.Glyph.GlyphRenderer do
         height,
         vowel_height
       ) do
-    thickness_raw = Prefab.get_single_data_value(prefab, font, "FONTDATA", "Thickness")
+    case Prefab.get_single_data_value(prefab, font, "FONTDATA", "Thickness") do
+      nil ->
+        {:error, "（仮）Thickness not found in FONTDATA"}
 
-    # 将来用。1のところに倍率指定を置く
-    thickness = thickness_raw * 1
-    th_half = thickness / 2
+      thickness_raw ->
+        # 将来用。1のところに倍率指定を置く
+        thickness = thickness_raw * 1
+        th_half = thickness / 2
 
-    vowel_height_half = (y2 - y1) / 2
-    glyph_height_half = (-y3 - y0) / 2
+        vowel_height_half = (y2 - y1) / 2
+        glyph_height_half = (-y3 - y0) / 2
 
-    # TODO: 文字幅がheightを超えてしまった場合の処理を追加。
-    case form do
-      "sol" ->
-        path =
-          SVG.Path.to_relative(path)
-          |> SVG.Path.set_start_position(0, vowel_height - vowel_height_half)
-          |> SVG.Path.to_relative()
+        # TODO: 文字幅がheightを超えてしまった場合の処理を追加。
+        case form do
+          "sol" ->
+            path =
+              SVG.Path.to_relative(path)
+              |> SVG.Path.set_start_position(0, vowel_height - vowel_height_half)
+              |> SVG.Path.to_relative()
 
-        %Glyph{self | path: path, glyph_height: height}
+            {:ok, %Glyph{self | path: path, glyph_height: height}}
 
-      "init" ->
-        skewer = draw_rectangle(-th_half, y2, th_half, height)
+          "init" ->
+            skewer = draw_rectangle(-th_half, y2, th_half, height)
 
-        path =
-          SVG.Path.to_relative(path)
-          |> SVG.Path.set_start_position(0, 0)
-          |> SVG.Path.to_relative()
-          |> concat_path(skewer)
-          |> SVG.Path.to_relative()
+            path =
+              SVG.Path.to_relative(path)
+              |> SVG.Path.set_start_position(0, 0)
+              |> SVG.Path.to_relative()
+              |> concat_path(skewer)
+              |> SVG.Path.to_relative()
 
-        %Glyph{self | path: path, glyph_height: height}
+            {:ok, %Glyph{self | path: path, glyph_height: height}}
 
-      "mid" ->
-        glyph_gap = vowel_height + glyph_height_half - vowel_height_half
+          "mid" ->
+            glyph_gap = vowel_height + glyph_height_half - vowel_height_half
 
-        skewer_top = draw_rectangle(-th_half, 0, th_half, glyph_gap)
-        skewer_bottom = draw_rectangle(-th_half, y2 + glyph_gap, th_half, height)
+            skewer_top = draw_rectangle(-th_half, 0, th_half, glyph_gap)
+            skewer_bottom = draw_rectangle(-th_half, y2 + glyph_gap, th_half, height)
 
-        path =
-          SVG.Path.to_relative(path)
-          |> SVG.Path.set_start_position(0, glyph_gap)
-          |> SVG.Path.to_relative()
-          |> concat_path(skewer_top)
-          |> concat_path(skewer_bottom)
-          |> SVG.Path.to_relative()
+            path =
+              SVG.Path.to_relative(path)
+              |> SVG.Path.set_start_position(0, glyph_gap)
+              |> SVG.Path.to_relative()
+              |> concat_path(skewer_top)
+              |> concat_path(skewer_bottom)
+              |> SVG.Path.to_relative()
 
-        %Glyph{self | path: path, glyph_height: height}
+            {:ok, %Glyph{self | path: path, glyph_height: height}}
 
-      "fin" ->
-        skewer = draw_rectangle(-th_half, 0, th_half, height - (y3 - y1))
+          "fin" ->
+            skewer = draw_rectangle(-th_half, 0, th_half, height - (y3 - y1))
 
-        path =
-          SVG.Path.to_relative(path)
-          |> SVG.Path.set_start_position(0, height - (y3 - y1))
-          |> SVG.Path.to_relative()
-          |> concat_path(skewer)
-          |> SVG.Path.to_relative()
+            path =
+              SVG.Path.to_relative(path)
+              |> SVG.Path.set_start_position(0, height - (y3 - y1))
+              |> SVG.Path.to_relative()
+              |> concat_path(skewer)
+              |> SVG.Path.to_relative()
 
-        %Glyph{self | path: path, glyph_height: height}
+            {:ok, %Glyph{self | path: path, glyph_height: height}}
 
-      _ ->
-        raise "fatal: invalid form found at render_by_absolute_height/4"
+          _ ->
+            {:error, "invalid form found at render_by_absolute_height/4"}
+        end
     end
   end
 
   # その他の場合。
   def render_by_absolute_height(
         %Prefab{} = prefab,
-        %Glyph{font: font, height: %{y1: y1, y2: y2}, path: path} = self,
+        %Glyph{font: font, name: %{form: form}, height: %{y1: y1, y2: y2}, path: path} = self,
         height,
         vowel_height
       ) do
-    glyph_height_half = (y2 - y1) / 2
-    # 将来用。1のところに倍率指定を置く
-    path =
-      SVG.Path.to_relative(path)
-      |> SVG.Path.set_start_position(0, vowel_height - glyph_height_half)
-      |> SVG.Path.to_relative()
+    case form do
+      k when k in ["init", "mid", "fin", "onset", "coda", "sol"] ->
+        glyph_height_half = (y2 - y1) / 2
+        # 将来用。1のところに倍率指定を置く
+        path =
+          SVG.Path.to_relative(path)
+          |> SVG.Path.set_start_position(0, vowel_height - glyph_height_half)
+          |> SVG.Path.to_relative()
 
-    %Glyph{self | path: path, glyph_height: height}
+        {:ok, %Glyph{self | path: path, glyph_height: height}}
+
+      _ ->
+        {:error, "invalid form found at render_by_relative_height/4"}
+    end
   end
 end

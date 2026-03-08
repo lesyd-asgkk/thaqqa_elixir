@@ -29,7 +29,7 @@ defmodule Thaqqa.GposManager do
 
   def get_gpos(%Prefab{} = prefab, fontname, filter_fun \\ fn _ -> true end) do
     case get_gpos_table(prefab, fontname) do
-      {:error, reason} -> {:error, reason}
+      {:error, _} = err -> err
       {:ok, table} -> {:ok, DataTable.get_data(table, filter_fun)}
     end
   end
@@ -51,7 +51,7 @@ defmodule Thaqqa.GposManager do
       {:ok, sort_gpos(new_prefab, fontname)}
     else
       nil -> Error.font_not_found(fontname)
-      {:error, reason} -> {:error, reason}
+      {:error, _} = err -> err
     end
   end
 
@@ -69,7 +69,7 @@ defmodule Thaqqa.GposManager do
       Prefab.edit_font(prefab, fontname, Font.edit_table(font, @gpos, table))
     else
       nil -> Error.font_not_found(fontname)
-      {:error, reason} -> {:error, reason}
+      {:error, _} = err -> err
     end
   end
 
@@ -89,7 +89,7 @@ defmodule Thaqqa.GposManager do
            Prefab.edit_font(prefab, fontname, Font.edit_table(font, @gpos, table)) do
       {:ok, sort_gpos(new_prefab, fontname)}
     else
-      {:error, reason} -> {:error, reason}
+      {:error, _} = err -> err
     end
   end
 
@@ -109,18 +109,17 @@ defmodule Thaqqa.GposManager do
         Thaqqa.Data.get_val(data, @gpos_type) == gpos_type
     end)
     |> case do
-      {:error, reason} ->
-        {:error, reason}
+      {:error, _} = err ->
+        err
 
-      {:ok, val} ->
+      {:ok, gpos_data_list} ->
         {:ok,
-         val
-         |> Enum.reduce(%{x0: 0.0, y0: 0.0, x1: 0.0, y1: 0.0}, fn p, acc ->
-           reg = Thaqqa.Data.get_val(p, @precompile)
-           x0 = Thaqqa.Data.get_val(p, "OffsetX0")
-           x1 = Thaqqa.Data.get_val(p, "OffsetX1")
-           y0 = Thaqqa.Data.get_val(p, "OffsetY0")
-           y1 = Thaqqa.Data.get_val(p, "OffsetY1")
+         Enum.reduce(gpos_data_list, %{x0: 0.0, y0: 0.0, x1: 0.0, y1: 0.0}, fn gpos_data, acc ->
+           reg = Thaqqa.Data.get_val(gpos_data, @precompile)
+           x0 = Thaqqa.Data.get_val(gpos_data, "OffsetX0")
+           x1 = Thaqqa.Data.get_val(gpos_data, "OffsetX1")
+           y0 = Thaqqa.Data.get_val(gpos_data, "OffsetY0")
+           y1 = Thaqqa.Data.get_val(gpos_data, "OffsetY1")
 
            if Regex.match?(reg, string),
              do: %{x0: acc.x0 + x0, y0: acc.y0 + y0, x1: acc.x1 + x1, y1: acc.y1 + y1},

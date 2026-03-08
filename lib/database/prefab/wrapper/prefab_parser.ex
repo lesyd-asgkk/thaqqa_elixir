@@ -27,7 +27,7 @@ defmodule Thaqqa.ParserManager do
 
   def get_parser(%Prefab{} = prefab, filter_fun \\ fn _ -> true end) do
     case get_parser_table(prefab) do
-      {:error, reason} -> {:error, reason}
+      {:error, _} = err -> err
       {:ok, table} -> {:ok, DataTable.get_data(table, filter_fun)}
     end
   end
@@ -46,7 +46,7 @@ defmodule Thaqqa.ParserManager do
          {:ok, %Prefab{} = new_prefab} <- Prefab.edit_static_table(prefab, @parser, table) do
       {:ok, sort_parser(new_prefab)}
     else
-      {:error, reason} -> {:error, reason}
+      {:error, _} = err -> err
     end
   end
 
@@ -62,7 +62,7 @@ defmodule Thaqqa.ParserManager do
          {:ok, %DataTable{} = table} <- DataTable.delete_data(table, data) do
       Prefab.edit_static_table(prefab, @parser, table)
     else
-      {:error, reason} -> {:error, reason}
+      {:error, _} = err -> err
     end
   end
 
@@ -80,7 +80,7 @@ defmodule Thaqqa.ParserManager do
          {:ok, %Prefab{} = new_prefab} <- Prefab.edit_static_table(prefab, @parser, table) do
       {:ok, sort_parser(new_prefab)}
     else
-      {:error, reason} -> {:error, reason}
+      {:error, _} = err -> err
     end
   end
 
@@ -103,15 +103,14 @@ defmodule Thaqqa.ParserManager do
       Thaqqa.Data.get_val(data, @language) in [language, @universal_language]
     end)
     |> case do
-      {:error, reason} ->
-        {:error, reason}
+      {:error, _} = err ->
+        err
 
-      {:ok, val} ->
+      {:ok, parser_data_list} ->
         {:ok,
-         val
-         |> Enum.reduce(string, fn p, acc ->
-           reg = Thaqqa.Data.get_val(p, @precompile)
-           alt = Thaqqa.Data.get_val(p, @name_alt)
+         Enum.reduce(parser_data_list, string, fn parser_data, acc ->
+           reg = Thaqqa.Data.get_val(parser_data, @precompile)
+           alt = Thaqqa.Data.get_val(parser_data, @name_alt)
            Regex.replace(reg, acc, alt)
          end)}
     end

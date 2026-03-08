@@ -25,7 +25,7 @@ defmodule Thaqqa.GlyphManager do
 
   def get_glyph(%Prefab{} = prefab, fontname, filter_fun \\ fn _ -> true end) do
     case get_glyph_table(prefab, fontname) do
-      {:error, reason} -> {:error, reason}
+      {:error, _} = err -> err
       {:ok, table} -> {:ok, DataTable.get_data(table, filter_fun)}
     end
   end
@@ -49,7 +49,7 @@ defmodule Thaqqa.GlyphManager do
       {:ok, sort_glyph(new_prefab, fontname)}
     else
       nil -> Error.font_not_found(fontname)
-      {:error, reason} -> {:error, reason}
+      {:error, _} = err -> err
     end
   end
 
@@ -69,7 +69,7 @@ defmodule Thaqqa.GlyphManager do
       {:ok, sort_glyph(new_prefab, fontname)}
     else
       nil -> Error.font_not_found(fontname)
-      {:error, reason} -> {:error, reason}
+      {:error, _} = err -> err
     end
   end
 
@@ -89,7 +89,7 @@ defmodule Thaqqa.GlyphManager do
            Prefab.edit_font(prefab, fontname, Font.edit_table(font, @glyph, table)) do
       {:ok, sort_glyph(new_prefab, fontname)}
     else
-      {:error, reason} -> {:error, reason}
+      {:error, _} = err -> err
     end
   end
 

@@ -10,8 +10,8 @@ defmodule Thaqqa.Glyph.GlyphSpawner do
 
   def new(%Prefab{} = prefab, font, glyphname, writing_direction) do
     case divide_name(glyphname) do
-      {:error, msg} ->
-        {:error, msg}
+      {:error, _} = err ->
+        err
 
       {:ok, divided_name} ->
         create_glyph(prefab, font, glyphname, writing_direction, divided_name)
@@ -81,7 +81,7 @@ defmodule Thaqqa.Glyph.GlyphSpawner do
          internal_attribution: %{is_null: is_null_vowel}
        }}
     else
-      {:error, msg} -> {:error, msg}
+      {:error, _} = err -> err
     end
   end
 
@@ -128,7 +128,7 @@ defmodule Thaqqa.Glyph.GlyphSpawner do
          height: %{y0: 0, y1: 0, y2: 0, y3: 0}
        }}
     else
-      {:error, msg} -> {:error, msg}
+      {:error, _} = err -> err
     end
   end
 

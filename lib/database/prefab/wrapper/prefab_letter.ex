@@ -15,7 +15,7 @@ defmodule Thaqqa.LetterManager do
     Enum.reduce_while(@lettertable_list, {:ok, %{}}, fn k, {:ok, acc} ->
       case Prefab.get_static_table(prefab, k) do
         nil -> {:halt, Error.table_not_found(k)}
-        otherwize -> {:cont, {:ok, Map.put(acc, k, otherwize)}}
+        otherwise -> {:cont, {:ok, Map.put(acc, k, otherwise)}}
       end
     end)
   end
@@ -53,8 +53,8 @@ defmodule Thaqqa.LetterManager do
 
   def get_letter(%Prefab{} = prefab, filter_fun \\ fn _ -> true end) do
     case get_table(prefab) do
-      {:error, reason} ->
-        {:error, reason}
+      {:error, _} = err ->
+        err
 
       {:ok, table} ->
         {:ok,
@@ -74,8 +74,8 @@ defmodule Thaqqa.LetterManager do
          subject_data \\ nil
        ) do
     case get_table(prefab) do
-      {:error, reason} ->
-        {:error, reason}
+      {:error, _} = err ->
+        err
 
       {:ok, table} ->
         Enum.reduce_while(table, [], fn {k, v}, acc ->
@@ -86,13 +86,13 @@ defmodule Thaqqa.LetterManager do
             value_map = if table_name == k, do: value_map, else: Map.delete(value_map, @id)
 
             case DataMapValidator.unique_validation(v, value_map, op, subject_data) do
-              {:error, reason} -> {:halt, {:error, reason}}
+              {:error, _} = err -> {:halt, err}
               {:ok, _value} -> {:cont, [:ok | acc]}
             end
           end
         end)
         |> case do
-          {:error, reason} -> {:error, reason}
+          {:error, _} = err -> err
           _ -> {:ok}
         end
     end
@@ -114,7 +114,7 @@ defmodule Thaqqa.LetterManager do
          {:ok, %Prefab{} = prefab} <- Prefab.edit_static_table(prefab, table_name, table) do
       {:ok, sort_letter(prefab)}
     else
-      {:error, reason} -> {:error, reason}
+      {:error, _} = err -> err
     end
   end
 
@@ -132,7 +132,7 @@ defmodule Thaqqa.LetterManager do
          {:ok, %DataTable{} = table} <- DataTable.delete_data(table, data) do
       Prefab.edit_static_table(prefab, table_name, table)
     else
-      {:error, reason} -> {:error, reason}
+      {:error, _} = err -> err
     end
   end
 
@@ -152,7 +152,7 @@ defmodule Thaqqa.LetterManager do
          {:ok, %Prefab{} = prefab} <- Prefab.edit_static_table(prefab, table_name, table) do
       {:ok, sort_letter(prefab)}
     else
-      {:error, reason} -> {:error, reason}
+      {:error, _} = err -> err
     end
   end
 
@@ -174,14 +174,14 @@ defmodule Thaqqa.LetterManager do
          {:ok, %Prefab{} = prefab} <- Prefab.complement_by_static_table(prefab, @diacritic_p) do
       {:ok, prefab}
     else
-      {:error, reason} -> {:error, reason}
+      {:error, _} = err -> err
     end
   end
 
   defp apply_letter_font_sub(%Prefab{fonts: fonts} = prefab) do
     Enum.reduce_while(fonts, {:ok, prefab}, fn %Font{name: fontname}, {:ok, acc} ->
       case Prefab.set_precompile_as_font(acc, fontname) do
-        {:error, reason} -> {:halt, {:error, reason}}
+        {:error, _} = err -> {:halt, err}
         {:ok, new_f} -> {:cont, {:ok, Prefab.edit_font_if_enable(acc, fontname, new_f)}}
       end
     end)
@@ -193,7 +193,7 @@ defmodule Thaqqa.LetterManager do
          {:ok, %Prefab{} = prefab} <- apply_letter_font_sub(prefab) do
       ConstRegexManager.set_datalist_hash(prefab)
     else
-      {:error, reason} -> {:error, reason}
+      {:error, _} = err -> err
     end
   end
 end

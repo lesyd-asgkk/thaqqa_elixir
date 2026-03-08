@@ -20,11 +20,11 @@ defmodule Thaqqa.Regex_Khhyl.Translator do
     Enum.map(ast, fn ast_ -> translate(ast_, prefab) end)
     |> Enum.reduce_while({:ok, []}, fn
       {:ok, str}, {:ok, acc} -> {:cont, {:ok, [str | acc]}}
-      {:error, reason}, _acc -> {:halt, {:error, reason}}
+      {:error, _} = err, _acc -> {:halt, err}
     end)
     |> case do
       {:ok, list} -> {:ok, Enum.join(Enum.reverse(list), "")}
-      {:error, reason} -> {:error, reason}
+      {:error, _} = err -> err
     end
   end
 
@@ -60,8 +60,8 @@ defmodule Thaqqa.Regex_Khhyl.Translator do
     # onset vowel codaの位置がばらばらになる)ことと、regex長の影響は小さいので優先度は低。
     # （regex長が伸びる、かつどの道最終的に不正なグリフを得た場合はglyphにエラーを検知する責務を果たさせる予定なので）
     case LetterManager.get_letter(prefab) do
-      {:error, reason} ->
-        {:error, reason}
+      {:error, _} = err ->
+        err
 
       {:ok, table_map} ->
         table_map
@@ -74,14 +74,14 @@ defmodule Thaqqa.Regex_Khhyl.Translator do
         |> Enum.reduce_while({:ok, []}, fn letter, {:ok, acc} ->
           Thaqqa.Regex_Khhyl.Cond.convert(val, letter)
           |> case do
-            {:error, reason} -> {:halt, {:error, reason}}
+            {:error, _} = err -> {:halt, err}
             {:ok, nil} -> {:cont, {:ok, acc}}
             {:ok, false} -> {:cont, {:ok, acc}}
             {:ok, true} -> {:cont, {:ok, [Thaqqa.Data.get_val(letter, @name) | acc]}}
           end
         end)
         |> case do
-          {:error, reason} -> {:error, reason}
+          {:error, _} = err -> err
           {:ok, otherwize} -> "(?:" <> Enum.join(otherwize, "|") <> ")"
         end
     end

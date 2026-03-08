@@ -70,7 +70,7 @@ defmodule Thaqqa.PrefabCompiler do
         )
       end)
       |> case do
-        {:error, reason} -> {:error, reason}
+        {:error, _} = err -> err
         {:ok, prefab} -> {:ok, prefab |> Prefab.sort_as_font_table_if_enable(font, tablename)}
       end
     else
@@ -103,17 +103,15 @@ defmodule Thaqqa.PrefabCompiler do
          %Data{} = data
        ) do
     # ここに加工ロジックを追加
-    alter_data = Data.set_precompile(data, table, self)
+    case Data.set_precompile(data, table, self) do
+      {:error, _} = err ->
+        err
 
-    case alter_data do
-      {:error, reason} ->
-        {:error, reason}
-
-      {:ok, %Data{} = alter_data_} ->
-        if data == alter_data_ do
+      {:ok, %Data{} = alter_data} ->
+        if data == alter_data do
           {:ok, self}
         else
-          alter_table = DataTable.edit_data!(table, data, alter_data_)
+          alter_table = DataTable.edit_data!(table, data, alter_data)
 
           {:ok, Prefab.edit_static_table_if_enable(self, tablename, alter_table)}
         end
@@ -126,19 +124,15 @@ defmodule Thaqqa.PrefabCompiler do
          %DataTable{name: tablename} = table,
          %Data{} = data
        ) do
-    # ここに加工ロジックを追加
+    case Data.set_precompile(data, table, self) do
+      {:error, _} = err ->
+        err
 
-    alter_data = Data.set_precompile(data, table, self)
-
-    case alter_data do
-      {:error, reason} ->
-        {:error, reason}
-
-      {:ok, %Data{} = alter_data_} ->
-        if alter_data_ == data do
+      {:ok, %Data{} = alter_data} ->
+        if alter_data == data do
           {:ok, self}
         else
-          alter_table = DataTable.edit_data!(table, data, alter_data_)
+          alter_table = DataTable.edit_data!(table, data, alter_data)
           alter_font = Font.edit_table(font, tablename, alter_table)
           {:ok, Prefab.edit_font_if_enable(self, fontname, alter_font)}
         end

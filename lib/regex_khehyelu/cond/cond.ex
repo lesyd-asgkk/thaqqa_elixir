@@ -23,7 +23,7 @@ defmodule Thaqqa.Regex_Khhyl.Cond do
   def convert(string, %Data{} = letter_data) when is_binary(string) do
     case string |> tokenize() |> normalize() do
       {:ok, val} -> translate(val, letter_data)
-      {:error, reason} -> {:error, reason}
+      {:error, _} = err -> err
     end
   end
 

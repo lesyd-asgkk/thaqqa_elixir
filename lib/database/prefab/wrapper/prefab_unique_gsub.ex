@@ -23,21 +23,21 @@ defmodule Thaqqa.UniqueGsubManager do
 
   def get_unique_gsub!(%Prefab{} = prefab, fontname, filter_fun \\ fn _ -> true end) do
     case get_unique_gsub(prefab, fontname, filter_fun) do
-      {:error, msg} -> raise msg
+      {:error, reason} -> raise reason
       {:ok, value} -> value
     end
   end
 
   def get_unique_gsub(%Prefab{} = prefab, fontname, filter_fun \\ fn _ -> true end) do
     case get_unique_gsub_table(prefab, fontname) do
-      {:error, msg} -> {:error, msg}
+      {:error, _} = err -> err
       {:ok, table} -> {:ok, DataTable.get_data(table, filter_fun)}
     end
   end
 
   def add_unique_gsub!(%Prefab{} = prefab, fontname, value_map) do
     case add_unique_gsub(prefab, fontname, value_map) do
-      {:error, msg} -> raise msg
+      {:error, reason} -> raise reason
       {:ok, val} -> val
     end
   end
@@ -54,13 +54,13 @@ defmodule Thaqqa.UniqueGsubManager do
       {:ok, sort_unique_gsub(new_prefab, fontname)}
     else
       nil -> Error.font_not_found(fontname)
-      {:error, msg} -> {:error, msg}
+      {:error, _} = err -> err
     end
   end
 
   def delete_unique_gsub!(%Prefab{} = prefab, fontname, %Thaqqa.Data{} = data) do
     case delete_unique_gsub(prefab, fontname, data) do
-      {:error, msg} -> raise msg
+      {:error, reason} -> raise reason
       {:ok, val} -> val
     end
   end
@@ -72,13 +72,13 @@ defmodule Thaqqa.UniqueGsubManager do
       Prefab.edit_font(prefab, fontname, Font.edit_table(font, @unique_gsub, table))
     else
       nil -> Error.font_not_found(fontname)
-      {:error, msg} -> {:error, msg}
+      {:error, _} = err -> err
     end
   end
 
   def edit_unique_gsub!(%Prefab{} = prefab, fontname, value_map, %Thaqqa.Data{} = data) do
     case edit_unique_gsub(prefab, fontname, value_map, data) do
-      {:error, msg} -> raise msg
+      {:error, reason} -> raise reason
       {:ok, val} -> val
     end
   end
@@ -92,14 +92,14 @@ defmodule Thaqqa.UniqueGsubManager do
            Prefab.edit_font(prefab, fontname, Font.edit_table(font, @unique_gsub, table)) do
       {:ok, sort_unique_gsub(new_prefab, fontname)}
     else
-      {:error, msg} -> {:error, msg}
+      {:error, _} = err -> err
     end
   end
 
   def unique_gsub!(%Prefab{} = prefab, string, fontname, writing_direction)
       when writing_direction in [@vertical, @horizontal] do
     case unique_gsub(prefab, string, fontname, writing_direction) do
-      {:error, msg} -> raise msg
+      {:error, reason} -> raise reason
       {:ok, val} -> val
     end
   end
@@ -111,15 +111,14 @@ defmodule Thaqqa.UniqueGsubManager do
       Thaqqa.Data.get_val(data, @writing_direction) in [writing_direction, @universal_language]
     end)
     |> case do
-      {:error, msg} ->
-        {:error, msg}
+      {:error, _} = err ->
+        err
 
-      {:ok, val} ->
+      {:ok, uniquegsub_data_list} ->
         {:ok,
-         val
-         |> Enum.reduce(string, fn p, acc ->
-           reg = Thaqqa.Data.get_val(p, @precompile)
-           alt = Thaqqa.Data.get_val(p, @name_alt)
+         Enum.reduce(uniquegsub_data_list, string, fn uniquegsub_data, acc ->
+           reg = Thaqqa.Data.get_val(uniquegsub_data, @precompile)
+           alt = Thaqqa.Data.get_val(uniquegsub_data, @name_alt)
            Regex.replace(reg, acc, alt)
          end)}
     end

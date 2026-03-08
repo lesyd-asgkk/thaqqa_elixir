@@ -27,7 +27,7 @@ defmodule Thaqqa.GsubManager do
 
   def get_gsub(%Prefab{} = prefab, filter_fun \\ fn _ -> true end) do
     case get_gsub_table(prefab) do
-      {:error, reason} -> {:error, reason}
+      {:error, _} = err -> err
       {:ok, table} -> {:ok, DataTable.get_data(table, filter_fun)}
     end
   end
@@ -46,7 +46,7 @@ defmodule Thaqqa.GsubManager do
          {:ok, %Prefab{} = new_prefab} <- Prefab.edit_static_table(prefab, @gsub, table) do
       {:ok, sort_gsub(new_prefab)}
     else
-      {:error, reason} -> {:error, reason}
+      {:error, _} = err -> err
     end
   end
 
@@ -62,7 +62,7 @@ defmodule Thaqqa.GsubManager do
          {:ok, %DataTable{} = table} <- DataTable.delete_data(table, data) do
       Prefab.edit_static_table(prefab, @gsub, table)
     else
-      {:error, reason} -> {:error, reason}
+      {:error, _} = err -> err
     end
   end
 
@@ -80,7 +80,7 @@ defmodule Thaqqa.GsubManager do
          {:ok, %Prefab{} = new_prefab} <- Prefab.edit_static_table(prefab, @gsub, table) do
       {:ok, sort_gsub(new_prefab)}
     else
-      {:error, reason} -> {:error, reason}
+      {:error, _} = err -> err
     end
   end
 
@@ -99,15 +99,15 @@ defmodule Thaqqa.GsubManager do
       Thaqqa.Data.get_val(data, @writing_direction) in [writing_direction, @universal_language]
     end)
     |> case do
-      {:error, reason} ->
-        {:error, reason}
+      {:error, _} = err ->
+        err
 
-      {:ok, val} ->
+      {:ok, gsub_data_list} ->
         {:ok,
-         val
-         |> Enum.reduce(string, fn p, acc ->
-           reg = Thaqqa.Data.get_val(p, @precompile)
-           alt = Thaqqa.Data.get_val(p, @name_alt)
+         gsub_data_list
+         |> Enum.reduce(string, fn gsub_data, acc ->
+           reg = Thaqqa.Data.get_val(gsub_data, @precompile)
+           alt = Thaqqa.Data.get_val(gsub_data, @name_alt)
            Regex.replace(reg, acc, alt)
          end)}
     end
