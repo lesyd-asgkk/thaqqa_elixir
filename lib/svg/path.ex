@@ -33,13 +33,13 @@ defmodule SVG.Path do
   def parse_string!(string) when is_binary(string) do
     case parse_string(string) do
       {:ok, path} -> path
-      {:error, e} -> raise(e)
+      {:error, reason} -> raise reason
     end
   end
 
   @doc """
   Parses binary into Path Instance.
-  Returns {:ok,val} or {:error,msg}
+  Returns {:ok,path} or {:error,reason}
   """
   def parse_string(string) when is_binary(string) do
     str_b =
@@ -59,7 +59,7 @@ defmodule SVG.Path do
 
     case parse_token(str_b) do
       {:ok, list} -> parse_command(list)
-      {:error, msg} -> {:error, msg}
+      {:error, _} = err -> err
     end
   end
 
@@ -67,11 +67,11 @@ defmodule SVG.Path do
     to_command(list, [], :None)
     |> Enum.reduce_while({:ok, []}, fn
       {:ok, str}, {:ok, acc} -> {:cont, {:ok, [str | acc]}}
-      {:error, reason}, _acc -> {:halt, {:error, reason}}
+      {:error, _} = err, _acc -> {:halt, err}
     end)
     |> case do
       {:ok, list} -> {:ok, Enum.reverse(list)}
-      {:error, reason} -> {:error, reason}
+      {:error, _} = err -> err
     end
   end
 
@@ -79,24 +79,24 @@ defmodule SVG.Path do
     Enum.map(str_b, &to_token/1)
     |> Enum.reduce_while({:ok, []}, fn
       {:ok, str}, {:ok, acc} -> {:cont, {:ok, [str | acc]}}
-      {:error, reason}, _acc -> {:halt, {:error, reason}}
+      {:error, _} = err, _acc -> {:halt, err}
     end)
     |> case do
       {:ok, list} -> {:ok, Enum.reverse(list)}
-      {:error, reason} -> {:error, reason}
+      {:error, _} = err -> err
     end
   end
 
   defp to_token(value) do
     case Float.parse(value) do
-      {num, _} ->
-        {:ok, num}
+      {float, _} ->
+        {:ok, float}
 
       _ ->
-        v = String.to_atom(value)
+        atom = String.to_atom(value)
 
-        if Command.is_legal_command?(v),
-          do: {:ok, v},
+        if Command.is_legal_command?(atom),
+          do: {:ok, atom},
           else: SVG.Error.invalid_value(value)
     end
   end
