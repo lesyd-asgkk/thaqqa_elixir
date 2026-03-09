@@ -4053,13 +4053,19 @@
         "ID": 1,
         "Order": 0,
         "Priority": 0,
-        "Name": "V(*,[_.isNullVowel])"
+        "Name": "V(*,[_.isNullVowel]_-*)"
       },
             "2": {
         "ID": 2,
         "Order": 0,
         "Priority": 0,
         "Name": "L()"
+      },
+            "3": {
+        "ID": 3,
+        "Order": 0,
+        "Priority": 0,
+        "Name": "P([_.IsNewline]_-*)"
       }
     }
   }
