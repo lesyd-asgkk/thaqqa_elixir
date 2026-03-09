@@ -33,14 +33,14 @@ defmodule Thaqqa.Glyph.GlyphSpawner do
     glyph_name_for_query = name <> if form == "", do: "", else: form
     [name | variant] = Regex.split(~r/([0-9])+/, name, include_captures: true)
     variant = if variant == nil, do: nil, else: variant |> Enum.at(0)
-    glyph_name = %{glyph: name, variant: variant, type: type, form: form}
+    glyph_name = %{glyph: glyphname, variant: variant, type: type, form: form}
 
     with {:ok, glyph_data} =
            GlyphManager.get_glyph(prefab, font, fn %Thaqqa.Data{} = data ->
              Thaqqa.Data.get_val(data, @name) == glyph_name_for_query
            end),
          {:ok, is_null_vowel} =
-           ConstRegexManager.match?(prefab, "V(*,[_.isNullVowel])", "V(#{form},#{name})"),
+           ConstRegexManager.match?(prefab, "V(*,[_.isNullVowel]_-*)", "V(#{form},#{name})"),
          {:ok, letter_data} =
            LetterManager.get_letter(prefab, fn %Thaqqa.Data{} = data ->
              Thaqqa.Data.get_val(data, @name) == name
@@ -169,7 +169,7 @@ defmodule Thaqqa.Glyph.GlyphSpawner do
   end
 
   defp create_glyph(%Prefab{} = _prefab, _font, _glyphname, _writing_direction, %{}),
-    do: %Glyph{}
+    do: {:ok, %Glyph{}}
 
   defp set_name(_type, ""), do: nil
   defp set_name(type, glyphname), do: "#{type}(#{glyphname})"

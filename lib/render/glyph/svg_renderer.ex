@@ -14,7 +14,7 @@ end
 # ダミーデータとして「None()」に該当するGlyphを前後に挿入。
 # glyphs = glyphs ++ [None()]
 # glyphs = [ None() | glyphs]
-# |> Stream.chunk_every(3, 1, :discard)
+# |> Enum.zip(list, tl(list), tl(tl(list))) (Enum.chunk_every(list, 3, 1, :discard)と等価。高速なので採用）
 # |> Stream.map(&calc_kerning/1)
 # のような形。
 

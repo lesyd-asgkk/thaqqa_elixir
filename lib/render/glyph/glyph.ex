@@ -12,7 +12,7 @@ defmodule Thaqqa.Glyph do
             children_glyph_list: [],
             name: %{glyph: "", variant: "", type: "", form: ""},
             font: "",
-            path: Path.parse_string!("m0,0"),
+            path: Path.parse_string!("m0,0") |> Path.new(),
             attribution: %{},
             internal_attribution: %{is_null: false}
 
