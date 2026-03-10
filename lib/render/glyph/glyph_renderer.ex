@@ -21,23 +21,39 @@ defmodule Thaqqa.Glyph.GlyphRenderer do
     end
   end
 
+  defp get_fontdata(%Prefab{} = prefab, fontname, list) when is_list(list) do
+    case Prefab.get_single_data(prefab, fontname, "FONTDATA") do
+      %Thaqqa.Data{} = data ->
+        {value_map, err} =
+          Enum.reduce(list, {%{}, []}, fn arg, {acc, acc_err} ->
+            case Thaqqa.Data.get_val(data, arg) do
+              nil -> {acc, [arg | acc_err]}
+              otherwise -> {Map.put(acc, String.to_atom(arg), otherwise), acc_err}
+            end
+          end)
+
+        if length(err) == 0, do: {:ok, value_map}, else: {:error, err}
+
+      nil ->
+        {:error, "（仮）Data not found in FONTDATA"}
+    end
+  end
+
   def render_by_relative_height(
         %Prefab{} = prefab,
         %Glyph{
           name: %{type: "S", form: form},
           height: %{y0: y0, y1: y1, y2: y2, y3: y3},
-          font: font,
+          font: fontname,
           internal_attribution: %{is_null: false},
-          path: path
+          path: path,
+          scale: _scale
         } = self,
         top_gap,
         bottom_gap
       ) do
-    case Prefab.get_single_data_value(prefab, font, "FONTDATA", "Thickness") do
-      nil ->
-        {:error, "（仮）Thickness not found in FONTDATA"}
-
-      thickness_raw ->
+    case get_fontdata(prefab, fontname, ["Thickness"]) do
+      {:ok, %{Thickness: thickness_raw}} ->
         # 将来用。1のところに倍率指定を置く
         thickness = thickness_raw * 1
         th_half = thickness / 2
@@ -96,6 +112,9 @@ defmodule Thaqqa.Glyph.GlyphRenderer do
           _ ->
             {:error, "invalid form found at render_by_relative_height/4"}
         end
+
+      {:error, _} = err ->
+        err
     end
   end
 
@@ -104,20 +123,18 @@ defmodule Thaqqa.Glyph.GlyphRenderer do
         %Glyph{
           name: %{type: "S", form: form},
           height: %{y0: y0, y3: y3},
-          font: font,
+          font: fontname,
           internal_attribution: %{is_null: true},
-          path: path
+          path: path,
+          scale: _scale
         } = self,
         top_gap,
         bottom_gap
       ) do
     # 下からどれだけ、という値なのを、上からどれだけ、に換算する。
 
-    case Prefab.get_single_data_value(prefab, font, "FONTDATA", "Thickness") do
-      nil ->
-        {:error, "（仮）Thickness not found in FONTDATA"}
-
-      thickness_raw ->
+    case get_fontdata(prefab, fontname, ["Thickness"]) do
+      {:ok, %{Thickness: thickness_raw}} ->
         # 将来用。1のところに倍率指定を置く
         thickness = thickness_raw * 1
         th_half = thickness / 2
@@ -147,13 +164,16 @@ defmodule Thaqqa.Glyph.GlyphRenderer do
           _ ->
             {:error, "invalid form found at render_by_relative_height/4"}
         end
+
+      {:error, _} = err ->
+        err
     end
   end
 
   # そんなことはない場合
   def render_by_relative_height(
         %Prefab{} = _prefab,
-        %Glyph{name: %{form: form}, height: %{y0: _y0, y3: y3}, path: path} = self,
+        %Glyph{name: %{form: form}, height: %{y0: _y0, y3: y3}, path: path, scale: _scale} = self,
         top_gap,
         bottom_gap
       ) do
@@ -178,18 +198,16 @@ defmodule Thaqqa.Glyph.GlyphRenderer do
         %Prefab{} = prefab,
         %Glyph{
           name: %{type: "S", form: form},
-          font: font,
+          font: fontname,
           height: %{y0: y0, y1: y1, y2: y2, y3: y3},
-          path: path
+          path: path,
+          scale: _scale
         } = self,
         height,
         vowel_height
       ) do
-    case Prefab.get_single_data_value(prefab, font, "FONTDATA", "Thickness") do
-      nil ->
-        {:error, "（仮）Thickness not found in FONTDATA"}
-
-      thickness_raw ->
+    case get_fontdata(prefab, fontname, ["Thickness"]) do
+      {:ok, %{Thickness: thickness_raw}} ->
         # 将来用。1のところに倍率指定を置く
         thickness = thickness_raw * 1
         th_half = thickness / 2
@@ -250,13 +268,23 @@ defmodule Thaqqa.Glyph.GlyphRenderer do
           _ ->
             {:error, "invalid form found at render_by_absolute_height/4"}
         end
+
+      {:error, _} = err ->
+        err
     end
   end
 
   # その他の場合。
   def render_by_absolute_height(
         %Prefab{} = prefab,
-        %Glyph{font: font, name: %{form: form}, height: %{y1: y1, y2: y2}, path: path} = self,
+        %Glyph{
+          font: fontname,
+          name: %{form: form},
+          height: %{y1: y1, y2: y2},
+          path: path,
+          scale: _scale
+        } =
+          self,
         height,
         vowel_height
       ) do

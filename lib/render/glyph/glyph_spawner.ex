@@ -8,43 +8,70 @@ defmodule Thaqqa.Glyph.GlyphSpawner do
   alias Thaqqa.ConstRegexManager, as: ConstRegexManager
   use Thaqqa.DataTable.Const
 
-  def new(%Prefab{} = prefab, font, glyphname, writing_direction) do
+  defp get_fontdata(%Prefab{} = prefab, fontname, list) when is_list(list) do
+    case Prefab.get_single_data(prefab, fontname, "FONTDATA") do
+      %Thaqqa.Data{} = data ->
+        {value_map, err} =
+          Enum.reduce(list, {%{}, []}, fn arg, {acc, acc_err} ->
+            case Thaqqa.Data.get_val(data, arg) do
+              nil -> {acc, [arg | acc_err]}
+              otherwise -> {Map.put(acc, String.to_atom(arg), otherwise), acc_err}
+            end
+          end)
+
+        # errorは仮
+        if length(err) == 0, do: {:ok, value_map}, else: {:error, err}
+
+      nil ->
+        {:error, "（仮）Data not found in FONTDATA"}
+    end
+  end
+
+  def new(%Prefab{} = prefab, fontname, glyphname, writing_direction, size) do
     case divide_name(glyphname) do
       {:error, _} = err ->
         err
 
       {:ok, divided_name} ->
-        create_glyph(prefab, font, glyphname, writing_direction, divided_name)
+        create_glyph(prefab, fontname, glyphname, writing_direction, divided_name, size)
     end
   end
 
   # 単独グリフの場合。
   # create_glyphで用いられている「!系は後々通常verに戻してエラーハンドリングを付け加えるか
   # そもそも「実行時のみに使用Managerに異常がないかを判断する」で対処する。
-  defp create_glyph(%Prefab{} = prefab, font, glyphname, _writing_direction, %{
-         "child" => nil,
-         "vowel" => nil,
-         "onset" => nil,
-         "coda" => nil,
-         "form" => form,
-         "type" => type,
-         "name" => name
-       }) do
+  defp create_glyph(
+         %Prefab{} = prefab,
+         fontname,
+         glyphname,
+         _writing_direction,
+         %{
+           "child" => nil,
+           "vowel" => nil,
+           "onset" => nil,
+           "coda" => nil,
+           "form" => form,
+           "type" => type,
+           "name" => name
+         },
+         size
+       ) do
     glyph_name_for_query = name <> if form == "", do: "", else: form
     [name | variant] = Regex.split(~r/([0-9])+/, name, include_captures: true)
     variant = if variant == nil, do: nil, else: variant |> Enum.at(0)
     glyph_name = %{glyph: glyphname, variant: variant, type: type, form: form}
 
     with {:ok, glyph_data} =
-           GlyphManager.get_glyph(prefab, font, fn %Thaqqa.Data{} = data ->
+           GlyphManager.get_glyph(prefab, fontname, fn %Thaqqa.Data{} = data ->
              Thaqqa.Data.get_val(data, @name) == glyph_name_for_query
            end),
          {:ok, is_null_vowel} =
-           ConstRegexManager.match?(prefab, "V(*,[_.isNullVowel]_-*)", "V(#{form},#{name})"),
+           ConstRegexManager.match?(prefab, "V(*,[_.isNullVowel]_-*)", glyphname),
          {:ok, letter_data} =
            LetterManager.get_letter(prefab, fn %Thaqqa.Data{} = data ->
              Thaqqa.Data.get_val(data, @name) == name
-           end) do
+           end),
+         {:ok, %{Height: font_height}} = get_fontdata(prefab, fontname, ["Height"]) do
       path =
         glyph_data
         |> Enum.at(0)
@@ -63,9 +90,8 @@ defmodule Thaqqa.Glyph.GlyphSpawner do
 
           data ->
             case {Thaqqa.Data.get_val(data, "x_Align"), Thaqqa.Data.get_val(data, "y_Align")} do
-              {nil, _} -> %{x: 0, y: 0}
-              {_, nil} -> %{x: 0, y: 0}
-              {x, y} -> %{x: x, y: y}
+              {x, y} when not is_nil(x) and not is_nil(y) -> %{x: x, y: y}
+              _ -> %{x: 0, y: 0}
             end
         end
 
@@ -73,9 +99,10 @@ defmodule Thaqqa.Glyph.GlyphSpawner do
        %Glyph{
          offset: %{x: 0, y: 0},
          aligment: aligment,
-         path: SVG.Path.new(path),
+         path: SVG.Path.new(path) |> SVG.Path.rescale(size / font_height),
          children_glyph_list: [],
-         font: font,
+         font: fontname,
+         scale: size / font_height,
          name: glyph_name,
          height: %{y0: 0, y1: 0, y2: 0, y3: 0},
          internal_attribution: %{is_null: is_null_vowel}
@@ -86,27 +113,35 @@ defmodule Thaqqa.Glyph.GlyphSpawner do
   end
 
   # Sの場合
-  defp create_glyph(%Prefab{} = prefab, font, glyphname, writing_direction, %{
-         "onset" => onset,
-         "vowel" => vowel,
-         "coda" => coda,
-         "type" => "S" = type,
-         "form" => form,
-         "name" => name,
-         "child" => nil
-       }) do
+  defp create_glyph(
+         %Prefab{} = prefab,
+         fontname,
+         glyphname,
+         writing_direction,
+         %{
+           "onset" => onset,
+           "vowel" => vowel,
+           "coda" => coda,
+           "type" => "S" = type,
+           "form" => form,
+           "name" => name,
+           "child" => nil
+         },
+         size
+       ) do
     glyph_name = %{glyph: glyphname, variant: nil, type: type, form: form}
 
     [onset_glyph, vowel_glyph, coda_glyph] =
       Enum.map([onset, vowel, coda], fn k ->
-        new(prefab, font, k, writing_direction)
+        new(prefab, fontname, k, writing_direction, size)
       end)
 
     with {:ok, %{x0: off_onset_x, x1: off_coda_x, y0: off_onset_y, y1: off_coda_y}} <-
-           GposManager.gpos(prefab, font, glyphname, writing_direction, @internal),
+           GposManager.gpos(prefab, fontname, glyphname, writing_direction, @internal),
          {:ok, %Glyph{} = onset_glyph} <- onset_glyph,
          {:ok, %Glyph{} = vowel_glyph} <- vowel_glyph,
-         {:ok, %Glyph{} = coda_glyph} <- coda_glyph do
+         {:ok, %Glyph{} = coda_glyph} <- coda_glyph,
+         {:ok, %{Height: font_height}} = get_fontdata(prefab, fontname, ["Height"]) do
       is_null_vowel = vowel_glyph.internal_attribution.is_null
 
       off_onset = %{x: off_onset_x, y: off_onset_y}
@@ -121,7 +156,8 @@ defmodule Thaqqa.Glyph.GlyphSpawner do
          aligment: %{x: 0, y: 0},
          path: %SVG.Path{},
          children_glyph_list: [onset_glyph, vowel_glyph, coda_glyph],
-         font: font,
+         font: fontname,
+         scale: size / font_height,
          name: glyph_name,
          internal_attribution: %{is_null: is_null_vowel},
          # ↓ここでは設定しない
@@ -134,42 +170,69 @@ defmodule Thaqqa.Glyph.GlyphSpawner do
 
   # グリフ列の場合。単純な再帰処理とする
 
-  defp create_glyph(%Prefab{} = prefab, font, glyphname, writing_direction, %{
-         "child" => child,
-         "type" => type,
-         "form" => form,
-         "name" => name
-       }) do
+  defp create_glyph(
+         %Prefab{} = prefab,
+         fontname,
+         glyphname,
+         writing_direction,
+         %{
+           "child" => child,
+           "type" => type,
+           "form" => form,
+           "name" => name
+         },
+         size
+       ) do
     # 仮
     top_glyph =
-      create_glyph(prefab, font, glyphname, writing_direction, %{
-        "type" => type,
-        "form" => form,
-        "name" => name,
-        "child" => nil,
-        "vowel" => nil,
-        "onset" => nil,
-        "coda" => nil
-      })
+      create_glyph(
+        prefab,
+        fontname,
+        glyphname,
+        writing_direction,
+        %{
+          "type" => type,
+          "form" => form,
+          "name" => name,
+          "child" => nil,
+          "vowel" => nil,
+          "onset" => nil,
+          "coda" => nil
+        },
+        size
+      )
 
-    child_glyph = new(prefab, font, child, writing_direction)
+    child_glyph = new(prefab, fontname, child, writing_direction, size)
 
     with {:ok, %{x0: off_x, x1: _, y0: off_y, y1: _}} <-
-           GposManager.gpos(prefab, font, glyphname, writing_direction, @diacritical),
+           GposManager.gpos(prefab, fontname, glyphname, writing_direction, @diacritical),
          {:ok, %Glyph{} = top_glyph} <- top_glyph,
-         {:ok, %Glyph{} = child_glyph} <- child_glyph do
+         {:ok, %Glyph{} = child_glyph} <- child_glyph,
+         {:ok, %{Height: font_height}} = get_fontdata(prefab, fontname, ["Height"]) do
       offset = %{x: off_x, y: off_y}
 
-      child_glyph = %Glyph{child_glyph | offset: offset}
+      child_glyph = %Glyph{child_glyph | offset: offset, scale: size / font_height}
 
       glyph_name = %{top_glyph.name | glyph: glyphname}
 
-      {:ok, %Glyph{top_glyph | name: glyph_name, children_glyph_list: [child_glyph]}}
+      {:ok,
+       %Glyph{
+         top_glyph
+         | name: glyph_name,
+           children_glyph_list: [child_glyph],
+           scale: size / font_height
+       }}
     end
   end
 
-  defp create_glyph(%Prefab{} = _prefab, _font, _glyphname, _writing_direction, %{}),
-    do: {:ok, %Glyph{}}
+  defp create_glyph(%Prefab{} = prefab, fontname, _glyphname, _writing_direction, %{}, size) do
+    with {:ok, %{Height: font_height}} =
+           get_fontdata(prefab, fontname, ["Height"]) do
+      {:ok, %Glyph{scale: size / font_height}}
+    else
+      {:error, _} = err -> err
+    end
+  end
 
   defp set_name(_type, ""), do: nil
   defp set_name(type, glyphname), do: "#{type}(#{glyphname})"

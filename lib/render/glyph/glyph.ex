@@ -13,6 +13,7 @@ defmodule Thaqqa.Glyph do
             name: %{glyph: "", variant: "", type: "", form: ""},
             font: "",
             path: Path.parse_string!("m0,0") |> Path.new(),
+            scale: nil,
             attribution: %{},
             internal_attribution: %{is_null: false}
 
@@ -21,8 +22,8 @@ defmodule Thaqqa.Glyph do
   # ただしそのglyphの構成として母音が存在しない場合、y1:=y0,y2:=y3
   # internal_attributionは内部処理で保持しておくと楽な値の一覧。
 
-  def new(%Prefab{} = prefab, font, glyphname, writing_direction),
-    do: Thaqqa.Glyph.GlyphSpawner.new(prefab, font, glyphname, writing_direction)
+  def new(%Prefab{} = prefab, font, glyphname, writing_direction, default_size),
+    do: Thaqqa.Glyph.GlyphSpawner.new(prefab, font, glyphname, writing_direction, default_size)
 
   def set_path(%__MODULE__{} = self), do: Thaqqa.Glyph.GlyphBuilder.set_path(self)
 
