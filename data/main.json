@@ -1517,8 +1517,8 @@
         "ID": 25,
         "Language": "khehyelu",
         "Order": 0,
-        "Priority": -1,
-        "Name": "R(c)",
+        "Priority": -2,
+        "Name": "R(h)R(h)",
         "NameAlt": "C(null,h0-d0)"
         
       },
@@ -4004,7 +4004,7 @@
   "REGEX_CONST": {
     "name": "REGEX_CONST",
     "global":true,
-    "compile_rule":"regex_0",
+    "compile_rule":"regex_1",
     "single":false,
     "columnList": {
       "ID": {
@@ -4031,7 +4031,14 @@
       "Name": {
         "name": "Name",
         "type": "string",
+        "subtype": "name",
         "order": 2,
+        "dev": false
+      },
+      "RawRegex": {
+        "name": "RawRegex",
+        "type": "string",
+        "order": 3,
         "dev": false
       },
       "PreCompile": {
@@ -4047,25 +4054,36 @@
         "ID": 0,
         "Order": 0,
         "Priority": 0,
-        "Name": "(L())(L())"
+        "Name": "DoubleLetter",
+        "RawRegex": "(L())(L())"
       }, 
       "1": {
         "ID": 1,
         "Order": 0,
         "Priority": 0,
-        "Name": "V(*,[_.isNullVowel]_-*)"
+        "Name":"NullVowel",
+        "RawRegex": "V(*,[_.isNullVowel]_-*)"
       },
             "2": {
         "ID": 2,
         "Order": 0,
         "Priority": 0,
-        "Name": "L()"
+        "Name": "Letter",
+        "RawRegex": "L()"
       },
             "3": {
         "ID": 3,
         "Order": 0,
         "Priority": 0,
-        "Name": "P([_.IsNewline]_-*)"
+        "Name": "WordBreaker",
+        "RawRegex": "None()| P((space|comma|period)_-*)"
+      },
+                  "4": {
+        "ID": 4,
+        "Order": 0,
+        "Priority": 0,
+        "Name": "Newline",
+        "RawRegex": "P([_.IsNewline]_-*)"
       }
     }
   }

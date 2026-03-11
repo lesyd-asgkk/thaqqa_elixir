@@ -69,6 +69,23 @@ defmodule Thaqqa.Data do
 
   def set_precompile(
         %__MODULE__{} = self,
+        %DataTable{compile_rule: "regex_1"},
+        %Prefab{} = prefab
+      ) do
+    name = get_val(self, @rawregex)
+
+    if name != nil do
+      case Regex_Khhyl.compile(name, prefab) do
+        {:error, _} = err -> err
+        {:ok, val} -> {:ok, set_val(self, @precompile, val)}
+      end
+    else
+      {:error, "name_not_found"}
+    end
+  end
+
+  def set_precompile(
+        %__MODULE__{} = self,
         %DataTable{compile_rule: "path_0"},
         %Prefab{} = _prefab
       ) do

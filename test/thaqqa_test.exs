@@ -22,21 +22,22 @@ defmodule ThaqqaTest do
     {:ok, string} =
       Thaqqa.Render.convert_into_khhyl_letter(
         prefab,
-        "suzusha koratl",
+        "highirith, kako karutaraa qahhowe uzhute kaghangetlaa. ittlutu kadha, eqhoghi reewe qarhilas.",
         "Default",
         "khehyelu",
         "vertical"
       )
 
-    string |> IO.inspect()
+    # string |> IO.inspect()
     {:ok, list} = Thaqqa.Render.split_by_syllable(prefab, string)
     # list |> IO.inspect()
 
-    Thaqqa.Render.build_path_data(prefab, list, "Default", "vertical")
+    pd = Thaqqa.Render.build_path_data(prefab, list, "Default", "vertical", 16)
+
+    Thaqqa.Render.alignment_path_data_as_horizontal(prefab, pd, %{font: "Default", wrap: false})
     # |> IO.inspect()
 
     # この辺の変換は誤差
-
     # Supervisor.start_link(Thaqqa.FontRegistry, strategy: :one_for_one)
   end
 end

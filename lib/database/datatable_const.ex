@@ -16,6 +16,7 @@ defmodule Thaqqa.DataTable.Const do
       # 頻出column名
       @id "ID"
       @name "Name"
+      @rawregex "RawRegex"
       @precompile "PreCompile"
       @writing_direction "WritingDirection"
       @language "Language"

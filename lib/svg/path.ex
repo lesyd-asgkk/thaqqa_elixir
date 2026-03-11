@@ -15,6 +15,10 @@ defmodule SVG.Path do
     %__MODULE__{commands: commands}
   end
 
+  def new() do
+    %__MODULE__{commands: []}
+  end
+
   def round_values(%__MODULE__{commands: commands}, decimal_places)
       when is_integer(decimal_places) and decimal_places >= 0 do
     rounded_commands =
@@ -480,10 +484,8 @@ defmodule SVG.Path do
     do: %__MODULE__{commands: Enum.reduce(list, [], fn l, acc -> acc ++ l end)}
 
   @doc """
-  rescales Path by given multiplier x,y.
+  rescales Path by given multiplier x,y or simply r
   """
-
-  def rescale(%__MODULE__{} = path, x, y), do: rescale(path, %{x: x, y: y})
 
   def rescale(%__MODULE__{commands: commands}, %{x: x, y: y}) do
     # default_relorabs = extract_abs_or_rel(%__MODULE__{commands: commands})
@@ -491,4 +493,7 @@ defmodule SVG.Path do
     commands = Enum.map(commands, fn command -> Command.multiply_position(command, x, y) end)
     %__MODULE__{commands: commands}
   end
+
+  def rescale(%__MODULE__{} = path, r), do: rescale(path, %{x: r, y: r})
+  def rescale(%__MODULE__{} = path, x, y), do: rescale(path, %{x: x, y: y})
 end

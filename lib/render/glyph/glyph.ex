@@ -15,7 +15,13 @@ defmodule Thaqqa.Glyph do
             path: Path.parse_string!("m0,0") |> Path.new(),
             scale: nil,
             attribution: %{},
-            internal_attribution: %{is_null: false}
+            internal_attribution: %{
+              is_null: false,
+              gap_top: 0,
+              gap_center: 0,
+              is_space: false,
+              is_newline: true
+            }
 
   # attributionは今後の拡張機能を想定して設けた。
   # height: %{y0:頭,y1:母音の頭,y2:母音の尾,y3:尾}

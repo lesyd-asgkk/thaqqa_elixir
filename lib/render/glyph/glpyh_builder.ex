@@ -85,7 +85,7 @@ defmodule Thaqqa.Glyph.GlyphBuilder do
     if type in ["C", "Cd"] do
       dir = if form == "coda", do: -1, else: 1
 
-      # C,Cdの場合はxの位置を補正（0:「グリフの」中央、1:グリフの外側、-1:グリフの内側(母音側) ）
+      # C,Cdの場合のx値補正（0:「グリフの」中央、1:グリフの外側、-1:グリフの内側(母音側) ）
       %{
         x:
           l * (1 - sub_aligment.x * dir) / 2 + r * (1 + sub_aligment.x * dir) / 2 +
@@ -93,9 +93,9 @@ defmodule Thaqqa.Glyph.GlyphBuilder do
         y: t * (1 - sub_aligment.y) / 2 + b * (1 + sub_aligment.y) / 2 + sub_offset.y
       }
     else
-      # V,Vd,P,Pdの場合はxの位置を補正（0:中央、1:母音の左側、-1:母音の右側　
-      # これについては不適切な演算式の可能性がある。検証した上で値を変えて全てへと変えることも検討。
-      # （Vd,Pdは使用頻度が少ないので早急に対処する必要性はない） ）
+      # V,Vd,P,Pdの場合のx値補正（0:中央、1:母音の左側、-1:母音の右側　
+      # これについては不適切な演算式の可能性がある。検証した上で値を変えて全て上へと変えることも検討。
+      # （Vd,Pdは使用頻度が少ないので早急に対処する必要性はない）
       %{
         x: l * sub_aligment.x / 2 + r * -sub_aligment.x / 2 + sub_offset.x,
         y: t * (1 - sub_aligment.y) / 2 + b * (1 + sub_aligment.y) / 2 + sub_offset.y

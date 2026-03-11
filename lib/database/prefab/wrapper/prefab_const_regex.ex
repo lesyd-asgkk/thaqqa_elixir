@@ -55,6 +55,14 @@ defmodule Thaqqa.ConstRegexManager do
     end
   end
 
+  def get_regex(%Prefab{} = prefab, name) do
+    case get_const(prefab, name) do
+      {:error, reason} -> {:error, reason}
+      {:ok, nil} -> {:error, "(仮) data_not_found"}
+      {:ok, data} -> {:ok, Thaqqa.Data.get_val(data, @precompile)}
+    end
+  end
+
   def whole_of_string_match_at_once?(%Prefab{} = prefab, name, string) do
     case get_const(prefab, name) do
       {:error, reason} ->

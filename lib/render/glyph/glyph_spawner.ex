@@ -66,7 +66,7 @@ defmodule Thaqqa.Glyph.GlyphSpawner do
              Thaqqa.Data.get_val(data, @name) == glyph_name_for_query
            end),
          {:ok, is_null_vowel} =
-           ConstRegexManager.match?(prefab, "V(*,[_.isNullVowel]_-*)", glyphname),
+           ConstRegexManager.match?(prefab, "NullVowel", glyphname),
          {:ok, letter_data} =
            LetterManager.get_letter(prefab, fn %Thaqqa.Data{} = data ->
              Thaqqa.Data.get_val(data, @name) == name
@@ -211,7 +211,7 @@ defmodule Thaqqa.Glyph.GlyphSpawner do
          {:ok, %{Height: font_height}} = get_fontdata(prefab, fontname, ["Height"]) do
       offset = %{x: off_x, y: off_y}
 
-      child_glyph = %Glyph{child_glyph | offset: offset, scale: size / font_height}
+      child_glyph = %Glyph{child_glyph | offset: offset}
 
       glyph_name = %{top_glyph.name | glyph: glyphname}
 
