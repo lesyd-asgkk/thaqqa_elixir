@@ -19,8 +19,8 @@ defmodule Thaqqa.Glyph do
               is_null: false,
               gap_top: 0,
               gap_center: 0,
-              is_space: false,
-              is_newline: true
+              is_wordbreaker: false,
+              is_newline: false
             }
 
   # attributionは今後の拡張機能を想定して設けた。

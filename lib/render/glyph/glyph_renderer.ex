@@ -47,7 +47,7 @@ defmodule Thaqqa.Glyph.GlyphRenderer do
           font: fontname,
           internal_attribution: %{is_null: false},
           path: path,
-          scale: _scale
+          scale: scale
         } = self,
         top_gap,
         bottom_gap
@@ -55,11 +55,11 @@ defmodule Thaqqa.Glyph.GlyphRenderer do
     case get_fontdata(prefab, fontname, ["Thickness"]) do
       {:ok, %{Thickness: thickness_raw}} ->
         # 将来用。1のところに倍率指定を置く
-        thickness = thickness_raw * 1
+        thickness = thickness_raw * scale
         th_half = thickness / 2
 
         case form do
-          "sol" ->
+          k when k in ["sol", ""] ->
             path =
               SVG.Path.to_relative(path)
               |> SVG.Path.set_start_position(0, top_gap)
@@ -126,7 +126,7 @@ defmodule Thaqqa.Glyph.GlyphRenderer do
           font: fontname,
           internal_attribution: %{is_null: true},
           path: path,
-          scale: _scale
+          scale: scale
         } = self,
         top_gap,
         bottom_gap
@@ -136,11 +136,11 @@ defmodule Thaqqa.Glyph.GlyphRenderer do
     case get_fontdata(prefab, fontname, ["Thickness"]) do
       {:ok, %{Thickness: thickness_raw}} ->
         # 将来用。1のところに倍率指定を置く
-        thickness = thickness_raw * 1
+        thickness = thickness_raw * scale
         th_half = thickness / 2
 
         case form do
-          "sol" ->
+          k when k in ["sol", ""] ->
             path =
               SVG.Path.to_relative(path)
               |> SVG.Path.set_start_position(0, top_gap)
@@ -178,7 +178,7 @@ defmodule Thaqqa.Glyph.GlyphRenderer do
         bottom_gap
       ) do
     case form do
-      k when k in ["init", "mid", "fin", "onset", "coda", "sol"] ->
+      k when k in ["init", "mid", "fin", "onset", "coda", "sol", ""] ->
         path =
           SVG.Path.to_relative(path)
           |> SVG.Path.set_end_position(0, bottom_gap + y3)
@@ -201,7 +201,7 @@ defmodule Thaqqa.Glyph.GlyphRenderer do
           font: fontname,
           height: %{y0: y0, y1: y1, y2: y2, y3: y3},
           path: path,
-          scale: _scale
+          scale: scale
         } = self,
         height,
         vowel_height
@@ -209,7 +209,7 @@ defmodule Thaqqa.Glyph.GlyphRenderer do
     case get_fontdata(prefab, fontname, ["Thickness"]) do
       {:ok, %{Thickness: thickness_raw}} ->
         # 将来用。1のところに倍率指定を置く
-        thickness = thickness_raw * 1
+        thickness = thickness_raw * scale
         th_half = thickness / 2
 
         vowel_height_half = (y2 - y1) / 2
@@ -217,7 +217,7 @@ defmodule Thaqqa.Glyph.GlyphRenderer do
 
         # TODO: 文字幅がheightを超えてしまった場合の処理を追加。
         case form do
-          "sol" ->
+          k when k in ["sol", ""] ->
             path =
               SVG.Path.to_relative(path)
               |> SVG.Path.set_start_position(0, vowel_height - vowel_height_half)
@@ -289,7 +289,7 @@ defmodule Thaqqa.Glyph.GlyphRenderer do
         vowel_height
       ) do
     case form do
-      k when k in ["init", "mid", "fin", "onset", "coda", "sol"] ->
+      k when k in ["init", "mid", "fin", "onset", "coda", "sol", ""] ->
         glyph_height_half = (y2 - y1) / 2
         # 将来用。1のところに倍率指定を置く
         path =
@@ -300,7 +300,7 @@ defmodule Thaqqa.Glyph.GlyphRenderer do
         {:ok, %Glyph{self | path: path, glyph_height: height}}
 
       _ ->
-        {:error, "invalid form found at render_by_relative_height/4"}
+        {:error, "invalid form found at render_by_absolute_height/4"}
     end
   end
 end

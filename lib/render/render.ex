@@ -49,6 +49,8 @@ defmodule Thaqqa.Render do
         fontname,
         %{is_width_relative: is_width_relative, width: width, gap_top: gap_top, height: height}
       ) do
+    newline_as_regex_khhyl = "P([_.IsNewline]_-*)"
+
     with {:ok, %{x0: x0_internal, y0: y0_internal, x1: x1_internal, y1: y1_internal}} <-
            GposManager.gpos(prefab, fontname, glyph_name, @horizontal, @internal),
          {:ok, %{x0: x0_ex_prev, y0: y0_ex_prev, x1: x1_ex_prev, y1: y1_ex_prev}} <-
@@ -72,7 +74,7 @@ defmodule Thaqqa.Render do
            GposManager.gpos(
              prefab,
              fontname,
-             "P([_.IsNewline]_-*)" <> glyph_name,
+             newline_as_regex_khhyl <> glyph_name,
              @horizontal,
              @external
            ),
@@ -80,33 +82,40 @@ defmodule Thaqqa.Render do
            GposManager.gpos(
              prefab,
              fontname,
-             glyph_name <> "P([_.IsNewline]_-*)",
+             glyph_name <> newline_as_regex_khhyl,
              @horizontal,
              @external
            ),
          {:ok, is_newline_raw} <-
-           ConstRegexManager.whole_of_string_match_at_once?(
+           ConstRegexManager.whole_of_string_match_at_once?(prefab, "Newline", glyph_name),
+         {:ok, is_wordbreaker} <-
+           ConstRegexManager.whole_of_string_match_at_once?(prefab, "WordBreaker", glyph_name),
+         {:ok, new_glyph} <-
+           Glyph.render_by_absolute_height(
              prefab,
-             "Newline",
-             glyph_name
+             glyph,
+             height * glyph.scale,
+             (y1_internal + 0.5) * height * glyph.scale
            ) do
+      is_wordbreaker = is_newline_raw === true
       is_newline = is_newline_raw === true
 
       scale = glyph.scale
       prev_scale = prev_glyph.scale || glyph.scale
       next_scale = next_glyph.scale || glyph.scale
 
-      %{left: l, right: r} = SVG.Path.get_border(path)
+      %{left: l, right: r} = SVG.Path.get_border(new_glyph.path)
 
       {:ok,
        %{
-         glyph: glyph,
+         glyph: new_glyph,
          new_line: is_newline,
+         word_breaker: is_wordbreaker,
          box: %{
            top: scale,
            bottom: 0,
-           left: if(is_width_relative, do: -l + width, else: width / 2) * scale,
-           right: if(is_width_relative, do: r + width, else: width / 2) * scale
+           left: if(is_width_relative, do: -l + width / 2 * scale, else: width / 2 * scale),
+           right: if(is_width_relative, do: r + width / 2 * scale, else: width / 2 * scale)
          },
          gap: %{
            top: gap_top * scale,
@@ -144,6 +153,112 @@ defmodule Thaqqa.Render do
   def concat_path_data_as_horizontal(%Prefab{} = prefab, glyph_list) do
   end
 
+  defp set_position_y(glyph_list) do
+    {[glyph_list], _} =
+      Enum.chunk_while(
+        glyph_list,
+        [],
+        fn glyph, acc ->
+          if glyph.internal_attribution.is_newline do
+            {:cont, Enum.reverse([glyph | acc]), []}
+          else
+            {:cont, [glyph | acc]}
+          end
+        end,
+        fn
+          [] -> {:cont, []}
+          acc -> {:cont, Enum.reverse(acc), []}
+        end
+      )
+      |> Enum.reduce({[], 0}, fn g_list, {acc, acc_y} ->
+        {max_height, max_gap_top} =
+          Enum.reduce(g_list, {0, 0}, fn g, {acc_height, acc_gap_top} ->
+            glyph_height = g.height.y3 + g.internal_attribution.gap_top
+            {max(acc_height, glyph_height), max(acc_gap_top, g.internal_attribution.gap_top)}
+          end)
+
+        g_alt =
+          Enum.map(g_list, fn g ->
+            top_gap = max_height - g.height.y3
+
+            internal_attribution =
+              Map.put(g.internal_attribution, :y, acc_y + max_gap_top + top_gap)
+
+            # %Glyph{g | internal_attribution: internal_attribution}
+            internal_attribution
+          end)
+
+        {[g_alt | acc], acc_y + max_height + max_gap_top}
+      end)
+
+    Enum.reverse(glyph_list)
+  end
+
+  defp set_position_and_flag(glyph_and_kern_list) do
+    Enum.reduce_while(
+      glyph_and_kern_list,
+      {:ok, {[], %{x: 0}}},
+      fn g_and_k, {:ok, {acc_glyph, acc_data}} ->
+        case g_and_k do
+          {:ok,
+           %{
+             glyph: glyph,
+             new_line: is_newline,
+             word_breaker: is_wordbreaker,
+             box: %{top: top, bottom: bottom, left: left, right: right},
+             gap: %{top: gap_top, center: gap_center, left: gap_left, right: gap_right},
+             gap_when_newline: %{
+               top: gap_top_nl,
+               center: gap_center_nl,
+               left: gap_left_nl,
+               right: gap_right_nl
+             }
+           }} ->
+            glyph_position = acc_data.x
+            glyph_x = glyph_position + gap_left + left
+            next_x = glyph_position + gap_left + left + gap_right + right
+
+            # next_xの座標を参考に強制的に改行を挟む処理部分
+            # render項目を付け加えた際、renderのパロメータに応じて処理する
+            #
+            cond_wrap = false
+
+            acc_data_x =
+              cond do
+                is_newline == true -> 0
+                cond_wrap == true -> 0
+                true -> next_x
+              end
+
+            {glyph_x, next_x, is_newline} =
+              if cond_wrap,
+                do: {0 + gap_left_nl + left, 0 + gap_left_nl + left + gap_right_nl + right, true},
+                else: {glyph_x, next_x, is_newline}
+
+            internal_attribution =
+              Map.put(glyph.internal_attribution, :gap_top, gap_top)
+              |> Map.put(:gap_center, gap_center)
+              |> Map.put(:is_wordbreaker, is_wordbreaker)
+              |> Map.put(:is_newline, is_newline)
+              |> Map.put(:x, acc_data_x)
+
+            glyph_new = %Glyph{glyph | internal_attribution: internal_attribution}
+
+            acc_data = %{acc_data | x: acc_data_x}
+
+            {:cont, {:ok, {[glyph_new | acc_glyph], acc_data}}}
+
+          {:error, _} = err ->
+            {:halt, err}
+        end
+      end
+    )
+    |> case do
+      {:error, _} = err -> err
+      {:ok, {acc_path, _acc_data}} -> {:ok, Enum.reverse(acc_path)}
+    end
+  end
+
   def alignment_path_data_as_horizontal(%Prefab{} = prefab, glyph_list, %{
         font: fontname,
         wrap: wrap
@@ -165,75 +280,15 @@ defmodule Thaqqa.Render do
         height: height
       }
 
-      glyph_and_kern_list =
+      {:ok, glyph_and_kern_list} =
         [none | glyph_list ++ [none]]
         |> Enum.chunk_every(3, 1, :discard)
         |> Enum.map(&calc_kerning_horizontal(&1, prefab, fontname, temp_struct_for_argument))
+        |> set_position_and_flag()
 
+      # set_position_y(glyph_and_kern_list)
       # あとはglyphの棒を挿したりするだけ
       # prefab
-      Enum.reduce_while(
-        glyph_and_kern_list,
-        {:ok, {[], %{position: %{x: 0, y: 0}}}},
-        fn g_and_k, {:ok, {acc_glyph, acc_data}} ->
-          case g_and_k do
-            {:ok,
-             %{
-               glyph: glyph,
-               new_line: is_newline,
-               box: %{top: top, bottom: bottom, left: left, right: right},
-               gap: %{top: gap_top, center: gap_center, left: gap_left, right: gap_right},
-               gap_when_newline: %{
-                 top: gap_top_newline,
-                 center: gap_center_newline,
-                 left: gap_left_newline,
-                 right: gap_right_newline
-               }
-             }} ->
-              glyph_position = acc_data.position
-              glyph_x = glyph_position.x + gap_left + left
-              next_x = glyph_position.x + gap_left + left + gap_right + right
-
-              # next_xの座標を参考に強制的に改行を挟む。
-              cond_wrap = false
-
-              position_data =
-                cond do
-                  is_newline == true -> %{x: 0, y: glyph_position.y + gap_top}
-                  cond_wrap == true -> %{x: next_x, y: glyph_position.y}
-                  true -> %{x: next_x, y: glyph_position.y}
-                end
-
-              {glyph_x, next_x} =
-                if cond_wrap,
-                  do:
-                    {0 + gap_left_newline + left,
-                     0 + gap_left_newline + left + gap_right_newline + right},
-                  else: {glyph_x, next_x}
-
-              internal_attribution =
-                Map.put(glyph.internal_attribution, :gap_top, gap_top)
-                |> Map.put(:gap_center, gap_center)
-
-              glyph_new = %Glyph{
-                glyph
-                | offset: position_data,
-                  internal_attribution: internal_attribution
-              }
-
-              acc_data = %{acc_data | position: position_data}
-
-              {:cont, {:ok, {[glyph_new | acc_glyph], acc_data}}}
-
-            {:error, _} = err ->
-              {:halt, err}
-          end
-        end
-      )
-      |> case do
-        {:error, _} = err -> err
-        {:ok, {acc_path, _acc_data}} -> {:ok, Enum.reverse(acc_path)}
-      end
     else
       {:data, nil} -> {:error, "（仮）Data not found in FONTDATA"}
       {:height, nil} -> {:error, "（仮）Height not found in FONTDATA"}
