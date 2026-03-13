@@ -14,6 +14,8 @@ defmodule Thaqqa.Regex_Khhyl.Normalizer do
 
   @form_list ["init", "mid", "fin", "sol", "onset", "coda", "null"]
 
+  @letter_list ["S", "V", "C", "Cd", "Vd", "P", "Pd", "L", "R", "Sep", "Null"]
+
   def normalize!(list) when is_list(list) do
     case normalize(list) do
       {:ok, val} -> val
@@ -32,13 +34,13 @@ defmodule Thaqqa.Regex_Khhyl.Normalizer do
 
   def normalize_sub([], acum_all, _), do: Enum.reverse(acum_all)
 
-  # 1層目
+  # 1層目。sentence部分。
   def normalize_sub(list, acum_all, :sentence = current_layer) when is_list(list) do
     [head | tail] = list
     next_layer = :syllable
 
     case head do
-      h when h in ["S", "V", "C", "Cd", "Vd", "P", "Pd", "L", "X", "R", "Sep", "Null"] ->
+      h when h in @letter_list ->
         normalize_branckets(:"#{h}", nil, acum_all, tail, next_layer, current_layer)
 
       # Rは別処理とする
@@ -89,7 +91,7 @@ defmodule Thaqqa.Regex_Khhyl.Normalizer do
     end
   end
 
-  # 2層目
+  # 2層目。syllable部分。
   def normalize_sub(list, acum_all, :syllable = current_layer) when is_list(list) do
     [head | tail] = list
 
@@ -116,7 +118,7 @@ defmodule Thaqqa.Regex_Khhyl.Normalizer do
     end
   end
 
-  # 3層目
+  # 3層目。glyph_group部分。
   def normalize_sub(list, acum_all, :glyph_group = current_layer) when is_list(list) do
     [head | tail] = list
 
@@ -172,7 +174,7 @@ defmodule Thaqqa.Regex_Khhyl.Normalizer do
     end
   end
 
-  # 4層目
+  # 4層目。glpyh部分。
   def normalize_sub(list, acum_all, :glyph = current_layer) when is_list(list) do
     [head | tail] = list
 
@@ -258,6 +260,9 @@ defmodule Thaqqa.Regex_Khhyl.Normalizer do
     end
   end
 
+  # 括弧内の処理。
+  # TODO:通常の()とS()のような文字系統で処理を分けることとする。
+  # 通常の()を一度でも通った場合、attribute補完部分にキャプチャグループを割り当てない
   defp normalize_branckets(
          token,
          br_val,

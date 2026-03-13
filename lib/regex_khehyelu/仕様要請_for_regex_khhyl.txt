@@ -83,6 +83,49 @@ punctuation、punctuation_diacriticalはそれぞれ P(glyph_list),Pd(glyph_list
 <glyph_name_construct>      ::= r/[A-Za-z]+/ 
 <variant_construct>  ::= r/[0-9]+/ 
 
+
+3.1将来の拡張
+Size(float)
+Color(r,g,b,a)
+Color(r,g,b) (Color(r,g,b,255)と解釈)
+Color(string_colorcode) (#00FFFFFFだとか)
+Offset(x,y)
+Rotate(deg)
+Scale(r)
+Skew(ratio)
+Font(string)
+StrokeWidth(width)
+StrokeColor(r,g,b,a)
+StrokeColor(r,g,b)
+SetStyle(string)
+以降の「デフォルトの文字設定」（文字のサイズや色、フォントなど）を指定する。
+L()のマッチ対象とする。
+
+AnyStyle()でマッチ可能。
+
+GSUB,UniqueGSUB,GPOSの際は括弧の中に含まれていない文字同士の境界に(?<style0>AnyStyle()*)を、括弧の中に含まれる文字同士の境界に(AnyStyle()*)を敷くものとする。
+（後々のGSUB/UGSUB/GPOSのコラム拡張で「敷くかどうか」のオンオフを設定可能にするやもしれない）
+
+内部的にはparse前に<size=16>といった文字列をSize(16)とする(R(.)の形に変換する前に執り行う)
+
+Lx()
+上記の「デフォルトの文字設定変更系統」とマッチしない。
+
+
+任意の文字のスロット(onset,vowel,coda etc.)にて
+glyph_list;attr
+のようにしてそのglyph_listのみattrを適応することが可能。
+
+S(init,h0;size=24,a0,kh0-d0-sy0;size=24&&color.0.2=#FFFFFF&&font.1="fude")
+のように記述する。
+この場合、h0は24のサイズ、
+kh0,d0,sy0は24のサイズ、kh0,sy0は白色で描画され。d0は"fude"フォントで描画。
+必要があるならば連番対応も行う。
+後記するRegex_khhylにてユーザー指定でのマッチは出来ない。
+「;attrに該当する部分は無条件でマッチ対象となり、括弧の中に含まれていない場合はグループとして処理・自動で変換後の文字列では追記される」
+(具体的には ~r/(?<attr通し番号>);(?[A-Za-z]||[0-9]|[.=-:])+?/ が追加される。例えば1番目には <attr0>,...が付与。)
+
+
 4.Regex拡張DSL
 regex拡張ではワイルドカードや条件式が使用可能。
 
