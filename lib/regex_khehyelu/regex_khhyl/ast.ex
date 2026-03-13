@@ -15,9 +15,9 @@ defmodule Thaqqa.Regex_Khhyl.AST do
             children: [],
             range: nil,
             table_range: nil,
-            letternumber: nil
+            letter_number: nil
 
-  def new(type, layer, range, value \\ nil, children \\ []),
+  def new(type, layer, range, value \\ nil, children \\ [], letter_number \\ nil),
     do: %__MODULE__{
       type: type,
       value: value,
@@ -25,7 +25,7 @@ defmodule Thaqqa.Regex_Khhyl.AST do
       children: children,
       range: range,
       table_range: nil,
-      letternumber: nil
+      letter_number: letter_number
     }
 
   def has_astarisk_for_form?(%__MODULE__{value: val, children: children}),

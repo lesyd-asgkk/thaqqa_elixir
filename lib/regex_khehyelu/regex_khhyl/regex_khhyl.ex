@@ -214,7 +214,7 @@ defmodule Thaqqa.Regex_Khhyl do
 
   def translate(ast, %Prefab{} = prefab) when is_list(ast), do: Translator.translate(ast, prefab)
 
-  def normalize!(list) when is_list(list), do: Normalizer.normalize(list)
+  def normalize!(list) when is_list(list), do: Normalizer.normalize!(list)
   def normalize(list) when is_list(list), do: Normalizer.normalize(list)
 
   def tokenize(string) when is_binary(string), do: Tokenizer.tokenize(string)

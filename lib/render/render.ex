@@ -27,6 +27,25 @@ defmodule Thaqqa.Render do
   # |> Enum.zip(list, tl(list), tl(tl(list))) (Enum.chunk_every(list, 3, 1, :discard)と等価。高速なので採用）
   # |> Stream.map(&calc_kerning/1)
   # のような形。
+  def build_render(
+        width,
+        height,
+        line_break \\ :normal,
+        text_align \\ :left,
+        text_align_last \\ :left,
+        word_spacing \\ 0,
+        letter_spacing \\ 0
+      ) do
+    %__MODULE__{
+      boundry: %{width: width, height: height},
+      line_break: line_break,
+      text_align: text_align,
+      text_align_last: text_align_last,
+      word_spacing: word_spacing,
+      letter_spacing: letter_spacing
+    }
+  end
+
   defp build_none(font) do
     %Glyph{
       offset: %{x: 0, y: 0},
@@ -104,7 +123,7 @@ defmodule Thaqqa.Render do
       prev_scale = prev_glyph.scale || glyph.scale
       next_scale = next_glyph.scale || glyph.scale
 
-      %{left: l, right: r} = SVG.Path.get_border(new_glyph.path)
+      %{top: t, bottom: b, left: l, right: r} = SVG.Path.get_border(new_glyph.path)
 
       {:ok,
        %{
@@ -112,8 +131,8 @@ defmodule Thaqqa.Render do
          new_line: is_newline,
          word_breaker: is_wordbreaker,
          box: %{
-           top: scale,
-           bottom: 0,
+           top: 0,
+           bottom: height * scale,
            left: if(is_width_relative, do: -l + width / 2 * scale, else: width / 2 * scale),
            right: if(is_width_relative, do: r + width / 2 * scale, else: width / 2 * scale)
          },
@@ -154,7 +173,7 @@ defmodule Thaqqa.Render do
   end
 
   defp set_position_y(glyph_list) do
-    {[glyph_list], _} =
+    {glyph_list, _} =
       Enum.chunk_while(
         glyph_list,
         [],
@@ -173,19 +192,19 @@ defmodule Thaqqa.Render do
       |> Enum.reduce({[], 0}, fn g_list, {acc, acc_y} ->
         {max_height, max_gap_top} =
           Enum.reduce(g_list, {0, 0}, fn g, {acc_height, acc_gap_top} ->
-            glyph_height = g.height.y3 + g.internal_attribution.gap_top
+            glyph_height = g.internal_attribution.height
             {max(acc_height, glyph_height), max(acc_gap_top, g.internal_attribution.gap_top)}
           end)
 
         g_alt =
           Enum.map(g_list, fn g ->
-            top_gap = max_height - g.height.y3
+            top_gap = max_height - g.internal_attribution.height
 
             internal_attribution =
               Map.put(g.internal_attribution, :y, acc_y + max_gap_top + top_gap)
 
             # %Glyph{g | internal_attribution: internal_attribution}
-            internal_attribution
+            {internal_attribution.x, internal_attribution.y, g.name.glyph}
           end)
 
         {[g_alt | acc], acc_y + max_height + max_gap_top}
@@ -240,7 +259,8 @@ defmodule Thaqqa.Render do
               |> Map.put(:gap_center, gap_center)
               |> Map.put(:is_wordbreaker, is_wordbreaker)
               |> Map.put(:is_newline, is_newline)
-              |> Map.put(:x, acc_data_x)
+              |> Map.put(:x, glyph_x)
+              |> Map.put(:height, bottom)
 
             glyph_new = %Glyph{glyph | internal_attribution: internal_attribution}
 
@@ -255,7 +275,7 @@ defmodule Thaqqa.Render do
     )
     |> case do
       {:error, _} = err -> err
-      {:ok, {acc_path, _acc_data}} -> {:ok, Enum.reverse(acc_path)}
+      {:ok, {acc_path, _acc_data}} -> {:ok, Enum.reverse(acc_path) |> set_position_y()}
     end
   end
 
@@ -353,7 +373,7 @@ defmodule Thaqqa.Render do
 
   def verficate_syllable(%Prefab{} = prefab, syllable_list) when is_list(syllable_list) do
     Enum.reduce_while(syllable_list, nil, fn syl, _ ->
-      case ConstRegexManager.whole_of_string_match_at_once?(prefab, "SingleLetter", syl) do
+      case ConstRegexManager.whole_of_string_match_at_once?(prefab, "EverySingleLetter", syl) do
         {:error, _} = err ->
           {:halt, err}
 
@@ -361,7 +381,7 @@ defmodule Thaqqa.Render do
           {:cont, nil}
 
         {:ok, _} ->
-          case ConstRegexManager.whole_of_string_match?(prefab, "SingleLetter", syl) do
+          case ConstRegexManager.whole_of_string_match?(prefab, "EverySingleLetter", syl) do
             {:error, _} = err ->
               {:halt, err}
 
@@ -381,7 +401,7 @@ defmodule Thaqqa.Render do
   end
 
   def split_by_syllable(%Prefab{} = prefab, string) do
-    case ConstRegexManager.get_const(prefab, "DoubleLetter") do
+    case ConstRegexManager.get_const(prefab, "EveryDoubleLetter") do
       {:error, _} = err ->
         err
 

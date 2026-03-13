@@ -211,6 +211,14 @@ defmodule Thaqqa.Regex_Khhyl.Translator do
     end
   end
 
+  # ※現状は:Lの場合と同じ
+  defp translate_sub(%AST{type: :Lx = type, range: range, children: children}, %Prefab{} = prefab) do
+    case argument_number(children) do
+      0 -> export_as_string!("(?:S(*)|V(*)|C(*)|P(*)|Vd(*)|Cd(*)|Pd(*))", prefab)
+      _ -> Error.invalid_argument_num(type, range)
+    end
+  end
+
   defp translate_sub(%AST{type: :R, value: val}, %Prefab{} = _prefab),
     do: "R\\(#{val}\\)"
 
