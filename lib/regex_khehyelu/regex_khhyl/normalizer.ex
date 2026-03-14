@@ -401,7 +401,6 @@ defmodule Thaqqa.Regex_Khhyl.Normalizer do
   end
 
   # 括弧内の処理。
-  # TODO:通常の()とS()のような文字系統で処理を分けることとする。
   # 通常の()を一度でも通った場合、attribute補完部分にキャプチャグループを割り当てない
 
   defp normalize_branckets(

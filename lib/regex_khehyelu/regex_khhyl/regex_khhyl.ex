@@ -162,6 +162,75 @@ defmodule Thaqqa.Regex_Khhyl do
 
 
   """
+  @letter_list ["S", "V", "C", "Cd", "Vd", "P", "Pd", "Lx", "L", "R", "Sep", "Null"]
+  @style_list [
+    "Size",
+    "Color",
+    "Offset",
+    "Rotate",
+    "Scale",
+    "Skew",
+    "Font",
+    "StrokeWidth",
+    "StrokeColor",
+    "StyStyle"
+  ]
+
+  def compile_as_replacement(string) when is_binary(string) do
+    prefix_list = Enum.join(@letter_list ++ @style_list, "|")
+
+    regex_list = "((" <> prefix_list <> ")?" <> "\\(.+?\\))|\\\\g\\{.*?\\}"
+
+    {list, _} =
+      String.split(
+        string,
+        Regex.compile!(regex_list),
+        include_captures: true
+      )
+      |> Enum.filter(&(&1 != ""))
+      |> Enum.reduce({[], 0}, fn k, {acc, n} ->
+        n_str = to_string(n)
+
+        if Regex.match?(~r/\\\\g\\{.*?\\}/, k) do
+          n_str = to_string(n - 1)
+          k_ = if n == 0, do: k, else: "\\g{style" <> n_str <> "}" <> k
+
+          {[k_ | acc], n + 1}
+        else
+          k_ =
+            String.split(k, ~r/,/, include_captures: false)
+
+          k_ =
+            case length(k_) do
+              1 ->
+                [k_glyph] = k_
+                [letter] = String.split(k_glyph, ~r/\\\)/, include_captures: false)
+                letter <> "\\g{attr" <> n_str <> "}" <> ")"
+
+              2 ->
+                [k_form, k_glyph] = k_
+                [k_glyph] = String.split(k_glyph, ~r/\\\)/, include_captures: false)
+                k_form <> "," <> k_glyph <> "\\g{attr" <> n_str <> "}" <> ")"
+
+              4 ->
+                [k_form, k_onset, k_vowel, k_coda] = k_
+                [k_coda] = String.split(k_coda, ~r/\\\)/, include_captures: false)
+
+                k_onset_string = k_onset <> "\\g{attronset" <> n_str <> "}"
+                k_vowel_string = k_vowel <> "\\g{attrvowel" <> n_str <> "}"
+                k_coda_string = k_coda <> "\\g{attrcoda" <> n_str <> "}" <> ")"
+
+                k_form <> "," <> k_onset_string <> "," <> k_vowel_string <> "," <> k_coda_string
+            end
+
+          k_ = if n == 0, do: k_, else: "\\g{style" <> n_str <> "}" <> k_
+
+          {[k_ | acc], n + 1}
+        end
+      end)
+
+    list |> Enum.reverse() |> Enum.join("")
+  end
 
   def compile_as_regex!(string, %Prefab{} = prefab) when is_binary(string),
     do: compile!(string, prefab)
