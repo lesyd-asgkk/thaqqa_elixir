@@ -104,14 +104,10 @@ defmodule Thaqqa.Regex_Khhyl.Translator do
         if AST.has_astarisk_for_form?(head) do
           translate_sub(
             %AST{type: :S, children: [AST.replace_astarisk_as_form(head) | tail]},
-            %Prefab{} = prefab
+            prefab
           )
         else
-          translate_brancket_sub(
-            "#{Atom.to_string(type)}\\(",
-            [head | tail],
-            %Prefab{} = prefab
-          )
+          translate_brancket_sub("#{Atom.to_string(type)}\\(", [head | tail], prefab)
         end
 
       2 ->
@@ -128,10 +124,7 @@ defmodule Thaqqa.Regex_Khhyl.Translator do
             ),
           else:
             translate_sub(
-              %AST{
-                type: :S,
-                children: [head] ++ tail ++ tail ++ tail
-              },
+              %AST{type: :S, children: [head] ++ tail ++ tail ++ tail},
               prefab
             )
 
@@ -211,13 +204,32 @@ defmodule Thaqqa.Regex_Khhyl.Translator do
     end
   end
 
-  # ※現状は:Lの場合と同じ
-  defp translate_sub(%AST{type: :Lx = type, range: range, children: children}, %Prefab{} = prefab) do
-    case argument_number(children) do
-      0 -> export_as_string!("(?:S(*)|V(*)|C(*)|P(*)|Vd(*)|Cd(*)|Pd(*))", prefab)
-      _ -> Error.invalid_argument_num(type, range)
+  # attribute_filterの処理
+  defp translate_sub(
+         %AST{type: :attribute_filler, value: {arg, letter_number}} = ast,
+         %Prefab{} = prefab
+       ) do
+    ln = to_string(letter_number)
+
+    case letter_number do
+      nil ->
+        "(?:;(?:[A-Za-z]|[0-9]|(?:\\.|=|-|:|&&| ))+)?"
+
+      n ->
+        case arg do
+          nil -> "(?<attr#{ln}>;(?:[A-Za-z]|[0-9]|(?:\\.|=|-|:|&&| ))+)?"
+          1 -> "(?<attronset#{ln}>;(?:[A-Za-z]|[0-9]|(?:\\.|=|-|:|&&| ))+)?"
+          2 -> "(?<attrvowel#{ln}>;(?:[A-Za-z]|[0-9]|(?:\\.|=|-|:|&&| ))+)?"
+          3 -> "(?<attrcoda#{ln}>;(?:[A-Za-z]|[0-9]|(?:\\.|=|-|:|&&| ))+)?"
+        end
+
+        "(?:;(?:[A-Za-z]|[0-9]|(?:\\.|=|-|:|&&| ))+)?"
     end
   end
+
+  #
+
+  defp translate_sub(%AST{type: :finite, value: val}, %Prefab{} = _prefab), do: val
 
   defp translate_sub(%AST{type: :R, value: val}, %Prefab{} = _prefab),
     do: "R\\(#{val}\\)"
@@ -228,6 +240,12 @@ defmodule Thaqqa.Regex_Khhyl.Translator do
       1 -> translate_brancket_sub("#{Atom.to_string(type)}\\(", children, prefab)
       _ -> Error.invalid_argument_num(type, range)
     end
+  end
+
+  defp translate_sub(
+         %AST{type: :S = type, children: children} = ast,
+         %Prefab{} = prefab
+       ) do
   end
 
   defp translate_brancket_sub(val, children, %Prefab{} = prefab),

@@ -45,11 +45,11 @@ defmodule Thaqqa.Regex_Khhyl.Normalizer do
   end
 
   defp normalize_sub(list, acum_all, current_layer),
-    do: normalize_sub(list, acum_all, current_layer, nil)
+    do: normalize_sub(list, acum_all, current_layer, nil, 0)
 
-  def normalize_sub([], acum_all, _, _letter_number), do: Enum.reverse(acum_all)
+  def normalize_sub([], acum_all, _, _letter_number, _count_argument), do: Enum.reverse(acum_all)
   # 1層目。sentence部分。
-  def normalize_sub(list, acum_all, :sentence = current_layer, letter_number)
+  def normalize_sub(list, acum_all, :sentence = current_layer, letter_number, _count_argument)
       when is_list(list) do
     [head | tail] = list
     next_layer = :syllable
@@ -110,7 +110,7 @@ defmodule Thaqqa.Regex_Khhyl.Normalizer do
 
   # 2層目。syllable部分。
 
-  def normalize_sub(list, acum_all, :syllable = current_layer, letter_number)
+  def normalize_sub(list, acum_all, :syllable = current_layer, letter_number, count_argument \\ 0)
       when is_list(list) do
     [head | tail] = list
 
@@ -123,7 +123,8 @@ defmodule Thaqqa.Regex_Khhyl.Normalizer do
           tail,
           [AST.new(:finite, current_layer, head, head) | acum_all],
           current_layer,
-          letter_number
+          letter_number,
+          count_argument
         )
 
       "," ->
@@ -131,16 +132,17 @@ defmodule Thaqqa.Regex_Khhyl.Normalizer do
           tail,
           [AST.new(:finite, current_layer, head, head) | acum_all],
           current_layer,
-          letter_number
+          letter_number,
+          count_argument + 1
         )
 
       _ ->
-        normalize_glyph_group(acum_all, list, [], letter_number)
+        normalize_glyph_group(acum_all, list, [], letter_number, count_argument)
     end
   end
 
   # 3層目。glyph_group部分。
-  def normalize_sub(list, acum_all, :glyph_group = current_layer, letter_number)
+  def normalize_sub(list, acum_all, :glyph_group = current_layer, letter_number, _count_argument)
       when is_list(list) do
     [head | tail] = list
 
@@ -199,7 +201,7 @@ defmodule Thaqqa.Regex_Khhyl.Normalizer do
   end
 
   # 4層目。glpyh部分。
-  def normalize_sub(list, acum_all, :glyph = current_layer, letter_number)
+  def normalize_sub(list, acum_all, :glyph = current_layer, letter_number, _count_argument)
       when is_list(list) do
     [head | tail] = list
 
@@ -365,7 +367,8 @@ defmodule Thaqqa.Regex_Khhyl.Normalizer do
           else
             children = normalize_sub(Enum.reverse(acum), [], :syllable, letter_number)
             text = "#{Atom.to_string(token)}(#{br_val} #{Enum.reverse(acum) |> Enum.join("")} )"
-
+            # AST.new(:style_filler, current_layer, head,letter_number)
+            # if tail == []　で分岐
             normalize_sub(
               tail,
               [AST.new(token, :sentence, text, br_val, children, letter_number) | acum_all],
@@ -422,19 +425,10 @@ defmodule Thaqqa.Regex_Khhyl.Normalizer do
            []
          )
 
-  defp normalize_branckets(
-         token,
-         br_val,
-         _acum_all,
-         [],
-         _current_layer,
-         _branket_nest,
-         acum
-       ),
-       do:
-         Error.unclosed_brancket_forward(
-           "#{Atom.to_string(token)}(#{br_val} #{Enum.reverse(acum) |> Enum.join("")} )"
-         )
+  defp normalize_branckets(token, br_val, _a_a, [], _c_l, _b_n, acum),
+    do:
+      "#{Atom.to_string(token)}(#{br_val} #{Enum.reverse(acum) |> Enum.join("")} )"
+      |> Error.unclosed_brancket_forward()
 
   defp normalize_branckets(
          token,
@@ -513,40 +507,56 @@ defmodule Thaqqa.Regex_Khhyl.Normalizer do
          acum_all,
          [],
          acum,
-         letter_number
+         letter_number,
+         count_argument
        ) do
     children = normalize_sub(Enum.reverse(acum), [], :glyph_group, letter_number)
     text = Enum.reverse(acum) |> Enum.join("")
 
-    normalize_sub(
-      [],
-      [AST.new(:glyph_group, :syllable, text, nil, children, letter_number) | acum_all],
-      :syllable,
-      letter_number
-    )
+    # attribute_filterを設置する
+    acum_all = [AST.new(:glyph_group, :syllable, text, nil, children, letter_number) | acum_all]
+
+    acum_all =
+      case count_argument do
+        0 -> acum_all
+        1 -> [AST.new(:attribute_filler, :syllable, nil, {nil, letter_number}) | acum_all]
+        3 -> [AST.new(:attribute_filler, :syllable, nil, {3, letter_number}) | acum_all]
+      end
+
+    normalize_sub([], acum_all, :syllable, letter_number)
   end
 
-  defp normalize_glyph_group(acum_all, list, acum, letter_number) when is_list(list) do
+  defp normalize_glyph_group(acum_all, list, acum, letter_number, count_argument)
+       when is_list(list) do
     [head | tail] = list
 
     case head do
       "," ->
         children = normalize_sub(Enum.reverse(acum), [], :glyph_group, letter_number)
         text = Enum.reverse(acum) |> Enum.join("")
+        # ~r/(?<attr通し番号>);(?[A-Za-z]||[0-9]|[.=-:])+?/
+        # AST.new(:attribute_filler, current_layer, head,letter_number)\
+        acum_all = [
+          AST.new(:glyph_group, :syllable, text, nil, children, letter_number) | acum_all
+        ]
 
-        normalize_sub(
-          list,
-          [AST.new(:glyph_group, :syllable, text, nil, children, letter_number) | acum_all],
-          :syllable,
-          letter_number
-        )
+        acum_all =
+          if count_argument == 0,
+            do: acum_all,
+            else: [
+              AST.new(:attribute_filler, :syllable, nil, {count_argument, letter_number})
+              | acum_all
+            ]
+
+        normalize_sub(list, acum_all, :syllable, letter_number, count_argument)
 
       _ ->
         normalize_glyph_group(
           acum_all,
           tail,
           [head | acum],
-          letter_number
+          letter_number,
+          count_argument
         )
     end
   end

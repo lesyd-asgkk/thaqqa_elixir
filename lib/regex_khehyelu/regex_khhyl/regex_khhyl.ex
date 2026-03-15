@@ -190,8 +190,9 @@ defmodule Thaqqa.Regex_Khhyl do
       |> Enum.filter(&(&1 != ""))
       |> Enum.reduce({[], 0}, fn k, {acc, n} ->
         n_str = to_string(n)
+        IO.inspect(k)
 
-        if Regex.match?(~r/\\\\g\\{.*?\\}/, k) do
+        if Regex.match?(~r/\\g\{.*?\}/, k) do
           n_str = to_string(n - 1)
           k_ = if n == 0, do: k, else: "\\g{style" <> n_str <> "}" <> k
 
