@@ -518,9 +518,14 @@ defmodule Thaqqa.Regex_Khhyl.Normalizer do
 
     acum_all =
       case count_argument do
-        0 -> acum_all
-        1 -> [AST.new(:attribute_filler, :syllable, nil, {nil, letter_number}) | acum_all]
-        3 -> [AST.new(:attribute_filler, :syllable, nil, {3, letter_number}) | acum_all]
+        0 ->
+          acum_all
+
+        1 ->
+          [AST.new(:attribute_filler, :syllable, nil, {nil, letter_number}) | acum_all]
+
+        3 ->
+          [AST.new(:attribute_filler, :syllable, nil, {count_argument, letter_number}) | acum_all]
       end
 
     normalize_sub([], acum_all, :syllable, letter_number)

@@ -248,8 +248,12 @@ defmodule Thaqqa.Regex_Khhyl do
 
   def compile(string, %Prefab{} = prefab) when is_binary(string) do
     case export(string, prefab) do
-      {:ok, val} -> Regex.compile(val)
-      {:error, _} = err -> err
+      {:ok, val} ->
+        val |> IO.inspect()
+        Regex.compile(val)
+
+      {:error, _} = err ->
+        err
     end
   end
 

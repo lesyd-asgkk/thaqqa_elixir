@@ -210,20 +210,23 @@ defmodule Thaqqa.Regex_Khhyl.Translator do
          %Prefab{} = prefab
        ) do
     ln = to_string(letter_number)
+    IO.inspect(letter_number)
 
     case letter_number do
       nil ->
         "(?:;(?:[A-Za-z]|[0-9]|(?:\\.|=|-|:|&&| ))+)?"
 
       n ->
-        case arg do
-          nil -> "(?<attr#{ln}>;(?:[A-Za-z]|[0-9]|(?:\\.|=|-|:|&&| ))+)?"
-          1 -> "(?<attronset#{ln}>;(?:[A-Za-z]|[0-9]|(?:\\.|=|-|:|&&| ))+)?"
-          2 -> "(?<attrvowel#{ln}>;(?:[A-Za-z]|[0-9]|(?:\\.|=|-|:|&&| ))+)?"
-          3 -> "(?<attrcoda#{ln}>;(?:[A-Za-z]|[0-9]|(?:\\.|=|-|:|&&| ))+)?"
-        end
+        y =
+          case arg do
+            nil -> "(?<attr#{ln}>;(?:[A-Za-z]|[0-9]|(?:\\.|=|-|:|&&| ))+)?"
+            0 -> "(?<attr#{ln}>;(?:[A-Za-z]|[0-9]|(?:\\.|=|-|:|&&| ))+)?"
+            1 -> "(?<attronset#{ln}>;(?:[A-Za-z]|[0-9]|(?:\\.|=|-|:|&&| ))+)?"
+            2 -> "(?<attrvowel#{ln}>;(?:[A-Za-z]|[0-9]|(?:\\.|=|-|:|&&| ))+)?"
+            3 -> "(?<attrcoda#{ln}>;(?:[A-Za-z]|[0-9]|(?:\\.|=|-|:|&&| ))+)?"
+          end
 
-        "(?:;(?:[A-Za-z]|[0-9]|(?:\\.|=|-|:|&&| ))+)?"
+        # "(?:;(?:[A-Za-z]|[0-9]|(?:\\.|=|-|:|&&| ))+)?"
     end
   end
 
