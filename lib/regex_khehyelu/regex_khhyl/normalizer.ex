@@ -62,7 +62,7 @@ defmodule Thaqqa.Regex_Khhyl.Normalizer do
 
       h when h in @brancket_forward ->
         name = String.slice(head, 1..-1//1)
-        normalize_branckets(:brancket, name, acum_all, tail, current_layer, 1)
+        normalize_branckets(:brancket, name, acum_all, tail, current_layer, letter_number, 1)
 
       h when h in @brancket_backward ->
         Error.unclosed_brancket_backward("#{Enum.join(list, "")}")
@@ -86,6 +86,7 @@ defmodule Thaqqa.Regex_Khhyl.Normalizer do
               acum_all,
               tail,
               current_layer,
+              letter_number,
               1
             )
 
@@ -153,7 +154,7 @@ defmodule Thaqqa.Regex_Khhyl.Normalizer do
 
       h when h in @brancket_forward ->
         name = String.slice(head, 1..-1//1)
-        normalize_branckets(:brancket, name, acum_all, tail, current_layer, 1)
+        normalize_branckets(:brancket, name, acum_all, tail, current_layer, letter_number, 1)
 
       h when h in @brancket_backward ->
         Error.unclosed_brancket_backward("#{Enum.join(list, "")}")
@@ -177,6 +178,7 @@ defmodule Thaqqa.Regex_Khhyl.Normalizer do
               acum_all,
               tail,
               current_layer,
+              letter_number,
               1
             )
 
@@ -227,7 +229,7 @@ defmodule Thaqqa.Regex_Khhyl.Normalizer do
 
       h when h in @brancket_forward ->
         name = String.slice(head, 1..-1//1)
-        normalize_branckets(:brancket, name, acum_all, tail, current_layer, 1)
+        normalize_branckets(:brancket, name, acum_all, tail, current_layer, letter_number, 1)
 
       h when h in @brancket_backward ->
         Error.unclosed_brancket_backward("#{Enum.join(list, "")}")
@@ -246,6 +248,7 @@ defmodule Thaqqa.Regex_Khhyl.Normalizer do
               acum_all,
               tail,
               current_layer,
+              letter_number,
               1
             )
 
@@ -412,6 +415,7 @@ defmodule Thaqqa.Regex_Khhyl.Normalizer do
          acum_all,
          list,
          current_layer,
+         letter_number,
          branket_nest \\ 0
        ),
        do:
@@ -421,11 +425,12 @@ defmodule Thaqqa.Regex_Khhyl.Normalizer do
            acum_all,
            list,
            current_layer,
+           letter_number,
            branket_nest,
            []
          )
 
-  defp normalize_branckets(token, br_val, _a_a, [], _c_l, _b_n, acum),
+  defp normalize_branckets(token, br_val, _a_a, [], _c_l, _l_n, _b_n, acum),
     do:
       "#{Atom.to_string(token)}(#{br_val} #{Enum.reverse(acum) |> Enum.join("")} )"
       |> Error.unclosed_brancket_forward()
@@ -436,6 +441,7 @@ defmodule Thaqqa.Regex_Khhyl.Normalizer do
          acum_all,
          list,
          current_layer,
+         letter_number,
          branket_nest,
          acum
        )
@@ -452,30 +458,22 @@ defmodule Thaqqa.Regex_Khhyl.Normalizer do
           acum_all,
           tail,
           current_layer,
+          letter_number,
           branket_nest + 1,
           acum
         )
 
       h when h in @brancket_backward ->
         if branket_nest == 1 do
-          if token == :R do
-            text = Enum.reverse(acum) |> Enum.join("")
+          children = normalize_sub(Enum.reverse(acum), [], current_layer)
+          text = "#{Atom.to_string(token)}(#{br_val} #{Enum.reverse(acum) |> Enum.join("")} )"
 
-            normalize_sub(
-              tail,
-              [AST.new(token, current_layer, "R(#{text})", text, []) | acum_all],
-              current_layer
-            )
-          else
-            children = normalize_sub(Enum.reverse(acum), [], current_layer)
-            text = "#{Atom.to_string(token)}(#{br_val} #{Enum.reverse(acum) |> Enum.join("")} )"
-
-            normalize_sub(
-              tail,
-              [AST.new(token, current_layer, text, br_val, children) | acum_all],
-              current_layer
-            )
-          end
+          normalize_sub(
+            tail,
+            [AST.new(token, current_layer, text, br_val, children) | acum_all],
+            current_layer,
+            letter_number
+          )
         else
           normalize_branckets(
             token,
@@ -483,6 +481,7 @@ defmodule Thaqqa.Regex_Khhyl.Normalizer do
             acum_all,
             tail,
             current_layer,
+            letter_number,
             branket_nest - 1,
             [
               head | acum
@@ -497,6 +496,7 @@ defmodule Thaqqa.Regex_Khhyl.Normalizer do
           acum_all,
           tail,
           current_layer,
+          letter_number,
           branket_nest,
           [head | acum]
         )
@@ -519,7 +519,7 @@ defmodule Thaqqa.Regex_Khhyl.Normalizer do
     acum_all =
       case count_argument do
         0 ->
-          acum_all
+          [AST.new(:attribute_filler, :syllable, nil, {nil, letter_number}) | acum_all]
 
         1 ->
           [AST.new(:attribute_filler, :syllable, nil, {nil, letter_number}) | acum_all]
