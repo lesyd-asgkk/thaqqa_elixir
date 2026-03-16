@@ -69,6 +69,7 @@ defmodule Thaqqa.Render do
         %{is_width_relative: is_width_relative, width: width, gap_top: gap_top, height: height}
       ) do
     newline_as_regex_khhyl = "P([_.IsNewline]_-*)"
+    start = System.monotonic_time()
 
     with {:ok, %{x0: x0_internal, y0: y0_internal, x1: x1_internal, y1: y1_internal}} <-
            GposManager.gpos(prefab, fontname, glyph_name, @horizontal, @internal),
@@ -275,7 +276,7 @@ defmodule Thaqqa.Render do
     )
     |> case do
       {:error, _} = err -> err
-      {:ok, {acc_path, _acc_data}} -> {:ok, Enum.reverse(acc_path) |> set_position_y()}
+      {:ok, {acc_path, _acc_data}} -> {:ok, Enum.reverse(acc_path)}
     end
   end
 
@@ -306,7 +307,7 @@ defmodule Thaqqa.Render do
         |> Enum.map(&calc_kerning_horizontal(&1, prefab, fontname, temp_struct_for_argument))
         |> set_position_and_flag()
 
-      # set_position_y(glyph_and_kern_list)
+      set_position_y(glyph_and_kern_list)
       # あとはglyphの棒を挿したりするだけ
       # prefab
     else

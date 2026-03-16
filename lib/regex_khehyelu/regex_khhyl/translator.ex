@@ -197,6 +197,13 @@ defmodule Thaqqa.Regex_Khhyl.Translator do
     end
   end
 
+  defp translate_sub(%AST{type: :Lx = type, range: range, children: children}, %Prefab{} = prefab) do
+    case argument_number(children) do
+      0 -> export_as_string!("(?:S(*)|V(*)|C(*)|P(*)|Vd(*)|Cd(*)|Pd(*))", prefab)
+      _ -> Error.invalid_argument_num(type, range)
+    end
+  end
+
   defp translate_sub(%AST{type: :L = type, range: range, children: children}, %Prefab{} = prefab) do
     case argument_number(children) do
       0 -> export_as_string!("(?:S(*)|V(*)|C(*)|P(*)|Vd(*)|Cd(*)|Pd(*))", prefab)
@@ -204,13 +211,13 @@ defmodule Thaqqa.Regex_Khhyl.Translator do
     end
   end
 
-  # attribute_filterの処理
+  # attribute_filterの処理(未使用)
+  # こちらは将来用に残してはおく。
   defp translate_sub(
          %AST{type: :attribute_filler, value: {arg, letter_number}} = ast,
          %Prefab{} = prefab
        ) do
     ln = to_string(letter_number)
-    IO.inspect(letter_number)
 
     case letter_number do
       nil ->

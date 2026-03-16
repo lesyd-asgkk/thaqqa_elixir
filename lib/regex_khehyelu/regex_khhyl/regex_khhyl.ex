@@ -176,6 +176,8 @@ defmodule Thaqqa.Regex_Khhyl do
     "StyStyle"
   ]
 
+  # 未使用。
+  # 一応遺しておくだけ。
   def compile_as_replacement(string) when is_binary(string) do
     prefix_list = Enum.join(@letter_list ++ @style_list, "|")
 
@@ -190,7 +192,6 @@ defmodule Thaqqa.Regex_Khhyl do
       |> Enum.filter(&(&1 != ""))
       |> Enum.reduce({[], 0}, fn k, {acc, n} ->
         n_str = to_string(n)
-        IO.inspect(k)
 
         if Regex.match?(~r/\\g\{.*?\}/, k) do
           n_str = to_string(n - 1)
@@ -249,7 +250,6 @@ defmodule Thaqqa.Regex_Khhyl do
   def compile(string, %Prefab{} = prefab) when is_binary(string) do
     case export(string, prefab) do
       {:ok, val} ->
-        val |> IO.inspect()
         Regex.compile(val)
 
       {:error, _} = err ->
