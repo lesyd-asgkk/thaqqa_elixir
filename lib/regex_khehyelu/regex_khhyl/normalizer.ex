@@ -14,7 +14,7 @@ defmodule Thaqqa.Regex_Khhyl.Normalizer do
 
   @form_list ["init", "mid", "fin", "sol", "onset", "coda", "null"]
 
-  @letter_list ["S", "V", "C", "Cd", "Vd", "P", "Pd", "Lx", "L", "R", "Sep", "Null"]
+  @letter_list ["S", "V", "C", "Cd", "Vd", "P", "Pd", "Lx", "L", "R", "Style", "Sep", "Null"]
   @style_list [
     "Size",
     "Color",
@@ -25,7 +25,7 @@ defmodule Thaqqa.Regex_Khhyl.Normalizer do
     "Font",
     "StrokeWidth",
     "StrokeColor",
-    "StyStyle"
+    "SetStyle"
   ]
 
   def normalize!(list) when is_list(list) do
@@ -53,6 +53,9 @@ defmodule Thaqqa.Regex_Khhyl.Normalizer do
 
     case head do
       h when h in @letter_list ->
+        normalize_letter(:"#{h}", nil, acum_all, tail)
+
+      h when h in @style_list ->
         normalize_letter(:"#{h}", nil, acum_all, tail)
 
       # Rは別処理とする

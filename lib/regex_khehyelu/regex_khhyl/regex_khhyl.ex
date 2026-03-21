@@ -173,7 +173,7 @@ defmodule Thaqqa.Regex_Khhyl do
     "Font",
     "StrokeWidth",
     "StrokeColor",
-    "StyStyle"
+    "SetStyle"
   ]
 
   # 未使用。

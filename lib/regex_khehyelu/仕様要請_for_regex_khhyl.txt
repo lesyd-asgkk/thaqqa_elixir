@@ -85,6 +85,7 @@ punctuation、punctuation_diacriticalはそれぞれ P(glyph_list),Pd(glyph_list
 
 
 3.1将来の拡張
+Style指定
 Size(float)
 Color(r,g,b,a)
 Color(r,g,b) (Color(r,g,b,255)と解釈)
@@ -101,6 +102,10 @@ SetStyle(string)
 以降の「デフォルトの文字設定」（文字のサイズや色、フォントなど）を指定する。
 Lx()のマッチ対象とする。
 
+全てのStyle指定（Regex上）について、SetStyle(*)はSetStyle(*;*)と同義。
+SetSize(24;*)は全ての部分指定を含む。
+;*部分はおまじないだと思っていただければ。
+
 Style()でもマッチ可能。
 
 GSUB,UniqueGSUB,GPOSの際は括弧の中に含まれていない文字同士の境界に(?<style0>AnyStyle()*)を、括弧の中に含まれる文字同士の境界に(AnyStyle()*)を敷くものとする。
@@ -110,8 +115,8 @@ GSUB,UniqueGSUB,GPOSの際は括弧の中に含まれていない文字同士の
 
 L()について、上記の「デフォルトの文字設定変更系統」とはマッチしない。
 
-Size(float;onset.0.size=24)
-SetStyle(string;)
+Size(24;onset.0)
+Skew(0.5;)
 このように指定することで、次の文字の特定要素のみに特徴を反映させることが可能。
 
 GSUB、GPOSについて。Style指定形式を跨いで変換・マッチ対象にしたい場合は、

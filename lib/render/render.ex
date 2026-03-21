@@ -13,7 +13,7 @@ defmodule Thaqqa.Render do
   use Thaqqa.DataTable.Const
 
   defstruct boundry: %{width: 0, height: 0},
-            line_break: :normal,
+            word_break: :normal,
             text_align: :left,
             text_align_last: :left,
             word_spacing: 0,
@@ -30,9 +30,13 @@ defmodule Thaqqa.Render do
   def build_render(
         width,
         height,
-        line_break \\ :normal,
-        text_align \\ :left,
-        text_align_last \\ :left,
+        # normal break_all keep_all break_word
+        word_break \\ :normal,
+        # px単位指定
+        line_height \\ 0,
+        # start end left right center justify
+        text_align \\ :start,
+        text_align_last \\ :start,
         word_spacing \\ 0,
         letter_spacing \\ 0
       ) do
@@ -69,7 +73,6 @@ defmodule Thaqqa.Render do
         %{is_width_relative: is_width_relative, width: width, gap_top: gap_top, height: height}
       ) do
     newline_as_regex_khhyl = "P([_.IsNewline]_-*)"
-    start = System.monotonic_time()
 
     with {:ok, %{x0: x0_internal, y0: y0_internal, x1: x1_internal, y1: y1_internal}} <-
            GposManager.gpos(prefab, fontname, glyph_name, @horizontal, @internal),
@@ -179,11 +182,9 @@ defmodule Thaqqa.Render do
         glyph_list,
         [],
         fn glyph, acc ->
-          if glyph.internal_attribution.is_newline do
-            {:cont, Enum.reverse([glyph | acc]), []}
-          else
-            {:cont, [glyph | acc]}
-          end
+          if glyph.internal_attribution.is_newline,
+            do: {:cont, Enum.reverse([glyph | acc]), []},
+            else: {:cont, [glyph | acc]}
         end,
         fn
           [] -> {:cont, []}
@@ -204,14 +205,111 @@ defmodule Thaqqa.Render do
             internal_attribution =
               Map.put(g.internal_attribution, :y, acc_y + max_gap_top + top_gap)
 
-            # %Glyph{g | internal_attribution: internal_attribution}
-            {internal_attribution.x, internal_attribution.y, g.name.glyph}
+            %Glyph{g | internal_attribution: internal_attribution}
           end)
 
         {[g_alt | acc], acc_y + max_height + max_gap_top}
       end)
 
     Enum.reverse(glyph_list)
+  end
+
+  defp parse_word(glyph_and_kern_list) do
+    glyph_and_kern_parsed =
+      Enum.chunk_while(
+        glyph_and_kern_list,
+        {[], []},
+        fn glyph, {acc_main, acc_sub} ->
+          case glyph do
+            {:ok, glyph} ->
+              cond do
+                glyph.new_line ->
+                  {:cont, {Enum.reverse([glyph | acc_main]), []}, {[], []}}
+
+                glyph.word_breaker ->
+                  {:cont, {[Enum.reverse([glyph | acc_sub]) | acc_main], []}}
+
+                true ->
+                  {:cont, {acc_main, [glyph | acc_sub]}}
+              end
+
+            {:error, reason} ->
+              {:halt, {:error, reason}}
+          end
+        end,
+        fn
+          {[], []} ->
+            {:cont, {:ok, []}}
+
+          {acc_main, []} ->
+            {:cont, {:ok, Enum.reverse(acc_main), []}}
+
+          {acc_main, acc_sub} ->
+            {:cont, {:ok, Enum.reverse([Enum.reverse(acc_sub) | acc_main]), []}}
+        end
+      )
+      |> case do
+        {:error, reason} -> {:error, reason}
+        {:ok, list} -> {:ok, list}
+      end
+  end
+
+  defp set_position(glyph_and_kern_list_list_list) do
+    Enum.reduce_while(
+      glyph_and_kern_list_list_list,
+      {:ok, []},
+      fn glyph_and_kern_list_list, {:ok, acc} ->
+        Enum.reduce_while(
+          glyph_and_kern_list_list,
+          {:ok, []},
+          fn glyph_and_kern_list, {:ok, acc} ->
+            # {glyph_and_kern_list,is_word_wrapped,x,y}
+            # line_breakがの場合は無視
+            Enum.reduce_while(
+              glyph_and_kern_list,
+              {:ok, []},
+              fn g_a_k, {:ok, acc} ->
+                %{
+                  glyph: glyph,
+                  new_line: is_newline,
+                  word_breaker: is_wordbreaker,
+                  box: %{top: top, bottom: bottom, left: left, right: right},
+                  gap: %{top: gap_top, center: gap_center, left: gap_left, right: gap_right},
+                  gap_when_newline: %{
+                    top: gap_top_nl,
+                    center: gap_center_nl,
+                    left: gap_left_nl,
+                    right: gap_right_nl
+                  }
+                } = g_a_k
+
+                glyph_position = acc_data.x
+                glyph_x = glyph_position + gap_left + left
+                next_x = glyph_position + gap_left + left + gap_right + right
+
+                cond_wrap = false
+
+                acc_data_x =
+                  cond do
+                    is_newline == true -> 0
+                    cond_wrap == true -> 0
+                    true -> next_x
+                  end
+
+                {glyph_x, next_x, is_newline} =
+                  if cond_wrap,
+                    do:
+                      {0 + gap_left_nl + left, 0 + gap_left_nl + left + gap_right_nl + right,
+                       true},
+                    else: {glyph_x, next_x, is_newline}
+
+                acc_data = %{acc_data | x: acc_data_x}
+              end
+            )
+          end
+        )
+      end
+    )
   end
 
   defp set_position_and_flag(glyph_and_kern_list) do
@@ -260,7 +358,9 @@ defmodule Thaqqa.Render do
               |> Map.put(:gap_center, gap_center)
               |> Map.put(:is_wordbreaker, is_wordbreaker)
               |> Map.put(:is_newline, is_newline)
-              |> Map.put(:x, glyph_x)
+              |> Map.put(:left_width, glyph_position)
+              |> Map.put(:center, glyph_x)
+              |> Map.put(:right_width, next_x)
               |> Map.put(:height, bottom)
 
             glyph_new = %Glyph{glyph | internal_attribution: internal_attribution}
@@ -357,18 +457,20 @@ defmodule Thaqqa.Render do
 
   def build_path_data(%Prefab{} = prefab, syllable_list, font, writing_direction, default_scale)
       when is_list(syllable_list) do
-    Enum.reduce_while(syllable_list, {:ok, []}, fn syl, {:ok, acc} ->
+    # TODO Style()とマッチするSyllableだった場合は処理を変更する
+    # _style_accはstyle適応の際の処理用。
+    Enum.reduce_while(syllable_list, {:ok, {[], []}}, fn syl, {:ok, {_style_acc, acc}} ->
       with {:ok, glyph} <- Glyph.new(prefab, font, syl, writing_direction, default_scale) do
         # 現状set_pathにエラーを吐く要因はないが
         # 今後エラー処理が必要になった場合を鑑みてwith文とする
-        {:cont, {:ok, [Glyph.set_path(glyph) | acc]}}
+        {:cont, {:ok, {_style_acc, [Glyph.set_path(glyph) | acc]}}}
       else
         {:error, _} = err -> {:halt, err}
       end
     end)
     |> case do
       {:error, _} = err -> err
-      {:ok, glyph_list} -> Enum.reverse(glyph_list)
+      {:ok, {_, glyph_list}} -> Enum.reverse(glyph_list)
     end
   end
 

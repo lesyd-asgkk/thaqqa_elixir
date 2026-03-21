@@ -4054,8 +4054,8 @@
         "ID": 0,
         "Order": 0,
         "Priority": 0,
-        "Name": "DoubleLetter",
-        "RawRegex": "(L())(L())"
+        "Name": "EveryDoubleLetter",
+        "RawRegex": "(Lx())(Lx())"
       }, 
       "1": {
         "ID": 1,
@@ -4068,8 +4068,8 @@
         "ID": 2,
         "Order": 0,
         "Priority": 0,
-        "Name": "Letter",
-        "RawRegex": "L()"
+        "Name": "EveryLetter",
+        "RawRegex": "Lx()"
       },
             "3": {
         "ID": 3,

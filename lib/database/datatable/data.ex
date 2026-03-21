@@ -50,6 +50,8 @@ defmodule Thaqqa.Data do
       ),
       do: {:ok, self}
 
+  # TODO:translate層にてletter_numberからのキャプチャグループ反映＋音節間のStyle()挿入後、
+  # NameAltにも設定する機能をつける
   def set_precompile(
         %__MODULE__{} = self,
         %DataTable{compile_rule: "regex_0"},
@@ -63,7 +65,7 @@ defmodule Thaqqa.Data do
         {:ok, val} -> {:ok, set_val(self, @precompile, val)}
       end
     else
-      {:error, "name_not_found"}
+      {:error, "仮error:name_not_found"}
     end
   end
 
@@ -80,7 +82,7 @@ defmodule Thaqqa.Data do
         {:ok, val} -> {:ok, set_val(self, @precompile, val)}
       end
     else
-      {:error, "name_not_found"}
+      {:error, "仮error:name_not_found"}
     end
   end
 
