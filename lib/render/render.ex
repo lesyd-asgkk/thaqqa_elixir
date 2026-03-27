@@ -13,7 +13,7 @@ defmodule Thaqqa.Render do
   use Thaqqa.DataTable.Const
 
   defstruct boundry: %{width: 0, height: 0},
-            word_break: :normal,
+            line_break: :normal,
             text_align: :left,
             text_align_last: :left,
             word_spacing: 0,
@@ -31,7 +31,7 @@ defmodule Thaqqa.Render do
         width,
         height,
         # normal break_all keep_all break_word
-        word_break \\ :normal,
+        line_break \\ :normal,
         # px単位指定
         line_height \\ 0,
         # start end left right center justify
@@ -111,7 +111,7 @@ defmodule Thaqqa.Render do
            ),
          {:ok, is_newline_raw} <-
            ConstRegexManager.whole_of_string_match_at_once?(prefab, "Newline", glyph_name),
-         {:ok, is_wordbreaker} <-
+         {:ok, is_wordbreaker_raw} <-
            ConstRegexManager.whole_of_string_match_at_once?(prefab, "WordBreaker", glyph_name),
          {:ok, new_glyph} <-
            Glyph.render_by_absolute_height(
@@ -120,7 +120,7 @@ defmodule Thaqqa.Render do
              height * glyph.scale,
              (y1_internal + 0.5) * height * glyph.scale
            ) do
-      is_wordbreaker = is_newline_raw === true
+      is_wordbreaker = is_wordbreaker_raw === true
       is_newline = is_newline_raw === true
 
       scale = glyph.scale
@@ -156,21 +156,6 @@ defmodule Thaqqa.Render do
     else
       {:error, _} = err -> err
     end
-  end
-
-  # 縦ver
-  def concat_path_data_as_vertical(%Prefab{} = prefab, glyph_list, %{font: fontname})
-      when is_list(glyph_list) do
-    none = build_none(fontname)
-
-    kern_list =
-      [none | glyph_list ++ [none]]
-      |> Enum.chunk_every(3, 1, :discard)
-
-    # |> Enum.map(&calc_kerning_vertical(&1, prefab, fontname, size))
-
-    # あとはglyphの棒を挿したりするだけ
-    # prefab
   end
 
   def concat_path_data_as_horizontal(%Prefab{} = prefab, glyph_list) do
@@ -214,23 +199,31 @@ defmodule Thaqqa.Render do
     Enum.reverse(glyph_list)
   end
 
-  defp parse_word(glyph_and_kern_list) do
-    glyph_and_kern_parsed =
+  def parse_word(glyph_and_kern_list) do
+    Enum.chunk_while(
+      glyph_and_kern_list,
+      [],
+      fn glyph, acc ->
+        cond do
+          glyph.new_line -> {:cont, Enum.reverse([glyph | acc]), []}
+          true -> {:cont, [glyph | acc]}
+        end
+      end,
+      fn
+        [] -> {:cont, []}
+        acc -> {:cont, Enum.reverse(acc), []}
+      end
+    )
+    |> Enum.map(fn l ->
       Enum.chunk_while(
-        glyph_and_kern_list,
-        {[], []},
-        fn glyph, {acc_main, acc_sub} ->
+        l,
+        [],
+        fn glyph, acc ->
           case glyph do
-            {:ok, glyph} ->
+            glyph ->
               cond do
-                glyph.new_line ->
-                  {:cont, {Enum.reverse([glyph | acc_main]), []}, {[], []}}
-
-                glyph.word_breaker ->
-                  {:cont, {[Enum.reverse([glyph | acc_sub]) | acc_main], []}}
-
-                true ->
-                  {:cont, {acc_main, [glyph | acc_sub]}}
+                glyph.word_breaker -> {:cont, Enum.reverse([glyph | acc]), []}
+                true -> {:cont, [glyph | acc]}
               end
 
             {:error, reason} ->
@@ -238,78 +231,329 @@ defmodule Thaqqa.Render do
           end
         end,
         fn
-          {[], []} ->
-            {:cont, {:ok, []}}
-
-          {acc_main, []} ->
-            {:cont, {:ok, Enum.reverse(acc_main), []}}
-
-          {acc_main, acc_sub} ->
-            {:cont, {:ok, Enum.reverse([Enum.reverse(acc_sub) | acc_main]), []}}
+          [] -> {:cont, []}
+          acc -> {:cont, Enum.reverse(acc), []}
         end
       )
-      |> case do
-        {:error, reason} -> {:error, reason}
-        {:ok, list} -> {:ok, list}
-      end
+    end)
   end
 
-  defp set_position(glyph_and_kern_list_list_list) do
-    Enum.reduce_while(
-      glyph_and_kern_list_list_list,
-      {:ok, []},
-      fn glyph_and_kern_list_list, {:ok, acc} ->
-        Enum.reduce_while(
-          glyph_and_kern_list_list,
-          {:ok, []},
-          fn glyph_and_kern_list, {:ok, acc} ->
-            # {glyph_and_kern_list,is_word_wrapped,x,y}
-            # line_breakがの場合は無視
+  # まず行単位、単語単位で切り分ける(java風に表現するならば[行座標][単語座標][文字の座標] の3重リストに)
+
+  # ※line_breakが:break_word以外の場合は別の処理を取る
+  # →まずは単語毎に分割した位置情報を作成(単語中の文字の空白はletter_spacing、単語間の空白はword_spacingで追加)
+  # →折り返し(wrap)が発生する場合は行を調整（raw_subにより制御）
+  # 一旦[単語座標][文字の座標]のように整形したうえで、(raw,raw_sub)の組を基準に再び[行座標][単語座標][文字の座標]のような形式へと戻す
+
+  # normal break_all keep_all break_word
+  # word_break \\ :normal,
+
+  # start end left right center justify
+  # text_align \\ :start,
+  defp set_position(sentence, %__MODULE__{} = render_config) do
+    word_spacing = render_config.word_spacing
+    letter_spacing = render_config.letter_spacing
+    box_width = render_config.boundry.width
+
+    sentence_alt =
+      Enum.reduce_while(
+        sentence,
+        {:ok, {[], 0}},
+        fn oneline, {:ok, {acc_word_list, acc_row}} ->
+          oneline_alt =
             Enum.reduce_while(
-              glyph_and_kern_list,
-              {:ok, []},
-              fn g_a_k, {:ok, acc} ->
-                %{
-                  glyph: glyph,
-                  new_line: is_newline,
-                  word_breaker: is_wordbreaker,
-                  box: %{top: top, bottom: bottom, left: left, right: right},
-                  gap: %{top: gap_top, center: gap_center, left: gap_left, right: gap_right},
-                  gap_when_newline: %{
-                    top: gap_top_nl,
-                    center: gap_center_nl,
-                    left: gap_left_nl,
-                    right: gap_right_nl
-                  }
-                } = g_a_k
+              oneline,
+              {:ok, {[], 0, 0, acc_row}},
+              fn word, {:ok, {acc_word, acc_left, acc_right, acc_row}} ->
+                acc_left_start = acc_left
+                acc_right_start = acc_right
 
-                glyph_position = acc_data.x
-                glyph_x = glyph_position + gap_left + left
-                next_x = glyph_position + gap_left + left + gap_right + right
+                word_alt =
+                  Enum.reduce_while(
+                    word,
+                    {:ok, {[], acc_right_start, acc_right_start, acc_right_start, false}},
+                    fn glyph_and_kern,
+                       {:ok, {acc_glyph, acc_left, acc_x, acc_right, is_wrapped}} ->
+                      %{
+                        glyph: glyph,
+                        new_line: is_newline,
+                        word_breaker: is_wordbreaker,
+                        box: %{top: top, bottom: bottom, left: left, right: right},
+                        gap: %{top: gap_top, center: gap_center, left: gap_left, right: gap_right},
+                        gap_when_newline: %{
+                          top: gap_top_nl,
+                          center: gap_center_nl,
+                          left: gap_left_nl,
+                          right: gap_right_nl
+                        }
+                      } = glyph_and_kern
 
-                cond_wrap = false
+                      blank_space =
+                        if is_wordbreaker,
+                          do: word_spacing + letter_spacing,
+                          else: letter_spacing
 
-                acc_data_x =
-                  cond do
-                    is_newline == true -> 0
-                    cond_wrap == true -> 0
-                    true -> next_x
-                  end
+                      glyph_x = acc_x + gap_left + left + blank_space / 2
 
-                {glyph_x, next_x, is_newline} =
-                  if cond_wrap,
-                    do:
-                      {0 + gap_left_nl + left, 0 + gap_left_nl + left + gap_right_nl + right,
-                       true},
-                    else: {glyph_x, next_x, is_newline}
+                      next_x = acc_x + gap_left + left + gap_right + right + blank_space
 
-                acc_data = %{acc_data | x: acc_data_x}
+                      # スタート位置からの相対座標に換算
+                      glyph_and_kern =
+                        glyph_and_kern
+                        |> Map.put(:x, glyph_x - acc_left_start)
+                        |> Map.put(:border, %{
+                          left: acc_x - acc_left_start,
+                          right: next_x - acc_left_start
+                        })
+
+                      acc_left = min(acc_left, acc_x)
+                      acc_right = max(acc_right, next_x)
+
+                      # 改行処理部分。一回でも改行処理判定に引っかかったら以降はtrueになる
+                      # ※is_wrappedの初期値はfalseなのでこれで一回でもtrueになったかは判定できる
+                      IO.inspect(glyph.name)
+                      cond_wrap = acc_right > box_width
+                      is_wrapped = cond_wrap || is_wrapped
+
+                      acc_x = next_x
+
+                      {:cont,
+                       {:ok,
+                        {[glyph_and_kern | acc_glyph], acc_left, acc_x, acc_right, is_wrapped}}}
+                    end
+                  )
+
+                case word_alt do
+                  {:error, _} = err ->
+                    {:halt, err}
+
+                  {:ok, {glyph_list, left, _, right, is_wrapped}} ->
+                    acc_row = if is_wrapped, do: acc_row + 1, else: acc_row
+                    acc_left = if is_wrapped, do: left - acc_right, else: left
+                    acc_right = if is_wrapped, do: right - acc_right, else: right
+
+                    word = {Enum.reverse(glyph_list), acc_left, acc_right, acc_row}
+                    {:cont, {:ok, {[word | acc_word], acc_left, acc_right, acc_row}}}
+                end
               end
             )
+
+          case oneline_alt do
+            {:error, _} = err ->
+              {:halt, err}
+
+            {:ok, {word_list, _, _, acc_row}} ->
+              {:cont, {:ok, {acc_word_list ++ word_list, acc_row + 1}}}
+          end
+        end
+      )
+
+    case sentence_alt do
+      {:error, _} = err ->
+        err
+
+      {:ok, {word_list, _}} ->
+        {sentence, _} =
+          word_list
+          |> Enum.reduce({[], 0}, fn {word, left, right, row}, {acc, acc_raw} ->
+            {[{word, left, right, row != acc_raw} | acc], row}
+          end)
+
+        sentence
+        |> Enum.chunk_while(
+          [],
+          fn {_, _, _, row} = word, acc_word ->
+            IO.inspect(row)
+
+            if row,
+              do: {:cont, Enum.reverse(acc_word), [word]},
+              else: {:cont, [word | acc_word]}
+          end,
+          fn
+            [] -> {:cont, []}
+            acc_word -> {:cont, Enum.reverse(acc_word), []}
           end
         )
+
+        # 次に行ごとの位置調整（行ごとの高さの指定や、text_alignに基づいて左寄せなり中央寄せなりjustifyにしたり。ここでは二層まで潜る）
+
+        # 最後に一列に戻しつつ全部のglyphにoffsetを適応する
+    end
+  end
+
+  def alignment_path_data_as_horizontal(%Prefab{} = prefab, glyph_list, %{
+        font: fontname,
+        wrap: wrap
+      })
+      when is_list(glyph_list) do
+    with {:data, %Data{} = data} <-
+           {:data, Prefab.get_single_data(prefab, fontname, "FONTDATA")},
+         {:is_width_relative, is_width_relative} when is_boolean(is_width_relative) <-
+           {:is_width_relative, Data.get_val(data, "isWidthHRel")},
+         {:width, width} when is_number(width) <- {:width, Data.get_val(data, "WidthV")},
+         {:gap_top, gap_top} when is_number(gap_top) <- {:gap_top, Data.get_val(data, "TopGapH")},
+         {:height, height} when is_number(height) <- {:height, Data.get_val(data, "Height")} do
+      none = build_none(fontname)
+
+      temp_struct_for_argument = %{
+        is_width_relative: is_width_relative,
+        width: width,
+        gap_top: gap_top,
+        height: height
+      }
+
+      glyph_and_kern_list =
+        [none | glyph_list ++ [none]]
+        |> Enum.chunk_every(3, 1, :discard)
+        |> Enum.map(&calc_kerning_horizontal(&1, prefab, fontname, temp_struct_for_argument))
+
+      Enum.reduce_while(glyph_and_kern_list, {:ok, []}, fn
+        {:ok, str}, {:ok, acc} -> {:cont, {:ok, [str | acc]}}
+        {:error, _} = err, _acc -> {:halt, err}
+      end)
+      |> case do
+        {:error, _} = err ->
+          err
+
+        {:ok, g_a_k_l} ->
+          Enum.reverse(g_a_k_l) |> parse_word() |> set_position(build_render(200, 600))
       end
+
+      # {:ok, glyph_and_kern_list} = glyph_and_kern_list |> parse_word()
+
+      # glyph_and_kern_list |> set_position(build_render(800, 600))
+      # set_position_and_flag()
+
+      # set_position_y(glyph_and_kern_list)
+      # あとはglyphの棒を挿したりするだけ
+      # prefab
+    else
+      {:data, nil} -> {:error, "（仮）Data not found in FONTDATA"}
+      {:height, nil} -> {:error, "（仮）Height not found in FONTDATA"}
+      {:is_width_relative, nil} -> {:error, "（仮）isWidthHRel not found in FONTDATA"}
+      {:width, nil} -> {:error, "（仮）WidthV not found in FONTDATA"}
+      {:gap_top, nil} -> {:error, "（仮）TopGapH not found in FONTDATA"}
+    end
+  end
+
+  # streamで処理する方式
+  def build_path_data_stream(
+        %Prefab{} = prefab,
+        syllable_list,
+        font,
+        writing_direction,
+        default_scale
+      )
+      when is_list(syllable_list) do
+    Task.async_stream(
+      syllable_list,
+      fn syl ->
+        with {:ok, glyph} <- Glyph.new(prefab, font, syl, writing_direction, default_scale) do
+          {:ok, Glyph.set_path(glyph)}
+        else
+          {:error, _} = err -> err
+        end
+      end,
+      ordered: true
     )
+    |> Enum.reduce_while({:ok, []}, fn
+      {:ok, {:ok, str}}, {:ok, acc} -> {:cont, {:ok, [str | acc]}}
+      {:ok, {:error, _} = err}, _acc -> {:halt, err}
+      {:exit, reason}, _acc -> {:halt, {:error, reason}}
+    end)
+    |> case do
+      {:ok, list} -> {:ok, Enum.reverse(list)}
+      {:error, _} = err -> err
+    end
+  end
+
+  def build_path_data(%Prefab{} = prefab, syllable_list, font, writing_direction, default_scale)
+      when is_list(syllable_list) do
+    # TODO Style()とマッチするSyllableだった場合は処理を変更する
+    # _style_accはstyle適応の際の処理用。
+    Enum.reduce_while(syllable_list, {:ok, {[], []}}, fn syl, {:ok, {_style_acc, acc}} ->
+      with {:ok, glyph} <- Glyph.new(prefab, font, syl, writing_direction, default_scale) do
+        # 現状set_pathにエラーを吐く要因はないが
+        # 今後エラー処理が必要になった場合を鑑みてwith文とする
+        {:cont, {:ok, {_style_acc, [Glyph.set_path(glyph) | acc]}}}
+      else
+        {:error, _} = err -> {:halt, err}
+      end
+    end)
+    |> case do
+      {:error, _} = err -> err
+      {:ok, {_, glyph_list}} -> Enum.reverse(glyph_list)
+    end
+  end
+
+  def verficate_syllable(%Prefab{} = prefab, syllable_list) when is_list(syllable_list) do
+    Enum.reduce_while(syllable_list, nil, fn syl, _ ->
+      case ConstRegexManager.whole_of_string_match_at_once?(prefab, "EverySingleLetter", syl) do
+        {:error, _} = err ->
+          {:halt, err}
+
+        {:ok, true} ->
+          {:cont, nil}
+
+        {:ok, _} ->
+          case ConstRegexManager.whole_of_string_match?(prefab, "EverySingleLetter", syl) do
+            {:error, _} = err ->
+              {:halt, err}
+
+            {:ok, true} ->
+              {:halt, {:error, "unparsed pattern found: #{syl}"}}
+
+            {:ok, otherwise} ->
+              {:halt, {:error, "invalid pattern found: #{otherwise}"}}
+          end
+      end
+    end)
+    |> case do
+      {:error, _} = err -> err
+      _ -> {:ok, syllable_list}
+    end
+  end
+
+  def split_by_syllable(%Prefab{} = prefab, string) do
+    case ConstRegexManager.get_const(prefab, "EveryDoubleLetter") do
+      {:error, _} = err ->
+        err
+
+      {:ok, const} ->
+        regex = const |> Thaqqa.Data.get_val(@precompile)
+
+        {:ok,
+         Regex.scan(regex, string)
+         |> Enum.reduce([], fn list, acc ->
+           [_ | list] = list
+           acc ++ list
+         end)}
+    end
+  end
+
+  def convert_into_khhyl_letter(%Prefab{} = prefab, string, font, language, writing_direction)
+      when language in [@khehyelu, @samlhta] and writing_direction in [@vertical, @horizontal] do
+    with {:ok, parsed_string} <- ParserManager.parse(prefab, string, language),
+         {:ok, gsub_string} <- GsubManager.gsub(prefab, parsed_string, writing_direction),
+         {:ok, unique_gsub_string} <-
+           UniqueGsubManager.unique_gsub(prefab, gsub_string, font, writing_direction) do
+      {:ok, unique_gsub_string}
+    else
+      {:error, _} = err -> err
+    end
+  end
+
+  # prefabを持たない場合、FontRegistryから直接読み込む。
+  def convert_into_khhyl_letter!(string, font, language, writing_direction) do
+    # FontRegistry落ちを想定し、try-catch文でのエラーを実装している
+    try do
+      {:ok, prefab} = FontRegistry.create_prefab()
+      convert_into_khhyl_letter(prefab, string, font, language, writing_direction)
+    catch
+      :exit, {:noproc, _} -> {:error, :font_registry_restarting}
+      :exit, {:timeout, _} -> {:error, :font_registry_timeout}
+      :exit, reason -> {:error, {:font_registry_exit, reason}}
+    end
   end
 
   defp set_position_and_flag(glyph_and_kern_list) do
@@ -377,171 +621,6 @@ defmodule Thaqqa.Render do
     |> case do
       {:error, _} = err -> err
       {:ok, {acc_path, _acc_data}} -> {:ok, Enum.reverse(acc_path)}
-    end
-  end
-
-  def alignment_path_data_as_horizontal(%Prefab{} = prefab, glyph_list, %{
-        font: fontname,
-        wrap: wrap
-      })
-      when is_list(glyph_list) do
-    with {:data, %Data{} = data} <-
-           {:data, Prefab.get_single_data(prefab, fontname, "FONTDATA")},
-         {:is_width_relative, is_width_relative} when is_boolean(is_width_relative) <-
-           {:is_width_relative, Data.get_val(data, "isWidthHRel")},
-         {:width, width} when is_number(width) <- {:width, Data.get_val(data, "WidthV")},
-         {:gap_top, gap_top} when is_number(gap_top) <- {:gap_top, Data.get_val(data, "TopGapH")},
-         {:height, height} when is_number(height) <- {:height, Data.get_val(data, "Height")} do
-      none = build_none(fontname)
-
-      temp_struct_for_argument = %{
-        is_width_relative: is_width_relative,
-        width: width,
-        gap_top: gap_top,
-        height: height
-      }
-
-      {:ok, glyph_and_kern_list} =
-        [none | glyph_list ++ [none]]
-        |> Enum.chunk_every(3, 1, :discard)
-        |> Enum.map(&calc_kerning_horizontal(&1, prefab, fontname, temp_struct_for_argument))
-        |> set_position_and_flag()
-
-      set_position_y(glyph_and_kern_list)
-      # あとはglyphの棒を挿したりするだけ
-      # prefab
-    else
-      {:data, nil} -> {:error, "（仮）Data not found in FONTDATA"}
-      {:height, nil} -> {:error, "（仮）Height not found in FONTDATA"}
-      {:is_width_relative, nil} -> {:error, "（仮）isWidthHRel not found in FONTDATA"}
-      {:width, nil} -> {:error, "（仮）WidthV not found in FONTDATA"}
-      {:gap_top, nil} -> {:error, "（仮）TopGapH not found in FONTDATA"}
-    end
-  end
-
-  # streamで処理する方式
-  def build_path_data_stream(
-        %Prefab{} = prefab,
-        syllable_list,
-        font,
-        writing_direction,
-        default_scale
-      )
-      when is_list(syllable_list) do
-    Task.async_stream(
-      syllable_list,
-      fn syl ->
-        with {:ok, glyph} <- Glyph.new(prefab, font, syl, writing_direction, default_scale) do
-          {:ok, Glyph.set_path(glyph)}
-        else
-          {:error, _} = err -> err
-        end
-      end,
-      ordered: true
-    )
-    |> Enum.reduce_while({:ok, []}, fn
-      {:ok, {:ok, str}}, {:ok, acc} ->
-        {:cont, {:ok, [str | acc]}}
-
-      {:ok, {:error, _} = err}, _acc ->
-        {:halt, err}
-
-      {:exit, reason}, _acc ->
-        {:halt, {:error, reason}}
-    end)
-    |> case do
-      {:ok, list} -> {:ok, Enum.reverse(list)}
-      {:error, _} = err -> err
-    end
-  end
-
-  def build_path_data(%Prefab{} = prefab, syllable_list, font, writing_direction, default_scale)
-      when is_list(syllable_list) do
-    # TODO Style()とマッチするSyllableだった場合は処理を変更する
-    # _style_accはstyle適応の際の処理用。
-    Enum.reduce_while(syllable_list, {:ok, {[], []}}, fn syl, {:ok, {_style_acc, acc}} ->
-      with {:ok, glyph} <- Glyph.new(prefab, font, syl, writing_direction, default_scale) do
-        # 現状set_pathにエラーを吐く要因はないが
-        # 今後エラー処理が必要になった場合を鑑みてwith文とする
-        {:cont, {:ok, {_style_acc, [Glyph.set_path(glyph) | acc]}}}
-      else
-        {:error, _} = err -> {:halt, err}
-      end
-    end)
-    |> case do
-      {:error, _} = err -> err
-      {:ok, {_, glyph_list}} -> Enum.reverse(glyph_list)
-    end
-  end
-
-  def verficate_syllable(%Prefab{} = prefab, syllable_list) when is_list(syllable_list) do
-    Enum.reduce_while(syllable_list, nil, fn syl, _ ->
-      case ConstRegexManager.whole_of_string_match_at_once?(prefab, "EverySingleLetter", syl) do
-        {:error, _} = err ->
-          {:halt, err}
-
-        {:ok, true} ->
-          {:cont, nil}
-
-        {:ok, _} ->
-          case ConstRegexManager.whole_of_string_match?(prefab, "EverySingleLetter", syl) do
-            {:error, _} = err ->
-              {:halt, err}
-
-            {:ok, true} ->
-              {:halt,
-               {:error, "unparsed pattern found (it might be internal error occured): #{syl}"}}
-
-            {:ok, otherwise} ->
-              {:halt, {:error, "invalid pattern found: #{otherwise}"}}
-          end
-      end
-    end)
-    |> case do
-      {:error, _} = err -> err
-      _ -> {:ok, syllable_list}
-    end
-  end
-
-  def split_by_syllable(%Prefab{} = prefab, string) do
-    case ConstRegexManager.get_const(prefab, "EveryDoubleLetter") do
-      {:error, _} = err ->
-        err
-
-      {:ok, const} ->
-        regex = const |> Thaqqa.Data.get_val(@precompile)
-
-        {:ok,
-         Regex.scan(regex, string)
-         |> Enum.reduce([], fn list, acc ->
-           [_ | list] = list
-           acc ++ list
-         end)}
-    end
-  end
-
-  def convert_into_khhyl_letter(%Prefab{} = prefab, string, font, language, writing_direction)
-      when language in [@khehyelu, @samlhta] and writing_direction in [@vertical, @horizontal] do
-    with {:ok, parsed_string} <- ParserManager.parse(prefab, string, language),
-         {:ok, gsub_string} <- GsubManager.gsub(prefab, parsed_string, writing_direction),
-         {:ok, unique_gsub_string} <-
-           UniqueGsubManager.unique_gsub(prefab, gsub_string, font, writing_direction) do
-      {:ok, unique_gsub_string}
-    else
-      {:error, _} = err -> err
-    end
-  end
-
-  # prefabを持たない場合、FontRegistryから直接読み込む。
-  def convert_into_khhyl_letter!(string, font, language, writing_direction) do
-    # FontRegistry落ちを想定し、try-catch文でのエラーを実装している
-    try do
-      {:ok, prefab} = FontRegistry.create_prefab()
-      convert_into_khhyl_letter(prefab, string, font, language, writing_direction)
-    catch
-      :exit, {:noproc, _} -> {:error, :font_registry_restarting}
-      :exit, {:timeout, _} -> {:error, :font_registry_timeout}
-      :exit, reason -> {:error, {:font_registry_exit, reason}}
     end
   end
 end
