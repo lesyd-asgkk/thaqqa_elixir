@@ -457,14 +457,7 @@ end
 defimpl Inspect, for: SVG.Command do
   import Inspect.Algebra
 
-  def inspect(point, opts) do
-    concat([
-      to_doc(point.command, opts),
-      "<",
-      coords(point),
-      ">"
-    ])
-  end
+  def inspect(point, opts), do: concat([to_string(point.command), "<", coords(point), ">"])
 
   defp coords(%{command: command, x: x, y: y, rx: rx, ry: ry, angle: angle, laf: laf, sf: sf})
        when command == :a or command == :A,
