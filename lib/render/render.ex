@@ -291,7 +291,7 @@ defmodule Thaqqa.Render do
             )
 
           {word_list, _, _, acc_row} = oneline_alt
-          {acc_word_list ++ word_list, acc_row + 1}
+          {[word_list | acc_word_list] |> List.flatten(), acc_row + 1}
         end
       )
 
@@ -325,12 +325,20 @@ defmodule Thaqqa.Render do
           List.duplicate((left_calc + right_calc) / 2, word_num)
 
         :justify ->
-          if word_num == 1,
-            do: [0],
-            else:
+          case word_num do
+            0 ->
+              []
+
+            1 ->
+              [left_calc]
+
+            _ ->
+              gap = (left_calc + right_calc) / (word_num - 1)
+
               Enum.map(0..(word_num - 1), fn n ->
-                left_calc * (1 - word_num / (n - 1)) + right_calc * (word_num / (n - 1))
+                left_calc + gap * n
               end)
+          end
       end
 
     oneline_alt =
@@ -344,14 +352,14 @@ defmodule Thaqqa.Render do
           glyph_list_alt =
             Enum.map(glyph_list, fn glyph_and_kern ->
               glyph_and_kern
-              |> Map.put(:x, glyph_and_kern.x + left)
+              |> Map.put(:x, glyph_and_kern.x + gap_from_left)
               |> Map.put(:border, %{
                 left: glyph_and_kern.border.left + gap_from_left,
                 right: glyph_and_kern.border.right + gap_from_left
               })
             end)
 
-          acc_glyph_list ++ glyph_list_alt
+          [glyph_list_alt | acc_glyph_list] |> List.flatten()
         end
       )
   end
@@ -360,12 +368,11 @@ defmodule Thaqqa.Render do
     box_width = render_config.boundry.width
     text_align = render_config.text_align
     text_align_last = render_config.text_align_last
-    rest_line = Enum.reverse(sentence)
-    # [last_line | rest_line] = Enum.reverse(sentence)
-    # [adjust_position_sub(last_line, text_align_last, box_width)]
+    [last_line | rest_line] = Enum.reverse(sentence)
+    #
     Enum.reduce(
       rest_line,
-      [],
+      [adjust_position_sub(last_line, text_align_last, box_width)],
       fn oneline, acc_oneline_list ->
         oneline_alt = adjust_position_sub(oneline, text_align, box_width)
         [oneline_alt | acc_oneline_list]
@@ -373,7 +380,6 @@ defmodule Thaqqa.Render do
     )
   end
 
-  # 一番バグってるポイント。なんとかすべき
   defp adjust_position_y(sentence) do
     {sentence_alt, _} =
       Enum.reduce(
@@ -392,8 +398,9 @@ defmodule Thaqqa.Render do
             end)
 
           Enum.reverse(oneline_alt)
-          # IO.inspect(acc_y + max_height + max_gap_top)
-          {acc_oneline_list ++ oneline_alt, acc_y + max_height + max_gap_top}
+          #
+
+          {[oneline_alt | acc_oneline_list] |> List.flatten(), acc_y + max_height + max_gap_top}
         end
       )
 
@@ -411,19 +418,23 @@ defmodule Thaqqa.Render do
         {[{word, left, right, row != acc_raw} | acc], row}
       end)
 
+    sentence =
+      sentence
+      |> Enum.chunk_while(
+        [],
+        fn {_, left, right, row} = word, acc_word ->
+          if row,
+            do: {:cont, Enum.reverse([word | acc_word]), []},
+            else: {:cont, [word | acc_word]}
+        end,
+        fn
+          [] -> {:cont, []}
+          acc_word -> {:cont, Enum.reverse(acc_word), []}
+        end
+      )
+
     sentence
-    |> Enum.chunk_while(
-      [],
-      fn {_, left, right, row} = word, acc_word ->
-        if row,
-          do: {:cont, Enum.reverse([word | acc_word]), []},
-          else: {:cont, [word | acc_word]}
-      end,
-      fn
-        [] -> {:cont, []}
-        acc_word -> {:cont, Enum.reverse(acc_word), []}
-      end
-    )
+    sentence
   end
 
   defp set_position(sentence, %__MODULE__{} = render_config) do
@@ -453,7 +464,10 @@ defmodule Thaqqa.Render do
         err
 
       {:ok, g_a_k_l} ->
-        Enum.reverse(g_a_k_l) |> parse_word() |> set_position(build_render(200, 600))
+        # px単位指定
+        Enum.reverse(g_a_k_l)
+        |> parse_word()
+        |> set_position(build_render(200, 600, :normal, 0, :justify, :justify))
     end
 
     # {:ok, glyph_and_kern_list} = glyph_and_kern_list |> parse_word()
