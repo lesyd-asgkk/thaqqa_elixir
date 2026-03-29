@@ -21,24 +21,6 @@ defmodule Thaqqa.Glyph.GlyphRenderer do
     end
   end
 
-  defp get_fontdata(%Prefab{} = prefab, fontname, list) when is_list(list) do
-    case Prefab.get_single_data(prefab, fontname, "FONTDATA") do
-      %Thaqqa.Data{} = data ->
-        {value_map, err} =
-          Enum.reduce(list, {%{}, []}, fn arg, {acc, acc_err} ->
-            case Thaqqa.Data.get_val(data, arg) do
-              nil -> {acc, [arg | acc_err]}
-              otherwise -> {Map.put(acc, String.to_atom(arg), otherwise), acc_err}
-            end
-          end)
-
-        if length(err) == 0, do: {:ok, value_map}, else: {:error, err}
-
-      nil ->
-        {:error, "（仮）Data not found in FONTDATA"}
-    end
-  end
-
   def render_by_relative_height(
         %Prefab{} = prefab,
         %Glyph{
@@ -52,7 +34,7 @@ defmodule Thaqqa.Glyph.GlyphRenderer do
         top_gap,
         bottom_gap
       ) do
-    case get_fontdata(prefab, fontname, ["Thickness"]) do
+    case Prefab.get_fontdata(prefab, fontname, ["Thickness"]) do
       {:ok, %{Thickness: thickness_raw}} ->
         # 将来用。1のところに倍率指定を置く
         thickness = thickness_raw * scale
@@ -133,7 +115,7 @@ defmodule Thaqqa.Glyph.GlyphRenderer do
       ) do
     # 下からどれだけ、という値なのを、上からどれだけ、に換算する。
 
-    case get_fontdata(prefab, fontname, ["Thickness"]) do
+    case Prefab.get_fontdata(prefab, fontname, ["Thickness"]) do
       {:ok, %{Thickness: thickness_raw}} ->
         # 将来用。1のところに倍率指定を置く
         thickness = thickness_raw * scale
@@ -206,7 +188,7 @@ defmodule Thaqqa.Glyph.GlyphRenderer do
         height,
         vowel_height
       ) do
-    case get_fontdata(prefab, fontname, ["Thickness"]) do
+    case Prefab.get_fontdata(prefab, fontname, ["Thickness"]) do
       {:ok, %{Thickness: thickness_raw}} ->
         # 将来用。1のところに倍率指定を置く
         thickness = thickness_raw * scale

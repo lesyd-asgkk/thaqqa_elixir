@@ -8,25 +8,6 @@ defmodule Thaqqa.Glyph.GlyphSpawner do
   alias Thaqqa.ConstRegexManager, as: ConstRegexManager
   use Thaqqa.DataTable.Const
 
-  defp get_fontdata(%Prefab{} = prefab, fontname, list) when is_list(list) do
-    case Prefab.get_single_data(prefab, fontname, "FONTDATA") do
-      %Thaqqa.Data{} = data ->
-        {value_map, err} =
-          Enum.reduce(list, {%{}, []}, fn arg, {acc, acc_err} ->
-            case Thaqqa.Data.get_val(data, arg) do
-              nil -> {acc, [arg | acc_err]}
-              otherwise -> {Map.put(acc, String.to_atom(arg), otherwise), acc_err}
-            end
-          end)
-
-        # errorは仮
-        if length(err) == 0, do: {:ok, value_map}, else: {:error, err}
-
-      nil ->
-        {:error, "（仮）Data not found in FONTDATA"}
-    end
-  end
-
   def new(%Prefab{} = prefab, fontname, glyphname, writing_direction, size) do
     case divide_name(glyphname) do
       {:error, _} = err ->
@@ -63,21 +44,21 @@ defmodule Thaqqa.Glyph.GlyphSpawner do
 
     with {:ok, glyph_data} =
            GlyphManager.get_glyph(prefab, fontname, fn %Thaqqa.Data{} = data ->
-             Thaqqa.Data.get_val(data, @name) == glyph_name_for_query
+             Thaqqa.Data.get_value(data, @name) == glyph_name_for_query
            end),
          {:ok, is_null_vowel} =
            ConstRegexManager.match?(prefab, "NullVowel", glyphname),
          {:ok, letter_data} =
            LetterManager.get_letter(prefab, fn %Thaqqa.Data{} = data ->
-             Thaqqa.Data.get_val(data, @name) == name
+             Thaqqa.Data.get_value(data, @name) == name
            end),
-         {:ok, %{Height: font_height}} = get_fontdata(prefab, fontname, ["Height"]) do
+         {:ok, %{Height: font_height}} = Prefab.get_fontdata(prefab, fontname, ["Height"]) do
       path =
         glyph_data
         |> Enum.at(0)
         |> case do
           nil -> []
-          data -> Thaqqa.Data.get_val(data, @precompile)
+          data -> Thaqqa.Data.get_value(data, @precompile)
         end
 
       aligment =
@@ -89,7 +70,7 @@ defmodule Thaqqa.Glyph.GlyphSpawner do
             %{x: 0, y: 0}
 
           data ->
-            case {Thaqqa.Data.get_val(data, "x_Align"), Thaqqa.Data.get_val(data, "y_Align")} do
+            case {Thaqqa.Data.get_value(data, "x_Align"), Thaqqa.Data.get_value(data, "y_Align")} do
               {x, y} when not is_nil(x) and not is_nil(y) -> %{x: x, y: y}
               _ -> %{x: 0, y: 0}
             end
@@ -141,7 +122,7 @@ defmodule Thaqqa.Glyph.GlyphSpawner do
          {:ok, %Glyph{} = onset_glyph} <- onset_glyph,
          {:ok, %Glyph{} = vowel_glyph} <- vowel_glyph,
          {:ok, %Glyph{} = coda_glyph} <- coda_glyph,
-         {:ok, %{Height: font_height}} = get_fontdata(prefab, fontname, ["Height"]) do
+         {:ok, %{Height: font_height}} = Prefab.get_fontdata(prefab, fontname, ["Height"]) do
       is_null_vowel = vowel_glyph.internal_attribution.is_null
 
       off_onset = %{x: off_onset_x, y: off_onset_y}
@@ -208,7 +189,7 @@ defmodule Thaqqa.Glyph.GlyphSpawner do
            GposManager.gpos(prefab, fontname, glyphname, writing_direction, @diacritical),
          {:ok, %Glyph{} = top_glyph} <- top_glyph,
          {:ok, %Glyph{} = child_glyph} <- child_glyph,
-         {:ok, %{Height: font_height}} = get_fontdata(prefab, fontname, ["Height"]) do
+         {:ok, %{Height: font_height}} = Prefab.get_fontdata(prefab, fontname, ["Height"]) do
       offset = %{x: off_x, y: off_y}
 
       child_glyph = %Glyph{child_glyph | offset: offset}
@@ -227,7 +208,7 @@ defmodule Thaqqa.Glyph.GlyphSpawner do
 
   defp create_glyph(%Prefab{} = prefab, fontname, _glyphname, _writing_direction, %{}, size) do
     with {:ok, %{Height: font_height}} =
-           get_fontdata(prefab, fontname, ["Height"]) do
+           Prefab.get_fontdata(prefab, fontname, ["Height"]) do
       {:ok, %Glyph{scale: size / font_height}}
     else
       {:error, _} = err -> err
