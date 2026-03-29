@@ -26,7 +26,7 @@ defmodule Thaqqa.ConstRegexManager do
     end
   end
 
-  def get_const_table!(%Prefab{} = prefab),
+  def get_const_table_or_nil(%Prefab{} = prefab),
     do: Prefab.get_static_table(prefab, @regex_const)
 
   def get_static_table(%Prefab{} = prefab) do
@@ -58,8 +58,8 @@ defmodule Thaqqa.ConstRegexManager do
   def get_regex(%Prefab{} = prefab, name) do
     case get_const(prefab, name) do
       {:error, reason} -> {:error, reason}
-      {:ok, nil} -> {:error, "(仮) data_not_found"}
-      {:ok, data} -> {:ok, Thaqqa.Data.get_val(data, @precompile)}
+      {:ok, nil} -> Error.data_not_found(@precompile, name, @regex_const, nil)
+      {:ok, data} -> {:ok, Thaqqa.Data.get_value(data, @precompile)}
     end
   end
 
@@ -69,10 +69,11 @@ defmodule Thaqqa.ConstRegexManager do
         {:error, reason}
 
       {:ok, nil} ->
-        {:error, "(仮) data_not_found"}
+        Error.data_not_found(@precompile, name, @regex_const, nil)
 
       {:ok, data} ->
-        case Thaqqa.Data.get_val(data, @precompile) |> Regex.replace(string, "", global: false) do
+        case Thaqqa.Data.get_value(data, @precompile)
+             |> Regex.replace(string, "", global: false) do
           "" -> {:ok, true}
           otherwise -> {:ok, otherwise}
         end
@@ -85,10 +86,10 @@ defmodule Thaqqa.ConstRegexManager do
         {:error, reason}
 
       {:ok, nil} ->
-        {:error, "(仮) data_not_found"}
+        Error.data_not_found(@precompile, name, @regex_const, nil)
 
       {:ok, data} ->
-        case Thaqqa.Data.get_val(data, @precompile) |> Regex.replace(string, "") do
+        case Thaqqa.Data.get_value(data, @precompile) |> Regex.replace(string, "") do
           "" -> {:ok, true}
           otherwise -> {:ok, otherwise}
         end
@@ -98,8 +99,8 @@ defmodule Thaqqa.ConstRegexManager do
   def match?(%Prefab{} = prefab, name, string) do
     case get_const(prefab, name) do
       {:error, reason} -> {:error, reason}
-      {:ok, nil} -> {:error, "(仮) data_not_found"}
-      {:ok, data} -> {:ok, Thaqqa.Data.get_val(data, @precompile) |> Regex.match?(string)}
+      {:ok, nil} -> Error.data_not_found(@precompile, name, @regex_const, nil)
+      {:ok, data} -> {:ok, Thaqqa.Data.get_value(data, @precompile) |> Regex.match?(string)}
     end
   end
 

@@ -16,7 +16,7 @@ defmodule Thaqqa.DataMapValidator do
     Enum.find_value(data_alt, fn {k, v} ->
       k_str = if is_atom(k), do: Atom.to_string(k), else: k
 
-      if MapSet.member?(column_set, k_str) and Thaqqa.Data.get_val(subject_data, k_str) != v,
+      if MapSet.member?(column_set, k_str) and Thaqqa.Data.get_value(subject_data, k_str) != v,
         do: {:halt, Error.edit_locked(k_str, @id_subtype)},
         else: {:cont, nil}
     end)
@@ -38,8 +38,8 @@ defmodule Thaqqa.DataMapValidator do
       if k_str in column_list and
            DataTable.get_data(
              table,
-             &(&1 |> Thaqqa.Data.get_val(k_str) == v and v not in ["", nil])
-           ) != [] and Thaqqa.Data.get_val(subject_data, k_str) != v,
+             &(&1 |> Thaqqa.Data.get_value(k_str) == v and v not in ["", nil])
+           ) != [] and Thaqqa.Data.get_value(subject_data, k_str) != v,
          do: {:halt, Error.unique_column_conflict(tablename, k_str, v, op)},
          else: {:cont, {:ok, nil}}
     end)

@@ -61,19 +61,52 @@ defmodule Thaqqa.FontRegistryPrefab do
     end
   end
 
-  def get_single_data(%__MODULE__{} = self, fontname, tablename) do
+  def get_single_data_or_nil(%__MODULE__{} = self, fontname, tablename) do
     case get_table(self, fontname, tablename) do
       nil -> nil
-      # どのみち
       table -> table.data_list |> Enum.at(0)
+    end
+  end
+
+  # nil ->
+  def get_single_data(%__MODULE__{} = self, fontname, tablename) do
+    case get_table(self, fontname, tablename) do
+      nil -> Error.table_not_found(tablename, fontname)
+      table -> {:ok, table.data_list |> Enum.at(0)}
+    end
+  end
+
+  def get_single_data_value_or_nil(%__MODULE__{} = self, fontname, tablename, column) do
+    case get_single_data_or_nil(self, fontname, tablename) do
+      nil -> nil
+      data -> Data.get_value(data, column)
     end
   end
 
   def get_single_data_value(%__MODULE__{} = self, fontname, tablename, column) do
     case get_single_data(self, fontname, tablename) do
-      nil -> nil
-      # どのみち
-      data -> Data.get_val(data, column)
+      {:error, _} = err -> err
+      {:ok, data} -> Data.get_value_or_error(data, column)
+    end
+  end
+
+  def get_fontdata(%__MODULE__{} = prefab, fontname, list) when is_list(list) do
+    case get_single_data(prefab, fontname, "FONTDATA") do
+      {:ok, %Thaqqa.Data{} = data} ->
+        {value_map, err_list} =
+          Enum.reduce(list, {%{}, []}, fn arg, {acc, acc_err} ->
+            case Thaqqa.Data.get_value(data, arg) do
+              nil -> {acc, [arg | acc_err]}
+              otherwise -> {Map.put(acc, String.to_atom(arg), otherwise), acc_err}
+            end
+          end)
+
+        if length(err_list) == 0,
+          do: {:ok, value_map},
+          else: Error.data_not_found(nil, err_list, "FONTDATA", fontname)
+
+      {:error, _} = err ->
+        err
     end
   end
 

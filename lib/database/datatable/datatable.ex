@@ -62,8 +62,8 @@ defmodule Thaqqa.DataTable do
       if !Column.is_available_type(type) do
         Error.invalid_datatype(type)
       else
-        val_init = Column.init_val(column, val_init)
-        datalist = Enum.map(datalist, fn data -> Data.set_val(data, column_name, val_init) end)
+        val_init = Column.init_value(column, val_init)
+        datalist = Enum.map(datalist, fn data -> Data.set_value(data, column_name, val_init) end)
 
         ans = %{table | column_list: col_list ++ [column], data_list: datalist}
 
@@ -78,7 +78,7 @@ defmodule Thaqqa.DataTable do
       ) do
     new_cols = Enum.filter(cols, fn %Column{name: name} -> name != column_name end)
 
-    new_datalist = Enum.map(datalist, fn data -> Data.delete_val(data, column_name) end)
+    new_datalist = Enum.map(datalist, fn data -> Data.delete_value(data, column_name) end)
 
     %{table | column_list: new_cols, data_list: new_datalist}
   end
@@ -108,10 +108,10 @@ defmodule Thaqqa.DataTable do
       # データのキーも変更する
       new_datas =
         Enum.map(table.data_list, fn data ->
-          raw_val = Data.get_val(data, column_name)
+          raw_val = Data.get_value(data, column_name)
           # Columnのtype,subtypeが変わった場合の値の補正。
-          val = Column.adjust_val(column, raw_val)
-          data = Data.set_val(data, new_name, val)
+          val = Column.adjust_value(column, raw_val)
+          data = Data.set_value(data, new_name, val)
 
           if new_name == column_name,
             do: %{data | value_list: data.value_list},
@@ -126,7 +126,7 @@ defmodule Thaqqa.DataTable do
 
   def get_least_available_id(%__MODULE__{data_list: datas}) do
     existing_ids =
-      Enum.map(datas, fn data -> Data.get_val(data, "ID") end)
+      Enum.map(datas, fn data -> Data.get_value(data, "ID") end)
       |> Enum.filter(&is_integer/1)
       |> Enum.sort()
 
@@ -159,7 +159,7 @@ defmodule Thaqqa.DataTable do
       if Map.has_key?(acc, name) do
         acc
       else
-        val_init = Column.init_val(column, nil)
+        val_init = Column.init_value(column, nil)
         Map.put(acc, name, val_init)
       end
     end)
@@ -238,9 +238,9 @@ defmodule Thaqqa.DataTable do
     sorted =
       Enum.sort(
         datas,
-        &if(Thaqqa.Data.get_val(&1, "Order") == Thaqqa.Data.get_val(&2, "Order"),
-          do: Thaqqa.Data.get_val(&1, "Priority") >= Thaqqa.Data.get_val(&2, "Priority"),
-          else: Thaqqa.Data.get_val(&1, "Order") > Thaqqa.Data.get_val(&2, "Order")
+        &if(Thaqqa.Data.get_value(&1, "Order") == Thaqqa.Data.get_value(&2, "Order"),
+          do: Thaqqa.Data.get_value(&1, "Priority") >= Thaqqa.Data.get_value(&2, "Priority"),
+          else: Thaqqa.Data.get_value(&1, "Order") > Thaqqa.Data.get_value(&2, "Order")
         )
       )
 

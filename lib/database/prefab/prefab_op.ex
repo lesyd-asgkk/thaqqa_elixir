@@ -84,7 +84,6 @@ defmodule Thaqqa.PrefabOp do
     if Prefab.get_static_table(self, name) == nil do
       {:ok, update_static_tables(self, Map.put(self.static_tables, name, table), name)}
     else
-      # 仮エラー
       Error.nominal_conflict_datatable(name, :add)
     end
   end
@@ -100,7 +99,6 @@ defmodule Thaqqa.PrefabOp do
     if Prefab.get_static_table(self, name) != nil do
       {:ok, update_static_tables(self, Map.put(self.static_tables, name, table), name)}
     else
-      # 仮エラー
       Error.table_not_found(name)
     end
   end

@@ -105,8 +105,8 @@ defmodule Thaqqa.GposManager do
   def gpos(%Prefab{} = prefab, fontname, string, writing_direction, gpos_type)
       when writing_direction in [@vertical, @horizontal] and gpos_type in @gpos_list do
     get_gpos(prefab, fontname, fn %Thaqqa.Data{} = data ->
-      Thaqqa.Data.get_val(data, @writing_direction) in [writing_direction, @universal_language] and
-        Thaqqa.Data.get_val(data, @gpos_type) == gpos_type
+      Thaqqa.Data.get_value(data, @writing_direction) in [writing_direction, @universal_language] and
+        Thaqqa.Data.get_value(data, @gpos_type) == gpos_type
     end)
     |> case do
       {:error, _} = err ->
@@ -115,11 +115,11 @@ defmodule Thaqqa.GposManager do
       {:ok, gpos_data_list} ->
         {:ok,
          Enum.reduce(gpos_data_list, %{x0: 0.0, y0: 0.0, x1: 0.0, y1: 0.0}, fn gpos_data, acc ->
-           reg = Thaqqa.Data.get_val(gpos_data, @precompile)
-           x0 = Thaqqa.Data.get_val(gpos_data, "OffsetX0")
-           x1 = Thaqqa.Data.get_val(gpos_data, "OffsetX1")
-           y0 = Thaqqa.Data.get_val(gpos_data, "OffsetY0")
-           y1 = Thaqqa.Data.get_val(gpos_data, "OffsetY1")
+           reg = Thaqqa.Data.get_value(gpos_data, @precompile)
+           x0 = Thaqqa.Data.get_value(gpos_data, "OffsetX0")
+           x1 = Thaqqa.Data.get_value(gpos_data, "OffsetX1")
+           y0 = Thaqqa.Data.get_value(gpos_data, "OffsetY0")
+           y1 = Thaqqa.Data.get_value(gpos_data, "OffsetY1")
 
            if Regex.match?(reg, string),
              do: %{x0: acc.x0 + x0, y0: acc.y0 + y0, x1: acc.x1 + x1, y1: acc.y1 + y1},

@@ -53,7 +53,7 @@ defmodule Thaqqa.Column do
 
   # 初期値設定のため
 
-  def init_val(%__MODULE__{type: type, subtype: subtype}, val) do
+  def init_value(%__MODULE__{type: type, subtype: subtype}, val) do
     val ||
       case type do
         :string ->
@@ -103,11 +103,11 @@ defmodule Thaqqa.Column do
   # :alig_x0,:alig_x1,:alig_y0は -1,0,1のみを取る
   # :non_negativeは0以上、:naturalは1以上
 
-  def adjust_val(%__MODULE__{} = self, val),
+  def adjust_value(%__MODULE__{} = self, val),
     do:
       if(is_value_range_valid?(self, val),
         do: val,
-        else: init_val(self, nil)
+        else: init_value(self, nil)
       )
 
   def is_value_range_valid?(%__MODULE__{type: :int, subtype: subtype}, val) do

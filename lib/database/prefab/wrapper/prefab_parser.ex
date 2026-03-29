@@ -100,7 +100,7 @@ defmodule Thaqqa.ParserManager do
       |> Enum.join("")
 
     get_parser(prefab, fn %Thaqqa.Data{} = data ->
-      Thaqqa.Data.get_val(data, @language) in [language, @universal_language]
+      Thaqqa.Data.get_value(data, @language) in [language, @universal_language]
     end)
     |> case do
       {:error, _} = err ->
@@ -109,8 +109,8 @@ defmodule Thaqqa.ParserManager do
       {:ok, parser_data_list} ->
         {:ok,
          Enum.reduce(parser_data_list, string, fn parser_data, acc ->
-           reg = Thaqqa.Data.get_val(parser_data, @precompile)
-           alt = Thaqqa.Data.get_val(parser_data, @name_alt)
+           reg = Thaqqa.Data.get_value(parser_data, @precompile)
+           alt = Thaqqa.Data.get_value(parser_data, @name_alt)
            Regex.replace(reg, acc, alt)
          end)}
     end

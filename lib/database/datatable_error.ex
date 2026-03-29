@@ -118,6 +118,18 @@ defmodule Thaqqa.FontRegistry.Error do
   def font_not_found(fontname),
     do: error(:not_found, :font, %{font_name: fontname})
 
+  def data_not_found(columnname, value, tablename, fontname \\ nil),
+    do:
+      error(:not_found, :data, %{
+        value: value,
+        column_name: columnname,
+        table_name: tablename,
+        font_name: fontname
+      })
+
+  def requried_information_not_found(data, tablename),
+    do: error(:not_found, :import, %{data: data, table_name: tablename})
+
   def requried_status_not_found(status_list),
     do: error(:not_found, :import, %{status_list: status_list})
 end

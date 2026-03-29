@@ -96,7 +96,7 @@ defmodule Thaqqa.GsubManager do
   def gsub(%Prefab{} = prefab, string, writing_direction)
       when writing_direction in [@vertical, @horizontal] do
     get_gsub(prefab, fn %Thaqqa.Data{} = data ->
-      Thaqqa.Data.get_val(data, @writing_direction) in [writing_direction, @universal_language]
+      Thaqqa.Data.get_value(data, @writing_direction) in [writing_direction, @universal_language]
     end)
     |> case do
       {:error, _} = err ->
@@ -106,8 +106,8 @@ defmodule Thaqqa.GsubManager do
         {:ok,
          gsub_data_list
          |> Enum.reduce(string, fn gsub_data, acc ->
-           reg = Thaqqa.Data.get_val(gsub_data, @precompile)
-           alt = Thaqqa.Data.get_val(gsub_data, @name_alt)
+           reg = Thaqqa.Data.get_value(gsub_data, @precompile)
+           alt = Thaqqa.Data.get_value(gsub_data, @name_alt)
            Regex.replace(reg, acc, alt)
          end)}
     end

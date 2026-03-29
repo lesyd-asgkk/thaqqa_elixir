@@ -26,21 +26,30 @@ defmodule Thaqqa.Data do
 
   def modify_value_map(value_map, %DataTable{} = table) when is_map(value_map) do
     Enum.reduce(table.column_list, value_map, fn %Column{name: name} = column, acc ->
-      if Map.has_key?(acc, name), do: acc, else: Map.put(acc, name, Column.init_val(column, nil))
+      if Map.has_key?(acc, name),
+        do: acc,
+        else: Map.put(acc, name, Column.init_value(column, nil))
     end)
   end
 
   # valは見栄え悪いのでvalueにしときたい
 
-  def set_val(%__MODULE__{value_list: v} = data, key, val),
+  def set_value(%__MODULE__{value_list: v} = data, key, val),
     do: %{data | value_list: Map.put(v, key, val)}
 
-  def get_val(%__MODULE__{value_list: v}, key), do: Map.get(v, key)
+  def get_value(%__MODULE__{value_list: v}, key), do: Map.get(v, key)
 
-  def delete_val(%__MODULE__{value_list: v} = data, key),
+  def get_value_or_error(%__MODULE__{value_list: v}, key) do
+    case Map.get(v, key) do
+      nil -> Error.data_not_found(nil, key, nil, nil)
+      otherwise -> {:ok, otherwise}
+    end
+  end
+
+  def delete_value(%__MODULE__{value_list: v} = data, key),
     do: %__MODULE__{data | value_list: Map.delete(v, key)}
 
-  def edit_val(%__MODULE__{value_list: v}, nv) when is_map(nv),
+  def edit_value(%__MODULE__{value_list: v}, nv) when is_map(nv),
     do: %__MODULE__{value_list: Map.merge(v, nv)}
 
   def set_precompile(
@@ -54,52 +63,52 @@ defmodule Thaqqa.Data do
   # NameAltにも設定する機能をつける
   def set_precompile(
         %__MODULE__{} = self,
-        %DataTable{compile_rule: "regex_0"},
+        %DataTable{compile_rule: "regex_0"} = datatable,
         %Prefab{} = prefab
       ) do
-    name = get_val(self, @name)
+    name = get_value(self, @name)
 
     if name != nil do
       case Regex_Khhyl.compile(name, prefab) do
         {:error, _} = err -> err
-        {:ok, val} -> {:ok, set_val(self, @precompile, val)}
+        {:ok, val} -> {:ok, set_value(self, @precompile, val)}
       end
     else
-      {:error, "仮error:name_not_found"}
+      Error.data_not_found(@name, name, datatable, nil)
     end
   end
 
   def set_precompile(
         %__MODULE__{} = self,
-        %DataTable{compile_rule: "regex_1"},
+        %DataTable{compile_rule: "regex_1"} = datatable,
         %Prefab{} = prefab
       ) do
-    name = get_val(self, @rawregex)
+    name = get_value(self, @rawregex)
 
     if name != nil do
       case Regex_Khhyl.compile(name, prefab) do
         {:error, _} = err -> err
-        {:ok, val} -> {:ok, set_val(self, @precompile, val)}
+        {:ok, val} -> {:ok, set_value(self, @precompile, val)}
       end
     else
-      {:error, "仮error:name_not_found"}
+      Error.data_not_found(@name, name, datatable, nil)
     end
   end
 
   def set_precompile(
         %__MODULE__{} = self,
-        %DataTable{compile_rule: "path_0"},
+        %DataTable{compile_rule: "path_0"} = datatable,
         %Prefab{} = _prefab
       ) do
-    path = get_val(self, @path)
+    path = get_value(self, @path)
 
     if path != nil do
       case SVG.Path.parse_string(path) do
         {:error, _} = err -> err
-        {:ok, val} -> {:ok, set_val(self, @precompile, val)}
+        {:ok, val} -> {:ok, set_value(self, @precompile, val)}
       end
     else
-      {:error, "仮error:path_not_found"}
+      Error.data_not_found(@path, path, datatable, nil)
     end
   end
 end
