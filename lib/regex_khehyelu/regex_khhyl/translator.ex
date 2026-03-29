@@ -70,14 +70,14 @@ defmodule Thaqqa.Regex_Khhyl.Translator do
           # if k in table_range, do: v ++ acc, else: acc
           # (set_table_rangeを真面目に実装した場合、こちらに切り替える)
         end)
-        |> Enum.filter(fn %Thaqqa.Data{} = data -> Thaqqa.Data.get_val(data, @name) != "" end)
+        |> Enum.filter(fn %Thaqqa.Data{} = data -> Thaqqa.Data.get_value(data, @name) != "" end)
         |> Enum.reduce_while({:ok, []}, fn letter, {:ok, acc} ->
           Thaqqa.Regex_Khhyl.Cond.convert(val, letter)
           |> case do
             {:error, _} = err -> {:halt, err}
             {:ok, nil} -> {:cont, {:ok, acc}}
             {:ok, false} -> {:cont, {:ok, acc}}
-            {:ok, true} -> {:cont, {:ok, [Thaqqa.Data.get_val(letter, @name) | acc]}}
+            {:ok, true} -> {:cont, {:ok, [Thaqqa.Data.get_value(letter, @name) | acc]}}
           end
         end)
         |> case do

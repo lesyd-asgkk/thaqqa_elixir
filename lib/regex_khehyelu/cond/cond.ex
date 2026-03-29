@@ -1,7 +1,7 @@
 defmodule Thaqqa.Regex_Khhyl.Cond.AST do
   defstruct type: nil, value: nil, children: []
 
-  def get_val(%__MODULE__{value: value}), do: value
+  def get_value(%__MODULE__{value: value}), do: value
 
   def is_ast?(%__MODULE__{}), do: true
   def is_ast?(_), do: false
@@ -65,9 +65,9 @@ defmodule Thaqqa.Regex_Khhyl.Cond do
     rest_alt = Enum.slice(stack, 2..-1//1)
     rest = Enum.slice(stack, 3..-1//1)
 
-    first = if AST.is_ast?(first), do: AST.get_val(first), else: first
-    second = if AST.is_ast?(second), do: AST.get_val(second), else: second
-    third = if AST.is_ast?(third), do: AST.get_val(third), else: third
+    first = if AST.is_ast?(first), do: AST.get_value(first), else: first
+    second = if AST.is_ast?(second), do: AST.get_value(second), else: second
+    third = if AST.is_ast?(third), do: AST.get_value(third), else: third
 
     # a == !b のようなとき
     # [!,==,a]の時点では演算しない
@@ -133,7 +133,7 @@ defmodule Thaqqa.Regex_Khhyl.Cond do
         # nilとか特にそう（「なるわけがない」）
         # string == boolみたいなものも演算式として例外判定にしない。
         # というのも、本モジュールは長文を想定していない為。
-        value = Data.get_val(letter_data, val)
+        value = Data.get_value(letter_data, val)
 
         if is_integer(value) || is_float(value) || is_boolean(value) || is_binary(value),
           do: value,
