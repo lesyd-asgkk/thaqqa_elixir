@@ -166,21 +166,34 @@ defmodule Thaqqa.Render do
     |> Enum.join("")
   end
 
+  # 異常がある
+  #
+  #  sentence
+  #  |> Enum.map(fn oneline ->
+  #    Enum.map(oneline, fn word ->
+  #      Enum.map(word, fn glyph_list ->
+  #        glyph_list.glyph.name.glyph
+  #      end)
+  #    end)
+  #  end)
+  #  |> IO.inspect()
   defp parse_word(glyph_and_kern_list) do
-    Enum.chunk_while(
-      glyph_and_kern_list,
-      [],
-      fn glyph, acc ->
-        if glyph.new_line,
-          do: {:cont, Enum.reverse([glyph | acc]), []},
-          else: {:cont, [glyph | acc]}
-      end,
-      fn
-        [] -> {:cont, []}
-        acc -> {:cont, Enum.reverse(acc), []}
-      end
-    )
-    |> Enum.map(fn l -> Enum.chunk_by(l, fn glyph -> glyph.word_breaker end) end)
+    syd =
+      Enum.chunk_while(
+        glyph_and_kern_list,
+        [],
+        fn glyph, acc ->
+          if glyph.new_line,
+            do: {:cont, Enum.reverse([glyph | acc]), []},
+            else: {:cont, [glyph | acc]}
+        end,
+        fn
+          [] -> {:cont, []}
+          acc -> {:cont, Enum.reverse(acc), []}
+        end
+      )
+
+    syd |> Enum.map(fn l -> Enum.chunk_by(l, fn glyph -> glyph.word_breaker end) end)
   end
 
   # まず行単位、単語単位で切り分ける(java風に表現するならば[行座標][単語座標][文字の座標] の3重リストに)
@@ -281,6 +294,8 @@ defmodule Thaqqa.Render do
           {acc_word_list ++ word_list, acc_row + 1}
         end
       )
+
+    sentence_alt
   end
 
   defp adjust_position_sub(oneline, text_align, box_width) do
@@ -345,12 +360,12 @@ defmodule Thaqqa.Render do
     box_width = render_config.boundry.width
     text_align = render_config.text_align
     text_align_last = render_config.text_align_last
-
-    [last_line | rest_line] = Enum.reverse(sentence)
-
+    rest_line = Enum.reverse(sentence)
+    # [last_line | rest_line] = Enum.reverse(sentence)
+    # [adjust_position_sub(last_line, text_align_last, box_width)]
     Enum.reduce(
       rest_line,
-      [adjust_position_sub(last_line, text_align_last, box_width)],
+      [],
       fn oneline, acc_oneline_list ->
         oneline_alt = adjust_position_sub(oneline, text_align, box_width)
         [oneline_alt | acc_oneline_list]
@@ -364,9 +379,6 @@ defmodule Thaqqa.Render do
         sentence,
         {[], 0},
         fn oneline, {acc_oneline_list, acc_y} ->
-          Enum.map(oneline, fn glyph -> glyph.glyph.name.glyph end)
-          |> IO.inspect()
-
           {max_height, max_gap_top} =
             Enum.reduce(oneline, {0, 0}, fn g, {acc_height, acc_gap_top} ->
               {max(acc_height, g.height), max(acc_gap_top, g.gap_top)}
@@ -539,12 +551,10 @@ defmodule Thaqqa.Render do
       {:ok, const} ->
         regex = const |> Thaqqa.Data.get_value(@precompile)
 
-        {:ok,
-         Regex.scan(regex, string)
-         |> Enum.reduce([], fn list, acc ->
-           [_ | list] = list
-           acc ++ list
-         end)}
+        string = Regex.replace(regex, string, "\\g{1}Sep()\\g{2}")
+        string = Regex.replace(regex, string, "\\g{1}Sep()\\g{2}")
+
+        {:ok, String.split(string, "Sep()")}
     end
   end
 
