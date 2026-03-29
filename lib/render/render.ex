@@ -373,6 +373,7 @@ defmodule Thaqqa.Render do
     )
   end
 
+  # 一番バグってるポイント。なんとかすべき
   defp adjust_position_y(sentence) do
     {sentence_alt, _} =
       Enum.reduce(
@@ -391,7 +392,7 @@ defmodule Thaqqa.Render do
             end)
 
           Enum.reverse(oneline_alt)
-
+          # IO.inspect(acc_y + max_height + max_gap_top)
           {acc_oneline_list ++ oneline_alt, acc_y + max_height + max_gap_top}
         end
       )

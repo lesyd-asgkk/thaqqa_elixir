@@ -7333,9 +7333,9 @@
         "GPOSType": "external",
         "Order": 0,
         "Name": "P(period0)",
-        "OffsetX0": -30,
+        "OffsetX0": 0,
         "OffsetY0": 0,
-        "OffsetX1": 30,
+        "OffsetX1": 0,
         "OffsetY1": 35
         
       },
@@ -7345,9 +7345,9 @@
         "GPOSType": "external",
         "Order": 0,
         "Name": "P(comma1)",
-        "OffsetX0": -30,
+        "OffsetX0": 0,
         "OffsetY0": 0,
-        "OffsetX1": 30,
+        "OffsetX1": 0,
         "OffsetY1": 85
         
       },

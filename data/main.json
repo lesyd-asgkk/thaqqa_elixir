@@ -4076,7 +4076,7 @@
         "Order": 0,
         "Priority": 0,
         "Name": "WordBreaker",
-        "RawRegex": "None()| P((space|comma|period)_-*)"
+        "RawRegex": "P((space)_-*)"
       },
                   "4": {
         "ID": 4,
