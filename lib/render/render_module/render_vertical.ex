@@ -190,7 +190,7 @@ defmodule Thaqqa.RenderVertical do
                           else: letter_spacing
 
                       # IO.inspect({gap_top, top, gap_bottom, bottom})
-                      glyph_y = acc_y + gap_top - top + blank_space / 2
+                      glyph_y = acc_y - top + blank_space / 2
 
                       next_y = acc_y + gap_top - top + gap_bottom + bottom + blank_space
 
