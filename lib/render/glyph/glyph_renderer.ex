@@ -48,10 +48,10 @@ defmodule Thaqqa.Glyph.GlyphRenderer do
               |> SVG.Path.set_end_position(0, bottom_gap + y3)
               |> SVG.Path.to_relative()
 
-            {:ok, %Glyph{self | path: path, glyph_height: bottom_gap + y3}}
+            {:ok, %Glyph{self | path: path, glyph_height: top_gap + bottom_gap + y3}}
 
           "init" ->
-            skewer = draw_rectangle(-th_half, top_gap + y2, th_half, bottom_gap + y3)
+            skewer = draw_rectangle(-th_half, top_gap + y2, th_half, top_gap + bottom_gap + y3)
 
             path =
               SVG.Path.to_relative(path)
@@ -61,11 +61,13 @@ defmodule Thaqqa.Glyph.GlyphRenderer do
               |> concat_path(skewer)
               |> SVG.Path.to_relative()
 
-            {:ok, %Glyph{self | path: path, glyph_height: bottom_gap + y3}}
+            {:ok, %Glyph{self | path: path, glyph_height: top_gap + bottom_gap + y3}}
 
           "mid" ->
-            skewer_top = draw_rectangle(-th_half, y0, th_half, y1)
-            skewer_bottom = draw_rectangle(-th_half, y2, th_half, bottom_gap + y3)
+            skewer_top = draw_rectangle(-th_half, y0, th_half, y1 + top_gap)
+
+            skewer_bottom =
+              draw_rectangle(-th_half, top_gap + y2, th_half, top_gap + bottom_gap + y3)
 
             path =
               SVG.Path.to_relative(path)
@@ -76,10 +78,10 @@ defmodule Thaqqa.Glyph.GlyphRenderer do
               |> concat_path(skewer_bottom)
               |> SVG.Path.to_relative()
 
-            {:ok, %Glyph{self | path: path, glyph_height: bottom_gap + y3}}
+            {:ok, %Glyph{self | path: path, glyph_height: top_gap + bottom_gap + y3}}
 
           "fin" ->
-            skewer = draw_rectangle(-th_half, y0, th_half, y1)
+            skewer = draw_rectangle(-th_half, y0, th_half, top_gap + y1)
 
             path =
               SVG.Path.to_relative(path)
@@ -89,7 +91,7 @@ defmodule Thaqqa.Glyph.GlyphRenderer do
               |> concat_path(skewer)
               |> SVG.Path.to_relative()
 
-            {:ok, %Glyph{self | path: path, glyph_height: bottom_gap + y3}}
+            {:ok, %Glyph{self | path: path, glyph_height: top_gap + bottom_gap + y3}}
 
           _ ->
             {:error, "invalid form found at render_by_relative_height/4"}
@@ -132,11 +134,11 @@ defmodule Thaqqa.Glyph.GlyphRenderer do
             {:ok, %Glyph{self | path: path}}
 
           k when k in ["init", "mid", "fin"] ->
-            skewer = draw_rectangle(-th_half, y0, th_half, y3 + bottom_gap)
+            skewer = draw_rectangle(-th_half, y0, th_half, top_gap + y3 + bottom_gap)
 
             path =
               SVG.Path.to_relative(path)
-              |> SVG.Path.set_start_position(0, 0)
+              |> SVG.Path.set_start_position(0, top_gap)
               |> SVG.Path.set_end_position(0, bottom_gap + y3)
               |> SVG.Path.concat_path(skewer)
               |> SVG.Path.to_relative()
