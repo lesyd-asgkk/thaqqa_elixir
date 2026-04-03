@@ -274,9 +274,7 @@ defmodule Thaqqa.RenderVertical do
             _ ->
               gap = (top_calc + bottom_calc) / (word_num - 1)
 
-              Enum.map(0..(word_num - 1), fn n ->
-                top_calc + gap * n
-              end)
+              Enum.map(0..(word_num - 1), fn n -> top_calc + gap * n end)
           end
       end
 
@@ -381,8 +379,8 @@ defmodule Thaqqa.RenderVertical do
 
   defp render_all(glyph_list, %Prefab{} = prefab) do
     Enum.map(glyph_list, fn glyph_and_kern ->
-      %{glyph: glyph, gap: gap} = glyph_and_kern
-      {:ok, glyph_new} = Glyph.render_by_relative_height(prefab, glyph, gap.top, gap.bottom)
+      %{glyph: glyph, gap_top: gap_top, gap_bottom: gap_bottom} = glyph_and_kern
+      {:ok, glyph_new} = Glyph.render_by_relative_height(prefab, glyph, gap_top, gap_bottom)
 
       %{glyph_and_kern | glyph: glyph_new}
     end)
