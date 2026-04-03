@@ -7,18 +7,6 @@ defmodule Thaqqa.RenderVertical do
   alias Thaqqa.ConstRegexManager, as: ConstRegexManager
   use Thaqqa.DataTable.Const
 
-  defp build_none() do
-    %Glyph{
-      offset: %{x: 0, y: 0},
-      aligment: %{x: 0, y: 0},
-      path: %SVG.Path{},
-      children_glyph_list: [],
-      font: nil,
-      name: %{glyph: "", variant: nil, type: "None", form: nil},
-      height: %{y0: 0, y1: 0, y2: 0, y3: 0}
-    }
-  end
-
   defp calc_kerning_vertical(
          [
            %Glyph{name: %{glyph: prev_glyph_name}} = prev_glyph,
@@ -81,6 +69,9 @@ defmodule Thaqqa.RenderVertical do
 
       %{top: t, bottom: b, left: l, right: r} = SVG.Path.get_border(glyph_for_meassure.path)
 
+      # IO.inspect(glyph_for_meassure.name)
+      # IO.inspect({y0_internal, y1_ex_prev, y1_internal, y0_ex_next})
+
       {:ok,
        %{
          glyph: glyph,
@@ -110,33 +101,6 @@ defmodule Thaqqa.RenderVertical do
     else
       {:error, _} = err -> err
     end
-  end
-
-  def concat_path_data_as_vertical(glyph_list) when is_list(glyph_list) do
-    Enum.map(glyph_list, fn glyph_and_kern ->
-      %{x: x, y: y, glyph: %Glyph{offset: %{x: off_x, y: off_y}, path: path}} = glyph_and_kern
-      SVG.Path.set_start_position(path, x + off_x, y + off_y) |> SVG.Path.export_as_string_mass!()
-    end)
-    |> Enum.join("")
-  end
-
-  defp parse_word(glyph_and_kern_list) do
-    syd =
-      Enum.chunk_while(
-        glyph_and_kern_list,
-        [],
-        fn glyph, acc ->
-          if glyph.new_line,
-            do: {:cont, Enum.reverse([glyph | acc]), []},
-            else: {:cont, [glyph | acc]}
-        end,
-        fn
-          [] -> {:cont, []}
-          acc -> {:cont, Enum.reverse(acc), []}
-        end
-      )
-
-    syd |> Enum.map(fn l -> Enum.chunk_by(l, fn glyph -> glyph.word_breaker end) end)
   end
 
   ###################################
@@ -189,7 +153,6 @@ defmodule Thaqqa.RenderVertical do
                           do: word_spacing + letter_spacing,
                           else: letter_spacing
 
-                      # IO.inspect({gap_top, top, gap_bottom, bottom})
                       glyph_y = acc_y - top + blank_space / 2
 
                       next_y = acc_y + gap_top - top + gap_bottom + bottom + blank_space
@@ -318,22 +281,22 @@ defmodule Thaqqa.RenderVertical do
     )
   end
 
-  defp adjust_position_x(sentence) do
+  defp adjust_position_x(sentence, width) do
     {sentence_alt, _} =
       Enum.reduce(
         sentence,
-        {[], 0},
+        {[], width},
         fn oneline, {acc_oneline_list, acc_x} ->
           {left, right} =
             Enum.reduce(oneline, {0, 0}, fn g, {acc_left, acc_right} ->
               {max(acc_left, g.box.left), max(acc_right, g.box.right)}
             end)
 
-          oneline_alt = Enum.map(oneline, fn g -> Map.put(g, :x, acc_x + left) end)
+          oneline_alt = Enum.map(oneline, fn g -> Map.put(g, :x, acc_x - right) end)
 
           Enum.reverse(oneline_alt)
 
-          {[oneline_alt | acc_oneline_list] |> List.flatten(), acc_x + left + right}
+          {[oneline_alt | acc_oneline_list] |> List.flatten(), acc_x - left - right}
         end
       )
 
@@ -341,40 +304,12 @@ defmodule Thaqqa.RenderVertical do
   end
 
   defp adjust_position(sentence, %Render{} = render_config) do
-    adjust_position_y(sentence, render_config) |> adjust_position_x()
-  end
-
-  defp alter_newline(word_list) do
-    {sentence, _} =
-      word_list
-      |> Enum.reduce({[], 0}, fn {word, top, bottom, row}, {acc, acc_raw} ->
-        {[{word, top, bottom, row != acc_raw} | acc], row}
-      end)
-
-    sentence =
-      sentence
-      |> Enum.chunk_while(
-        [],
-        fn {glyph_list, top, bottom, row} = word, acc_word ->
-          cond do
-            true ->
-              if row,
-                do: {:cont, Enum.reverse([word | acc_word]), []},
-                else: {:cont, [word | acc_word]}
-          end
-        end,
-        fn
-          [] -> {:cont, []}
-          acc_word -> {:cont, Enum.reverse(acc_word), []}
-        end
-      )
-
-    [first_line | rest_line] = sentence
+    adjust_position_y(sentence, render_config) |> adjust_position_x(render_config.boundry.width)
   end
 
   defp set_position(sentence, %Render{} = render_config) do
     {word_list, _} = set_position_and_wrapped(sentence, render_config)
-    alter_newline(word_list) |> adjust_position(render_config)
+    Render.alter_newline(word_list) |> adjust_position(render_config)
   end
 
   defp render_all(glyph_list, %Prefab{} = prefab) do
@@ -388,7 +323,7 @@ defmodule Thaqqa.RenderVertical do
 
   def alignment_path_data_as_vertical(%Prefab{} = prefab, glyph_list, %Render{} = render)
       when is_list(glyph_list) do
-    none = build_none()
+    none = Render.build_none()
 
     glyph_and_kern_list =
       [none | glyph_list ++ [none]]
@@ -406,7 +341,7 @@ defmodule Thaqqa.RenderVertical do
       {:ok, g_a_k_l} ->
         g_a_k_l
         # px単位指定
-        Enum.reverse(g_a_k_l) |> parse_word() |> set_position(render) |> render_all(prefab)
+        Enum.reverse(g_a_k_l) |> Render.parse_word() |> set_position(render) |> render_all(prefab)
     end
   end
 end

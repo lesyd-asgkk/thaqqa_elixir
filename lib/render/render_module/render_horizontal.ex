@@ -20,26 +20,6 @@ defmodule Thaqqa.RenderHorizontal do
   alias Thaqqa.ConstRegexManager, as: ConstRegexManager
   use Thaqqa.DataTable.Const
 
-  defp build_none() do
-    %Glyph{
-      offset: %{x: 0, y: 0},
-      aligment: %{x: 0, y: 0},
-      path: %SVG.Path{},
-      children_glyph_list: [],
-      font: nil,
-      name: %{glyph: "", variant: nil, type: "None", form: nil},
-      height: %{y0: 0, y1: 0, y2: 0, y3: 0}
-    }
-  end
-
-  def concat_path_data_as_horizontal(glyph_list) when is_list(glyph_list) do
-    Enum.map(glyph_list, fn glyph_and_kern ->
-      %{x: x, y: y, glyph: %Glyph{offset: %{x: off_x, y: off_y}, path: path}} = glyph_and_kern
-      SVG.Path.set_start_position(path, x + off_x, y + off_y) |> SVG.Path.export_as_string_mass!()
-    end)
-    |> Enum.join("")
-  end
-
   defp calc_kerning_horizontal(
          [
            %Glyph{name: %{glyph: prev_glyph_name}} = prev_glyph,
@@ -136,25 +116,6 @@ defmodule Thaqqa.RenderHorizontal do
     else
       {:error, _} = err -> err
     end
-  end
-
-  defp parse_word(glyph_and_kern_list) do
-    syd =
-      Enum.chunk_while(
-        glyph_and_kern_list,
-        [],
-        fn glyph, acc ->
-          if glyph.new_line,
-            do: {:cont, Enum.reverse([glyph | acc]), []},
-            else: {:cont, [glyph | acc]}
-        end,
-        fn
-          [] -> {:cont, []}
-          acc -> {:cont, Enum.reverse(acc), []}
-        end
-      )
-
-    syd |> Enum.map(fn l -> Enum.chunk_by(l, fn glyph -> glyph.word_breaker end) end)
   end
 
   defp set_position_and_wrapped(sentence, %Render{} = render_config) do
@@ -398,12 +359,12 @@ defmodule Thaqqa.RenderHorizontal do
 
   defp set_position(sentence, %Render{} = render_config) do
     {word_list, _} = set_position_and_wrapped(sentence, render_config)
-    alter_newline(word_list) |> adjust_position(render_config)
+    Render.alter_newline(word_list) |> adjust_position(render_config)
   end
 
   def alignment_path_data_as_horizontal(%Prefab{} = prefab, glyph_list, %Render{} = render)
       when is_list(glyph_list) do
-    none = build_none()
+    none = Render.build_none()
 
     glyph_and_kern_list =
       [none | glyph_list ++ [none]]
@@ -420,7 +381,7 @@ defmodule Thaqqa.RenderHorizontal do
 
       {:ok, g_a_k_l} ->
         # px単位指定
-        Enum.reverse(g_a_k_l) |> parse_word() |> set_position(render)
+        Enum.reverse(g_a_k_l) |> Render.parse_word() |> set_position(render)
     end
   end
 end

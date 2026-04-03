@@ -49,7 +49,7 @@ defmodule Thaqqa.Render do
     }
   end
 
-  defp build_none() do
+  def build_none() do
     %Glyph{
       offset: %{x: 0, y: 0},
       aligment: %{x: 0, y: 0},
@@ -61,13 +61,62 @@ defmodule Thaqqa.Render do
     }
   end
 
-  def concat_path_data_as_horizontal(glyph_list) when is_list(glyph_list),
-    do: Thaqqa.RenderHorizontal.concat_path_data_as_horizontal(glyph_list)
+  def alter_newline(word_list) do
+    {sentence, _} =
+      word_list
+      |> Enum.reduce({[], 0}, fn {word, top, bottom, row}, {acc, acc_raw} ->
+        {[{word, top, bottom, row != acc_raw} | acc], row}
+      end)
 
-  def concat_path_data_as_vertical(glyph_list) when is_list(glyph_list),
-    do: Thaqqa.RenderVertical.concat_path_data_as_vertical(glyph_list)
+    sentence =
+      sentence
+      |> Enum.chunk_while(
+        [],
+        fn {glyph_list, top, bottom, row} = word, acc_word ->
+          cond do
+            true ->
+              if row,
+                do: {:cont, Enum.reverse([word | acc_word]), []},
+                else: {:cont, [word | acc_word]}
+          end
+        end,
+        fn
+          [] -> {:cont, []}
+          acc_word -> {:cont, Enum.reverse(acc_word), []}
+        end
+      )
 
-  #
+    [first_line | rest_line] = sentence
+  end
+
+  def parse_word(glyph_and_kern_list) do
+    syd =
+      Enum.chunk_while(
+        glyph_and_kern_list,
+        [],
+        fn glyph, acc ->
+          if glyph.new_line,
+            do: {:cont, Enum.reverse([glyph | acc]), []},
+            else: {:cont, [glyph | acc]}
+        end,
+        fn
+          [] -> {:cont, []}
+          acc -> {:cont, Enum.reverse(acc), []}
+        end
+      )
+
+    syd |> Enum.map(fn l -> Enum.chunk_by(l, fn glyph -> glyph.word_breaker end) end)
+  end
+
+  def concat_path_data(glyph_list) when is_list(glyph_list) do
+    Enum.map(glyph_list, fn glyph_and_kern ->
+      %{x: x, y: y, glyph: %Glyph{offset: %{x: off_x, y: off_y}, path: path, name: name}} =
+        glyph_and_kern
+
+      SVG.Path.set_start_position(path, x + off_x, y + off_y) |> SVG.Path.export_as_string_mass!()
+    end)
+    |> Enum.join("")
+  end
 
   # まず行単位、単語単位で切り分ける(java風に表現するならば[行座標][単語座標][文字の座標] の3重リストに)
 
