@@ -80,7 +80,7 @@ defmodule Thaqqa.Glyph.GlyphSpawner do
        %Glyph{
          offset: %{x: 0, y: 0},
          aligment: aligment,
-         path: SVG.Path.new(path) |> SVG.Path.rescale(size / font_height),
+         path: SVG.Path.new(path) |> SVG.Path.rescale(size / font_height, size / font_height),
          children_glyph_list: [],
          font: fontname,
          scale: size / font_height,

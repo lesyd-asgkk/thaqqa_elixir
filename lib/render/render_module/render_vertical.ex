@@ -103,10 +103,6 @@ defmodule Thaqqa.RenderVertical do
     end
   end
 
-  ###################################
-  ## 以降はvertical用のチューニングがまだ
-  ###################################
-
   defp set_position_and_wrapped(sentence, %Render{} = render_config) do
     word_spacing = render_config.word_spacing
     letter_spacing = render_config.letter_spacing

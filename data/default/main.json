@@ -90,6 +90,13 @@
         "subtype": "none",
         "dev": false
       },
+            "isWidthHRel": {
+        "name": "isWidthVRel",
+        "type": "bool",
+        "order": 111,
+        "subtype": "none",
+        "dev": false
+      },
       "Height": {
         "name": "Height",
         "type": "float",
@@ -148,6 +155,7 @@
         "WidthH": 90,
         "WidthV": 85,
         "isWidthHRel": false,
+        "isWidthVRel": false,
         "Height": 100,
         "TopGapH": 10,
         "VersionMajor": 0,
