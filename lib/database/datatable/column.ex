@@ -1,24 +1,8 @@
-defimpl Jason.Encoder, for: Thaqqa.Column do
-  def encode(column, opts),
-    do:
-      Jason.Encode.map(
-        %{
-          name: column.name,
-          type: column.type,
-          subtype: column.subtype,
-          order: column.order,
-          desc: column.desc,
-          dev: column.dev
-        },
-        opts
-      )
-end
-
 defmodule Thaqqa.Column do
   defstruct [:name, :type, :desc, :order, :subtype, :dev]
 
   use Thaqqa.DataTable.Const
-
+  alias Thaqqa.FontRegistry.Error, as: Error
   # typeは:string :float :int :boolを取る
   # subtypeは
 
@@ -163,4 +147,20 @@ defmodule Thaqqa.Column do
   end
 
   def is_value_range_valid?(%__MODULE__{type: nil}, _val), do: true
+end
+
+defimpl Jason.Encoder, for: Thaqqa.Column do
+  def encode(column, opts),
+    do:
+      Jason.Encode.map(
+        %{
+          name: column.name,
+          type: column.type,
+          subtype: column.subtype,
+          order: column.order,
+          desc: column.desc,
+          dev: column.dev
+        },
+        opts
+      )
 end

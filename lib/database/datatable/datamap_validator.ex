@@ -75,13 +75,7 @@ defmodule Thaqqa.DataMapValidator do
   defp validate_value_map(value_map, column_list) do
     # ※volatilityの編集拒否はwrapper module側(LetterEditorとか)で行う
 
-    Enum.reduce_while(column_list, {:ok, value_map}, fn %Column{
-                                                          name: name,
-                                                          type: type,
-                                                          subtype: subtype
-                                                        } =
-                                                          column,
-                                                        {:ok, _} ->
+    Enum.reduce_while(column_list, {:ok, value_map}, fn %Column{name: name} = column, {:ok, _} ->
       if Map.has_key?(value_map, name) do
         case Column.validate(column, Map.get(value_map, name)) do
           :ok -> {:cont, {:ok, value_map}}

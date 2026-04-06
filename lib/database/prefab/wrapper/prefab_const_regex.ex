@@ -3,9 +3,7 @@
 # add,delete等の機能の拡張は必要に応じて行う(内部でしか使用せず、rootファイルを直接編集で事足りるため必要に乏しい)
 
 defmodule Thaqqa.ConstRegexManager do
-  alias Thaqqa.Data, as: Data
   alias Thaqqa.DataTable, as: DataTable
-  alias Thaqqa.Font, as: Font
   alias Thaqqa.FontRegistryPrefab, as: Prefab
   alias Thaqqa.FontRegistry.Error, as: Error
   use Thaqqa.DataTable.Const

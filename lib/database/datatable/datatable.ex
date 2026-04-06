@@ -1,40 +1,3 @@
-#
-defimpl Jason.Encoder, for: Thaqqa.DataTable do
-  def encode(datatable, opts) do
-    datalist_map =
-      datatable.data_list
-      |> Enum.with_index()
-      |> Map.new(fn {v, i} -> {Integer.to_string(i), v.value_list} end)
-
-    column_volatility =
-      Thaqqa.DataTable.get_column(datatable, fn %Thaqqa.Column{type: type} ->
-        type == :volatility
-      end)
-      |> Enum.map(fn %Thaqqa.Column{name: name} -> name end)
-
-    datalist_map =
-      Enum.reduce(datalist_map, %{}, fn {k, v}, acc ->
-        v =
-          Enum.reduce(v, %{}, fn {k, v}, acc ->
-            if k in column_volatility, do: acc, else: Map.put(acc, k, v)
-          end)
-
-        Map.put(acc, k, v)
-      end)
-
-    Jason.Encode.map(
-      %{
-        name: datatable.name,
-        compile_rule: datatable.compile_rule,
-        single: datatable.single,
-        columnList: datatable.column_list |> Map.new(fn v -> {v.name, v} end),
-        dataList: datalist_map
-      },
-      opts
-    )
-  end
-end
-
 defmodule Thaqqa.DataTable do
   alias Thaqqa.DataMapValidator, as: DataMapValidator
   alias Thaqqa.FontRegistry.Error, as: Error
@@ -276,5 +239,42 @@ defmodule Thaqqa.DataTable do
       )
 
     %__MODULE__{dt | data_list: sorted}
+  end
+end
+
+#
+defimpl Jason.Encoder, for: Thaqqa.DataTable do
+  def encode(datatable, opts) do
+    datalist_map =
+      datatable.data_list
+      |> Enum.with_index()
+      |> Map.new(fn {v, i} -> {Integer.to_string(i), v.value_list} end)
+
+    column_volatility =
+      Thaqqa.DataTable.get_column(datatable, fn %Thaqqa.Column{type: type} ->
+        type == :volatility
+      end)
+      |> Enum.map(fn %Thaqqa.Column{name: name} -> name end)
+
+    datalist_map =
+      Enum.reduce(datalist_map, %{}, fn {k, v}, acc ->
+        v =
+          Enum.reduce(v, %{}, fn {k, v}, acc ->
+            if k in column_volatility, do: acc, else: Map.put(acc, k, v)
+          end)
+
+        Map.put(acc, k, v)
+      end)
+
+    Jason.Encode.map(
+      %{
+        name: datatable.name,
+        compile_rule: datatable.compile_rule,
+        single: datatable.single,
+        columnList: datatable.column_list |> Map.new(fn v -> {v.name, v} end),
+        dataList: datalist_map
+      },
+      opts
+    )
   end
 end

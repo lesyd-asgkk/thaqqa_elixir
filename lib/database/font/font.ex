@@ -1,9 +1,3 @@
-defimpl Jason.Encoder, for: Thaqqa.Font do
-  def encode(font, opts) do
-    Jason.Encode.map(Map.new(font.table_list, fn table -> {table.name, table} end), opts)
-  end
-end
-
 defmodule Thaqqa.Font do
   alias Thaqqa.DataTable, as: DataTable
   defstruct [:filename, :name, table_list: []]
@@ -41,5 +35,11 @@ defmodule Thaqqa.Font do
       end)
 
     %{font | table_list: new_tables}
+  end
+end
+
+defimpl Jason.Encoder, for: Thaqqa.Font do
+  def encode(font, opts) do
+    Jason.Encode.map(Map.new(font.table_list, fn table -> {table.name, table} end), opts)
   end
 end
