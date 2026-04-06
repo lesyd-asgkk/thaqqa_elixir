@@ -2,6 +2,7 @@
 
 defmodule Thaqqa.PrefabOp do
   alias Thaqqa.PrefabComplement, as: PrefabComplement
+  alias Thaqqa.PrefabCompiler, as: PrefabCompiler
 
   alias Thaqqa.FontRegistryPrefab, as: Prefab
   alias Thaqqa.Font, as: Font
@@ -49,7 +50,7 @@ defmodule Thaqqa.PrefabOp do
   def delete_font(%Prefab{} = self, name) do
     case Map.get(self.fonts, name) do
       nil -> Error.font_not_found(name)
-      _ -> update_fonts(self, Map.delete(self.fonts, name))
+      _ -> {:ok, update_fonts(self, Map.delete(self.fonts, name))}
     end
   end
 
@@ -132,8 +133,10 @@ defmodule Thaqqa.PrefabOp do
         Error.table_not_found(name)
 
       %DataTable{name: name} = datatable ->
-        dt = DataTable.add_column(datatable, column)
-        edit_static_table(self, name, dt)
+        case DataTable.add_column(datatable, column) do
+          {:ok, dt} -> edit_static_table(self, name, dt)
+          {:error, _} = err -> err
+        end
     end
   end
 
@@ -144,14 +147,16 @@ defmodule Thaqqa.PrefabOp do
     end
   end
 
-  def edit_column(%Prefab{} = self, name, %Column{} = column) do
+  def edit_column(%Prefab{} = self, name, %Column{name: name} = column) do
     case Prefab.get_static_table(self, name) do
       nil ->
         Error.table_not_found(name, :edit)
 
       %DataTable{name: name} = datatable ->
-        dt = DataTable.edit_column(datatable, column)
-        edit_static_table(self, name, dt)
+        case DataTable.edit_column(datatable, name, column) do
+          {:ok, dt} -> edit_static_table(self, name, dt)
+          {:error, _} = err -> err
+        end
     end
   end
 
@@ -180,7 +185,7 @@ defmodule Thaqqa.PrefabOp do
 
   def complement_table_by_column(
         %Prefab{} = self,
-        %DataTable{name: table_name} = datatable,
+        %DataTable{} = datatable,
         column_name
       ),
       do: PrefabComplement.complement_table_by_column(self, datatable, column_name)
@@ -203,7 +208,7 @@ defmodule Thaqqa.PrefabOp do
     do: PrefabCompiler.set_precompile_as_root_by_table(self, tablename)
 
   def set_precompile_as_root_by_data(%Prefab{} = self, tablename, %Data{} = data),
-    do: PrefabCompiler.set_precompile_as_root_by_data(self, data)
+    do: PrefabCompiler.set_precompile_as_root_by_data(self, tablename, data)
 
   def set_precompile_as_font(%Prefab{} = self, fontname),
     do: PrefabCompiler.set_precompile_as_font(self, fontname)

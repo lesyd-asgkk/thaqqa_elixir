@@ -8,7 +8,6 @@ defmodule Thaqqa.PrefabCompiler do
   alias Thaqqa.Font, as: Font
   alias Thaqqa.DataTable, as: DataTable
   alias Thaqqa.Data, as: Data
-  alias Thaqqa.Column, as: Column
   alias Thaqqa.FontRegistry.Error, as: Error
 
   defp reduce_while_ok(enum, acc, fun) do

@@ -82,7 +82,7 @@ defmodule Thaqqa.GlyphManager do
 
   def edit_glyph(%Prefab{} = prefab, fontname, value_map, %Thaqqa.Data{} = data) do
     with {:ok, %DataTable{} = table} <- get_glyph_table(prefab, fontname),
-         {:ok, %Data{} = new_data} <- Data.new(value_map, table, prefab),
+         {:ok, %Data{} = _new_data} <- Data.new(value_map, table, prefab),
          {:ok, %DataTable{} = table} <- DataTable.edit_data(table, data, value_map),
          %Font{} = font <- Prefab.get_font(prefab, fontname),
          {:ok, %Prefab{} = new_prefab} <-

@@ -82,7 +82,7 @@ defmodule Thaqqa.PrefabIO do
         _ -> false
       end)
 
-    Enum.reduce_while(columns, {:ok, table}, fn {k, v}, {:ok, ans} ->
+    Enum.reduce_while(columns, {:ok, table}, fn {_k, v}, {:ok, ans} ->
       Enum.reduce_while(v, {:ok, ans}, fn {_, v_}, {:ok, ans_} ->
         if Map.get(v_, "name") == nil or Map.get(v_, "type") == nil,
           do:
@@ -103,7 +103,7 @@ defmodule Thaqqa.PrefabIO do
         {:halt, err}
 
       {:ok, table} ->
-        Enum.reduce_while(others, {:ok, table}, fn {k, v}, {:ok, ans} ->
+        Enum.reduce_while(others, {:ok, table}, fn {_k, v}, {:ok, ans} ->
           if is_map(v) do
             # volatilityとなっている値は追加しない（新たに計算し直す）
             column_volatility =

@@ -4,6 +4,7 @@ defmodule Thaqqa.DataMapValidator do
   alias Thaqqa.FontRegistry.Error, as: Error
   alias Thaqqa.DataTable, as: DataTable
   alias Thaqqa.Column, as: Column
+
   use Thaqqa.DataTable.Const
 
   # こちらも同じく、editの場合は端折る
