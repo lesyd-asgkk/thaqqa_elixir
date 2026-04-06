@@ -1,12 +1,10 @@
 defmodule Thaqqa.FontRegistry do
   use GenServer
-  alias Thaqqa.FontRegistry, as: FontRegistry
-  alias Thaqqa.Font, as: Font
-  alias Thaqqa.FontIO, as: FontIO
   @fonts :fonts
   @static_tables :static_tables
   @fonts_shadow :fonts_shadow
   @static_tables_shadow :static_tables_shadow
+
   ## API,直接呼び出せる関数群
   def start_link(_opts) do
     GenServer.start_link(__MODULE__, :ok, name: __MODULE__)
@@ -30,6 +28,12 @@ defmodule Thaqqa.FontRegistry do
   def rollback(timeout \\ 30_000), do: safe_call({:rollback}, timeout)
 
   def commit(timeout \\ 30_000), do: safe_call({:commit}, timeout)
+
+  def export_as_root(opts, timeout \\ 30_000),
+    do: safe_call({:save_root, opts}, timeout)
+
+  def export_as_font(fontname, opts, timeout \\ 30_000),
+    do: safe_call({:save_font, fontname, opts}, timeout)
 
   def create_prefab(),
     do:
@@ -100,6 +104,39 @@ defmodule Thaqqa.FontRegistry do
       )
 
     {:reply, result, state}
+  end
+
+  def handle_call({:save_all}, _from, state) do
+    {:reply, nil, state}
+  end
+
+  @root_file "data/main.json"
+
+  def handle_call({:save_root, opts}, _from, state) do
+    with {:ok, json} <-
+           Jason.encode(
+             :ets.tab2list(@static_tables)
+             |> Map.new(),
+             opts
+           ),
+         :ok <- File.write(@root_file, json) do
+      {:reply, :ok, state}
+    else
+      {:error, _} = err -> {:reply, err, state}
+    end
+  end
+
+  @font_folder "data/"
+  @font_file "/main.json"
+
+  def handle_call({:save_font, fontname, opts}, _from, state) do
+    with font when not is_nil(font) <- :ets.tab2list(@fonts) |> Map.new() |> Map.get(fontname),
+         {:ok, json} <- Jason.encode(font, opts),
+         :ok <- File.write(@font_folder <> font.filename <> @font_file, json) do
+      {:reply, :ok, state}
+    else
+      {:error, _} = err -> {:reply, err, state}
+    end
   end
 
   def handle_info(:timeout, state), do: {:noreply, state}

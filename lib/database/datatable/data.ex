@@ -1,3 +1,7 @@
+# defimpl Jason.Encoder, for: Thaqqa.Data do
+#  def encode(data, opts), do: Jason.Encode.map(data.value_list, opts)
+# end
+
 defmodule Thaqqa.Data do
   alias Thaqqa.Regex_Khhyl, as: Regex_Khhyl
   alias Thaqqa.DataTable, as: DataTable
@@ -31,8 +35,6 @@ defmodule Thaqqa.Data do
         else: Map.put(acc, name, Column.init_value(column, nil))
     end)
   end
-
-  # valは見栄え悪いのでvalueにしときたい
 
   def set_value(%__MODULE__{value_list: v} = data, key, val),
     do: %{data | value_list: Map.put(v, key, val)}

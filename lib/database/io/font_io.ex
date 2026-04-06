@@ -14,10 +14,6 @@ defmodule Thaqqa.FontIO do
 
   alias Thaqqa.FontRegistry, as: FontRegistry
   alias Thaqqa.FontRegistryPrefab, as: Prefab
-  alias Thaqqa.Font, as: Font
-  alias Thaqqa.Column, as: Column
-  alias Thaqqa.Regex_Khhyl, as: Regex_Khhyl
-  alias Thaqqa.DataTable, as: DataTable
 
   # read_and_decode_jsonはfont_prefabの方にそっくり同じ関数を作る
   # set_precompileも同様
@@ -31,15 +27,6 @@ defmodule Thaqqa.FontIO do
     end
   end
 
-  defp extract_datatable_name(data) do
-    with data_0_list when is_list(data_0_list) <- get_in(data, ["FONTDATA", "data"]),
-         data_0 when is_binary(data_0) <- Enum.at(data_0_list, 0) do
-      Map.get(data_0, "Fontname")
-    else
-      value -> value
-    end
-  end
-
   def import_as_root() do
     file_path = @root_file
 
@@ -50,9 +37,9 @@ defmodule Thaqqa.FontIO do
          {:ok, val} <- FontRegistry.commit() do
       {:ok, val}
     else
-      {:error, reason} ->
+      {:error, _} = err ->
         FontRegistry.rollback()
-        {:error, reason}
+        err
     end
   end
 
@@ -66,15 +53,13 @@ defmodule Thaqqa.FontIO do
          {:ok, val} <- FontRegistry.commit() do
       {:ok, val}
     else
-      {:error, reason} ->
+      {:error, _} = err ->
         FontRegistry.rollback()
-        {:error, reason}
+        err
     end
   end
 
-  def export_as_root() do
-  end
+  def export_as_root(opts), do: FontRegistry.export_as_root(opts)
 
-  def export_as_font(fontname) do
-  end
+  def export_as_font(fontname, opts), do: FontRegistry.export_as_font(fontname, opts)
 end

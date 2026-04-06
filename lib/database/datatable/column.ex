@@ -1,3 +1,19 @@
+defimpl Jason.Encoder, for: Thaqqa.Column do
+  def encode(column, opts),
+    do:
+      Jason.Encode.map(
+        %{
+          name: column.name,
+          type: column.type,
+          subtype: column.subtype,
+          order: column.order,
+          desc: column.desc,
+          dev: column.dev
+        },
+        opts
+      )
+end
+
 defmodule Thaqqa.Column do
   defstruct [:name, :type, :desc, :order, :subtype, :dev]
 

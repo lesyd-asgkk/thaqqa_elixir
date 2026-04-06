@@ -17,7 +17,7 @@ defmodule Thaqqa.PrefabOp do
   def update_fonts(%Prefab{} = self, f), do: %Prefab{self | fonts: f}
 
   def overwrite_font(%Prefab{} = self, name, %Thaqqa.Font{} = font) do
-    if get_font(self, name) != nil,
+    if Prefab.get_font(self, name) != nil,
       do: update_fonts(self, Map.put(self.fonts, name, font)),
       else: self
   end
@@ -34,7 +34,7 @@ defmodule Thaqqa.PrefabOp do
   end
 
   def add_font(%Prefab{} = self, %Thaqqa.Font{name: name} = font) do
-    if get_font(self, name) != nil,
+    if Prefab.get_font(self, name) != nil,
       do: {:ok, update_fonts(self, Map.put(self.fonts, name, font)) |> complement_font(name)},
       else: Error.nominal_conflict_font(name, :add)
   end
@@ -215,14 +215,14 @@ defmodule Thaqqa.PrefabOp do
     do: PrefabCompiler.set_precompile_as_font_by_data(self, fontname, tablename, data)
 
   def sort_as_static(%Prefab{} = self, tablename) do
-    case get_static_table(self, tablename) do
+    case Prefab.get_static_table(self, tablename) do
       nil -> self
       table -> edit_static_table_if_enable(self, tablename, DataTable.sort(table))
     end
   end
 
   def sort_as_font_table(%Prefab{} = self, fontname, tablename) do
-    case get_table(self, fontname, tablename) do
+    case Prefab.get_table(self, fontname, tablename) do
       nil ->
         self
 
@@ -232,25 +232,4 @@ defmodule Thaqqa.PrefabOp do
         edit_font_if_enable(self, tablename, font)
     end
   end
-
-  defp get_font(%Prefab{} = self, name), do: Prefab.get_font(self, name)
-  defp get_font_list(%Prefab{} = self), do: Prefab.get_font_list(self)
-
-  defp get_static_table(%Prefab{} = self, name), do: Prefab.get_static_table(self, name)
-
-  defp get_static_table_list(%Prefab{} = self), do: Prefab.get_static_table_list(self)
-
-  defp get_global_static_table_list(%Prefab{} = self),
-    do: Prefab.get_global_static_table_list(self)
-
-  defp get_local_static_table_list(%Prefab{} = self), do: Prefab.get_local_static_table_list(self)
-
-  defp get_table(%Prefab{} = self, fontname, tablename),
-    do: Prefab.get_table(self, fontname, tablename)
-
-  defp get_column_list(%Prefab{} = self, name),
-    do: Prefab.get_column_list(self, name)
-
-  defp get_column(%Prefab{} = self, table_name, column_name),
-    do: Prefab.get_column(self, table_name, column_name)
 end

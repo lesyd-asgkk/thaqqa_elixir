@@ -8,7 +8,6 @@ defmodule Thaqqa.UniqueGsubManager do
   alias Thaqqa.Font, as: Font
   alias Thaqqa.FontRegistryPrefab, as: Prefab
   alias Thaqqa.FontRegistry.Error, as: Error
-  alias Thaqqa.DataValidator, as: DataValidator
   use Thaqqa.DataTable.Const
 
   def get_unique_gsub_table!(%Prefab{} = prefab, fontname),

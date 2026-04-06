@@ -4,6 +4,7 @@ defmodule Thaqqa.PrefabIO do
   alias Thaqqa.DataTable, as: DataTable
   alias Thaqqa.Font, as: Font
   alias Thaqqa.ConstRegexManager, as: ConstRegexManager
+  alias Thaqqa.FontRegistry.Error, as: Error
 
   def import_as_root(%Prefab{} = self, rootdata) when is_map(rootdata) do
     # local用のテーブルが増減した場合にfont側のテーブルも変更させる処理も後日付け足す。
@@ -82,21 +83,20 @@ defmodule Thaqqa.PrefabIO do
       end)
 
     Enum.reduce_while(columns, {:ok, table}, fn {k, v}, {:ok, ans} ->
-      column =
-        Enum.reduce_while(v, {:ok, ans}, fn {_, v_}, {:ok, ans_} ->
-          if Map.get(v_, "name") == nil or Map.get(v_, "type") == nil,
-            do:
-              {:halt,
-               Error.requried_status_not_found(%{
-                 name: Map.get(v_, "name"),
-                 type: Map.get(v_, "type")
-               })},
-            else: {:cont, {:ok, DataTable.add_column!(ans_, import_column(v_))}}
-        end)
-        |> case do
-          {:error, _} = err -> {:halt, err}
-          {:ok, table} -> {:cont, {:ok, table}}
-        end
+      Enum.reduce_while(v, {:ok, ans}, fn {_, v_}, {:ok, ans_} ->
+        if Map.get(v_, "name") == nil or Map.get(v_, "type") == nil,
+          do:
+            {:halt,
+             Error.requried_status_not_found(%{
+               name: Map.get(v_, "name"),
+               type: Map.get(v_, "type")
+             })},
+          else: {:cont, {:ok, DataTable.add_column!(ans_, import_column(v_))}}
+      end)
+      |> case do
+        {:error, _} = err -> {:halt, err}
+        {:ok, table} -> {:cont, {:ok, table}}
+      end
     end)
     |> case do
       {:error, _} = err ->
@@ -110,21 +110,20 @@ defmodule Thaqqa.PrefabIO do
               DataTable.get_column(ans, fn %Column{type: type} -> type == :volatility end)
               |> Enum.map(fn %Column{name: name} -> name end)
 
-            data =
-              Enum.reduce_while(v, {:ok, ans}, fn {_, v_}, {:ok, ans_} ->
-                v_ = Enum.reduce(column_volatility, v_, fn k, ans__ -> Map.put(ans__, k, nil) end)
+            Enum.reduce_while(v, {:ok, ans}, fn {_, v_}, {:ok, ans_} ->
+              v_ = Enum.reduce(column_volatility, v_, fn k, ans__ -> Map.put(ans__, k, nil) end)
 
-                ans_
-                |> DataTable.init_data(v_)
-                |> case do
-                  {:error, _} = err -> {:halt, err}
-                  {:ok, value} -> {:cont, {:ok, value}}
-                end
-              end)
+              ans_
+              |> DataTable.init_data(v_)
               |> case do
                 {:error, _} = err -> {:halt, err}
-                {:ok, table} -> {:cont, {:ok, table}}
+                {:ok, value} -> {:cont, {:ok, value}}
               end
+            end)
+            |> case do
+              {:error, _} = err -> {:halt, err}
+              {:ok, table} -> {:cont, {:ok, table}}
+            end
           else
             {:cont, {:ok, ans}}
           end
