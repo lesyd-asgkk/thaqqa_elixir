@@ -106,10 +106,6 @@ defmodule Thaqqa.FontRegistry do
     {:reply, result, state}
   end
 
-  def handle_call({:save_all}, _from, state) do
-    {:reply, nil, state}
-  end
-
   @root_file "data/main.json"
 
   def handle_call({:save_root, opts}, _from, state) do
@@ -132,6 +128,7 @@ defmodule Thaqqa.FontRegistry do
   def handle_call({:save_font, fontname, opts}, _from, state) do
     with font when not is_nil(font) <- :ets.tab2list(@fonts) |> Map.new() |> Map.get(fontname),
          {:ok, json} <- Jason.encode(font, opts),
+         :ok <- File.mkdir_p(@font_folder <> font.filename),
          :ok <- File.write(@font_folder <> font.filename <> @font_file, json) do
       {:reply, :ok, state}
     else

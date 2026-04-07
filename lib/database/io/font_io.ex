@@ -15,6 +15,26 @@ defmodule Thaqqa.FontIO do
   alias Thaqqa.FontRegistry, as: FontRegistry
   alias Thaqqa.FontRegistryPrefab, as: Prefab
 
+  def import_all() do
+    dir_name =
+      Path.wildcard(@font_folder <> "*")
+      |> Enum.filter(&File.dir?/1)
+      |> Enum.map(&Path.basename/1)
+
+    case import_as_root() do
+      {:error, _} = err ->
+        err
+
+      {:ok, _} ->
+        Enum.reduce_while(dir_name, {:ok, nil}, fn filename, {:ok, _} ->
+          case import_as_font(filename) do
+            {:error, _} = err -> {:halt, err}
+            {:ok, _} -> {:cont, {:ok, nil}}
+          end
+        end)
+    end
+  end
+
   # read_and_decode_jsonはfont_prefabの方にそっくり同じ関数を作る
   # set_precompileも同様
 

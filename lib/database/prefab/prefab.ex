@@ -27,6 +27,13 @@ defmodule Thaqqa.FontRegistryPrefab do
 
   # get系統は何かしらを操作するわけではないのでここで処理。
   def get_font(%__MODULE__{} = self, name), do: Map.get(self.fonts, name)
+
+  def get_font_from_filename(%__MODULE__{} = self, filename),
+    do:
+      get_font_list(self)
+      |> Enum.filter(fn {_, val} -> val.filename == filename end)
+      |> Enum.at(0)
+
   def get_font_list(%__MODULE__{} = self), do: self.fonts
 
   def get_static_table(%__MODULE__{} = self, name), do: Map.get(get_static_table_list(self), name)
@@ -129,6 +136,9 @@ defmodule Thaqqa.FontRegistryPrefab do
     do: PrefabOp.add_font_if_enable(self, font)
 
   def add_font(%__MODULE__{} = self, %Thaqqa.Font{} = font), do: PrefabOp.add_font(self, font)
+
+  def duplicate_font(%__MODULE__{} = self, fontname, fontname_duplication, filename),
+    do: PrefabOp.duplicate_font(self, fontname, fontname_duplication, filename)
 
   def delete_font_if_enable(%__MODULE__{} = self, name),
     do: PrefabOp.delete_font_if_enable(self, name)

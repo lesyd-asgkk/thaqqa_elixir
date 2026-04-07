@@ -68,8 +68,8 @@ defmodule Thaqqa.FontRegistry.Error do
   def nominal_conflict_datatable(name, op),
     do: error(:already_exists, :datatable, %{table_name: name, operation: op})
 
-  def nominal_conflict_font(name, op),
-    do: error(:already_exists, :font, %{font_name: name, operation: op})
+  def filename_conflict_font(name, op),
+    do: error(:already_exists, :font, %{file_name: name, operation: op})
 
   # ユニーク行での衝突（※""は例外とする)
   def unique_column_conflict(tablename, column, name, op),
