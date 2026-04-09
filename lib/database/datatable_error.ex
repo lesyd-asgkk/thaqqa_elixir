@@ -62,14 +62,14 @@ defmodule Thaqqa.FontRegistry.Error do
     end
   end
 
-  def http_status(%{class: :not_found}), do: 404
-  def http_status(%{class: :already_exists}), do: 409
-  def http_status(%{class: :conflict}), do: 409
-  def http_status(%{class: :invalid}), do: 400
-  def http_status(%{class: :forbidden}), do: 403
-  def http_status(%{class: :locked}), do: 423
-  def http_status(%{class: :limit_exceeded}), do: 429
-  def http_status(%{class: :internal}), do: 500
+  def http_status(%__MODULE__{class: :not_found}), do: 404
+  def http_status(%__MODULE__{class: :already_exists}), do: 409
+  def http_status(%__MODULE__{class: :conflict}), do: 409
+  def http_status(%__MODULE__{class: :invalid}), do: 400
+  def http_status(%__MODULE__{class: :forbidden}), do: 403
+  def http_status(%__MODULE__{class: :locked}), do: 423
+  def http_status(%__MODULE__{class: :limit_exceeded}), do: 429
+  def http_status(%__MODULE__{class: :internal}), do: 500
   def http_status(_), do: 500
 
   def to_map(%__MODULE__{} = err) do
