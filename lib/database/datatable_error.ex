@@ -49,7 +49,40 @@ defmodule Thaqqa.FontRegistry.Error do
           meta: map()
         }
 
-  defp error(class, reason, meta \\ %{}),
+  @impl true
+  def message(%{class: class, reason: reason, meta: meta}) do
+    base = "#{reason}: #{class}"
+
+    case meta do
+      %{} = m when map_size(m) > 0 ->
+        base <> " " <> inspect(m)
+
+      _ ->
+        base
+    end
+  end
+
+  def http_status(%{class: :not_found}), do: 404
+  def http_status(%{class: :already_exists}), do: 409
+  def http_status(%{class: :conflict}), do: 409
+  def http_status(%{class: :invalid}), do: 400
+  def http_status(%{class: :forbidden}), do: 403
+  def http_status(%{class: :locked}), do: 423
+  def http_status(%{class: :limit_exceeded}), do: 429
+  def http_status(%{class: :internal}), do: 500
+  def http_status(_), do: 500
+
+  def to_map(%__MODULE__{} = err) do
+    %{
+      error: %{
+        class: err.class,
+        reason: err.reason,
+        meta: err.meta
+      }
+    }
+  end
+
+  defp error(class, reason, meta),
     do: {:error, %__MODULE__{class: class, reason: reason, meta: meta}}
 
   def format(%__MODULE__{} = err), do: err
@@ -107,7 +140,7 @@ defmodule Thaqqa.FontRegistry.Error do
   def edit_forbidden(column, subtype),
     do: error(:forbidden, :column, %{column_name: column, subtype: subtype})
 
-  # 多すぎ
+  # 多すぎ 現状未使用
   def too_many_subject(values, op),
     do: error(:limit_exceeded, :subject, %{subject_list: values, operation: op})
 
