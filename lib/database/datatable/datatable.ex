@@ -269,6 +269,7 @@ defimpl Jason.Encoder, for: Thaqqa.DataTable do
     Jason.Encode.map(
       %{
         name: datatable.name,
+        global: datatable.global,
         compile_rule: datatable.compile_rule,
         single: datatable.single,
         columnList: datatable.column_list |> Map.new(fn v -> {v.name, v} end),

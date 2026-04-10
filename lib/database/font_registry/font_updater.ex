@@ -1,3 +1,6 @@
+# 今後、自動でアップデート処理をすることを鑑みてシステムを予約。
+#
+
 defmodule Thaqqa.FontUpdater do
   alias Thaqqa.FontRegistryPrefab, as: Prefab
   alias Thaqqa.Font, as: Font
@@ -6,6 +9,7 @@ defmodule Thaqqa.FontUpdater do
   alias Thaqqa.Column, as: Column
 
   def update(%Prefab{} = prefab, x, y, z) do
+    # ※major,minor,patchはfontデータから取得すること。
     major = 0
     minor = 0
     patch = 0
