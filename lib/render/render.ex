@@ -13,6 +13,7 @@ defmodule Thaqqa.Render do
 
   defstruct boundry: %{width: 0, height: 0},
             line_break: :normal,
+            line_height: 0,
             text_align: :left,
             text_align_last: :left,
             word_spacing: 0,
@@ -42,6 +43,7 @@ defmodule Thaqqa.Render do
     %__MODULE__{
       boundry: %{width: width, height: height},
       line_break: line_break,
+      line_height: line_height,
       text_align: text_align,
       text_align_last: text_align_last,
       word_spacing: word_spacing,

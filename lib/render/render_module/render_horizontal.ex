@@ -298,7 +298,7 @@ defmodule Thaqqa.RenderHorizontal do
     )
   end
 
-  defp adjust_position_y(sentence) do
+  defp adjust_position_y(sentence, line_height) do
     {sentence_alt, _} =
       Enum.reduce(
         sentence,
@@ -318,7 +318,8 @@ defmodule Thaqqa.RenderHorizontal do
           Enum.reverse(oneline_alt)
           #
 
-          {[oneline_alt | acc_oneline_list] |> List.flatten(), acc_y + max_height + max_gap_top}
+          {[oneline_alt | acc_oneline_list] |> List.flatten(),
+           acc_y + max_height + max_gap_top + line_height}
         end
       )
 
@@ -326,7 +327,7 @@ defmodule Thaqqa.RenderHorizontal do
   end
 
   defp adjust_position(sentence, %Render{} = render_config) do
-    adjust_position_x(sentence, render_config) |> adjust_position_y()
+    adjust_position_x(sentence, render_config) |> adjust_position_y(render_config.line_height)
   end
 
   defp alter_newline(word_list) do

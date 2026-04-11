@@ -277,7 +277,7 @@ defmodule Thaqqa.RenderVertical do
     )
   end
 
-  defp adjust_position_x(sentence, width) do
+  defp adjust_position_x(sentence, width, line_height) do
     {sentence_alt, _} =
       Enum.reduce(
         sentence,
@@ -300,7 +300,8 @@ defmodule Thaqqa.RenderVertical do
   end
 
   defp adjust_position(sentence, %Render{} = render_config) do
-    adjust_position_y(sentence, render_config) |> adjust_position_x(render_config.boundry.width)
+    adjust_position_y(sentence, render_config)
+    |> adjust_position_x(render_config.boundry.width, render_config.line_height)
   end
 
   defp set_position(sentence, %Render{} = render_config) do
