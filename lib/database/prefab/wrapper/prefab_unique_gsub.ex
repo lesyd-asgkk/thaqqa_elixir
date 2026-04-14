@@ -127,5 +127,5 @@ defmodule Thaqqa.UniqueGsubManager do
     do: Prefab.complement_table(prefab, fontname, @unique_gsub)
 
   def sort_unique_gsub(%Prefab{} = prefab, fontname),
-    do: Prefab.sort_as_font_table(prefab, fontname, @unique_gsub)
+    do: Prefab.sort_as_font_table_if_enable(prefab, fontname, @unique_gsub)
 end

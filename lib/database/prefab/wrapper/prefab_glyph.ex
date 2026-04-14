@@ -97,5 +97,5 @@ defmodule Thaqqa.GlyphManager do
     do: Prefab.complement_table(prefab, fontname, @glyph)
 
   def sort_glyph(%Prefab{} = prefab, fontname),
-    do: Prefab.sort_as_font_table(prefab, fontname, @glyph)
+    do: Prefab.sort_as_font_table_if_enable(prefab, fontname, @glyph)
 end

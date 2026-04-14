@@ -158,12 +158,12 @@ defmodule Thaqqa.LetterManager do
 
   def sort_letter(%Prefab{} = prefab),
     do:
-      Prefab.sort_as_static(prefab, @vowel)
-      |> Prefab.sort_as_static(@consonant)
-      |> Prefab.sort_as_static(@punctuation)
-      |> Prefab.sort_as_static(@diacritic_v)
-      |> Prefab.sort_as_static(@diacritic_c)
-      |> Prefab.sort_as_static(@diacritic_p)
+      Prefab.sort_as_static_if_enable(prefab, @vowel)
+      |> Prefab.sort_as_static_if_enable(@consonant)
+      |> Prefab.sort_as_static_if_enable(@punctuation)
+      |> Prefab.sort_as_static_if_enable(@diacritic_v)
+      |> Prefab.sort_as_static_if_enable(@diacritic_c)
+      |> Prefab.sort_as_static_if_enable(@diacritic_p)
 
   def complement(%Prefab{} = prefab) do
     with {:ok, %Prefab{} = prefab} <- Prefab.complement_by_static_table(prefab, @vowel),

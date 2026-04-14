@@ -114,5 +114,5 @@ defmodule Thaqqa.GsubManager do
   end
 
   def complement(%Prefab{} = prefab), do: Prefab.complement_by_static_table(prefab, @gsub)
-  def sort_gsub(%Prefab{} = prefab), do: Prefab.sort_as_static(prefab, @gsub)
+  def sort_gsub(%Prefab{} = prefab), do: Prefab.sort_as_static_if_enable(prefab, @gsub)
 end

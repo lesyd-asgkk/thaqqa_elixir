@@ -132,5 +132,5 @@ defmodule Thaqqa.GposManager do
     do: Prefab.complement_table(prefab, fontname, @gpos)
 
   def sort_gpos(%Prefab{} = prefab, fontname),
-    do: Prefab.sort_as_font_table(prefab, fontname, @gpos)
+    do: Prefab.sort_as_font_table_if_enable(prefab, fontname, @gpos)
 end

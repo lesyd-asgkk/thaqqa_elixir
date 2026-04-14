@@ -117,5 +117,5 @@ defmodule Thaqqa.ParserManager do
   end
 
   def complement(%Prefab{} = prefab), do: Prefab.complement_by_static_table(prefab, @parser)
-  def sort_parser(%Prefab{} = prefab), do: Prefab.sort_as_static(prefab, @parser)
+  def sort_parser(%Prefab{} = prefab), do: Prefab.sort_as_static_if_enable(prefab, @parser)
 end
