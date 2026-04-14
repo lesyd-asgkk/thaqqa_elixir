@@ -47,7 +47,7 @@ defmodule Thaqqa.UniqueGsubManager do
     with {:ok, %DataTable{} = table} <- get_unique_gsub_table(prefab, fontname),
          {:ok, %Data{} = data} <- Data.new(value_map, table, prefab),
          {:ok, %DataTable{} = table} <- DataTable.add_data(table, data),
-         %Font{} = font <- Prefab.get_font(prefab, fontname),
+         {:ok, %Font{} = font} <- Prefab.get_font(prefab, fontname),
          {:ok, %Prefab{} = new_prefab} <-
            Prefab.edit_font(prefab, fontname, Font.edit_table(font, @unique_gsub, table)) do
       {:ok, sort_unique_gsub(new_prefab, fontname)}
@@ -86,7 +86,7 @@ defmodule Thaqqa.UniqueGsubManager do
     with {:ok, %DataTable{} = table} <- get_unique_gsub_table(prefab, fontname),
          {:ok, %Data{} = new_data} <- Data.new(value_map, table, prefab),
          {:ok, %DataTable{} = table} <- DataTable.edit_data(table, data, new_data),
-         %Font{} = font <- Prefab.get_font(prefab, fontname),
+         {:ok, %Font{} = font} <- Prefab.get_font_or_error(prefab, fontname),
          {:ok, %Prefab{} = new_prefab} <-
            Prefab.edit_font(prefab, fontname, Font.edit_table(font, @unique_gsub, table)) do
       {:ok, sort_unique_gsub(new_prefab, fontname)}

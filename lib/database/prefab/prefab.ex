@@ -28,6 +28,13 @@ defmodule Thaqqa.FontRegistryPrefab do
   # get系統は何かしらを操作するわけではないのでここで処理。
   def get_font(%__MODULE__{} = self, name), do: Map.get(self.fonts, name)
 
+  def get_font_or_error(%__MODULE__{} = self, name) do
+    case get_font(self, name) do
+      nil -> {:error, Error.font_not_found(name)}
+      otherwise -> {:ok, otherwise}
+    end
+  end
+
   def get_font_from_filename(%__MODULE__{} = self, filename),
     do:
       get_font_list(self)

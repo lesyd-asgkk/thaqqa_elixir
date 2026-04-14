@@ -43,12 +43,11 @@ defmodule Thaqqa.GlyphManager do
     with {:ok, %DataTable{} = table} <- get_glyph_table(prefab, fontname),
          {:ok, %Data{} = data} <- Data.new(value_map, table, prefab),
          {:ok, %DataTable{} = table} <- DataTable.add_data(table, data),
-         %Font{} = font <- Prefab.get_font(prefab, fontname),
+         {:ok, %Font{} = font} <- Prefab.get_font_or_error(prefab, fontname),
          {:ok, %Prefab{} = new_prefab} <-
            Prefab.edit_font(prefab, fontname, Font.edit_table(font, @glyph, table)) do
       {:ok, sort_glyph(new_prefab, fontname)}
     else
-      nil -> Error.font_not_found(fontname)
       {:error, _} = err -> err
     end
   end
@@ -63,12 +62,11 @@ defmodule Thaqqa.GlyphManager do
   def delete_glyph(%Prefab{} = prefab, fontname, %Thaqqa.Data{} = data) do
     with {:ok, %DataTable{} = table} <- get_glyph_table(prefab, fontname),
          {:ok, %DataTable{} = table} <- DataTable.delete_data(table, data),
-         %Font{} = font <- Prefab.get_font(prefab, fontname),
+         {:ok, %Font{} = font} <- Prefab.get_font_or_error(prefab, fontname),
          {:ok, %Prefab{} = new_prefab} <-
            Prefab.edit_font(prefab, fontname, Font.edit_table(font, @glyph, table)) do
       {:ok, sort_glyph(new_prefab, fontname)}
     else
-      nil -> Error.font_not_found(fontname)
       {:error, _} = err -> err
     end
   end
@@ -84,7 +82,7 @@ defmodule Thaqqa.GlyphManager do
     with {:ok, %DataTable{} = table} <- get_glyph_table(prefab, fontname),
          {:ok, %Data{} = _new_data} <- Data.new(value_map, table, prefab),
          {:ok, %DataTable{} = table} <- DataTable.edit_data(table, data, value_map),
-         %Font{} = font <- Prefab.get_font(prefab, fontname),
+         {:ok, %Font{} = font} <- Prefab.get_font_or_error(prefab, fontname),
          {:ok, %Prefab{} = new_prefab} <-
            Prefab.edit_font(prefab, fontname, Font.edit_table(font, @glyph, table)) do
       {:ok, sort_glyph(new_prefab, fontname)}

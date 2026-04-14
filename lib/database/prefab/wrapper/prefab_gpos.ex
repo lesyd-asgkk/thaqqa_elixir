@@ -45,7 +45,7 @@ defmodule Thaqqa.GposManager do
     with {:ok, %DataTable{} = table} <- get_gpos_table(prefab, fontname),
          {:ok, %Data{} = data} <- Data.new(value_map, table, prefab),
          {:ok, %DataTable{} = table} <- DataTable.add_data(table, data),
-         %Font{} = font <- Prefab.get_font(prefab, fontname),
+         {:ok, %Font{} = font} <- Prefab.get_font_or_error(prefab, fontname),
          {:ok, %Prefab{} = new_prefab} <-
            Prefab.edit_font(prefab, fontname, Font.edit_table(font, @gpos, table)) do
       {:ok, sort_gpos(new_prefab, fontname)}
@@ -65,10 +65,9 @@ defmodule Thaqqa.GposManager do
   def delete_gpos(%Prefab{} = prefab, fontname, %Thaqqa.Data{} = data) do
     with {:ok, %DataTable{} = table} <- get_gpos_table(prefab, fontname),
          {:ok, %DataTable{} = table} <- DataTable.delete_data(table, data),
-         %Font{} = font <- Prefab.get_font(prefab, fontname) do
+         {:ok, %Font{} = font} <- Prefab.get_font_or_error(prefab, fontname) do
       Prefab.edit_font(prefab, fontname, Font.edit_table(font, @gpos, table))
     else
-      nil -> Error.font_not_found(fontname)
       {:error, _} = err -> err
     end
   end
@@ -84,7 +83,7 @@ defmodule Thaqqa.GposManager do
     with {:ok, %DataTable{} = table} <- get_gpos_table(prefab, fontname),
          {:ok, %Data{} = new_data} <- Data.new(value_map, table, prefab),
          {:ok, %DataTable{} = table} <- DataTable.edit_data(table, data, new_data),
-         %Font{} = font <- Prefab.get_font(prefab, fontname),
+         {:ok, %Font{} = font} <- Prefab.get_font_or_error(prefab, fontname),
          {:ok, %Prefab{} = new_prefab} <-
            Prefab.edit_font(prefab, fontname, Font.edit_table(font, @gpos, table)) do
       {:ok, sort_gpos(new_prefab, fontname)}
