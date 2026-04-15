@@ -18,11 +18,11 @@ defmodule Thaqqa.DataMapValidator do
 
       if MapSet.member?(column_set, k_str) and Thaqqa.Data.get_value(subject_data, k_str) != v,
         do: {:halt, Error.edit_locked(k_str, @id_subtype)},
-        else: {:cont, nil}
+        else: {:cont, :ok}
     end)
     |> case do
       {:error, _} = err -> err
-      _ -> {:ok, nil}
+      _ -> :ok
     end
   end
 
@@ -40,7 +40,7 @@ defmodule Thaqqa.DataMapValidator do
       DataTable.get_column(table, fn %Column{subtype: st} -> st in @unique_subtypes end)
       |> Enum.map(fn %Column{name: name} -> name end)
 
-    Enum.reduce_while(new_value_map, {:ok, nil}, fn {k, v}, {:ok, _} ->
+    Enum.reduce_while(new_value_map, :ok, fn {k, v}, _ ->
       k_str = if is_atom(k), do: Atom.to_string(k), else: k
 
       # 空文字かnilなら素通り。""はRegex_khhylのscript構文にも検知されない。
@@ -50,7 +50,7 @@ defmodule Thaqqa.DataMapValidator do
              &(&1 |> Thaqqa.Data.get_value(k_str) == v and v not in ["", nil])
            ) != [] and Thaqqa.Data.get_value(subject_data, k_str) != v,
          do: {:halt, Error.unique_column_conflict(tablename, k_str, v, op)},
-         else: {:cont, {:ok, nil}}
+         else: {:cont, :ok}
     end)
   end
 
@@ -69,7 +69,7 @@ defmodule Thaqqa.DataMapValidator do
     # ここは軽量化の為にMapSetに一度変換している。
     # 端的に表現すれば、「「unique_subtypes」に指定しているsubtypeを持つColumnを全て含んでいるか」の判定。
     if MapSet.subset?(MapSet.new(column_validate_list), MapSet.new(column_list)) do
-      {:ok, nil}
+      :ok
     else
       column_list =
         Enum.reduce(column_validate_list, [], fn k, acc ->
@@ -85,14 +85,14 @@ defmodule Thaqqa.DataMapValidator do
   # Columnに対して取りうる値であるかの確認。
   defp validate_value_map(value_map, column_list)
        when is_map(value_map) and is_list(column_list) do
-    Enum.reduce_while(column_list, {:ok, value_map}, fn %Column{name: name} = column, {:ok, _} ->
+    Enum.reduce_while(column_list, :ok, fn %Column{name: name} = column, _ ->
       if Map.has_key?(value_map, name) do
         case Column.validate(column, Map.get(value_map, name)) do
-          :ok -> {:cont, {:ok, value_map}}
+          :ok -> {:cont, :ok}
           {:error, _} = err -> {:halt, err}
         end
       else
-        {:cont, {:ok, value_map}}
+        {:cont, :ok}
       end
     end)
   end
@@ -106,10 +106,10 @@ defmodule Thaqqa.DataMapValidator do
         :add = op
       )
       when is_map(new_value_map) do
-    with {:ok, _} <- validate_value_map(new_value_map, column_list),
-         {:ok, _} <- column_validation(table, new_value_map, op),
-         {:ok, _} <- unique_validation(table, new_value_map, op) do
-      {:ok, nil}
+    with :ok <- validate_value_map(new_value_map, column_list),
+         :ok <- column_validation(table, new_value_map, op),
+         :ok <- unique_validation(table, new_value_map, op) do
+      :ok
     else
       {:error, _} = err -> err
     end
@@ -125,10 +125,10 @@ defmodule Thaqqa.DataMapValidator do
         subject_data
       )
       when is_map(new_value_map) do
-    with {:ok, _} <- validate_value_map(new_value_map, column_list),
-         {:ok, _} <- id_validation(table, new_value_map, op, subject_data),
-         {:ok, _} <- unique_validation(table, new_value_map, op, subject_data) do
-      {:ok, nil}
+    with :ok <- validate_value_map(new_value_map, column_list),
+         :ok <- id_validation(table, new_value_map, op, subject_data),
+         :ok <- unique_validation(table, new_value_map, op, subject_data) do
+      :ok
     else
       {:error, _} = err -> err
     end
