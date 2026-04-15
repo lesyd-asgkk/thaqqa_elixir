@@ -93,7 +93,7 @@ defmodule Thaqqa.LetterManager do
         end)
         |> case do
           {:error, _} = err -> err
-          _ -> {:ok}
+          _ -> :ok
         end
     end
   end
@@ -108,7 +108,7 @@ defmodule Thaqqa.LetterManager do
 
   def add_letter(%Prefab{} = prefab, value_map, table_name)
       when table_name in @lettertable_list do
-    with {:ok} <- unique_letter_validation(prefab, value_map, table_name, :add),
+    with :ok <- unique_letter_validation(prefab, value_map, table_name, :add),
          {:ok, %DataTable{} = table} <- get_internal(prefab, table_name),
          {:ok, %DataTable{} = table} <- DataTable.add_data(table, value_map),
          {:ok, %Prefab{} = prefab} <- Prefab.edit_static_table(prefab, table_name, table) do
@@ -146,7 +146,7 @@ defmodule Thaqqa.LetterManager do
 
   def edit_letter(%Prefab{} = prefab, value_map, table_name, %Thaqqa.Data{} = data)
       when table_name in @lettertable_list do
-    with {:ok} <- unique_letter_validation(prefab, value_map, table_name, :edit, data),
+    with :ok <- unique_letter_validation(prefab, value_map, table_name, :edit, data),
          {:ok, %DataTable{} = table} <- get_internal(prefab, table_name),
          {:ok, %DataTable{} = table} <- DataTable.edit_data(table, data, value_map),
          {:ok, %Prefab{} = prefab} <- Prefab.edit_static_table(prefab, table_name, table) do
