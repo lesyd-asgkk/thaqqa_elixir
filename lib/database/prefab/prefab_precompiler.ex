@@ -141,23 +141,27 @@ defmodule Thaqqa.PrefabCompiler do
   end
 
   ### 以降は一斉変換用に拵えたコード
-  # 単純にTask.asyncでは重たくなるので(※600件程度)
-  # 次はprocessとして書き換えてみる
-
-  def set_precompile_stream(%Prefab{static_tables: static_tables, fonts: fonts} = self) do
+  # 単純にTask.asyncでは重たくなるので
+  # 粒度を変えつつ検証してみることとする
+  #
+  def set_precompile_stream_all(%Prefab{static_tables: static_tables, fonts: fonts} = self) do
     with {:ok, static_tables_alt} <-
-           Enum.reduce_while(static_tables, {:ok, %{}}, fn {key, value}, {:ok, acc} ->
-             case set_precompile_internal_stream_as_datatable(self, value) do
-               {:error, _} = err -> {:halt, err}
-               {:ok, value} -> {:cont, {:ok, Map.put(acc, key, value)}}
-             end
+           Task.async_stream(static_tables, fn {key, value} ->
+             {key, set_precompile_internal_stream_as_datatable(self, value)}
+           end)
+           |> Enum.reduce_while({:ok, %{}}, fn
+             {:ok, {key, {:ok, value}}}, {:ok, acc} -> {:cont, {:ok, Map.put(acc, key, value)}}
+             {:ok, {_, {:error, _} = err}}, _acc -> {:halt, err}
+             {:exit, reason}, _acc -> {:halt, {:error, reason}}
            end),
          {:ok, fonts_alt} <-
-           Enum.reduce_while(fonts, {:ok, %{}}, fn {key, value}, {:ok, acc} ->
-             case set_precompile_internal_stream_as_font(self, value) do
-               {:error, _} = err -> {:halt, err}
-               {:ok, value} -> {:cont, {:ok, Map.put(acc, key, value)}}
-             end
+           Task.async_stream(fonts, fn {key, value} ->
+             {key, set_precompile_internal_stream_as_font(self, value)}
+           end)
+           |> Enum.reduce_while({:ok, %{}}, fn
+             {:ok, {key, {:ok, value}}}, {:ok, acc} -> {:cont, {:ok, Map.put(acc, key, value)}}
+             {:ok, {_, {:error, _} = err}}, _acc -> {:halt, err}
+             {:exit, reason}, _acc -> {:halt, {:error, reason}}
            end) do
       {:ok, %Prefab{self | static_tables: static_tables_alt, fonts: fonts_alt}}
     else
@@ -190,10 +194,22 @@ defmodule Thaqqa.PrefabCompiler do
          %Prefab{} = self,
          %DataTable{data_list: data_list} = table
        ) do
-    Task.async_stream(data_list, fn data -> Data.set_precompile(data, table, self) end)
+    # chunk_everyを用いて粒度を調節している。30～50の値が最も適しているようだ(0.25秒)
+    # 20は遅い（0.5秒）。1は論外(4秒)。
+    # なおDataTable単位で並列化した所0.4秒ほど。
+    # 全く並列化せずとも0.5秒。
+
+    Enum.chunk_every(data_list, 32)
+    |> Task.async_stream(fn data_chunk ->
+      Enum.map(data_chunk, fn data -> Data.set_precompile(data, table, self) end)
+    end)
+    |> Enum.flat_map(fn
+      {:ok, res} -> res
+      {:exit, _} = ext -> ext
+    end)
     |> Enum.reduce_while({:ok, []}, fn
-      {:ok, {:ok, data}}, {:ok, acc} -> {:cont, {:ok, [data | acc]}}
-      {:ok, {:error, _} = err}, _acc -> {:halt, err}
+      {:ok, data}, {:ok, acc} -> {:cont, {:ok, [data | acc]}}
+      {:error, _} = err, _acc -> {:halt, err}
       {:exit, reason}, _acc -> {:halt, {:error, reason}}
     end)
     |> case do
