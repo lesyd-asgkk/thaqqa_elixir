@@ -1,8 +1,10 @@
 # 全設定は使用頻度が想像以上に高くなりそうな上、いくらなんでも現時点で0.5秒近く掛かってるのは結構まずい。
 # まずgposなりgsubなりを追加した場合は必ず「set_precompile_as_root_by_data」を使う。
 # 単に(ただletter情報を変えたetcでは)リアルタイム反映をせず、
-# 「テスト動作」「」時にprecompilerを呼び出す仕様とするか？
-#  それかいっそ並列対応。
+# テスト動作、保存時にprecompilerを呼び出す仕様とするか？
+# それかいっそ並列対応して時短するか。時間としては相応に軽くなるはず。
+# 追伸：並列対応した所何故か時間が伸びた。
+
 defmodule Thaqqa.PrefabCompiler do
   alias Thaqqa.FontRegistryPrefab, as: Prefab
   alias Thaqqa.Font, as: Font
@@ -10,7 +12,7 @@ defmodule Thaqqa.PrefabCompiler do
   alias Thaqqa.Data, as: Data
   alias Thaqqa.FontRegistry.Error, as: Error
 
-  defp reduce_while_ok(enum, acc, fun) do
+  defp reduce_while_ok(enum, acc, fun) when is_function(fun) do
     Enum.reduce_while(enum, {:ok, acc}, fn item, {:ok, acc} ->
       case fun.(item, acc) do
         {:error, _} = err -> {:halt, err}
@@ -135,6 +137,68 @@ defmodule Thaqqa.PrefabCompiler do
           alter_font = Font.edit_table(font, tablename, alter_table)
           {:ok, Prefab.edit_font_if_enable(self, fontname, alter_font)}
         end
+    end
+  end
+
+  ### 以降は一斉変換用に拵えたコード
+  # 単純にTask.asyncでは重たくなるので(※600件程度)
+  # 次はprocessとして書き換えてみる
+
+  def set_precompile_stream(%Prefab{static_tables: static_tables, fonts: fonts} = self) do
+    with {:ok, static_tables_alt} <-
+           Enum.reduce_while(static_tables, {:ok, %{}}, fn {key, value}, {:ok, acc} ->
+             case set_precompile_internal_stream_as_datatable(self, value) do
+               {:error, _} = err -> {:halt, err}
+               {:ok, value} -> {:cont, {:ok, Map.put(acc, key, value)}}
+             end
+           end),
+         {:ok, fonts_alt} <-
+           Enum.reduce_while(fonts, {:ok, %{}}, fn {key, value}, {:ok, acc} ->
+             case set_precompile_internal_stream_as_font(self, value) do
+               {:error, _} = err -> {:halt, err}
+               {:ok, value} -> {:cont, {:ok, Map.put(acc, key, value)}}
+             end
+           end) do
+      {:ok, %Prefab{self | static_tables: static_tables_alt, fonts: fonts_alt}}
+    else
+      {:error, _} = err -> err
+    end
+  end
+
+  defp set_precompile_internal_stream_as_font(
+         %Prefab{} = self,
+         %Font{table_list: table_list} = font
+       ) do
+    Task.async_stream(
+      table_list,
+      fn table ->
+        set_precompile_internal_stream_as_datatable(self, table)
+      end
+    )
+    |> Enum.reduce_while({:ok, []}, fn
+      {:ok, {:ok, table}}, {:ok, acc} -> {:cont, {:ok, [table | acc]}}
+      {:ok, {:error, _} = err}, _acc -> {:halt, err}
+      {:exit, reason}, _acc -> {:halt, {:error, reason}}
+    end)
+    |> case do
+      {:ok, table_list} -> {:ok, %Font{font | table_list: table_list}}
+      {:error, _} = err -> err
+    end
+  end
+
+  defp set_precompile_internal_stream_as_datatable(
+         %Prefab{} = self,
+         %DataTable{data_list: data_list} = table
+       ) do
+    Task.async_stream(data_list, fn data -> Data.set_precompile(data, table, self) end)
+    |> Enum.reduce_while({:ok, []}, fn
+      {:ok, {:ok, data}}, {:ok, acc} -> {:cont, {:ok, [data | acc]}}
+      {:ok, {:error, _} = err}, _acc -> {:halt, err}
+      {:exit, reason}, _acc -> {:halt, {:error, reason}}
+    end)
+    |> case do
+      {:ok, data_list} -> {:ok, %DataTable{table | data_list: data_list}}
+      {:error, _} = err -> err
     end
   end
 end
