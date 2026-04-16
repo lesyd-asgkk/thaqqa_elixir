@@ -122,8 +122,6 @@ defmodule Thaqqa.RenderHorizontal do
     word_spacing = render_config.word_spacing
     letter_spacing = render_config.letter_spacing
     box_width = render_config.boundry.width
-    text_align = render_config.text_align
-    text_align_last = render_config.text_align_last
 
     # TODO {[],0}のような部分をmapにする（可読性担保）
     sentence_alt =
@@ -145,19 +143,15 @@ defmodule Thaqqa.RenderHorizontal do
                     {[], acc_right_start, acc_right_start, acc_right_start, false},
                     fn glyph_and_kern, {acc_glyph, acc_left, acc_x, acc_right, is_wrapped} ->
                       %{
-                        glyph: glyph,
-                        new_line: is_newline,
                         word_breaker: is_wordbreaker,
-                        box: %{top: _top, bottom: bottom, left: left, right: right},
+                        box: %{bottom: bottom, left: left, right: right},
                         gap: %{
                           top: gap_top,
-                          center: _gap_center,
                           left: gap_left,
                           right: gap_right
                         },
                         gap_when_newline: %{
                           top: gap_top_nl,
-                          center: gap_center_nl,
                           left: gap_left_nl,
                           right: gap_right_nl
                         }
@@ -221,6 +215,21 @@ defmodule Thaqqa.RenderHorizontal do
     left = Enum.map(oneline, fn {_, left, _, _} -> left end) |> Enum.min()
     right = Enum.map(oneline, fn {_, _, right, _} -> right end) |> Enum.max()
 
+    {enum_num, enum_list} =
+      Enum.map(oneline, fn {glyph_list, _, _, _} ->
+        [glyph_top | _] = glyph_list
+        length(glyph_list) == 1 and (glyph_top.new_line or glyph_top.word_breaker)
+      end)
+      |> Enum.reduce({0, []}, fn is_null, {acc_num, acc_list} ->
+        if is_null do
+          {acc_num, [acc_num | acc_list]}
+        else
+          {acc_num + 1, [acc_num | acc_list]}
+        end
+      end)
+
+    enum_list = Enum.reverse(enum_list)
+
     left_calc = -left
     right_calc = box_width - right
 
@@ -250,35 +259,34 @@ defmodule Thaqqa.RenderHorizontal do
               [left_calc]
 
             _ ->
-              gap = (left_calc + right_calc) / (word_num - 1)
+              gap = (left_calc + right_calc) / (enum_num - 1)
 
-              Enum.map(0..(word_num - 1), fn n ->
+              Enum.map(enum_list, fn n ->
                 left_calc + gap * n
               end)
           end
       end
 
-    oneline_alt =
-      Enum.zip(oneline, gap_list)
-      |> Enum.map(fn {{word_list, left, _, _}, gap} ->
-        {word_list, left + gap}
-      end)
-      |> Enum.reduce(
-        [],
-        fn {glyph_list, gap_from_left}, acc_glyph_list ->
-          glyph_list_alt =
-            Enum.map(glyph_list, fn glyph_and_kern ->
-              glyph_and_kern
-              |> Map.put(:x, glyph_and_kern.x + gap_from_left)
-              |> Map.put(:border, %{
-                left: glyph_and_kern.border.left + gap_from_left,
-                right: glyph_and_kern.border.right + gap_from_left
-              })
-            end)
+    Enum.zip(oneline, gap_list)
+    |> Enum.map(fn {{word_list, left, _, _}, gap} ->
+      {word_list, left + gap}
+    end)
+    |> Enum.reduce(
+      [],
+      fn {glyph_list, gap_from_left}, acc_glyph_list ->
+        glyph_list_alt =
+          Enum.map(glyph_list, fn glyph_and_kern ->
+            glyph_and_kern
+            |> Map.put(:x, glyph_and_kern.x + gap_from_left)
+            |> Map.put(:border, %{
+              left: glyph_and_kern.border.left + gap_from_left,
+              right: glyph_and_kern.border.right + gap_from_left
+            })
+          end)
 
-          [glyph_list_alt | acc_glyph_list] |> List.flatten()
-        end
-      )
+        [glyph_list_alt | acc_glyph_list] |> List.flatten()
+      end
+    )
   end
 
   defp adjust_position_x(sentence, %Render{} = render_config) do

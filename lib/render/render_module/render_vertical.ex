@@ -107,8 +107,6 @@ defmodule Thaqqa.RenderVertical do
     word_spacing = render_config.word_spacing
     letter_spacing = render_config.letter_spacing
     box_height = render_config.boundry.height
-    text_align = render_config.text_align
-    text_align_last = render_config.text_align_last
 
     # TODO {[],0}のような部分をmapにする（可読性担保）
     sentence_alt =
@@ -130,10 +128,9 @@ defmodule Thaqqa.RenderVertical do
                     {[], acc_bottom_start, acc_bottom_start, acc_bottom_start, false},
                     fn glyph_and_kern, {acc_glyph, acc_top, acc_y, acc_bottom, is_wrapped} ->
                       %{
-                        glyph: glyph,
-                        new_line: is_newline,
+                        glyph: _,
                         word_breaker: is_wordbreaker,
-                        box: %{top: top, bottom: bottom, left: left, right: right},
+                        box: %{top: top, bottom: bottom},
                         gap: %{
                           top: gap_top,
                           bottom: gap_bottom
@@ -205,6 +202,21 @@ defmodule Thaqqa.RenderVertical do
     top_calc = -top
     bottom_calc = box_height - bottom
 
+    {enum_num, enum_list} =
+      Enum.map(oneline, fn {glyph_list, _, _, _} ->
+        [glyph_top | _] = glyph_list
+        length(glyph_list) == 1 and (glyph_top.new_line or glyph_top.word_breaker)
+      end)
+      |> Enum.reduce({0, []}, fn is_null, {acc_num, acc_list} ->
+        if is_null do
+          {acc_num, [acc_num | acc_list]}
+        else
+          {acc_num + 1, [acc_num | acc_list]}
+        end
+      end)
+
+    enum_list = Enum.reverse(enum_list)
+
     gap_list =
       case text_align do
         :start ->
@@ -231,9 +243,9 @@ defmodule Thaqqa.RenderVertical do
               [top_calc]
 
             _ ->
-              gap = (top_calc + bottom_calc) / (word_num - 1)
+              gap = (top_calc + bottom_calc) / (enum_num - 1)
 
-              Enum.map(0..(word_num - 1), fn n -> top_calc + gap * n end)
+              Enum.map(enum_list, fn n -> top_calc + gap * n end)
           end
       end
 
@@ -336,7 +348,6 @@ defmodule Thaqqa.RenderVertical do
         err
 
       {:ok, g_a_k_l} ->
-        g_a_k_l
         # px単位指定
         Enum.reverse(g_a_k_l) |> Render.parse_word() |> set_position(render) |> render_all(prefab)
     end
