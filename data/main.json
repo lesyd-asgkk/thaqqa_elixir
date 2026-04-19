@@ -3,6 +3,7 @@
     "name": "CONSONANT",
     "single": false,
     "compile_rule": "none",
+    "global": true,
     "columnList": {
       "CodaGlyphNum": {
         "name": "CodaGlyphNum",
@@ -286,6 +287,7 @@
     "name": "DIACRITIC_C",
     "single": false,
     "compile_rule": "none",
+    "global": true,
     "columnList": {
       "CodaGlyphNum": {
         "name": "CodaGlyphNum",
@@ -399,6 +401,7 @@
     "name": "DIACRITIC_P",
     "single": false,
     "compile_rule": "none",
+    "global": true,
     "columnList": {
       "GlyphNum": {
         "name": "GlyphNum",
@@ -463,6 +466,7 @@
     "name": "DIACRITIC_V",
     "single": false,
     "compile_rule": "none",
+    "global": true,
     "columnList": {
       "FinGlyphNum": {
         "name": "FinGlyphNum",
@@ -600,6 +604,7 @@
     "name": "FONTDATA",
     "single": true,
     "compile_rule": "none",
+    "global": false,
     "columnList": {
       "Fontname": {
         "name": "Fontname",
@@ -728,6 +733,7 @@
     "name": "FONTSYSDATA",
     "single": true,
     "compile_rule": "none",
+    "global": false,
     "columnList": {
       "ID": {
         "name": "ID",
@@ -784,6 +790,7 @@
     "name": "GLYPH",
     "single": false,
     "compile_rule": "path_0",
+    "global": false,
     "columnList": {
       "ID": {
         "name": "ID",
@@ -830,6 +837,7 @@
     "name": "GPOS",
     "single": false,
     "compile_rule": "regex_0",
+    "global": false,
     "columnList": {
       "GPOSType": {
         "name": "GPOSType",
@@ -930,6 +938,7 @@
     "name": "GSUB",
     "single": false,
     "compile_rule": "regex_0",
+    "global": true,
     "columnList": {
       "ID": {
         "name": "ID",
@@ -1619,6 +1628,7 @@
     "name": "PARSER",
     "single": false,
     "compile_rule": "regex_0",
+    "global": true,
     "columnList": {
       "ID": {
         "name": "ID",
@@ -3156,6 +3166,7 @@
     "name": "PUNCTUATION",
     "single": false,
     "compile_rule": "none",
+    "global": true,
     "columnList": {
       "GlyphNum": {
         "name": "GlyphNum",
@@ -3397,6 +3408,7 @@
     "name": "REGEX_CONST",
     "single": false,
     "compile_rule": "regex_1",
+    "global": true,
     "columnList": {
       "ID": {
         "name": "ID",
@@ -3489,6 +3501,7 @@
     "name": "ROOTDATA",
     "single": true,
     "compile_rule": "none",
+    "global": true,
     "columnList": {
       "ID": {
         "name": "ID",
@@ -3536,6 +3549,7 @@
     "name": "ROOTSYSDATA",
     "single": true,
     "compile_rule": "none",
+    "global": true,
     "columnList": {
       "ID": {
         "name": "ID",
@@ -3592,6 +3606,7 @@
     "name": "UniqueGSUB",
     "single": false,
     "compile_rule": "regex_0",
+    "global": false,
     "columnList": {
       "ID": {
         "name": "ID",
@@ -3665,6 +3680,7 @@
     "name": "VOWEL",
     "single": false,
     "compile_rule": "none",
+    "global": true,
     "columnList": {
       "FinGlyphNum": {
         "name": "FinGlyphNum",
