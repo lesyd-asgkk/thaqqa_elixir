@@ -23,6 +23,4 @@ erl_crash.dump
 thaqqa-*.tar
 
 # dataファイルについても基本無視。
-/data/*.json
-/data/*/*.json
-
+/data/
