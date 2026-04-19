@@ -21,9 +21,13 @@ defmodule Thaqqa.PrefabIO do
         err
 
       {:ok, prefab} ->
-        case Prefab.set_precompile_as_root(prefab) do
-          {:error, reason} -> {:error, reason}
-          {:ok, prefab} -> init_const_table(prefab)
+        case Prefab.set_precompile_on_root(prefab) do
+          {:error, reason} ->
+            {:error, reason}
+
+          {:ok, static_table_list} ->
+            prefab = %Prefab{prefab | static_tables: static_table_list}
+            init_const_table(prefab)
         end
     end
   end
@@ -48,8 +52,15 @@ defmodule Thaqqa.PrefabIO do
             Error.requried_data_not_found("Fontname", "FONTDATA")
 
           name ->
-            Prefab.init_font(self, Font.new(filename, name, prefab))
-            |> Prefab.set_precompile_as_font(name)
+            prefab_alter = Prefab.init_font(self, Font.new(filename, name, prefab))
+
+            case Prefab.set_precompile_on_font(prefab_alter, name) do
+              {:error, _} = err ->
+                err
+
+              {:ok, font} ->
+                Prefab.edit_font(prefab_alter, name, font)
+            end
         end
     end
   end

@@ -220,23 +220,11 @@ defmodule Thaqqa.FontRegistryPrefab do
   def complement_by_static_table(%__MODULE__{} = self, table_name),
     do: PrefabComplement.complement_by_static_table(self, table_name)
 
-  def set_precompile_as_root(%__MODULE__{} = self),
-    do: PrefabCompiler.set_precompile_as_root(self)
+  def set_precompile_on_root(%__MODULE__{} = self),
+    do: PrefabCompiler.set_precompile_on_root(self)
 
-  def set_precompile_as_root_by_table(%__MODULE__{} = self, tablename),
-    do: PrefabCompiler.set_precompile_as_root_by_table(self, tablename)
-
-  def set_precompile_as_root_by_data(%__MODULE__{} = self, tablename, %Data{} = data),
-    do: PrefabCompiler.set_precompile_as_root_by_data(self, tablename, data)
-
-  def set_precompile_as_font(%__MODULE__{} = self, fontname),
-    do: PrefabCompiler.set_precompile_as_font(self, fontname)
-
-  def set_precompile_as_font_by_table(%__MODULE__{} = self, fontname, tablename),
-    do: PrefabCompiler.set_precompile_as_font_by_table(self, fontname, tablename)
-
-  def set_precompile_as_font_by_data(%__MODULE__{} = self, fontname, tablename, %Data{} = data),
-    do: PrefabCompiler.set_precompile_as_font_by_data(self, fontname, tablename, data)
+  def set_precompile_on_font(%__MODULE__{} = self, fontname),
+    do: PrefabCompiler.set_precompile_on_font(self, fontname)
 
   # {:ok/:error}バージョンも作る（要はnil対応）
   def sort_as_static_if_enable(%__MODULE__{} = self, tablename) do
