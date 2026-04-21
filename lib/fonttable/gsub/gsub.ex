@@ -2,6 +2,7 @@ defmodule Thaqqa.FontRegistryPrefab.GsubTable do
   alias Thaqqa.Data, as: Data
   alias Thaqqa.FontRegistryPrefab.GsubTable.Op, as: Op
   alias Thaqqa.FontRegistryPrefab.GsubTable.Converter, as: Converter
+  alias Thaqqa.FontRegistryPrefab.GsubTable.Query, as: Query
 
   alias Thaqqa.FontRegistryPrefab, as: Prefab
   alias Thaqqa.FontRegistry.Error, as: Error
@@ -17,10 +18,10 @@ defmodule Thaqqa.FontRegistryPrefab.GsubTable do
   end
 
   def get_gsub!(%Prefab{} = prefab, filter_fun \\ fn _ -> true end),
-    do: get_gsub!(prefab, filter_fun)
+    do: Query.get_gsub!(prefab, filter_fun)
 
   def get_gsub(%Prefab{} = prefab, filter_fun \\ fn _ -> true end),
-    do: get_gsub(prefab, filter_fun)
+    do: Query.get_gsub(prefab, filter_fun)
 
   def add_gsub!(%Prefab{} = prefab, value_map), do: Op.add_gsub!(prefab, value_map)
 

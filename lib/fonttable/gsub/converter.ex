@@ -1,4 +1,4 @@
-defmodule FontRegistryPrefab.GsubTable.Converter do
+defmodule Thaqqa.FontRegistryPrefab.GsubTable.Converter do
   alias Thaqqa.Data, as: Data
   alias Thaqqa.FontRegistryPrefab, as: Prefab
   alias Thaqqa.FontRegistryPrefab.GsubTable, as: GsubTable
