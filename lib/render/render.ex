@@ -1,10 +1,8 @@
 defmodule Thaqqa.Render do
   alias Thaqqa.FontRegistryPrefab, as: Prefab
-  alias Thaqqa.FontRegistry.Error, as: Error
   alias Thaqqa.FontRegistry, as: FontRegistry
-  alias Thaqqa.ParserManager, as: ParserManager
-  alias Thaqqa.GsubManager, as: GsubManager
-  alias Thaqqa.GposManager, as: GposManager
+  alias Thaqqa.FontRegistryPrefab.ParserTable, as: ParserTable
+  alias Thaqqa.FontRegistryPrefab.GsubTable, as: GsubTable
   alias Thaqqa.UniqueGsubManager, as: UniqueGsubManager
   alias Thaqqa.ConstRegexManager, as: ConstRegexManager
 
@@ -234,8 +232,8 @@ defmodule Thaqqa.Render do
 
   def convert_into_khhyl_letter(%Prefab{} = prefab, string, font, language, writing_direction)
       when language in [@khehyelu, @samlhta] and writing_direction in [@vertical, @horizontal] do
-    with {:ok, parsed_string} <- ParserManager.parse(prefab, string, language),
-         {:ok, gsub_string} <- GsubManager.gsub(prefab, parsed_string, writing_direction),
+    with {:ok, parsed_string} <- ParserTable.interpret(prefab, string, language),
+         {:ok, gsub_string} <- GsubTable.gsub(prefab, parsed_string, writing_direction),
          {:ok, unique_gsub_string} <-
            UniqueGsubManager.unique_gsub(prefab, gsub_string, font, writing_direction) do
       {:ok, unique_gsub_string}
