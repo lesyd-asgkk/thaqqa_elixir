@@ -3,7 +3,7 @@ defmodule Thaqqa.FontRegistryPrefab.IO do
   alias Thaqqa.Column, as: Column
   alias Thaqqa.DataTable, as: DataTable
   alias Thaqqa.Font, as: Font
-  alias Thaqqa.ConstRegexManager, as: ConstRegexManager
+  alias Thaqqa.FontRegistryPrefab.ConstRegexKhhylTable, as: ConstRegexKhhylTable
   alias Thaqqa.FontRegistry.Error, as: Error
 
   def import_as_root(%Prefab{} = self, rootdata) when is_map(rootdata) do
@@ -147,5 +147,5 @@ defmodule Thaqqa.FontRegistryPrefab.IO do
   end
 
   defp init_const_table(%Prefab{} = prefab),
-    do: ConstRegexManager.set_datalist_hash(prefab)
+    do: ConstRegexKhhylTable.set_datalist_hash(prefab)
 end

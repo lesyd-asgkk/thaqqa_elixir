@@ -3,7 +3,6 @@ defmodule Thaqqa.FontRegistryPrefab.Compiler do
   alias Thaqqa.Font, as: Font
   alias Thaqqa.DataTable, as: DataTable
   alias Thaqqa.Data, as: Data
-  alias Thaqqa.FontRegistry.Error, as: Error
 
   @concurrency_percentage 50
   @chunk_percentage 25

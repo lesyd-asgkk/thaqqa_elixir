@@ -1,10 +1,8 @@
-defmodule Thaqqa.FontRegistryPrefab.LetterTable.Validator do
+defmodule Thaqqa.FontRegistryPrefab.LetterTable.DataMapValidator do
   alias Thaqqa.FontRegistryPrefab.LetterTable, as: LetterTable
   alias Thaqqa.FontRegistryPrefab, as: Prefab
-  alias Thaqqa.DataMapValidator, as: DataMapValidator
+  alias Thaqqa.DataTable.DataMapValidator, as: DataMapValidator
   use Thaqqa.DataTable.Const
-
-  alias Thaqqa.DataMapValidator, as: DataMapValidator
 
   def unique_letter_validation(
         %Prefab{} = prefab,

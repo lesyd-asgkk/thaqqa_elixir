@@ -1,7 +1,4 @@
 defmodule Thaqqa.FontRegistryPrefab.GposTable do
-  alias Thaqqa.Data, as: Data
-  alias Thaqqa.DataTable, as: DataTable
-  alias Thaqqa.Font, as: Font
   alias Thaqqa.FontRegistryPrefab, as: Prefab
   alias Thaqqa.FontRegistryPrefab.GposTable.Op, as: Op
   alias Thaqqa.FontRegistryPrefab.GposTable.Query, as: Query
