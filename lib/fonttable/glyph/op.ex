@@ -6,6 +6,13 @@ defmodule Thaqqa.FontRegistryPrefab.GlyphTable.Op do
   alias Thaqqa.FontRegistryPrefab.GlyphTable, as: GlyphTable
   use Thaqqa.DataTable.Const
 
+  def add_glyph!(%Prefab{} = prefab, fontname, value_map) do
+    case add_glyph(%Prefab{} = prefab, fontname, value_map) do
+      {:error, reason} -> raise reason
+      {:ok, val} -> val
+    end
+  end
+
   def add_glyph(%Prefab{} = prefab, fontname, value_map) do
     with {:ok, %DataTable{} = table} <- GlyphTable.get_glyph_table(prefab, fontname),
          {:ok, %Data{} = data} <- Data.new(value_map, table, prefab),

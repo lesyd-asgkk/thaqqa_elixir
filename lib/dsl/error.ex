@@ -1,14 +1,39 @@
 defmodule Thaqqa.Regex_Khhyl.Error do
-  defexception [:type, :detail, :meta]
+  defexception [:class, :detail, :meta]
 
-  def message(msg), do: msg
+  @impl true
+  def message(%{class: class, reason: reason, meta: meta}) do
+    base = "#{reason}: #{class}"
+
+    case meta do
+      %{} = m when map_size(m) > 0 ->
+        base <> " " <> inspect(m)
+
+      _ ->
+        base
+    end
+  end
+
+  def http_status(%__MODULE__{class: :invalid}), do: 400
+  def http_status(_), do: 500
+
+  def to_map(%__MODULE__{} = err) do
+    %{
+      error: %{
+        responsible: :dsl,
+        class: err.class,
+        reason: err.reason,
+        meta: err.meta
+      }
+    }
+  end
 
   # (の方のエラー（括弧が閉じていない）
   def unclosed_brancket_forward(range),
     do:
       {:error,
        %__MODULE__{
-         type: :invalid,
+         class: :invalid,
          detail: :unclosed_brancket,
          meta: %{direction: :forward, range: range}
        }}
@@ -18,37 +43,37 @@ defmodule Thaqqa.Regex_Khhyl.Error do
     do:
       {:error,
        %__MODULE__{
-         type: :invalid,
+         class: :invalid,
          detail: :unclosed_brancket,
          meta: %{direction: :backward, range: range}
        }}
 
   def invalid_stack_at_end(stack),
-    do: {:error, %__MODULE__{type: :invalid, detail: :stack_at_end, meta: %{stack: stack}}}
+    do: {:error, %__MODULE__{class: :invalid, detail: :stack_at_end, meta: %{stack: stack}}}
 
-  def invalid_argument_num(type, range),
+  def invalid_argument_num(class, range),
     do:
       {:error,
        %__MODULE__{
-         type: :invalid,
+         class: :invalid,
          detail: :argument_num,
-         meta: %{type: type, range: range}
+         meta: %{class: class, range: range}
        }}
 
-  def invalid_astarisk(type, range),
+  def invalid_astarisk(class, range),
     do:
       {:error,
        %__MODULE__{
-         type: :invalid,
+         class: :invalid,
          detail: :asterisk,
-         meta: %{type: type, range: range}
+         meta: %{class: class, range: range}
        }}
 
   def too_many_elements_in_stack(stack),
     do:
       {:error,
        %__MODULE__{
-         type: :invalid,
+         class: :invalid,
          detail: :too_many_elements,
          meta: %{stack: Enum.reverse(stack)}
        }}

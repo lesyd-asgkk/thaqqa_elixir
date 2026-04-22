@@ -2,6 +2,7 @@ defmodule Thaqqa.Glyph.GlyphRenderer do
   import SVG.Path
   alias Thaqqa.FontRegistryPrefab, as: Prefab
   alias Thaqqa.Glyph, as: Glyph
+  alias Thaqqa.Render.Error, as: Error
 
   # rectangleを描画する用（汎用関数でもないのでpath本体には追記しなかった）
 
@@ -95,7 +96,7 @@ defmodule Thaqqa.Glyph.GlyphRenderer do
             {:ok, %Glyph{self | path: path, glyph_height: top_gap + bottom_gap + y3}}
 
           _ ->
-            {:error, "invalid form found at render_by_relative_height/4"}
+            Error.invalid_form(form)
         end
 
       {:error, _} = err ->
@@ -147,7 +148,7 @@ defmodule Thaqqa.Glyph.GlyphRenderer do
             {:ok, %Glyph{self | path: path, glyph_height: bottom_gap + y3}}
 
           _ ->
-            {:error, "invalid form found at render_by_relative_height/4"}
+            Error.invalid_form(form)
         end
 
       {:error, _} = err ->
@@ -173,7 +174,7 @@ defmodule Thaqqa.Glyph.GlyphRenderer do
         {:ok, %Glyph{self | path: path, glyph_height: bottom_gap + y3}}
 
       _ ->
-        {:error, "invalid form found at render_by_relative_height/4"}
+        Error.invalid_form(form)
     end
   end
 
@@ -251,7 +252,7 @@ defmodule Thaqqa.Glyph.GlyphRenderer do
             {:ok, %Glyph{self | path: path, glyph_height: height}}
 
           _ ->
-            {:error, "invalid form found at render_by_absolute_height/4"}
+            Error.invalid_form(form)
         end
 
       {:error, _} = err ->
@@ -285,7 +286,7 @@ defmodule Thaqqa.Glyph.GlyphRenderer do
         {:ok, %Glyph{self | path: path, glyph_height: height}}
 
       _ ->
-        {:error, "invalid form found at render_by_absolute_height/4"}
+        Error.invalid_form(form)
     end
   end
 end

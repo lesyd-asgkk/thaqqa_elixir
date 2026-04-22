@@ -49,7 +49,6 @@ defmodule Thaqqa.Regex_Khhyl.Normalizer do
   def normalize_sub(list, acum_all, :sentence = current_layer)
       when is_list(list) do
     [head | tail] = list
-    next_layer = :syllable
 
     case head do
       h when h in @letter_list ->
@@ -110,8 +109,6 @@ defmodule Thaqqa.Regex_Khhyl.Normalizer do
   def normalize_sub(list, acum_all, :syllable = current_layer)
       when is_list(list) do
     [head | tail] = list
-
-    _next_layer = :glyph_group
 
     case head do
       # 形状指定用
@@ -194,8 +191,6 @@ defmodule Thaqqa.Regex_Khhyl.Normalizer do
   def normalize_sub(list, acum_all, :glyph = current_layer)
       when is_list(list) do
     [head | tail] = list
-
-    # next_layer = :glyph_eval
 
     case head do
       # 形状指定用

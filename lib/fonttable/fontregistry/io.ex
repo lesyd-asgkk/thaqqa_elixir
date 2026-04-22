@@ -49,9 +49,9 @@ defmodule Thaqqa.FontRegistry.IO do
     with {:ok, prefab} <- FontRegistry.create_prefab(),
          {:ok, rootdata} <- read_and_decode_json(file_path),
          {:ok, prefab} <- Prefab.import_as_root(prefab, rootdata),
-         {:ok, _} <- FontRegistry.apply_prefab(prefab),
-         {:ok, val} <- FontRegistry.commit() do
-      {:ok, val}
+         :ok <- FontRegistry.apply_prefab(prefab),
+         :ok <- FontRegistry.commit() do
+      :ok
     else
       {:error, _} = err ->
         FontRegistry.rollback()
@@ -65,9 +65,9 @@ defmodule Thaqqa.FontRegistry.IO do
     with {:ok, prefab} <- FontRegistry.create_prefab(),
          {:ok, fontdata} <- read_and_decode_json(file_path),
          {:ok, prefab} <- Prefab.import_as_font(prefab, fontdata, filename),
-         {:ok, _} <- FontRegistry.apply_prefab(prefab),
-         {:ok, val} <- FontRegistry.commit() do
-      {:ok, val}
+         :ok <- FontRegistry.apply_prefab(prefab),
+         :ok <- FontRegistry.commit() do
+      :ok
     else
       {:error, _} = err ->
         FontRegistry.rollback()

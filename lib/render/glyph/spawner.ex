@@ -1,11 +1,11 @@
 defmodule Thaqqa.Glyph.GlyphSpawner do
-  import SVG.Path
+  alias Thaqqa.Render.Error, as: Error
   alias Thaqqa.Glyph, as: Glyph
   alias Thaqqa.FontRegistryPrefab, as: Prefab
   alias Thaqqa.FontRegistryPrefab.GlyphTable, as: GlyphTable
-  alias Thaqqa.GposManager, as: GposManager
+  alias Thaqqa.FontRegistryPrefab.GposTable, as: GposTable
   alias Thaqqa.FontRegistryPrefab.LetterTable, as: LetterTable
-  alias Thaqqa.ConstRegexManager, as: ConstRegexManager
+  alias Thaqqa.FontRegistryPrefab.ConstRegexKhhylTable, as: ConstRegexKhhylTable
   use Thaqqa.DataTable.Const
 
   def new(%Prefab{} = prefab, fontname, glyphname, writing_direction, size) do
@@ -47,7 +47,7 @@ defmodule Thaqqa.Glyph.GlyphSpawner do
              Thaqqa.Data.get_value(data, @name) == glyph_name_for_query
            end),
          {:ok, is_null_vowel} =
-           ConstRegexManager.match?(prefab, "NullVowel", glyphname),
+           ConstRegexKhhylTable.match?(prefab, "NullVowel", glyphname),
          {:ok, letter_data} =
            LetterTable.get_letter(prefab, fn %Thaqqa.Data{} = data ->
              Thaqqa.Data.get_value(data, @name) == name
@@ -118,7 +118,7 @@ defmodule Thaqqa.Glyph.GlyphSpawner do
       end)
 
     with {:ok, %{x0: off_onset_x, x1: off_coda_x, y0: off_onset_y, y1: off_coda_y}} <-
-           GposManager.gpos(prefab, fontname, glyphname, writing_direction, @internal),
+           GposTable.gpos(prefab, fontname, glyphname, writing_direction, @internal),
          {:ok, %Glyph{} = onset_glyph} <- onset_glyph,
          {:ok, %Glyph{} = vowel_glyph} <- vowel_glyph,
          {:ok, %Glyph{} = coda_glyph} <- coda_glyph,
@@ -186,7 +186,7 @@ defmodule Thaqqa.Glyph.GlyphSpawner do
     child_glyph = new(prefab, fontname, child, writing_direction, size)
 
     with {:ok, %{x0: off_x, x1: _, y0: off_y, y1: _}} <-
-           GposManager.gpos(prefab, fontname, glyphname, writing_direction, @diacritical),
+           GposTable.gpos(prefab, fontname, glyphname, writing_direction, @diacritical),
          {:ok, %Glyph{} = top_glyph} <- top_glyph,
          {:ok, %Glyph{} = child_glyph} <- child_glyph,
          {:ok, %{Height: font_height}} = Prefab.get_fontdata(prefab, fontname, ["Height"]) do
@@ -232,7 +232,7 @@ defmodule Thaqqa.Glyph.GlyphSpawner do
 
   defp divide_name_sub(letter, "S" = type) do
     if length(letter) != 4 do
-      {:error, "仮エラー：argument number error"}
+      Error.invalid_argument_number(type, 4)
     else
       [form | rest] = letter
       [onset | rest] = rest
@@ -252,14 +252,14 @@ defmodule Thaqqa.Glyph.GlyphSpawner do
            }}
 
         _ ->
-          {:error, "仮エラー: invalid form error"}
+          Error.invalid_form(form)
       end
     end
   end
 
   defp divide_name_sub(letter, type) when type in ["Cd", "C"] do
     if length(letter) != 2 do
-      {:error, "仮エラー：argument number error"}
+      Error.invalid_argument_number(type, 2)
     else
       [form | glyph_raw] = letter
       [glyph_top | glyph_list] = Regex.split(~r/-/, glyph_raw |> Enum.at(0))
@@ -280,14 +280,14 @@ defmodule Thaqqa.Glyph.GlyphSpawner do
            }}
 
         _ ->
-          {:error, "仮エラー: invalid form error"}
+          Error.invalid_form(form)
       end
     end
   end
 
   defp divide_name_sub(letter, type) when type in ["Vd", "V"] do
     if length(letter) != 2 do
-      {:error, "仮エラー：argument number error"}
+      Error.invalid_argument_number(type, 2)
     else
       [form | glyph_raw] = letter
       [glyph_top | glyph_list] = Regex.split(~r/-/, glyph_raw |> Enum.at(0))
@@ -307,14 +307,14 @@ defmodule Thaqqa.Glyph.GlyphSpawner do
            }}
 
         _ ->
-          {:error, "仮エラー: invalid form error"}
+          Error.invalid_form(form)
       end
     end
   end
 
   defp divide_name_sub(letter, type) when type in ["Pd", "P"] do
     if length(letter) != 1 do
-      {:error, "仮エラー：argument number error"}
+      Error.invalid_argument_number(type, 1)
     else
       [glyph_top | glyph_list] = Regex.split(~r/-/, letter |> Enum.at(0))
       glyph_list = set_name("Pd", Enum.join(glyph_list, "-"))
@@ -334,5 +334,5 @@ defmodule Thaqqa.Glyph.GlyphSpawner do
     end
   end
 
-  defp divide_name_sub(letter, _), do: {:error, "仮エラー：invalid type error"}
+  defp divide_name_sub(_letter, type), do: Error.invalid_type(type)
 end

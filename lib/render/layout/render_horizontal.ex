@@ -16,7 +16,7 @@ defmodule Thaqqa.RenderHorizontal do
 
   alias Thaqqa.Render, as: Render
   alias Thaqqa.Glyph, as: Glyph
-  alias Thaqqa.GposManager, as: GposManager
+  alias Thaqqa.FontRegistryPrefab.GposTable, as: GposTable
   alias Thaqqa.ConstRegexManager, as: ConstRegexManager
   use Thaqqa.DataTable.Const
 
@@ -33,9 +33,9 @@ defmodule Thaqqa.RenderHorizontal do
     with {:ok, %{isWidthHRel: is_width_relative, WidthH: width, TopGapH: gap_top, Height: height}} <-
            Prefab.get_fontdata(prefab, fontname, ["isWidthHRel", "WidthH", "TopGapH", "Height"]),
          {:ok, %{x0: x0_internal, y0: y0_internal, x1: x1_internal, y1: y1_internal}} <-
-           GposManager.gpos(prefab, fontname, glyph_name, @horizontal, @internal),
+           GposTable.gpos(prefab, fontname, glyph_name, @horizontal, @internal),
          {:ok, %{x0: x0_ex_prev, y0: y0_ex_prev, x1: x1_ex_prev, y1: y1_ex_prev}} <-
-           GposManager.gpos(
+           GposTable.gpos(
              prefab,
              fontname,
              prev_glyph_name <> glyph_name,
@@ -43,16 +43,16 @@ defmodule Thaqqa.RenderHorizontal do
              @external
            ),
          {:ok, %{x0: x0_ex_next, y0: y0_ex_next, x1: x1_ex_next, y1: y1_ex_next}} <-
-           GposManager.gpos(
+           GposTable.gpos(
              prefab,
              fontname,
              glyph_name <> next_glyph_name,
              @horizontal,
              @external
            ),
-         GposManager.gpos(prefab, fontname, glyph_name, @horizontal, @internal),
+         GposTable.gpos(prefab, fontname, glyph_name, @horizontal, @internal),
          {:ok, %{x0: x0_ex_prev_nl, y0: y0_ex_prev_nl, x1: x1_ex_prev_nl, y1: y1_ex_prev_nl}} <-
-           GposManager.gpos(
+           GposTable.gpos(
              prefab,
              fontname,
              newline_as_regex_khhyl <> glyph_name,
@@ -60,7 +60,7 @@ defmodule Thaqqa.RenderHorizontal do
              @external
            ),
          {:ok, %{x0: x0_ex_next_nl, y0: y0_ex_next_nl, x1: x1_ex_next_nl, y1: y1_ex_next_nl}} <-
-           GposManager.gpos(
+           GposTable.gpos(
              prefab,
              fontname,
              glyph_name <> newline_as_regex_khhyl,

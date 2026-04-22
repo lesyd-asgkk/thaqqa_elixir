@@ -75,6 +75,7 @@ defmodule Thaqqa.FontRegistry.Error do
   def to_map(%__MODULE__{} = err) do
     %{
       error: %{
+        responsible: :font,
         class: err.class,
         reason: err.reason,
         meta: err.meta

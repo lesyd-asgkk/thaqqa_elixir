@@ -15,12 +15,7 @@ defmodule Thaqqa.FontRegistry do
 
   defp safe_call(msg, timeout \\ 5_000) do
     try do
-      case GenServer.call(__MODULE__, msg, timeout) do
-        t when is_tuple(t) and tuple_size(t) >= 2 -> t
-        {value} -> {:ok, value}
-        {} -> {:ok}
-        value -> {:ok, value}
-      end
+      GenServer.call(__MODULE__, msg, timeout)
     catch
       :exit, {:noproc, _} -> {:error, :font_registry_restarting}
       :exit, {:timeout, _} -> {:error, :font_registry_timeout}
@@ -106,9 +101,12 @@ defmodule Thaqqa.FontRegistry do
         :ets.tab2list(@static_tables)
       )
 
-    {:reply, result, state}
+    {:reply, {:ok, result}, state}
   end
 
+  # この指定は仮。
+  # 将来的にはdefmacroのquoteとする
+  # (外部から触りやすい値に！)
   @root_file "data/main.json"
 
   def handle_call({:save_root, opts}, _from, state) do

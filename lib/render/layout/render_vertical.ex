@@ -3,8 +3,8 @@ defmodule Thaqqa.RenderVertical do
 
   alias Thaqqa.Render, as: Render
   alias Thaqqa.Glyph, as: Glyph
-  alias Thaqqa.GposManager, as: GposManager
-  alias Thaqqa.ConstRegexManager, as: ConstRegexManager
+  alias Thaqqa.FontRegistryPrefab.GposTable, as: GposTable
+  alias Thaqqa.FontRegistryPrefab.ConstRegexKhhylTable, as: ConstRegexKhhylTable
   use Thaqqa.DataTable.Const
 
   defp calc_kerning_vertical(
@@ -20,9 +20,9 @@ defmodule Thaqqa.RenderVertical do
     with {:ok, %{isWidthVRel: is_width_relative, WidthV: width, TopGapH: gap_top, Height: height}} <-
            Prefab.get_fontdata(prefab, fontname, ["isWidthVRel", "WidthV", "TopGapH", "Height"]),
          {:ok, %{x0: x0_internal, y0: y0_internal, x1: x1_internal, y1: y1_internal}} <-
-           GposManager.gpos(prefab, fontname, glyph_name, @vertical, @internal),
+           GposTable.gpos(prefab, fontname, glyph_name, @vertical, @internal),
          {:ok, %{x0: x0_ex_prev, y0: y0_ex_prev, x1: x1_ex_prev, y1: y1_ex_prev}} <-
-           GposManager.gpos(
+           GposTable.gpos(
              prefab,
              fontname,
              prev_glyph_name <> glyph_name,
@@ -30,16 +30,16 @@ defmodule Thaqqa.RenderVertical do
              @external
            ),
          {:ok, %{x0: x0_ex_next, y0: y0_ex_next, x1: x1_ex_next, y1: y1_ex_next}} <-
-           GposManager.gpos(
+           GposTable.gpos(
              prefab,
              fontname,
              glyph_name <> next_glyph_name,
              @vertical,
              @external
            ),
-         GposManager.gpos(prefab, fontname, glyph_name, @vertical, @internal),
+         GposTable.gpos(prefab, fontname, glyph_name, @vertical, @internal),
          {:ok, %{x0: x0_ex_prev_nl, y0: y0_ex_prev_nl, x1: x1_ex_prev_nl, y1: y1_ex_prev_nl}} <-
-           GposManager.gpos(
+           GposTable.gpos(
              prefab,
              fontname,
              newline_as_regex_khhyl <> glyph_name,
@@ -47,7 +47,7 @@ defmodule Thaqqa.RenderVertical do
              @external
            ),
          {:ok, %{x0: x0_ex_next_nl, y0: y0_ex_next_nl, x1: x1_ex_next_nl, y1: y1_ex_next_nl}} <-
-           GposManager.gpos(
+           GposTable.gpos(
              prefab,
              fontname,
              glyph_name <> newline_as_regex_khhyl,
@@ -55,9 +55,9 @@ defmodule Thaqqa.RenderVertical do
              @external
            ),
          {:ok, is_newline_raw} <-
-           ConstRegexManager.whole_of_string_match_at_once?(prefab, "Newline", glyph_name),
+           ConstRegexKhhylTable.whole_of_string_match_at_once?(prefab, "Newline", glyph_name),
          {:ok, is_wordbreaker_raw} <-
-           ConstRegexManager.whole_of_string_match_at_once?(prefab, "WordBreaker", glyph_name),
+           ConstRegexKhhylTable.whole_of_string_match_at_once?(prefab, "WordBreaker", glyph_name),
          {:ok, glyph_for_meassure} <-
            Glyph.render_by_relative_height(prefab, glyph, 0, 0) do
       is_wordbreaker = is_wordbreaker_raw === true

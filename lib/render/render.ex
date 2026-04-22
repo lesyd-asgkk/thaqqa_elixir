@@ -3,9 +3,10 @@ defmodule Thaqqa.Render do
   alias Thaqqa.FontRegistry, as: FontRegistry
   alias Thaqqa.FontRegistryPrefab.ParserTable, as: ParserTable
   alias Thaqqa.FontRegistryPrefab.GsubTable, as: GsubTable
-  alias Thaqqa.UniqueGsubManager, as: UniqueGsubManager
-  alias Thaqqa.ConstRegexManager, as: ConstRegexManager
+  alias Thaqqa.FontRegistryPrefab.UniqueGsubTable, as: UniqueGsubTable
+  alias Thaqqa.FontRegistryPrefab.ConstRegexKhhylTable, as: ConstRegexKhhylTable
 
+  alias Thaqqa.Render.Error, as: Error
   alias Thaqqa.Glyph, as: Glyph
   use Thaqqa.DataTable.Const
 
@@ -189,7 +190,7 @@ defmodule Thaqqa.Render do
 
   def verficate_syllable(%Prefab{} = prefab, syllable_list) when is_list(syllable_list) do
     Enum.reduce_while(syllable_list, nil, fn syl, _ ->
-      case ConstRegexManager.whole_of_string_match_at_once?(prefab, "EverySingleLetter", syl) do
+      case ConstRegexKhhylTable.whole_of_string_match_at_once?(prefab, "EverySingleLetter", syl) do
         {:error, _} = err ->
           {:halt, err}
 
@@ -197,15 +198,15 @@ defmodule Thaqqa.Render do
           {:cont, nil}
 
         {:ok, _} ->
-          case ConstRegexManager.whole_of_string_match?(prefab, "EverySingleLetter", syl) do
+          case ConstRegexKhhylTable.whole_of_string_match?(prefab, "EverySingleLetter", syl) do
             {:error, _} = err ->
               {:halt, err}
 
             {:ok, true} ->
-              {:halt, {:error, "unparsed pattern found: #{syl}"}}
+              {:halt, Error.unparsed_syllable(syl)}
 
             {:ok, otherwise} ->
-              {:halt, {:error, "invalid pattern found: #{otherwise}"}}
+              {:halt, Error.invalid_syllable(otherwise)}
           end
       end
     end)
@@ -216,7 +217,7 @@ defmodule Thaqqa.Render do
   end
 
   def split_by_syllable(%Prefab{} = prefab, string) do
-    case ConstRegexManager.get_const(prefab, "EveryDoubleLetter") do
+    case ConstRegexKhhylTable.get_const(prefab, "EveryDoubleLetter") do
       {:error, _} = err ->
         err
 
@@ -235,7 +236,7 @@ defmodule Thaqqa.Render do
     with {:ok, parsed_string} <- ParserTable.interpret(prefab, string, language),
          {:ok, gsub_string} <- GsubTable.gsub(prefab, parsed_string, writing_direction),
          {:ok, unique_gsub_string} <-
-           UniqueGsubManager.unique_gsub(prefab, gsub_string, font, writing_direction) do
+           UniqueGsubTable.unique_gsub(prefab, gsub_string, font, writing_direction) do
       {:ok, unique_gsub_string}
     else
       {:error, _} = err -> err
