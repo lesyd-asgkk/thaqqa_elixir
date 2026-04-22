@@ -60,3 +60,18 @@ defimpl Jason.Encoder, for: Thaqqa.Font do
     Jason.Encode.map(Map.new(font.table_list, fn table -> {table.name, table} end), opts)
   end
 end
+
+defimpl Jason.Encoder, for: Thaqqa.FontRegistryPrefab do
+  def encode(prefab, opts) do
+    Jason.Encode.map(
+      %{
+        static_tables: Map.new(prefab.static_tables, fn table -> {table.name, table} end),
+        fonts:
+          Map.new(prefab.fonts, fn font ->
+            {font.name, %{table_list: font.table_list, filename: font.filename}}
+          end)
+      },
+      opts
+    )
+  end
+end

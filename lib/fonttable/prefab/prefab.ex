@@ -11,6 +11,9 @@ defmodule Thaqqa.FontRegistryPrefab do
   defstruct fonts: %{}, static_tables: %{}
 
   def new(fonts, static_tables), do: %__MODULE__{fonts: fonts, static_tables: static_tables}
+
+  def new_from_request(json) when is_map(json), do: IO.new_from_request(json)
+
   # update,overwrite,init系統は要置き場所検討
   def update_fonts(%__MODULE__{} = self, f), do: Op.update_fonts(self, f)
 

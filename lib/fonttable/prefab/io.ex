@@ -6,6 +6,22 @@ defmodule Thaqqa.FontRegistryPrefab.IO do
   alias Thaqqa.FontRegistryPrefab.ConstRegexKhhylTable, as: ConstRegexKhhylTable
   alias Thaqqa.FontRegistry.Error, as: Error
 
+  def new_from_request(json) when is_map(json) do
+    case Prefab.new(%{}, %{}) |> import_as_root(json.static_tables) do
+      {:error, _} = err ->
+        err
+
+      {:ok, prefab} ->
+        Enum.reduce_while(json.fonts, prefab, fn {fontname, font}, {:ok, acc_prefab} ->
+          # ニ度手間だが、filename情報は不要なのでこのような形としている。
+          case import_as_font(acc_prefab, %{fontname: font.table_list}, font.filename) do
+            {:error, _} = err -> {:halt, err}
+            {:ok, acc_prefab} -> {:cont, {:ok, acc_prefab}}
+          end
+        end)
+    end
+  end
+
   def import_as_root(%Prefab{} = self, rootdata) when is_map(rootdata) do
     # local用のテーブルが増減した場合にfont側のテーブルも変更させる処理も後日付け足す。
     # (local用テーブルが消えた場合にfont側のその名前のテーブルも削除する機能や逆に補完する機能)
@@ -22,8 +38,8 @@ defmodule Thaqqa.FontRegistryPrefab.IO do
 
       {:ok, prefab} ->
         case Prefab.set_precompile_on_root(prefab) do
-          {:error, reason} ->
-            {:error, reason}
+          {:error, _} = err ->
+            err
 
           {:ok, static_table_list} ->
             prefab = %Prefab{prefab | static_tables: static_table_list}
