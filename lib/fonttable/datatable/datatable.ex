@@ -21,7 +21,7 @@ defmodule Thaqqa.DataTable do
   ]
 
   # DataTableを新たに作る関数。
-  def new(name, global, parent, compile_rule, single),
+  def new(name, global \\ false, parent \\ nil, compile_rule \\ "none", single \\ false),
     do: %__MODULE__{
       name: name,
       global: global,
