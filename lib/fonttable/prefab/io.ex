@@ -53,8 +53,6 @@ defmodule Thaqqa.FontRegistryPrefab.IO do
 
   def import_as_font(%Prefab{} = self, fontdata, filename) when is_map(fontdata) do
     Enum.reduce_while(fontdata, {:ok, []}, fn {k, v}, {:ok, acc} ->
-      IO.inspect(k)
-
       import_table(k, v)
       |> case do
         {:error, _} = err -> {:halt, err}
