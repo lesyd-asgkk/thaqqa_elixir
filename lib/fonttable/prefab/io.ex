@@ -14,11 +14,8 @@ defmodule Thaqqa.FontRegistryPrefab.IO do
       {:ok, prefab} ->
         Enum.reduce_while(json["fonts"], {:ok, prefab}, fn {fontname, font}, {:ok, acc_prefab} ->
           # ニ度手間だが、filename情報は不要なのでこのような形としている。
-          case import_as_font(
-                 acc_prefab,
-                 Map.put(%{}, fontname, font["table_list"]),
-                 font["filename"]
-               ) do
+
+          case import_as_font(acc_prefab, font["table_list"], font["filename"]) do
             {:error, _} = err -> {:halt, err}
             {:ok, acc_prefab} -> {:cont, {:ok, acc_prefab}}
           end
@@ -56,6 +53,8 @@ defmodule Thaqqa.FontRegistryPrefab.IO do
 
   def import_as_font(%Prefab{} = self, fontdata, filename) when is_map(fontdata) do
     Enum.reduce_while(fontdata, {:ok, []}, fn {k, v}, {:ok, acc} ->
+      IO.inspect(k)
+
       import_table(k, v)
       |> case do
         {:error, _} = err -> {:halt, err}
