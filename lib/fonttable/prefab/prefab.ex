@@ -48,6 +48,13 @@ defmodule Thaqqa.FontRegistryPrefab do
 
   def get_static_table(%__MODULE__{} = self, name), do: Map.get(get_static_table_list(self), name)
 
+  def get_static_table_or_error(%__MODULE__{} = self, name) do
+    case get_static_table(self, name) do
+      nil -> Error.table_not_found(name)
+      table -> {:ok, table}
+    end
+  end
+
   def get_static_table_list(%__MODULE__{} = self), do: self.static_tables
 
   def get_global_static_table_list(%__MODULE__{} = self),
@@ -75,6 +82,19 @@ defmodule Thaqqa.FontRegistryPrefab do
     case get_font(self, fontname) do
       nil -> nil
       font -> Font.get_table(font, tablename)
+    end
+  end
+
+  def get_table_or_error(%__MODULE__{} = self, fontname, tablename) do
+    case get_font_or_error(self, fontname) do
+      {:error, _} = err ->
+        err
+
+      {:ok, font} ->
+        case Font.get_table(font, tablename) do
+          nil -> Error.table_not_found(tablename, fontname)
+          datatable -> {:ok, datatable}
+        end
     end
   end
 

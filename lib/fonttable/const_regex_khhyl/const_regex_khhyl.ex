@@ -29,12 +29,8 @@ defmodule Thaqqa.FontRegistryPrefab.ConstRegexKhhylTable do
   def get_const_table_or_nil(%Prefab{} = prefab),
     do: Prefab.get_static_table(prefab, @regex_const)
 
-  def get_static_table(%Prefab{} = prefab) do
-    case Prefab.get_static_table(prefab, @regex_const) do
-      nil -> Error.table_not_found(@regex_const)
-      table -> {:ok, table}
-    end
-  end
+  def get_static_table(%Prefab{} = prefab),
+    do: Prefab.get_static_table_or_error(prefab, @regex_const)
 
   def get_const(%Prefab{} = prefab, name) do
     case get_static_table(prefab) do

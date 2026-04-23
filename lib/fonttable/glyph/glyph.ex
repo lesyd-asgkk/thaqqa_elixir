@@ -8,15 +8,15 @@ defmodule Thaqqa.FontRegistryPrefab.GlyphTable do
   alias Thaqqa.FontRegistryPrefab.GlyphTable.Op, as: Op
   use Thaqqa.DataTable.Const
 
-  def get_glyph_table!(%Prefab{} = prefab, fontname) when is_binary(fontname),
-    do: Prefab.get_table(prefab, fontname, @glyph)
-
-  def get_glyph_table(%Prefab{} = prefab, fontname) when is_binary(fontname) do
-    case Prefab.get_table(prefab, fontname, @glyph) do
-      nil -> Error.table_not_found(@glyph, fontname)
-      table -> {:ok, table}
+  def get_glyph_table!(%Prefab{} = prefab, fontname) do
+    case get_glyph_table(prefab, fontname) do
+      {:error, reason} -> raise reason
+      {:ok, table} -> table
     end
   end
+
+  def get_glyph_table(%Prefab{} = prefab, fontname),
+    do: Prefab.get_table_or_error(prefab, fontname, @glyph)
 
   def get_glyph!(%Prefab{} = prefab, fontname, filter_fun \\ fn _ -> true end)
       when is_binary(fontname) and is_function(filter_fun),

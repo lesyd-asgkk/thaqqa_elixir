@@ -2,7 +2,6 @@ defmodule Thaqqa.FontRegistryPrefab.LetterTable do
   alias Thaqqa.DataTable, as: DataTable
   alias Thaqqa.Font, as: Font
   alias Thaqqa.FontRegistryPrefab, as: Prefab
-  alias Thaqqa.FontRegistry.Error, as: Error
   alias Thaqqa.FontRegistryPrefab.LetterTable.Validator, as: Validator
   alias Thaqqa.ConstRegexManager, as: ConstRegexManager
   alias Thaqqa.FontRegistryPrefab.LetterTable.Op, as: Op
@@ -10,9 +9,9 @@ defmodule Thaqqa.FontRegistryPrefab.LetterTable do
 
   def get_table_all(%Prefab{} = prefab) do
     Enum.reduce_while(@lettertable_list, {:ok, %{}}, fn k, {:ok, acc} ->
-      case Prefab.get_static_table(prefab, k) do
-        nil -> {:halt, Error.table_not_found(k)}
-        otherwise -> {:cont, {:ok, Map.put(acc, k, otherwise)}}
+      case get_letter_table_from_name(prefab, k) do
+        {:error, _} = err -> {:halt, err}
+        {:ok, datatable} -> {:cont, {:ok, Map.put(acc, k, datatable)}}
       end
     end)
   end
@@ -37,12 +36,17 @@ defmodule Thaqqa.FontRegistryPrefab.LetterTable do
   def get_diacritic_p_table!(%Prefab{} = prefab),
     do: get_letter_table_from_name!(prefab, @diacritic_p)
 
-  def get_letter_table_from_name(%Prefab{} = prefab, table) do
-    case Prefab.get_static_table(prefab, table) do
-      nil -> Error.table_not_found(table)
-      table -> {:ok, table}
+  def get_letter_table_from_name!(%Prefab{} = prefab, table_name)
+      when table_name in @lettertable_list do
+    case get_letter_table_from_name(prefab, table_name) do
+      {:error, reason} -> raise reason
+      {:ok, table} -> table
     end
   end
+
+  def get_letter_table_from_name(%Prefab{} = prefab, table_name)
+      when table_name in @lettertable_list,
+      do: Prefab.get_static_table_or_error(prefab, table_name)
 
   def get_vowel_table(%Prefab{} = prefab), do: get_letter_table_from_name(prefab, @vowel)
   def get_consonant_table(%Prefab{} = prefab), do: get_letter_table_from_name(prefab, @consonant)

@@ -3,18 +3,17 @@ defmodule Thaqqa.FontRegistryPrefab.GposTable do
   alias Thaqqa.FontRegistryPrefab.GposTable.Op, as: Op
   alias Thaqqa.FontRegistryPrefab.GposTable.Query, as: Query
   alias Thaqqa.FontRegistryPrefab.GposTable.Kerning, as: Kerning
-  alias Thaqqa.FontRegistry.Error, as: Error
   use Thaqqa.DataTable.Const
 
-  def get_gpos_table!(%Prefab{} = prefab, fontname),
-    do: Prefab.get_table(prefab, fontname, @gpos)
-
-  def get_gpos_table(%Prefab{} = prefab, fontname) do
-    case Prefab.get_table(prefab, fontname, @gpos) do
-      nil -> Error.table_not_found(@gpos, fontname)
-      table -> {:ok, table}
+  def get_gpos_table!(%Prefab{} = prefab, fontname) do
+    case get_gpos_table(prefab, fontname) do
+      {:error, reason} -> raise reason
+      {:ok, table} -> table
     end
   end
+
+  def get_gpos_table(%Prefab{} = prefab, fontname),
+    do: Prefab.get_table_or_error(prefab, fontname, @gpos)
 
   def get_gpos!(%Prefab{} = prefab, fontname, filter_fun \\ fn _ -> true end),
     do: Query.get_gpos!(prefab, fontname, filter_fun)

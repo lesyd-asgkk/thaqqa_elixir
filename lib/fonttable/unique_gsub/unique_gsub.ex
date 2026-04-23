@@ -3,25 +3,23 @@
 # Prefabの加工・読み取りラッパーにするか
 
 defmodule Thaqqa.FontRegistryPrefab.UniqueGsubTable do
-  alias Thaqqa.DataTable, as: DataTable
   alias Thaqqa.Data, as: Data
-  alias Thaqqa.Font, as: Font
   alias Thaqqa.FontRegistryPrefab, as: Prefab
   alias Thaqqa.FontRegistryPrefab.UniqueGsubTable.Op, as: Op
   alias Thaqqa.FontRegistryPrefab.UniqueGsubTable.Query, as: Query
   alias Thaqqa.FontRegistryPrefab.UniqueGsubTable.Converter, as: Converter
-  alias Thaqqa.FontRegistry.Error, as: Error
+
   use Thaqqa.DataTable.Const
 
-  def get_unique_gsub_table!(%Prefab{} = prefab, fontname),
-    do: Prefab.get_table(prefab, fontname, @unique_gsub)
-
-  def get_unique_gsub_table(%Prefab{} = prefab, fontname) do
-    case Prefab.get_table(prefab, fontname, @unique_gsub) do
-      nil -> Error.table_not_found(@unique_gsub, fontname)
-      table -> {:ok, table}
+  def get_unique_gsub_table!(%Prefab{} = prefab, fontname) do
+    case get_unique_gsub_table(prefab, fontname) do
+      {:error, reason} -> raise reason
+      {:ok, table} -> table
     end
   end
+
+  def get_unique_gsub_table(%Prefab{} = prefab, fontname),
+    do: Prefab.get_table_or_error(prefab, fontname, @unique_gsub)
 
   def get_unique_gsub!(%Prefab{} = prefab, fontname, filter_fun \\ fn _ -> true end),
     do: Query.get_unique_gsub!(prefab, fontname, filter_fun)

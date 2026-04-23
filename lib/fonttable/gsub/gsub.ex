@@ -5,17 +5,16 @@ defmodule Thaqqa.FontRegistryPrefab.GsubTable do
   alias Thaqqa.FontRegistryPrefab.GsubTable.Query, as: Query
 
   alias Thaqqa.FontRegistryPrefab, as: Prefab
-  alias Thaqqa.FontRegistry.Error, as: Error
   use Thaqqa.DataTable.Const
 
-  def get_gsub_table!(%Prefab{} = prefab), do: Prefab.get_static_table(prefab, @gsub)
-
-  def get_gsub_table(%Prefab{} = prefab) do
-    case Prefab.get_static_table(prefab, @gsub) do
-      nil -> Error.table_not_found(@gsub)
-      table -> {:ok, table}
+  def get_gsub_table!(%Prefab{} = prefab) do
+    case get_gsub_table(prefab) do
+      {:error, reason} -> raise reason
+      {:ok, table} -> table
     end
   end
+
+  def get_gsub_table(%Prefab{} = prefab), do: Prefab.get_static_table_or_error(prefab, @gsub)
 
   def get_gsub!(%Prefab{} = prefab, filter_fun \\ fn _ -> true end),
     do: Query.get_gsub!(prefab, filter_fun)

@@ -8,17 +8,16 @@ defmodule Thaqqa.FontRegistryPrefab.ParserTable do
   alias Thaqqa.FontRegistryPrefab.ParserTable.Query, as: Query
   alias Thaqqa.Data, as: Data
   alias Thaqqa.FontRegistryPrefab, as: Prefab
-  alias Thaqqa.FontRegistry.Error, as: Error
   use Thaqqa.DataTable.Const
 
-  def get_parser_table!(%Prefab{} = prefab), do: Prefab.get_static_table(prefab, @parser)
-
-  def get_parser_table(%Prefab{} = prefab) do
-    case Prefab.get_static_table(prefab, @parser) do
-      nil -> Error.table_not_found(@parser)
-      table -> {:ok, table}
+  def get_parser_table!(%Prefab{} = prefab) do
+    case get_parser_table(prefab) do
+      {:error, reason} -> raise reason
+      {:ok, table} -> table
     end
   end
+
+  def get_parser_table(%Prefab{} = prefab), do: Prefab.get_static_table_or_error(prefab, @parser)
 
   def get_parser!(%Prefab{} = prefab, filter_fun \\ fn _ -> true end),
     do: Query.get_parser!(prefab, filter_fun)
