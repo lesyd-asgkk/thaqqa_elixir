@@ -89,8 +89,8 @@ defmodule Thaqqa.DataTable.Op do
             data = Data.set_value(data, new_name, val)
 
             if new_name == column_name,
-              do: %{data | value_list: data.value_list},
-              else: %{data | value_list: Map.delete(data.value_list, column_name)}
+              do: %{data | value_map: data.value_map},
+              else: %{data | value_map: Map.delete(data.value_map, column_name)}
           end)
 
         {:ok, %{table | column_list: new_cols, data_list: new_datas}}
@@ -131,7 +131,7 @@ defmodule Thaqqa.DataTable.Op do
     end
   end
 
-  def add_data(%DataTable{data_list: datas} = table, %Data{value_list: value_map} = data) do
+  def add_data(%DataTable{data_list: datas} = table, %Data{value_map: value_map} = data) do
     case Validator.validate_data(table, value_map, :add) do
       {:error, _} = err -> err
       :ok -> {:ok, %DataTable{table | data_list: [data | datas]}}
@@ -164,7 +164,7 @@ defmodule Thaqqa.DataTable.Op do
   def edit_data(
         %DataTable{data_list: data_list, name: tablename} = table,
         %Data{} = data,
-        %Data{value_list: new_value_map} = new_data
+        %Data{value_map: new_value_map} = new_data
       ) do
     if !DataTable.has_data?(table, data) do
       Error.data_struct_not_found(data, tablename, nil)

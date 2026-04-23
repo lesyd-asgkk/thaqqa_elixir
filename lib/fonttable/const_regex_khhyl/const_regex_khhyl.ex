@@ -20,7 +20,7 @@ defmodule Thaqqa.FontRegistryPrefab.ConstRegexKhhylTable do
 
       {:ok, %DataTable{data_list: dl} = table} ->
         dh =
-          Map.new(dl, fn %Thaqqa.Data{value_list: vl} = table -> {Map.get(vl, @name), table} end)
+          Map.new(dl, fn %Thaqqa.Data{value_map: vl} = table -> {Map.get(vl, @name), table} end)
 
         Prefab.edit_static_table(prefab, @regex_const, %DataTable{table | data_hash: dh})
     end

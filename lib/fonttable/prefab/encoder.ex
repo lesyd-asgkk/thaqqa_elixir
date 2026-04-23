@@ -23,7 +23,7 @@ defimpl Jason.Encoder, for: Thaqqa.DataTable do
     datalist_map =
       datatable.data_list
       |> Enum.with_index()
-      |> Map.new(fn {v, i} -> {Integer.to_string(i), v.value_list} end)
+      |> Map.new(fn {v, i} -> {Integer.to_string(i), v.value_map} end)
 
     column_volatility =
       Thaqqa.DataTable.get_column(datatable, fn %Thaqqa.Column{type: type} ->

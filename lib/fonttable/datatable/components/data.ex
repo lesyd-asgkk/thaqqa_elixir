@@ -1,5 +1,5 @@
 # defimpl Jason.Encoder, for: Thaqqa.Data do
-#  def encode(data, opts), do: Jason.Encode.map(data.value_list, opts)
+#  def encode(data, opts), do: Jason.Encode.map(data.value_map, opts)
 # end
 
 defmodule Thaqqa.Data do
@@ -10,20 +10,19 @@ defmodule Thaqqa.Data do
   alias Thaqqa.FontRegistry.Error, as: Error
   use Thaqqa.DataTable.Const
 
-  defstruct [:value_list]
+  defstruct [:value_map]
 
   # データを作成する関数。 返り値は%Data{}
-  def new(v) when is_map(v), do: %__MODULE__{value_list: v}
+  def new(v) when is_map(v), do: %__MODULE__{value_map: v}
 
   # DataTableを第2引数として渡した場合は「そのテーブルの要求項目に沿うように加工する」。
   def new(v, %DataTable{} = table) when is_map(v),
-    do: %__MODULE__{value_list: v |> modify_value_map(table) |> attach_id(table)}
+    do: %__MODULE__{value_map: v |> modify_value_map(table) |> attach_id(table)}
 
   # さらにFontRegistryPrefabを第3引数として渡した場合はVolatility column用のprecompileも済ませる。
   def new(v, %DataTable{} = table, %Prefab{} = prefab) when is_map(v),
     do: %__MODULE__{
-      value_list:
-        v |> modify_value_map(table) |> attach_id(table) |> set_precompile(table, prefab)
+      value_map: v |> modify_value_map(table) |> attach_id(table) |> set_precompile(table, prefab)
     }
 
   # value_mapに、DataTableのdata_list上で使用されていない最小のIDを付加する。
@@ -45,35 +44,35 @@ defmodule Thaqqa.Data do
     end)
   end
 
-  # value_listに新たな値を設定した上で%Data{}の形で返す。
+  # value_mapに新たな値を設定した上で%Data{}の形で返す。
   # 以降の関数ではColumnとの型整合を担保することはない。
-  def set_value(%__MODULE__{value_list: v} = data, key, val),
-    do: %{data | value_list: Map.put(v, key, val)}
+  def set_value(%__MODULE__{value_map: v} = data, key, val),
+    do: %{data | value_map: Map.put(v, key, val)}
 
-  # value_listに新たな値を追加した上で%Data{}の形で返す。
+  # value_mapに新たな値を追加した上で%Data{}の形で返す。
   # set_value/3とは違い、既に存在するkeyの場合は値を変更しない。
-  def add_value(%__MODULE__{value_list: v} = data, key, val),
-    do: %{data | value_list: Map.put_new(v, key, val)}
+  def add_value(%__MODULE__{value_map: v} = data, key, val),
+    do: %{data | value_map: Map.put_new(v, key, val)}
 
-  # value_listから指定したkeyに対する値を取得する。
+  # value_mapから指定したkeyに対する値を取得する。
   # ないkeyを参照した場合はnilを返す。
-  def get_value(%__MODULE__{value_list: v}, key), do: Map.get(v, key)
+  def get_value(%__MODULE__{value_map: v}, key), do: Map.get(v, key)
 
-  # value_listから指定したkeyに対する値を取得し、{:ok,%Data{}}の形で返す。
+  # value_mapから指定したkeyに対する値を取得し、{:ok,%Data{}}の形で返す。
   # ないkeyを参照した場合は{:error,%Error{}}の形式。
-  def get_value_or_error(%__MODULE__{value_list: v}, key) do
+  def get_value_or_error(%__MODULE__{value_map: v}, key) do
     case Map.get(v, key) do
       nil -> Error.data_not_found(nil, key, nil, nil)
       otherwise -> {:ok, otherwise}
     end
   end
 
-  # value_listから指定したkeyに対する値を削除し、%Data{}の形で返す。
+  # value_mapから指定したkeyに対する値を削除し、%Data{}の形で返す。
   # 無いkeyを指定した場合は変更なし。
-  def delete_value(%__MODULE__{value_list: v} = data, key),
-    do: %__MODULE__{data | value_list: Map.delete(v, key)}
+  def delete_value(%__MODULE__{value_map: v} = data, key),
+    do: %__MODULE__{data | value_map: Map.delete(v, key)}
 
-  # value_listから指定したkeyに対する値を削除し、、{:ok,%Data{}}の形で返す。
+  # value_mapから指定したkeyに対する値を削除し、、{:ok,%Data{}}の形で返す。
   # ないkeyを参照した場合は{:error,%Error{}}の形式。
   def delete_value_or_error(%__MODULE__{} = data, key) do
     if get_value(data, key) != nil,
@@ -81,15 +80,15 @@ defmodule Thaqqa.Data do
       else: Error.data_not_found(nil, key, nil, nil)
   end
 
-  # value_listから指定したkeyに対する値を変更し、%Data{}の形で返す。
+  # value_mapから指定したkeyに対する値を変更し、%Data{}の形で返す。
   # ないkeyを参照した場合は変更なし。
-  def edit_value(%__MODULE__{value_list: v} = data, key, new_value) do
+  def edit_value(%__MODULE__{value_map: v} = data, key, new_value) do
     if get_value(data, key) != nil,
-      do: %__MODULE__{data | value_list: Map.put(v, key, new_value)},
+      do: %__MODULE__{data | value_map: Map.put(v, key, new_value)},
       else: data
   end
 
-  # value_listから指定したkeyに対する値を変更し、{:ok,%Data{}}の形で返す。
+  # value_mapから指定したkeyに対する値を変更し、{:ok,%Data{}}の形で返す。
   # ないkeyを参照した場合は{:error,%Error{}}の形式。
   def edit_value_or_error(%__MODULE__{} = data, key, new_value) do
     if get_value(data, key) != nil,
