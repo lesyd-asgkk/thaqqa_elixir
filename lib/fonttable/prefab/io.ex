@@ -12,7 +12,7 @@ defmodule Thaqqa.FontRegistryPrefab.IO do
         err
 
       {:ok, prefab} ->
-        Enum.reduce_while(json["fonts"], {:ok, prefab}, fn {fontname, font}, {:ok, acc_prefab} ->
+        Enum.reduce_while(json["fonts"], {:ok, prefab}, fn {_, font}, {:ok, acc_prefab} ->
           # ニ度手間だが、filename情報は不要なのでこのような形としている。
 
           case import_as_font(acc_prefab, font["table_list"], font["filename"]) do
