@@ -16,7 +16,7 @@ defmodule Thaqqa.FontRegistryPrefab.IO do
           # ニ度手間だが、filename情報は不要なのでこのような形としている。
           case import_as_font(
                  acc_prefab,
-                 %{name: fontname, table_list: font["table_list"]},
+                 Map.put(%{}, fontname, font["table_list"]),
                  font["filename"]
                ) do
             {:error, _} = err -> {:halt, err}
