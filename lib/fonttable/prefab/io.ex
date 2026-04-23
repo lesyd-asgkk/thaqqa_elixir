@@ -7,14 +7,18 @@ defmodule Thaqqa.FontRegistryPrefab.IO do
   alias Thaqqa.FontRegistry.Error, as: Error
 
   def new_from_request(json) when is_map(json) do
-    case Prefab.new(%{}, %{}) |> import_as_root(json.static_tables) do
+    case Prefab.new(%{}, %{}) |> import_as_root(json["static_tables"]) do
       {:error, _} = err ->
         err
 
       {:ok, prefab} ->
         Enum.reduce_while(json.fonts, prefab, fn {fontname, font}, {:ok, acc_prefab} ->
           # ニ度手間だが、filename情報は不要なのでこのような形としている。
-          case import_as_font(acc_prefab, %{fontname: font.table_list}, font.filename) do
+          case import_as_font(
+                 acc_prefab,
+                 %{name: fontname, table_list: font["table_list"]},
+                 font["filename"]
+               ) do
             {:error, _} = err -> {:halt, err}
             {:ok, acc_prefab} -> {:cont, {:ok, acc_prefab}}
           end
