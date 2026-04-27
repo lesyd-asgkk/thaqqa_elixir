@@ -1,9 +1,6 @@
 defmodule Thaqqa.FontRegistryPrefab.GlyphTable do
   alias Thaqqa.Data, as: Data
-  alias Thaqqa.DataTable, as: DataTable
-  alias Thaqqa.Font, as: Font
   alias Thaqqa.FontRegistryPrefab, as: Prefab
-  alias Thaqqa.FontRegistry.Error, as: Error
   alias Thaqqa.FontRegistryPrefab.GlyphTable.Query, as: Query
   alias Thaqqa.FontRegistryPrefab.GlyphTable.Op, as: Op
   use Thaqqa.DataTable.Const

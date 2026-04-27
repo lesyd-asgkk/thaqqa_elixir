@@ -24,7 +24,6 @@ defmodule Thaqqa.FontRegistryPrefab.UniqueGsubTable.Op do
            Prefab.edit_font(prefab, fontname, Font.edit_table(font, @unique_gsub, table)) do
       {:ok, UniqueGsubTable.sort_unique_gsub(new_prefab, fontname)}
     else
-      nil -> Error.font_not_found(fontname)
       {:error, _} = err -> err
     end
   end
@@ -42,7 +41,6 @@ defmodule Thaqqa.FontRegistryPrefab.UniqueGsubTable.Op do
          %Font{} = font <- Prefab.get_font(prefab, fontname) do
       Prefab.edit_font(prefab, fontname, Font.edit_table(font, @unique_gsub, table))
     else
-      nil -> Error.font_not_found(fontname)
       {:error, _} = err -> err
     end
   end

@@ -22,7 +22,6 @@ defmodule Thaqqa.FontRegistryPrefab.GposTable.Op do
            Prefab.edit_font(prefab, fontname, Font.edit_table(font, @gpos, table)) do
       {:ok, GposTable.sort_gpos(new_prefab, fontname)}
     else
-      nil -> Error.font_not_found(fontname)
       {:error, _} = err -> err
     end
   end
