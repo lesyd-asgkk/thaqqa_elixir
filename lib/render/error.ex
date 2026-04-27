@@ -61,9 +61,9 @@ defmodule Thaqqa.Render.Error do
   def invalid_argument_number(number, required \\ nil),
     do: error(:invalid, :argument_number, %{number: number, required: required})
 
-  def invalid_pattern(pattern),
+  def invalid_syllable(pattern),
     do: error(:invalid, :syllable, %{pattern: pattern})
 
-  def unparsed_pattern(pattern),
+  def unparsed_syllable(pattern),
     do: error(:invalid, :unparsed, %{pattern: pattern})
 end
