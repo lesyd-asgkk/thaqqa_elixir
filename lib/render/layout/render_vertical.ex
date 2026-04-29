@@ -290,9 +290,11 @@ defmodule Thaqqa.RenderVertical do
         fn oneline, {acc_oneline_list, acc_x} ->
           {left, right} =
             Enum.reduce(oneline, {0, 0}, fn g, {acc_left, acc_right} ->
-              {max(acc_left, g.box.left) + line_height / 2,
-               max(acc_right, g.box.right) + line_height / 2}
+              {max(acc_left, g.box.left), max(acc_right, g.box.right)}
             end)
+
+          left = left + line_height / 2
+          right = right + line_height / 2
 
           oneline_alt = Enum.map(oneline, fn g -> Map.put(g, :x, acc_x - right) end)
 

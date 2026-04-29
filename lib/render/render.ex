@@ -230,7 +230,7 @@ defmodule Thaqqa.Render do
       when language in [@khehyelu, @samlhta] and writing_direction in [@vertical, @horizontal] do
     {:ok, p} = ParserTable.interpret(prefab, string, language)
 
-    GsubTable.gsub(prefab, p, writing_direction) |> IO.inspect()
+    GsubTable.gsub(prefab, p, writing_direction)
 
     with {:ok, parsed_string} <- ParserTable.interpret(prefab, string, language),
          {:ok, gsub_string} <- GsubTable.gsub(prefab, parsed_string, writing_direction),
