@@ -47,13 +47,15 @@ defmodule Thaqqa.Glyph.GlyphBuilder do
         } = self
       ) do
     top_glyph = %Glyph{self | children_glyph_list: []} |> set_path()
-    child = Enum.at(children, 0)
-    sub_glyph = child |> set_path()
+    second_glyph_raw = children |> Enum.at(0)
+    second_glyph = %Glyph{second_glyph_raw | children_glyph_list: []} |> set_path()
+    other_glyph = second_glyph_raw.children_glyph_list
 
     dir = if type in ["C", "Cd"] and form == "coda", do: -1, else: 1
-    off = calc_offset(top_glyph, sub_glyph)
-    child_path = child.path
-    %{left: l, top: t, right: r, bottom: b} = SVG.Path.get_border(child_path)
+    off = calc_offset(top_glyph, second_glyph)
+
+    second_glyph_path = second_glyph.path
+    %{left: l, top: t, right: r, bottom: b} = SVG.Path.get_border(second_glyph_path)
 
     off_child_x = dir * (r + l) / 2
     off_child_y = -(t + b) / 2
@@ -61,14 +63,24 @@ defmodule Thaqqa.Glyph.GlyphBuilder do
     path_new =
       merge_path_2(
         top_path,
-        child_path,
+        second_glyph_path,
         off_child_x + off.x,
         off_child_y + off.y
       )
       |> to_relative()
 
     %{left: _, top: t, right: _, bottom: b} = SVG.Path.get_border(path_new)
-    %Glyph{self | height: %{y0: t, y1: t, y2: b, y3: b}, path: path_new}
+
+    if other_glyph == [],
+      do: %Glyph{self | height: %{y0: t, y1: t, y2: b, y3: b}, path: path_new},
+      else:
+        %Glyph{
+          self
+          | height: %{y0: t, y1: t, y2: b, y3: b},
+            children_glyph_list: other_glyph,
+            path: path_new |> to_absolute()
+        }
+        |> set_path()
   end
 
   # 無の場合。そのまま初期値のm0,0が帰ります

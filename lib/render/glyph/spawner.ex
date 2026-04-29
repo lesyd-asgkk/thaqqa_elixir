@@ -183,6 +183,8 @@ defmodule Thaqqa.Glyph.GlyphSpawner do
         size
       )
 
+    # tl0-hd0-sy0ときたら tl0-hd0 | tl0-hd0-sy0のように処理させる
+    # 要は逆順処理。
     child_glyph = new(prefab, fontname, child, writing_direction, size)
 
     with {:ok, %{x0: off_x, x1: _, y0: off_y, y1: _}} <-

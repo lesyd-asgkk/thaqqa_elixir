@@ -64,7 +64,6 @@ defmodule Thaqqa.Glyph.GlyphRenderer do
 
             {:ok, %Glyph{self | path: path, glyph_height: top_gap + bottom_gap + y3}}
 
-          # 恐らくここで表記ミスが発生している
           "mid" ->
             skewer_top = draw_rectangle(-th_half, y0, th_half, y1 + top_gap)
 
