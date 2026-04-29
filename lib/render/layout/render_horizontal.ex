@@ -17,7 +17,7 @@ defmodule Thaqqa.RenderHorizontal do
   alias Thaqqa.Render, as: Render
   alias Thaqqa.Glyph, as: Glyph
   alias Thaqqa.FontRegistryPrefab.GposTable, as: GposTable
-  alias Thaqqa.ConstRegexManager, as: ConstRegexManager
+  alias Thaqqa.FontRegistryPrefab.ConstRegexKhhylTable, as: ConstRegexKhhylTable
   use Thaqqa.DataTable.Const
 
   defp calc_kerning_horizontal(
@@ -68,9 +68,9 @@ defmodule Thaqqa.RenderHorizontal do
              @external
            ),
          {:ok, is_newline_raw} <-
-           ConstRegexManager.whole_of_string_match_at_once?(prefab, "Newline", glyph_name),
+           ConstRegexKhhylTable.whole_of_string_match_at_once?(prefab, "Newline", glyph_name),
          {:ok, is_wordbreaker_raw} <-
-           ConstRegexManager.whole_of_string_match_at_once?(prefab, "WordBreaker", glyph_name),
+           ConstRegexKhhylTable.whole_of_string_match_at_once?(prefab, "WordBreaker", glyph_name),
          {:ok, new_glyph} <-
            Glyph.render_by_absolute_height(
              prefab,
@@ -235,16 +235,10 @@ defmodule Thaqqa.RenderHorizontal do
 
     gap_list =
       case text_align do
-        :start ->
+        k when k in [:start, :left, :up] ->
           List.duplicate(left_calc, word_num)
 
-        :left ->
-          List.duplicate(left_calc, word_num)
-
-        :end ->
-          List.duplicate(right_calc, word_num)
-
-        :right ->
+        k when k in [:end, :right, :down] ->
           List.duplicate(right_calc, word_num)
 
         :center ->

@@ -219,16 +219,10 @@ defmodule Thaqqa.RenderVertical do
 
     gap_list =
       case text_align do
-        :start ->
+        k when k in [:start, :left, :up] ->
           List.duplicate(top_calc, word_num)
 
-        :left ->
-          List.duplicate(top_calc, word_num)
-
-        :end ->
-          List.duplicate(bottom_calc, word_num)
-
-        :right ->
+        k when k in [:end, :right, :down] ->
           List.duplicate(bottom_calc, word_num)
 
         :center ->
@@ -249,27 +243,26 @@ defmodule Thaqqa.RenderVertical do
           end
       end
 
-    oneline_alt =
-      Enum.zip(oneline, gap_list)
-      |> Enum.map(fn {{word_list, top, _, _}, gap} ->
-        {word_list, top + gap}
-      end)
-      |> Enum.reduce(
-        [],
-        fn {glyph_list, gap_from_top}, acc_glyph_list ->
-          glyph_list_alt =
-            Enum.map(glyph_list, fn glyph_and_kern ->
-              glyph_and_kern
-              |> Map.put(:y, glyph_and_kern.y + gap_from_top)
-              |> Map.put(:border, %{
-                top: glyph_and_kern.border.top + gap_from_top,
-                bottom: glyph_and_kern.border.bottom + gap_from_top
-              })
-            end)
+    Enum.zip(oneline, gap_list)
+    |> Enum.map(fn {{word_list, top, _, _}, gap} ->
+      {word_list, top + gap}
+    end)
+    |> Enum.reduce(
+      [],
+      fn {glyph_list, gap_from_top}, acc_glyph_list ->
+        glyph_list_alt =
+          Enum.map(glyph_list, fn glyph_and_kern ->
+            glyph_and_kern
+            |> Map.put(:y, glyph_and_kern.y + gap_from_top)
+            |> Map.put(:border, %{
+              top: glyph_and_kern.border.top + gap_from_top,
+              bottom: glyph_and_kern.border.bottom + gap_from_top
+            })
+          end)
 
-          [glyph_list_alt | acc_glyph_list] |> List.flatten()
-        end
-      )
+        [glyph_list_alt | acc_glyph_list] |> List.flatten()
+      end
+    )
   end
 
   defp adjust_position_y(sentence, %Render{} = render_config) do
@@ -297,7 +290,8 @@ defmodule Thaqqa.RenderVertical do
         fn oneline, {acc_oneline_list, acc_x} ->
           {left, right} =
             Enum.reduce(oneline, {0, 0}, fn g, {acc_left, acc_right} ->
-              {max(acc_left, g.box.left), max(acc_right, g.box.right)}
+              {max(acc_left, g.box.left) + line_height / 2,
+               max(acc_right, g.box.right) + line_height / 2}
             end)
 
           oneline_alt = Enum.map(oneline, fn g -> Map.put(g, :x, acc_x - right) end)

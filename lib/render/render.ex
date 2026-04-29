@@ -33,7 +33,7 @@ defmodule Thaqqa.Render do
         line_break \\ :normal,
         # px単位指定
         line_height \\ 0,
-        # start end left right center justify
+        # start end left right up down center justify
         text_align \\ :start,
         text_align_last \\ :start,
         word_spacing \\ 0,
@@ -199,14 +199,9 @@ defmodule Thaqqa.Render do
 
         {:ok, _} ->
           case ConstRegexKhhylTable.whole_of_string_match?(prefab, "EverySingleLetter", syl) do
-            {:error, _} = err ->
-              {:halt, err}
-
-            {:ok, true} ->
-              {:halt, Error.unparsed_syllable(syl)}
-
-            {:ok, otherwise} ->
-              {:halt, Error.invalid_syllable(otherwise)}
+            {:error, _} = err -> {:halt, err}
+            {:ok, true} -> {:halt, Error.unparsed_syllable(syl)}
+            {:ok, otherwise} -> {:halt, Error.invalid_syllable(otherwise)}
           end
       end
     end)
@@ -233,6 +228,10 @@ defmodule Thaqqa.Render do
 
   def convert_into_khhyl_letter(%Prefab{} = prefab, string, font, language, writing_direction)
       when language in [@khehyelu, @samlhta] and writing_direction in [@vertical, @horizontal] do
+    {:ok, p} = ParserTable.interpret(prefab, string, language)
+
+    GsubTable.gsub(prefab, p, writing_direction) |> IO.inspect()
+
     with {:ok, parsed_string} <- ParserTable.interpret(prefab, string, language),
          {:ok, gsub_string} <- GsubTable.gsub(prefab, parsed_string, writing_direction),
          {:ok, unique_gsub_string} <-
