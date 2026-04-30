@@ -1,5 +1,8 @@
 defmodule Thaqqa.FontRegistry do
   use GenServer
+
+  alias Thaqqa.Filename, as: Filename
+
   @fonts :fonts
   @static_tables :static_tables
   @fonts_shadow :fonts_shadow
@@ -104,11 +107,6 @@ defmodule Thaqqa.FontRegistry do
     {:reply, {:ok, result}, state}
   end
 
-  # この指定は仮。
-  # 将来的にはdefmacroのquoteとする
-  # (外部から触りやすい値に！)
-  @root_file "data/main.json"
-
   def handle_call({:save_root, opts}, _from, state) do
     with {:ok, json} <-
            Jason.encode(
@@ -116,21 +114,18 @@ defmodule Thaqqa.FontRegistry do
              |> Map.new(),
              opts
            ),
-         :ok <- File.write(@root_file, json) do
+         :ok <- File.write(Filename.root_file(), json) do
       {:reply, :ok, state}
     else
       {:error, _} = err -> {:reply, err, state}
     end
   end
 
-  @font_folder "data/"
-  @font_file "/main.json"
-
   def handle_call({:save_font, fontname, opts}, _from, state) do
     with font when not is_nil(font) <- :ets.tab2list(@fonts) |> Map.new() |> Map.get(fontname),
          {:ok, json} <- Jason.encode(font, opts),
-         :ok <- File.mkdir_p(@font_folder <> font.filename),
-         :ok <- File.write(@font_folder <> font.filename <> @font_file, json) do
+         :ok <- File.mkdir_p(Filename.font_folder() <> font.filename),
+         :ok <- File.write(Filename.font_folder() <> font.filename <> Filename.font_file(), json) do
       {:reply, :ok, state}
     else
       {:error, _} = err -> {:reply, err, state}

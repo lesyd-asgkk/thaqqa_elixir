@@ -7,16 +7,13 @@ defmodule Thaqqa.FontRegistry.IO do
   # jsonデータ⇔Map構造への変換はPrefabIO内にて行われる。
   #
 
-  @root_file "data/main.json"
-  @font_folder "data/"
-  @font_file "/main.json"
-
   alias Thaqqa.FontRegistry, as: FontRegistry
   alias Thaqqa.FontRegistryPrefab, as: Prefab
+  alias Thaqqa.Filename, as: Filename
 
   def import_all() do
     dir_name =
-      Path.wildcard(@font_folder <> "*")
+      Path.wildcard(Filename.font_folder() <> "*")
       |> Enum.filter(&File.dir?/1)
       |> Enum.map(&Path.basename/1)
 
@@ -44,7 +41,7 @@ defmodule Thaqqa.FontRegistry.IO do
   end
 
   def import_as_root() do
-    file_path = @root_file
+    file_path = Filename.root_file()
 
     with {:ok, prefab} <- FontRegistry.create_prefab(),
          {:ok, rootdata} <- read_and_decode_json(file_path),
@@ -60,7 +57,7 @@ defmodule Thaqqa.FontRegistry.IO do
   end
 
   def import_as_font(filename) do
-    file_path = @font_folder <> filename <> @font_file
+    file_path = Filename.font_folder() <> filename <> Filename.font_file()
 
     with {:ok, prefab} <- FontRegistry.create_prefab(),
          {:ok, fontdata} <- read_and_decode_json(file_path),
