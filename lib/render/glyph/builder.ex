@@ -58,7 +58,7 @@ defmodule Thaqqa.Glyph.GlyphBuilder do
     %{left: l, top: t, right: r, bottom: b} = SVG.Path.get_border(second_glyph_path)
 
     off_child_x = dir * (r + l) / 2
-    off_child_y = -(t + b) / 2
+    off_child_y = (t - b) / 2
 
     path_new =
       merge_path_2(
