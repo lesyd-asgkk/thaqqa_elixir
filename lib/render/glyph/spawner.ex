@@ -151,6 +151,24 @@ defmodule Thaqqa.Glyph.GlyphSpawner do
 
   # グリフ列の場合。単純な再帰処理とする
 
+  defp set_offset_reccursive(
+         %Glyph{children_glyph_list: [child]} = glyph,
+         [gpos_list_top | gpos_list_rest]
+       ) do
+    %Glyph{
+      glyph
+      | children_glyph_list: [set_offset_reccursive(child, gpos_list_rest)],
+        offset: %{x: gpos_list_top.x0, y: gpos_list_top.y0}
+    }
+  end
+
+  defp set_offset_reccursive(
+         %Glyph{children_glyph_list: []} = glyph,
+         [gpos_list_top]
+       ) do
+    %Glyph{glyph | children_glyph_list: [], offset: %{x: gpos_list_top.x0, y: gpos_list_top.y0}}
+  end
+
   defp create_glyph(
          %Prefab{} = prefab,
          fontname,
@@ -183,28 +201,52 @@ defmodule Thaqqa.Glyph.GlyphSpawner do
         size
       )
 
-    # tl0-hd0-sy0ときたら tl0-hd0 | tl0-hd0-sy0のように処理させる
-    # 要は逆順処理。
+    [type | rest] = Regex.split(~r/[\(\)]/, glyphname)
+    [letter_list | _] = rest
+    letter = Regex.split(~r/,/, letter_list)
+    [_ | glyph_raw] = letter
+    nl_raw = Regex.split(~r/-/, glyph_raw |> Enum.at(0))
+
+    {name_list, _} =
+      Enum.map_reduce(nl_raw, [], fn name, acc_rev ->
+        new_acc_rev = [name | acc_rev]
+
+        joined =
+          new_acc_rev
+          |> Enum.reverse()
+          |> Enum.join("-")
+
+        {joined, new_acc_rev}
+      end)
+
+    name_list = Enum.map(name_list, fn name -> set_name(type, form, name) end)
+    # 現状、tl0-hd0-sy0ときたら hd0-sy0 | tl0-hd0-sy0 のように処理されているが
+    #  tl0-hd0 | tl0-hd0-sy0のように処理させたい
     child_glyph = new(prefab, fontname, child, writing_direction, size)
 
-    with {:ok, %{x0: off_x, x1: _, y0: off_y, y1: _}} <-
-           GposTable.gpos(prefab, fontname, glyphname, writing_direction, @diacritical),
-         {:ok, %Glyph{} = top_glyph} <- top_glyph,
+    gpos_list_raw =
+      Enum.reduce_while(name_list, {:ok, []}, fn name, {:ok, acc} ->
+        case GposTable.gpos(prefab, fontname, name, writing_direction, @diacritical) do
+          {:ok, gpos} -> {:cont, {:ok, [gpos | acc]}}
+          {:error, _} = err -> {:halt, err}
+        end
+      end)
+
+    with {:ok, %Glyph{} = top_glyph} <- top_glyph,
          {:ok, %Glyph{} = child_glyph} <- child_glyph,
-         {:ok, %{Height: font_height}} = Prefab.get_fontdata(prefab, fontname, ["Height"]) do
-      offset = %{x: off_x, y: off_y}
-
-      child_glyph = %Glyph{child_glyph | offset: offset}
-
+         {:ok, %{Height: font_height}} = Prefab.get_fontdata(prefab, fontname, ["Height"]),
+         {:ok, gpos_list} <- gpos_list_raw do
       glyph_name = %{top_glyph.name | glyph: glyphname}
 
-      {:ok,
-       %Glyph{
-         top_glyph
-         | name: glyph_name,
-           children_glyph_list: [child_glyph],
-           scale: size / font_height
-       }}
+      top_glyph = %Glyph{
+        top_glyph
+        | name: glyph_name,
+          children_glyph_list: [child_glyph],
+          scale: size / font_height
+      }
+
+      top_glyph = set_offset_reccursive(top_glyph, gpos_list |> Enum.reverse())
+      {:ok, top_glyph}
     end
   end
 
@@ -229,6 +271,7 @@ defmodule Thaqqa.Glyph.GlyphSpawner do
     [type | rest] = Regex.split(~r/[\(\)]/, name)
     [letter_list | _] = rest
     letter = Regex.split(~r/,/, letter_list)
+
     divide_name_sub(letter, type)
   end
 
