@@ -50,7 +50,7 @@ defmodule Thaqqa.Regex_Khhyl.Translator do
   end
 
   defp translate_sub(
-         %AST{type: :script, value: val, table_range: table_range},
+         %AST{type: :script, value: val, table_range: _table_range},
          %Prefab{} = prefab
        ) do
     # 仕様変更につき、Translator系統はPrefab系統を取るようにする

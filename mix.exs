@@ -14,13 +14,14 @@ defmodule Thaqqa.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger]
+      extra_applications: [:logger, :dotenvy]
     ]
   end
 
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
+      {:dotenvy, "~> 0.8"},
       {:jason, "~> 1.4"},
       {:svg_path, git: "https://github.com/asagikaki/svg_elixir", branch: "main"}
       # {:dep_from_hexpm, "~> 0.3.0"},

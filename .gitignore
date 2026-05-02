@@ -23,4 +23,10 @@ erl_crash.dump
 thaqqa-*.tar
 
 # dataファイルについても基本無視。
-/data/
+/data/fontdata/
+/data/font_old/
+/data copy/
+
+
+#.envも一応無視。
+.env

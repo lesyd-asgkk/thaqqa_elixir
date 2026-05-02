@@ -11,7 +11,7 @@ defmodule Thaqqa.DataTable do
   defstruct [
     :name,
     :global,
-    :parent,
+    :uuid,
     :compile_rule,
     column_list: [],
     data_list: [],
@@ -21,17 +21,17 @@ defmodule Thaqqa.DataTable do
   ]
 
   # DataTableを新たに作る関数。
-  def new(name, global \\ false, parent \\ nil, compile_rule \\ "none", single \\ false),
+  def new(name, global \\ false, compile_rule \\ "none", single \\ false, uuid \\ nil),
     do: %__MODULE__{
       name: name,
       global: global,
-      parent: parent,
       compile_rule: compile_rule,
       desc: "",
       column_list: [],
       data_list: [],
       single: single,
-      data_hash: %{}
+      data_hash: %{},
+      uuid: uuid
     }
 
   # globalなテーブルか否かを返す関数。

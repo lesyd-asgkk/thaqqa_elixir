@@ -7,15 +7,15 @@ defmodule Thaqqa.FontRegistryPrefab.IO do
   alias Thaqqa.FontRegistry.Error, as: Error
 
   def new_from_request(json) when is_map(json) do
-    case Prefab.new(%{}, %{}) |> import_as_root(json["static_tables"]) do
+    case Prefab.new(%{}, %{}) |> import_as_root(json["static_tables"], json["uuid"]) do
       {:error, _} = err ->
         err
 
       {:ok, prefab} ->
         Enum.reduce_while(json["fonts"], {:ok, prefab}, fn {_, font}, {:ok, acc_prefab} ->
-          # ニ度手間だが、filename情報は不要なのでこのような形としている。
+          # ニ度手間だが、uuid情報は一旦不要なのでこのような形としている。
 
-          case import_as_font(acc_prefab, font["table_list"], font["filename"]) do
+          case import_as_font(acc_prefab, font["table_list"], font["uuid"]) do
             {:error, _} = err -> {:halt, err}
             {:ok, acc_prefab} -> {:cont, {:ok, acc_prefab}}
           end
@@ -23,11 +23,14 @@ defmodule Thaqqa.FontRegistryPrefab.IO do
     end
   end
 
-  def import_as_root(%Prefab{} = self, rootdata) when is_map(rootdata) do
+  def import_as_root(%Prefab{} = self, rootdata, uuid) when is_map(rootdata) do
     # local用のテーブルが増減した場合にfont側のテーブルも変更させる処理も後日付け足す。
     # (local用テーブルが消えた場合にfont側のその名前のテーブルも削除する機能や逆に補完する機能)
+    uuid = if uuid != nil, do: uuid, else: Map.get(rootdata, "uuid")
+    rootdata = Map.delete(rootdata, "uuid")
+
     Enum.reduce_while(rootdata, {:ok, self}, fn {k, v}, {:ok, acc} ->
-      import_table(k, v)
+      import_table(k, v, uuid)
       |> case do
         {:error, _} = err -> {:halt, err}
         {:ok, value} -> {:cont, {:ok, Prefab.init_static_table(acc, value)}}
@@ -93,14 +96,14 @@ defmodule Thaqqa.FontRegistryPrefab.IO do
         Map.get(v, "dev", false)
       )
 
-  defp import_table(name, struct) do
+  defp import_table(name, struct, uuid \\ nil) do
     table =
       DataTable.new(
         name,
         Map.get(struct, "global"),
-        nil,
         Map.get(struct, "compile_rule"),
-        Map.get(struct, "single")
+        Map.get(struct, "single"),
+        uuid
       )
 
     # ↓の順序を変える。かならずcolumnListが先に処理されるように。

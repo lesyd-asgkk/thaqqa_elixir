@@ -3,21 +3,65 @@ defmodule ThaqqaTest do
   doctest Thaqqa
   doctest SVG
 
+  def find_lists(data, path \\ []) do
+    cond do
+      is_list(data) ->
+        IO.inspect(path, label: "LIST FOUND")
+
+        Enum.each(data, fn v ->
+          find_lists(v, path ++ ["[]"])
+        end)
+
+      is_map(data) ->
+        Enum.each(data, fn {k, v} ->
+          find_lists(v, path ++ [k])
+        end)
+
+      true ->
+        :ok
+    end
+  end
+
   test "creates a new point" do
+    # FontRegistryのGenServerプロセスを生成する。
+    # プロセスの実行中はデータベースの原型として機能する。
     {:ok, _pid} = Thaqqa.FontRegistry.start_link([])
 
-    # 0.1秒ほど
-    Thaqqa.FontIO.import_as_root()
+    # import_as_root()ではdata/main.jsonの読み取りを、
+    # import_as_font(<フォルダ名>)ではdata/<フォルダ名>/main.jsonの読み取りを行う。
+    Thaqqa.FontRegistry.import_as_root()
+    Thaqqa.FontRegistry.import_as_font("default")
 
-    # 0.5秒ほど　何かしらで結構ラグっているが割と早い部類
-    # (complement、regex/path処理で相応に時間がかかるので当然ではある)
-
-    Thaqqa.FontIO.import_as_font("default")
-
+    # Thaqqa.FontRegistry.create_prefab()により、FontRegistryに保存されているデータベースのローカルでの操作・使用を可能とする。
     {:ok, prefab} = Thaqqa.FontRegistry.create_prefab()
 
-    # 0.1秒ほど
-    # kako karutaraa qahhowe uzhute kaghangetlaa. ittlutu kadha, eqhoghi reewe qarhilas.
+    {:ok, glyph} = Thaqqa.Glyph.new(prefab, "Default", "C(onset,t0-d0-hd0)", "vertical", 16)
+
+    glyph = Thaqqa.Glyph.set_path(glyph)
+
+    {:ok, glyph} = Thaqqa.Glyph.render_by_relative_height(prefab, glyph, 10, 20)
+
+    IO.puts(glyph.path |> SVG.Path.export_as_string_mass!())
+
+    #
+
+    j =
+      Jason.encode!(%{prefab: prefab}, pretty: true)
+      |> Jason.decode!()
+
+    j["prefab"]
+    |> Thaqqa.FontRegistryPrefab.new_from_request()
+
+    # ※ 二重以上のダイアクリティカルマークにエラー。最初の一つしか反映されていない様子
+    # ※ glyph系統の処理を見直すこととする
+    # Thaqqa.FontRegistry.export_as_font("Default", pretty: true)
+  end
+end
+
+'''
+
+    # convert_into_khhyl_letter(prefab,文字列、フォント、言語、書字方向指定)により、
+    # 指定した文字列が東果文字内部表現に変換される。
     {:ok, string} =
       Thaqqa.Render.convert_into_khhyl_letter(
         prefab,
@@ -27,15 +71,23 @@ defmodule ThaqqaTest do
         "vertical"
       )
 
-    # 0.1秒ほど
+    # 東果文字内部表現をプログラムが扱いやすいようグリフ単位で分割する。
+    # 分割不能な文字を発見した場合はエラーとなる。
     {:ok, list} = Thaqqa.Render.split_by_syllable(prefab, string)
-    IO.inspect(string)
-    IO.inspect(list)
-    # タイムラグなし
-    pd =
-      Thaqqa.Render.build_path_data(prefab, list, "Default", "vertical", 8)
 
-    # 0.1秒ほど。
+    # build_path_data(prefab、東果文字内部表現のlist、フォント、書字方向、(デフォルトの)文字サイズ)により
+    # 本格的な組版処理の前準備を行う(GlyphのListを返す)
+
+    pd = Thaqqa.Render.build_path_data(prefab, list, "Default", "vertical", 8)
+
+    # alignment_path_data_as_vertical(prefab,上記のグリフ列、レンダー条件)により組版処理、
+    # concat_path_data()によりsvgのpathデータ(d)へと変換する。
+
+    # render条件については Thaqqa.Render.build_render(横幅, 縦幅, 改行処理, 改行時の追加幅,
+    # 揃え方(:centerならば中央揃え、:justifyならば一行を埋める), 最終行の揃え方,
+    # 単語同士の隙間の幅、文字同士の隙間の幅)のように指定。
+    # うち横幅、縦幅は指定必須。他は任意。
+
     list =
       Thaqqa.Render.alignment_path_data_as_vertical(
         prefab,
@@ -48,29 +100,4 @@ defmodule ThaqqaTest do
       # |> length()
       |> IO.puts()
 
-    # この辺の変換は誤差
-    # Supervisor.start_link(Thaqqa.FontRegistry, strategy: :one_for_one)
-
-    # Thaqqa.Regex_Khhyl.tokenize("S(mid,,a0,)")
-    # |> Thaqqa.Regex_Khhyl.normalize!()
-    # |> Thaqqa.Regex_Khhyl.translate!(prefab)
-    # |> IO.inspect()
-
-    {:ok, glyph} = Thaqqa.Glyph.new(prefab, "Default", "S(init,r0,a0,th0)", "vertical", 16)
-
-    glyph = Thaqqa.Glyph.set_path(glyph)
-
-    {:ok, glyph} = Thaqqa.Glyph.render_by_relative_height(prefab, glyph, 10, 20)
-
-    glyph.path
-    |> SVG.Path.export_as_string_mass!()
-
-    Thaqqa.FontIO.export_as_font("Default", pretty: true)
-    |> IO.inspect()
-
-    # def set_path(%__MODULE__{} = self), do: Thaqqa.Glyph.GlyphBuilder.set_path(self)
-
-    # def render_by_relative_height(%Prefab{} = prefab, %__MODULE__{} = self, top_gap, bottom_gap),
-    #  do: Thaqqa.Glyph.GlyphRenderer.render_by_relative_height(prefab, self, top_gap, bottom_gap)
-  end
-end
+'''

@@ -201,11 +201,13 @@ defmodule Thaqqa.Glyph.GlyphSpawner do
         size
       )
 
+    # ここからname_listの部分は単独字母にした後に頭の単独から頭-次、頭-次-次のように繋いだものを生成する為。
     [type | rest] = Regex.split(~r/[\(\)]/, glyphname)
     [letter_list | _] = rest
     letter = Regex.split(~r/,/, letter_list)
     [_ | glyph_raw] = letter
-    nl_raw = Regex.split(~r/-/, glyph_raw |> Enum.at(0))
+    [glyph_raw_top | _] = glyph_raw
+    nl_raw = Regex.split(~r/-/, glyph_raw_top)
 
     {name_list, _} =
       Enum.map_reduce(nl_raw, [], fn name, acc_rev ->
@@ -220,8 +222,6 @@ defmodule Thaqqa.Glyph.GlyphSpawner do
       end)
 
     name_list = Enum.map(name_list, fn name -> set_name(type, form, name) end)
-    # 現状、tl0-hd0-sy0ときたら hd0-sy0 | tl0-hd0-sy0 のように処理されているが
-    #  tl0-hd0 | tl0-hd0-sy0のように処理させたい
     child_glyph = new(prefab, fontname, child, writing_direction, size)
 
     gpos_list_raw =
@@ -238,15 +238,20 @@ defmodule Thaqqa.Glyph.GlyphSpawner do
          {:ok, gpos_list} <- gpos_list_raw do
       glyph_name = %{top_glyph.name | glyph: glyphname}
 
-      top_glyph = %Glyph{
-        top_glyph
-        | name: glyph_name,
-          children_glyph_list: [child_glyph],
-          scale: size / font_height
-      }
+      # ここの処理が（正直実際の実行時間としては知れているとはいえ）O(n^2)となってしまってるので修正したい
+      # TODO:最初以外ではset_offset_reccursiveを実行しないよう変更。
+      top_glyph =
+        %Glyph{
+          top_glyph
+          | name: glyph_name,
+            children_glyph_list: [child_glyph],
+            scale: size / font_height
+        }
+        |> set_offset_reccursive(gpos_list |> Enum.reverse())
 
-      top_glyph = set_offset_reccursive(top_glyph, gpos_list |> Enum.reverse())
       {:ok, top_glyph}
+    else
+      {:error, _} = err -> err
     end
   end
 
