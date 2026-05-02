@@ -2,7 +2,7 @@ defmodule Thaqqa.StaticTableList do
   alias Thaqqa.DataTable, as: DataTable
   defstruct [:uuid, table_list: []]
 
-  def new(uuid, name, t), do: %__MODULE__{table_list: t, name: name, uuid: uuid}
+  def new(uuid, t), do: %__MODULE__{table_list: t, uuid: uuid}
 
   def get_table_list(%__MODULE__{table_list: tables}), do: tables
 

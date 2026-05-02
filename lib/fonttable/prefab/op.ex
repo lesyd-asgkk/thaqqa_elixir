@@ -41,8 +41,9 @@ defmodule Thaqqa.FontRegistryPrefab.Op do
       else: Error.nominal_conflict_font(name, :add)
   end
 
-  def duplicate_font(%Prefab{} = self, name, fontname_duplication, filename) do
+  def duplicate_font(%Prefab{} = self, name, fontname_duplication) do
     # TODO filename側の重複の方を確認する（むしろこっちのが大事）
+    # →filename重複ではなく、uuid重複の回避を優先
     case Prefab.get_font(self, name) do
       nil ->
         Error.font_not_found(name)
@@ -52,11 +53,9 @@ defmodule Thaqqa.FontRegistryPrefab.Op do
           Prefab.get_font(self, fontname_duplication) != nil ->
             Error.nominal_conflict_font(name, :duplicate)
 
-          Prefab.get_font_from_filename(self, filename) != nil ->
-            Error.filename_conflict_font(name, :duplicate)
-
           true ->
-            font_alt = %Thaqqa.Font{font | filename: filename}
+            # UUID処理はここに追加予定。
+            font_alt = font
             {:ok, update_fonts(self, Map.put(self.fonts, fontname_duplication, font_alt))}
         end
     end

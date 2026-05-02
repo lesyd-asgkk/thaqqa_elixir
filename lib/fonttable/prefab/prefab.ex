@@ -10,6 +10,8 @@ defmodule Thaqqa.FontRegistryPrefab do
   alias Thaqqa.FontRegistry.Error, as: Error
   defstruct fonts: %{}, static_tables: %{}
 
+  # ※ぶっちゃけここはfonts,static_tablesを適時抜き出すだけでおｋ。
+  # static_tablesもリストとする（将来的に複数使用する可能性があるので）
   def new(fonts, static_tables), do: %__MODULE__{fonts: fonts, static_tables: static_tables}
 
   def new_from_request(json) when is_map(json), do: IO.new_from_request(json)
@@ -25,8 +27,8 @@ defmodule Thaqqa.FontRegistryPrefab do
 
   def init_font(%__MODULE__{} = self, %Thaqqa.Font{} = font), do: Op.init_font(self, font)
 
-  def init_static_table(%__MODULE__{} = self, %DataTable{name: name} = table),
-    do: update_static_tables(self, Map.put(get_static_table_list(self), name, table), name)
+  def init_static_table_list(%__MODULE__{} = self, %Thaqqa.StaticTableList{} = static_table_list),
+    do: Op.init_static_table_list(self, static_table_list)
 
   # get系統は何かしらを操作するわけではないのでここで処理。
   def get_font(%__MODULE__{} = self, name), do: Map.get(self.fonts, name)
@@ -55,7 +57,7 @@ defmodule Thaqqa.FontRegistryPrefab do
     end
   end
 
-  def get_static_table_list(%__MODULE__{} = self), do: self.static_tables
+  def get_static_table_list(%__MODULE__{} = self), do: self.static_tables.table_list
 
   def get_global_static_table_list(%__MODULE__{} = self),
     do: get_static_table_list(self) |> Enum.filter(fn {_, val} -> val.global end)
@@ -162,13 +164,14 @@ defmodule Thaqqa.FontRegistryPrefab do
   end
 
   # add,delete,edit系統
+  # これらの実装のため、FontRegistry本体による可能なUUIDの取得関数が必須。
   def add_font_if_enable(%__MODULE__{} = self, %Thaqqa.Font{} = font),
     do: Op.add_font_if_enable(self, font)
 
   def add_font(%__MODULE__{} = self, %Thaqqa.Font{} = font), do: Op.add_font(self, font)
 
-  def duplicate_font(%__MODULE__{} = self, fontname, fontname_duplication, filename),
-    do: Op.duplicate_font(self, fontname, fontname_duplication, filename)
+  def duplicate_font(%__MODULE__{} = self, fontname, fontname_duplication),
+    do: Op.duplicate_font(self, fontname, fontname_duplication)
 
   def delete_font_if_enable(%__MODULE__{} = self, name),
     do: Op.delete_font_if_enable(self, name)
@@ -233,13 +236,17 @@ defmodule Thaqqa.FontRegistryPrefab do
     do: Complement.complement_font(self, font_name)
 
   # 読み込み系
-  def import_as_root(%__MODULE__{} = self, rootdata) when is_map(rootdata),
-    do: IO.import_as_root(self, rootdata)
+  def import_from_internal_folder(%__MODULE__{} = self, uuid),
+    do: IO.import_from_internal_folder(self, uuid)
 
-  def import_as_font(%__MODULE__{} = self, fontdata, filename) when is_map(fontdata),
-    do: IO.import_as_font(self, fontdata, filename)
+  # def import_as_root(%__MODULE__{} = self, rootdata) when is_map(rootdata),
+  #  do: IO.import_as_root(self, rootdata)
+
+  # def import_as_font(%__MODULE__{} = self, fontdata, filename) when is_map(fontdata),
+  #  do: IO.import_as_font(self, fontdata, filename)
 
   # static_tableの変更に伴ってfontテーブル側を変更する
+  # complement系統は直接static_tableやfontを参照する仕様＋平行化を執り行う。
   def complement_by_static_table(%__MODULE__{} = self, table_name),
     do: Complement.complement_by_static_table(self, table_name)
 

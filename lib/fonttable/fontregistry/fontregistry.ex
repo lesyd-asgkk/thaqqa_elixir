@@ -13,8 +13,8 @@ defmodule Thaqqa.FontRegistry do
     GenServer.start_link(__MODULE__, :ok, name: __MODULE__)
   end
 
-  def import_as_root(), do: Thaqqa.FontRegistry.IO.import_as_root()
-  def import_as_font(filename), do: Thaqqa.FontRegistry.IO.import_as_font(filename)
+  def import_from_internal_folder(uuid_list),
+    do: Thaqqa.FontRegistry.IO.import_from_internal_folder(uuid_list)
 
   defp safe_call(msg, timeout \\ 5_000) do
     try do

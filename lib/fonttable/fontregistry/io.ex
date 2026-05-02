@@ -11,41 +11,12 @@ defmodule Thaqqa.FontRegistry.IO do
   alias Thaqqa.FontRegistryPrefab, as: Prefab
   alias Thaqqa.Filename, as: Filename
 
-  def import_all() do
-    dir_name =
-      Path.wildcard(Filename.font_folder() <> "*")
-      |> Enum.filter(&File.dir?/1)
-      |> Enum.map(&Path.basename/1)
-
-    case import_as_root() do
-      {:error, _} = err ->
-        err
-
-      {:ok, _} ->
-        Enum.reduce_while(dir_name, {:ok, nil}, fn filename, {:ok, _} ->
-          case import_as_font(filename) do
-            {:error, _} = err -> {:halt, err}
-            {:ok, _} -> {:cont, {:ok, nil}}
-          end
-        end)
-    end
-  end
-
   # json→mapの部分。
   # ここはIOで処理。
-  defp read_and_decode_json(file_path) do
-    case File.read(file_path) do
-      {:error, reason} -> {:error, reason}
-      {:ok, json} -> Jason.decode(json)
-    end
-  end
 
-  def import_as_root() do
-    file_path = Filename.root_file()
-
+  def import_from_internal_folder(uuid_list) when is_list(uuid_list) do
     with {:ok, prefab} <- FontRegistry.create_prefab(),
-         {:ok, rootdata} <- read_and_decode_json(file_path),
-         {:ok, prefab} <- Prefab.import_as_root(prefab, rootdata),
+         {:ok, prefab} <- Prefab.import_from_internal_folder(prefab, uuid_list),
          :ok <- FontRegistry.apply_prefab(prefab),
          :ok <- FontRegistry.commit() do
       :ok
@@ -56,20 +27,7 @@ defmodule Thaqqa.FontRegistry.IO do
     end
   end
 
-  def import_as_font(filename) do
-    file_path = Filename.font_folder() <> filename <> Filename.font_file()
-
-    with {:ok, prefab} <- FontRegistry.create_prefab(),
-         {:ok, fontdata} <- read_and_decode_json(file_path),
-         {:ok, prefab} <- Prefab.import_as_font(prefab, fontdata, filename),
-         :ok <- FontRegistry.apply_prefab(prefab),
-         :ok <- FontRegistry.commit() do
-      :ok
-    else
-      {:error, _} = err ->
-        FontRegistry.rollback()
-        err
-    end
+  def export_to_internal_folder(uuid_list, opts) when is_list(uuid_list) do
   end
 
   def export_as_root(opts), do: FontRegistry.export_as_root(opts)
