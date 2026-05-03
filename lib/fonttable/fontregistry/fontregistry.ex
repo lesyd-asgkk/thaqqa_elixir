@@ -60,8 +60,8 @@ defmodule Thaqqa.FontRegistry do
   end
 
   def handle_call({:rollback}, _from, state) do
-    :ets.delete_all_objects(@fonts_shadow)
-    :ets.delete_all_objects(@static_tables_shadow)
+    # :ets.delete_all_objects(@fonts_shadow)
+    # :ets.delete_all_objects(@static_tables_shadow)
 
     :ets.tab2list(@fonts)
     |> Enum.each(&:ets.insert(@fonts_shadow, &1))
@@ -90,8 +90,9 @@ defmodule Thaqqa.FontRegistry do
         _from,
         state
       ) do
-    :ets.delete_all_objects(@fonts_shadow)
-    :ets.delete_all_objects(@static_tables_shadow)
+    # ここそもそもdeleteする必要がなくなった
+    # :ets.delete_all_objects(@fonts_shadow)
+    # :ets.delete_all_objects(@static_tables_shadow)
     Enum.each(Map.to_list(f), &:ets.insert(@fonts_shadow, &1))
     Enum.each(Map.to_list(t), &:ets.insert(@static_tables_shadow, &1))
     {:reply, :ok, state}

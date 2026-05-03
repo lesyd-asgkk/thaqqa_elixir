@@ -19,9 +19,6 @@ defmodule Thaqqa.FontRegistryPrefab do
   # update,overwrite,init系統は要置き場所検討
   def update_fonts(%__MODULE__{} = self, f), do: Op.update_fonts(self, f)
 
-  defp update_static_tables(%__MODULE__{} = self, st, st_name),
-    do: %__MODULE__{self | static_tables: st} |> complement_by_static_table(st_name)
-
   def overwrite_font(%__MODULE__{} = self, name, %Thaqqa.Font{} = font),
     do: Op.overwrite_font(self, name, font)
 
@@ -57,7 +54,8 @@ defmodule Thaqqa.FontRegistryPrefab do
     end
   end
 
-  def get_static_table_list(%__MODULE__{} = self), do: self.static_tables.table_list
+  #
+  def get_static_table_list(%__MODULE__{} = self), do: self.static_tables
 
   def get_global_static_table_list(%__MODULE__{} = self),
     do: get_static_table_list(self) |> Enum.filter(fn {_, val} -> val.global end)
@@ -238,12 +236,6 @@ defmodule Thaqqa.FontRegistryPrefab do
   # 読み込み系
   def import_from_internal_folder(%__MODULE__{} = self, uuid),
     do: IO.import_from_internal_folder(self, uuid)
-
-  # def import_as_root(%__MODULE__{} = self, rootdata) when is_map(rootdata),
-  #  do: IO.import_as_root(self, rootdata)
-
-  # def import_as_font(%__MODULE__{} = self, fontdata, filename) when is_map(fontdata),
-  #  do: IO.import_as_font(self, fontdata, filename)
 
   # static_tableの変更に伴ってfontテーブル側を変更する
   # complement系統は直接static_tableやfontを参照する仕様＋平行化を執り行う。

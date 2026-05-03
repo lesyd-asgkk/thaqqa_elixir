@@ -9,7 +9,6 @@ defmodule Thaqqa.FontRegistry.IO do
 
   alias Thaqqa.FontRegistry, as: FontRegistry
   alias Thaqqa.FontRegistryPrefab, as: Prefab
-  alias Thaqqa.Filename, as: Filename
 
   # json→mapの部分。
   # ここはIOで処理。

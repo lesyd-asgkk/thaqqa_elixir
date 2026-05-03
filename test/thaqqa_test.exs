@@ -29,8 +29,7 @@ defmodule ThaqqaTest do
 
     # import_as_root()ではdata/main.jsonの読み取りを、
     # import_as_font(<フォルダ名>)ではdata/<フォルダ名>/main.jsonの読み取りを行う。
-    Thaqqa.FontRegistry.import_as_root()
-    Thaqqa.FontRegistry.import_as_font("default")
+    Thaqqa.FontRegistry.import_from_internal_folder([0, 1])
 
     # Thaqqa.FontRegistry.create_prefab()により、FontRegistryに保存されているデータベースのローカルでの操作・使用を可能とする。
     {:ok, prefab} = Thaqqa.FontRegistry.create_prefab()

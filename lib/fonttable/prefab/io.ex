@@ -33,7 +33,7 @@ defmodule Thaqqa.FontRegistryPrefab.IO do
     uuid_list = Enum.map(uuid_list, fn uuid -> "uuid-" <> to_string(uuid) <> ".json" end)
 
     file_path_list =
-      Path.wildcard(Filename.font_folder() <> "*")
+      Path.wildcard(Filename.font_folder() <> "/*")
       |> Enum.filter(&(Path.basename(&1) in uuid_list))
 
     Enum.reduce_while(file_path_list, {:ok, self}, fn file_path, {:ok, acc_prefab} ->
@@ -86,7 +86,7 @@ defmodule Thaqqa.FontRegistryPrefab.IO do
          {:ok, name} <-
            extract_datatable_name(rootdata),
          prefab_alter <-
-           Prefab.init_static_table_list(self, StaticTableList.new(uuid, name, static_table_list)),
+           Prefab.init_static_table_list(self, StaticTableList.new(uuid, static_table_list)),
          {:ok, font} <- Prefab.set_precompile_on_root(prefab_alter) do
       Prefab.edit_static_table(prefab_alter, name, font)
     else

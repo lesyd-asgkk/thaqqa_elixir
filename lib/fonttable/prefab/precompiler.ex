@@ -16,8 +16,8 @@ defmodule Thaqqa.FontRegistryPrefab.Compiler do
     end
   end
 
-  def set_precompile_on_root(%Prefab{static_tables: static_tables} = self) do
-    Enum.map(static_tables, fn {key, value} ->
+  def set_precompile_on_root(%Prefab{static_tables: static_tables} = self, uuid) do
+    Enum.map(Map.get(static_tables, uuid), fn {key, value} ->
       {:ok, {key, set_precompile_on_datatable(self, value)}}
     end)
     |> Enum.reduce_while({:ok, %{}}, fn

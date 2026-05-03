@@ -5,8 +5,8 @@ defmodule Thaqqa.FontRegistryPrefab.Op do
   alias Thaqqa.FontRegistryPrefab.Compiler, as: Compiler
 
   alias Thaqqa.FontRegistryPrefab, as: Prefab
-  alias Thaqqa.FontRegistryPrefab.IO, as: IO
   alias Thaqqa.Font, as: Font
+  alias Thaqqa.StaticTableList, as: StaticTableList
   alias Thaqqa.DataTable, as: DataTable
   alias Thaqqa.Data, as: Data
   alias Thaqqa.Column, as: Column
@@ -92,8 +92,8 @@ defmodule Thaqqa.FontRegistryPrefab.Op do
 
   ## 以降、static_table系統の本体
 
-  def init_static_table(%Prefab{} = self, %DataTable{name: name} = table),
-    do: update_static_tables(self, Map.put(Prefab.get_static_table_list(self), name, table), name)
+  def init_static_table_list(%Prefab{} = self, %StaticTableList{uuid: uuid} = table),
+    do: update_static_tables(self, Map.put(Prefab.get_static_table_list(self), uuid, table), uuid)
 
   def add_static_table_if_enable(%Prefab{} = self, %DataTable{} = table) do
     case add_static_table(self, table) do
