@@ -14,7 +14,7 @@ defmodule Thaqqa.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger]
+      extra_applications: [:logger, :dotenvy]
     ]
   end
 
@@ -22,6 +22,7 @@ defmodule Thaqqa.MixProject do
   defp deps do
     [
       {:jason, "~> 1.4"},
+      {:dotenvy, "~> 0.8"},
       {:svg_path, git: "https://github.com/asagikaki/svg_elixir", branch: "main"}
       # {:dep_from_hexpm, "~> 0.3.0"},
       # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"}
