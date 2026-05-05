@@ -1,5 +1,26 @@
 
-RFC 2119を詳細。ここでは可読性のため、機械的に日本語的な表現をするものとする。
+TODO：仕様変更に基づく変更。
+
+fontdata
+├── bundlename
+│   ├── fontname
+│   │   ├── main.json
+│   │ 　└── version<バージョン名>.json
+│   ├── main.json
+│   └── version<バージョン名>.json
+├── main.json
+└── version<バージョン名>.json
+
+このような構造にする。
+fondata直属のmain.jsonをrootファイル、bundlename直属のmain.jsonをbundleファイル、font直属のmain.jsonをfontファイルとする。
+rootファイルはbundleファイル及びfontファイルの持つdatatableの全てを定義し、かつ全bundle/fontに共通する値を格納する。
+bundleファイルは管轄するfont全ての設定の定義（文字だとかGSUBだとか何だとか。rootほどの絶対性を要さないもの）
+fontは各々での設定（GPOSだとかUniqueGSUBだとか、GLYPHだとか）
+
+
+-----
+
+MUST,MUST NOTなどについてはRFC 2119を詳細。ここでは可読性のため、機械的に日本語的な表現をするものとする。
 
 必須とする：MUST
 禁止とする：MUST NOT
@@ -10,7 +31,7 @@ RFC 2119を詳細。ここでは可読性のため、機械的に日本語的な
 
 ・東果文字の設定データを格納するjsonファイルの要請
 
-0.rootファイル、jsonファイル。
+0.rootファイル、fontファイル
 設定を格納したjsonファイル（以降、rootファイル）とフォント毎の個別設定(以降、fontファイル)の二種を持つ。
 
 
