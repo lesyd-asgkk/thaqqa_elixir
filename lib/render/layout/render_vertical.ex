@@ -1,10 +1,10 @@
 defmodule Thaqqa.RenderVertical do
-  alias Thaqqa.FontRegistryPrefab, as: Prefab
+  alias Thaqqa.Bundle, as: Bundle
 
   alias Thaqqa.Render, as: Render
   alias Thaqqa.Glyph, as: Glyph
-  alias Thaqqa.FontRegistryPrefab.GposTable, as: GposTable
-  alias Thaqqa.FontRegistryPrefab.ConstRegexKhhylTable, as: ConstRegexKhhylTable
+  alias Thaqqa.Bundle.GposTable, as: GposTable
+  alias Thaqqa.Bundle.ConstRegexKhhylTable, as: ConstRegexKhhylTable
   use Thaqqa.DataTable.Const
 
   defp calc_kerning_vertical(
@@ -13,12 +13,12 @@ defmodule Thaqqa.RenderVertical do
            %Glyph{name: %{glyph: glyph_name}, font: fontname, path: path} = glyph,
            %Glyph{name: %{glyph: next_glyph_name}} = next_glyph
          ],
-         %Prefab{} = prefab
+         %Bundle{} = prefab
        ) do
     newline_as_regex_khhyl = "P([_.IsNewline]_-*)"
 
     with {:ok, %{isWidthVRel: is_width_relative, WidthV: width, TopGapH: gap_top, Height: height}} <-
-           Prefab.get_fontdata(prefab, fontname, ["isWidthVRel", "WidthV", "TopGapH", "Height"]),
+           Bundle.get_fontdata(prefab, fontname, ["isWidthVRel", "WidthV", "TopGapH", "Height"]),
          {:ok, %{x0: x0_internal, y0: y0_internal, x1: x1_internal, y1: y1_internal}} <-
            GposTable.gpos(prefab, fontname, glyph_name, @vertical, @internal),
          {:ok, %{x0: x0_ex_prev, y0: y0_ex_prev, x1: x1_ex_prev, y1: y1_ex_prev}} <-
@@ -317,7 +317,7 @@ defmodule Thaqqa.RenderVertical do
     Render.alter_newline(word_list) |> adjust_position(render_config)
   end
 
-  defp render_all(glyph_list, %Prefab{} = prefab) do
+  defp render_all(glyph_list, %Bundle{} = prefab) do
     Enum.map(glyph_list, fn glyph_and_kern ->
       %{glyph: glyph, gap_top: gap_top, gap_bottom: gap_bottom} = glyph_and_kern
       {:ok, glyph_new} = Glyph.render_by_relative_height(prefab, glyph, gap_top, gap_bottom)
@@ -326,7 +326,7 @@ defmodule Thaqqa.RenderVertical do
     end)
   end
 
-  def alignment_path_data_as_vertical(%Prefab{} = prefab, glyph_list, %Render{} = render)
+  def alignment_path_data_as_vertical(%Bundle{} = prefab, glyph_list, %Render{} = render)
       when is_list(glyph_list) do
     none = Render.build_none()
 

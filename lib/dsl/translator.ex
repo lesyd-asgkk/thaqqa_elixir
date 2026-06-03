@@ -3,20 +3,20 @@ defmodule Thaqqa.Regex_Khhyl.Translator do
   alias Thaqqa.Regex_Khhyl.Error, as: Error
   alias Thaqqa.Regex_Khhyl.Normalizer, as: Normalizer
   alias Thaqqa.Regex_Khhyl.Tokenizer, as: Tokenizer
-  alias Thaqqa.FontRegistryPrefab.LetterTable, as: LetterTable
-  alias Thaqqa.FontRegistryPrefab, as: Prefab
+  alias Thaqqa.Bundle.LetterTable, as: LetterTable
+  alias Thaqqa.Bundle, as: Bundle
   use Thaqqa.DataTable.Const
 
-  # ※仕様変更につき、Translator系統はPrefab系統を引数として取るようにする
+  # ※仕様変更につき、Translator系統はBundle系統を引数として取るようにする
   # regex_khhylの一部関数にも適応する
-  def translate!(ast, %Prefab{} = prefab) when is_list(ast) do
+  def translate!(ast, %Bundle{} = prefab) when is_list(ast) do
     case translate(ast, prefab) do
       {:ok, val} -> val
       {:error, reason} -> raise reason
     end
   end
 
-  def translate(ast, %Prefab{} = prefab) when is_list(ast) do
+  def translate(ast, %Bundle{} = prefab) when is_list(ast) do
     Enum.map(ast, fn ast_ -> translate(ast_, prefab) end)
     |> Enum.reduce_while({:ok, []}, fn
       {:ok, str}, {:ok, acc} -> {:cont, {:ok, [str | acc]}}
@@ -28,7 +28,7 @@ defmodule Thaqqa.Regex_Khhyl.Translator do
     end
   end
 
-  def translate(%AST{} = ast, %Prefab{} = prefab) do
+  def translate(%AST{} = ast, %Bundle{} = prefab) do
     t = translate_sub(ast, prefab)
 
     case t do
@@ -42,18 +42,18 @@ defmodule Thaqqa.Regex_Khhyl.Translator do
   defp argument_number(list) when is_list(list),
     do: Enum.reduce(list, 1, fn x, acc -> if AST.has_comma?(x), do: acc + 1, else: acc end)
 
-  defp export_as_string!(string, %Prefab{} = prefab) when is_binary(string) do
+  defp export_as_string!(string, %Bundle{} = prefab) when is_binary(string) do
     case string |> Tokenizer.tokenize() |> Normalizer.normalize() do
-      {:ok, val} -> translate!(val, %Prefab{} = prefab)
+      {:ok, val} -> translate!(val, %Bundle{} = prefab)
       {:error, reason} -> raise reason
     end
   end
 
   defp translate_sub(
          %AST{type: :script, value: val, table_range: table_range},
-         %Prefab{} = prefab
+         %Bundle{} = prefab
        ) do
-    # 仕様変更につき、Translator系統はPrefab系統を取るようにする
+    # 仕様変更につき、Translator系統はBundle系統を取るようにする
     # ※0文字の@nameを持つ文字は除外（バグの温床でしかないので）
     # TODO:欄に応じてVOWEL/DIACRITICAL_Vのみ、のように変換する（regex長を縮める目的。*とは異なり個別指定なので、a|e|...|sのような長さとなると流石にハゲる ）
     # 技術的に困難である(S(init, ,a0,) だと init , , a0 , のようになってしまい
@@ -87,14 +87,14 @@ defmodule Thaqqa.Regex_Khhyl.Translator do
     end
   end
 
-  defp translate_sub(%AST{type: :finite, value: val}, %Prefab{} = _prefab), do: val
+  defp translate_sub(%AST{type: :finite, value: val}, %Bundle{} = _prefab), do: val
 
-  defp translate_sub(%AST{type: :brancket, value: val, children: children}, %Prefab{} = prefab),
+  defp translate_sub(%AST{type: :brancket, value: val, children: children}, %Bundle{} = prefab),
     do: "(" <> val <> Enum.map_join(children, "", fn ch -> translate_sub(ch, prefab) end) <> ")"
 
   defp translate_sub(
          %AST{type: :S = type, range: range, children: children} = ast,
-         %Prefab{} = prefab
+         %Bundle{} = prefab
        ) do
     case argument_number(children) do
       4 ->
@@ -138,7 +138,7 @@ defmodule Thaqqa.Regex_Khhyl.Translator do
     end
   end
 
-  defp translate_sub(%AST{type: type, range: range, children: children} = ast, %Prefab{} = prefab)
+  defp translate_sub(%AST{type: type, range: range, children: children} = ast, %Bundle{} = prefab)
        when type in [:V, :Vd] do
     case argument_number(children) do
       2 ->
@@ -162,7 +162,7 @@ defmodule Thaqqa.Regex_Khhyl.Translator do
     end
   end
 
-  defp translate_sub(%AST{type: type, range: range, children: children} = ast, %Prefab{} = prefab)
+  defp translate_sub(%AST{type: type, range: range, children: children} = ast, %Bundle{} = prefab)
        when type in [:C, :Cd] do
     case argument_number(children) do
       2 ->
@@ -189,7 +189,7 @@ defmodule Thaqqa.Regex_Khhyl.Translator do
     end
   end
 
-  defp translate_sub(%AST{type: type, range: range, children: children}, %Prefab{} = _prefab)
+  defp translate_sub(%AST{type: type, range: range, children: children}, %Bundle{} = _prefab)
        when type in [:Sep, :Null] do
     case argument_number(children) do
       0 -> "#{Atom.to_string(type)}\\(\\)"
@@ -197,14 +197,14 @@ defmodule Thaqqa.Regex_Khhyl.Translator do
     end
   end
 
-  defp translate_sub(%AST{type: :Lx = type, range: range, children: children}, %Prefab{} = prefab) do
+  defp translate_sub(%AST{type: :Lx = type, range: range, children: children}, %Bundle{} = prefab) do
     case argument_number(children) do
       0 -> export_as_string!("(?:S(*)|V(*)|C(*)|P(*)|Vd(*)|Cd(*)|Pd(*))", prefab)
       _ -> Error.invalid_argument_num(type, range)
     end
   end
 
-  defp translate_sub(%AST{type: :L = type, range: range, children: children}, %Prefab{} = prefab) do
+  defp translate_sub(%AST{type: :L = type, range: range, children: children}, %Bundle{} = prefab) do
     case argument_number(children) do
       0 -> export_as_string!("(?:S(*)|V(*)|C(*)|P(*)|Vd(*)|Cd(*)|Pd(*))", prefab)
       _ -> Error.invalid_argument_num(type, range)
@@ -215,7 +215,7 @@ defmodule Thaqqa.Regex_Khhyl.Translator do
   # こちらは将来用に残してはおく。
   defp translate_sub(
          %AST{type: :attribute_filler, value: {arg, letter_number}} = ast,
-         %Prefab{} = prefab
+         %Bundle{} = prefab
        ) do
     ln = to_string(letter_number)
 
@@ -239,12 +239,12 @@ defmodule Thaqqa.Regex_Khhyl.Translator do
 
   #
 
-  defp translate_sub(%AST{type: :finite, value: val}, %Prefab{} = _prefab), do: val
+  defp translate_sub(%AST{type: :finite, value: val}, %Bundle{} = _prefab), do: val
 
-  defp translate_sub(%AST{type: :R, value: val}, %Prefab{} = _prefab),
+  defp translate_sub(%AST{type: :R, value: val}, %Bundle{} = _prefab),
     do: "R\\(#{val}\\)"
 
-  defp translate_sub(%AST{type: type, range: range, children: children}, %Prefab{} = prefab)
+  defp translate_sub(%AST{type: type, range: range, children: children}, %Bundle{} = prefab)
        when type in [:P, :Pd] do
     case argument_number(children) do
       1 -> translate_brancket_sub("#{Atom.to_string(type)}\\(", children, prefab)
@@ -254,15 +254,15 @@ defmodule Thaqqa.Regex_Khhyl.Translator do
 
   defp translate_sub(
          %AST{type: :S = type, children: children} = ast,
-         %Prefab{} = prefab
+         %Bundle{} = prefab
        ) do
   end
 
-  defp translate_brancket_sub(val, children, %Prefab{} = prefab),
+  defp translate_brancket_sub(val, children, %Bundle{} = prefab),
     do: val <> Enum.map_join(children, "", fn ch -> translate_sub(ch, prefab) end) <> "\\)"
 
   # 処理がやや複雑
-  defp translate_sub(%AST{type: :token, value: val, layer: :glyph}, %Prefab{} = _prefab) do
+  defp translate_sub(%AST{type: :token, value: val, layer: :glyph}, %Bundle{} = _prefab) do
     case val do
       # 全てのvariant
       "_" -> "(?:\\d+)"
@@ -295,6 +295,6 @@ defmodule Thaqqa.Regex_Khhyl.Translator do
     end
   end
 
-  defp translate_sub(%AST{children: children}, %Prefab{} = prefab),
+  defp translate_sub(%AST{children: children}, %Bundle{} = prefab),
     do: Enum.map_join(children, "", fn ch -> translate_sub(ch, prefab) end)
 end

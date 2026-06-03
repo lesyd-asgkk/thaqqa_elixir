@@ -3,10 +3,25 @@ defmodule Thaqqa.FontRegistry do
 
   alias Thaqqa.Filename, as: Filename
 
-  @fonts :fonts
-  @static_tables :static_tables
-  @fonts_shadow :fonts_shadow
-  @static_tables_shadow :static_tables_shadow
+  @timeout_default 50_000
+
+  @apply_timeout 30_000
+
+  @commit_timeout 30_000
+  @rollback_timeout 30_000
+
+  @export_timeout 30_000
+
+  @bundles :bundles
+  @bundles_shadow :bundles_shadow
+
+  @bundle_uuid_to_commit :bundles_uuid_to_commit
+  # shadowテーブルに保持されたbundleのうち
+  # commitされる必要のあるuuidを{uuid,nil}の方式で保持するtable
+  # commitされた時 or rollbackされた時、その対象uuidに応じたデータ{uuid,nil}を破棄する。
+
+  @const_tables :const_tables
+  @const_tables_shadow :const_tables_shadow
 
   ## API,直接呼び出せる関数群
   def start_link(_opts) do
@@ -14,9 +29,14 @@ defmodule Thaqqa.FontRegistry do
   end
 
   def import_as_root(), do: Thaqqa.FontRegistry.IO.import_as_root()
-  def import_as_font(filename), do: Thaqqa.FontRegistry.IO.import_as_font(filename)
 
-  defp safe_call(msg, timeout \\ 5_000) do
+  def import_const(), do: Thaqqa.FontRegistry.IO.import_const()
+  def import_bundle(uuid), do: Thaqqa.FontRegistry.IO.import_bundle(uuid)
+  # def import_as_font(filename), do: Thaqqa.FontRegistry.IO.import_as_font(filename)
+
+  defp safe_call(msg), do: safe_call(msg, @timeout_default)
+
+  defp safe_call(msg, timeout) do
     try do
       GenServer.call(__MODULE__, msg, timeout)
     catch
@@ -26,110 +46,212 @@ defmodule Thaqqa.FontRegistry do
     end
   end
 
-  def rollback(timeout \\ 30_000), do: safe_call({:rollback}, timeout)
+  def rollback_const(timeout \\ @rollback_timeout), do: safe_call({:rollback_const}, timeout)
 
-  def commit(timeout \\ 30_000), do: safe_call({:commit}, timeout)
+  def rollback_bundle(uuid, timeout \\ @rollback_timeout),
+    do: safe_call({:rollback_bundle, uuid}, timeout)
 
-  def export_as_root(opts, timeout \\ 30_000),
-    do: safe_call({:save_root, opts}, timeout)
+  def commit_const(timeout \\ @commit_timeout), do: safe_call({:commit_const}, timeout)
 
-  def export_as_font(fontname, opts, timeout \\ 30_000),
-    do: safe_call({:save_font, fontname, opts}, timeout)
+  def commit_bundle(uuid, timeout \\ @commit_timeout),
+    do: safe_call({:commit_bundle, uuid}, timeout)
 
-  def create_prefab(),
-    do:
-      {:ok,
-       Thaqqa.FontRegistryPrefab.new(
-         :ets.tab2list(@fonts_shadow) |> Map.new(),
-         :ets.tab2list(@static_tables_shadow) |> Map.new()
-       )}
+  def export_const(opts, timeout \\ @export_timeout),
+    do: safe_call({:save_const, opts}, timeout)
 
-  def create_prefab_managed(timeout \\ 5_000), do: safe_call({:create_prefab}, timeout)
+  def export_bundle(uuid, opts, timeout \\ @export_timeout),
+    do: safe_call({:save_bundle, uuid, opts}, timeout)
 
-  def apply_prefab(%Thaqqa.FontRegistryPrefab{} = prefab, timeout \\ 5_000),
-    do: safe_call({:apply_prefab, prefab}, timeout)
+  def create_blank_prefab(), do: {:ok, Thaqqa.Bundle.new(%{}, %{})}
+  def create_prefab(), do: create_blank_prefab()
+
+  def create_prefab(uuid) do
+    case :ets.lookup(@bundles_shadow, uuid) |> Enum.at(0) do
+      nil -> {:ok, Thaqqa.Bundle.new(%{}, %{})}
+      {_, otherwize} -> {:ok, otherwize}
+    end
+  end
+
+  def create_blank_prefab_managed(timeout \\ 5_000),
+    do: safe_call({:create_blank_prefab}, timeout)
+
+  def create_prefab_managed(uuid, timeout \\ 5_000),
+    do: safe_call({:create_prefab, uuid}, timeout)
+
+  def apply_bundle(%Thaqqa.Bundle{} = prefab, uuid, timeout \\ @apply_timeout),
+    do: safe_call({:apply_bundle, prefab, uuid}, timeout)
+
+  def apply_const(const_map, timeout \\ @apply_timeout),
+    do: safe_call({:apply_const, const_map}, timeout)
 
   ## 以下はCallbacks
 
   def init(:ok) do
-    :ets.new(@fonts, [:named_table, :protected, :set, read_concurrency: true])
-    :ets.new(@static_tables, [:named_table, :protected, :set, read_concurrency: true])
-    :ets.new(@fonts_shadow, [:named_table, :protected, :set, read_concurrency: true])
-    :ets.new(@static_tables_shadow, [:named_table, :protected, :set, read_concurrency: true])
+    :ets.new(@bundles, [:named_table, :protected, :set, read_concurrency: true])
+    :ets.new(@bundles_shadow, [:named_table, :protected, :set, read_concurrency: true])
+    :ets.new(@bundle_uuid_to_commit, [:named_table, :protected, :set, read_concurrency: true])
+    :ets.new(@const_tables, [:named_table, :protected, :set, read_concurrency: true])
+    :ets.new(@const_tables_shadow, [:named_table, :protected, :set, read_concurrency: true])
     {:ok, %{}}
   end
 
-  def handle_call({:rollback}, _from, state) do
-    :ets.delete_all_objects(@fonts_shadow)
-    :ets.delete_all_objects(@static_tables_shadow)
+  # rollback系
 
-    :ets.tab2list(@fonts)
-    |> Enum.each(&:ets.insert(@fonts_shadow, &1))
+  defp rollback_bundle_internal(uuid) do
+    case :ets.lookup(@bundles_shadow, uuid) do
+      nil ->
+        nil
 
-    :ets.tab2list(@static_tables)
-    |> Enum.each(&:ets.insert(@static_tables_shadow, &1))
+      bundles when not is_nil(bundles) ->
+        :ets.insert(@bundles_shadow, :ets.lookup(@bundles, uuid))
+        :ets.delete(@bundle_uuid_to_commit, uuid)
+    end
+  end
+
+  def handle_call({:rollback_const}, _from, state) do
+    :ets.delete(@const_tables_shadow)
+
+    :ets.insert(
+      @const_tables_shadow,
+      :ets.tab2list(@const_tables) |> Enum.map(fn {k, v} -> {k, v} end)
+    )
 
     {:reply, :ok, state}
   end
 
-  def handle_call({:commit}, _from, state) do
-    :ets.delete_all_objects(@fonts)
-    :ets.delete_all_objects(@static_tables)
+  def handle_call({:rollback_bundle, uuid}, _from, state) do
+    rollback_bundle_internal(uuid)
+    {:reply, :ok, state}
+  end
 
-    :ets.tab2list(@fonts_shadow)
-    |> Enum.each(&:ets.insert(@fonts, &1))
+  def handle_call({:rollback_all}, _from, state) do
+    :ets.tab2list(@bundle_uuid_to_commit)
+    |> Enum.map(fn {k, _} -> k end)
+    |> Enum.each(&rollback_bundle_internal(&1))
 
-    :ets.tab2list(@static_tables_shadow)
-    |> Enum.each(&:ets.insert(@static_tables, &1))
+    {:reply, :ok, state}
+  end
 
+  # commit系
+
+  def handle_call({:commit_const}, _from, state) do
+    :ets.delete(@const_tables)
+
+    :ets.insert(
+      @const_tables,
+      :ets.tab2list(@const_tables_shadow) |> Enum.map(fn {k, v} -> {k, v} end)
+    )
+
+    {:reply, :ok, state}
+  end
+
+  defp commit_bundle_internal(uuid) do
+    case :ets.lookup(@bundles_shadow, uuid) do
+      nil ->
+        nil
+
+      bundles when not is_nil(bundles) ->
+        :ets.insert(@bundles, bundles)
+        :ets.delete(@bundle_uuid_to_commit, uuid)
+    end
+  end
+
+  def handle_call({:commit_bundle, uuid}, _from, state) do
+    commit_bundle_internal(uuid)
+    {:reply, :ok, state}
+  end
+
+  def handle_call({:commit_all}, _from, state) do
+    :ets.tab2list(@bundle_uuid_to_commit)
+    |> Enum.map(fn {k, _} -> k end)
+    |> Enum.each(&commit_bundle_internal(&1))
+
+    {:reply, :ok, state}
+  end
+
+  # apply系列
+  def handle_call(
+        {:apply_bundle, %Thaqqa.Bundle{} = bundle, uuid},
+        _from,
+        state
+      ) do
+    :ets.insert(@bundles_shadow, {uuid, bundle})
+    :ets.insert(@bundle_uuid_to_commit, {uuid, nil})
     {:reply, :ok, state}
   end
 
   def handle_call(
-        {:apply_prefab, %Thaqqa.FontRegistryPrefab{fonts: f, static_tables: t}},
+        {:apply_const, const_map},
         _from,
         state
       ) do
-    :ets.delete_all_objects(@fonts_shadow)
-    :ets.delete_all_objects(@static_tables_shadow)
-    Enum.each(Map.to_list(f), &:ets.insert(@fonts_shadow, &1))
-    Enum.each(Map.to_list(t), &:ets.insert(@static_tables_shadow, &1))
+    :ets.insert(@const_shadow, Map.to_list(const_map))
     {:reply, :ok, state}
   end
 
-  def handle_call({:create_prefab}, _from, state) do
+  # prefab系列
+  def handle_call({:create_blank_prefab}, _from, state) do
+    result = Thaqqa.Bundle.new(%{}, %{})
+    {:reply, {:ok, result}, state}
+  end
+
+  def handle_call({:create_prefab, uuid}, _from, state) do
     result =
-      Thaqqa.FontRegistryPrefab.new(
-        :ets.tab2list(@fonts),
-        :ets.tab2list(@static_tables)
-      )
+      case :ets.lookup(@bundles_shadow, uuid) |> Enum.at(0) do
+        nil -> Thaqqa.Bundle.new(%{}, %{})
+        {_, otherwize} -> otherwize
+      end
 
     {:reply, {:ok, result}, state}
   end
 
-  def handle_call({:save_root, opts}, _from, state) do
-    with {:ok, json} <-
-           Jason.encode(
-             :ets.tab2list(@static_tables)
-             |> Map.new(),
-             opts
-           ),
-         :ok <- File.write(Filename.root_file(), json) do
+  # ファイル保存系列
+
+  def handle_call({:save_const, opts}, _from, state) do
+    with {:ok, json} <- Jason.encode(:ets.tab2list(@const_tables) |> Map.new(), opts),
+         :ok <- File.write(Filename.root_folder(), json) do
       {:reply, :ok, state}
     else
       {:error, _} = err -> {:reply, err, state}
     end
   end
 
-  def handle_call({:save_font, fontname, opts}, _from, state) do
-    with font when not is_nil(font) <- :ets.tab2list(@fonts) |> Map.new() |> Map.get(fontname),
-         {:ok, json} <- Jason.encode(font, opts),
-         :ok <- File.mkdir_p(Filename.font_folder() <> font.filename),
-         :ok <- File.write(Filename.font_folder() <> font.filename <> Filename.font_file(), json) do
-      {:reply, :ok, state}
+  defp save_font_map(fonts, bundle_path, opts) do
+    Enum.reduce_while(fonts, :ok, fn {_, v}, :ok ->
+      case save_font(v, bundle_path, opts) do
+        {:error, _} = err -> {:halt, err}
+        :ok -> {:cont, :ok}
+      end
+    end)
+  end
+
+  defp save_font(font, bundle_path, opts) do
+    font_folder_name = bundle_path <> "/" <> font.filename
+
+    with {:ok, json} <- Jason.encode(font, opts),
+         :ok <- File.mkdir_p(font_folder_name),
+         :ok <- File.write(font_folder_name <> "/" <> Filename.font_file(), json) do
+      :ok
+    else
+      {:error, _} = err -> err
+    end
+  end
+
+  def handle_call({:save_bundle, uuid, opts}, _from, state) do
+    bundle_folder_name = Filename.root_folder() <> Filename.bundle_folder(uuid)
+
+    with [{_, %Thaqqa.Bundle{static_tables: static_tables, fonts: fonts}}] <-
+           :ets.lookup(@bundles_shadow, uuid),
+         {:ok, json_statics} <- Jason.encode(static_tables, opts),
+         :ok <- File.mkdir_p(bundle_folder_name),
+         :ok <- File.write(bundle_folder_name <> "/" <> Filename.bundle_file(), json_statics),
+         :ok <- save_font_map(fonts, bundle_folder_name, opts) do
+      :ok
     else
       {:error, _} = err -> {:reply, err, state}
     end
+
+    # :ok <- File.mkdir_p(Filename.font_folder() <> font.filename),
   end
 
   def handle_info(:timeout, state), do: {:noreply, state}

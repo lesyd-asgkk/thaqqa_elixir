@@ -1,0 +1,2 @@
+defmodule ConstTable do
+end

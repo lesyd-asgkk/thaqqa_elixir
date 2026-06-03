@@ -4,16 +4,16 @@
 
 # 責務分離も徹底していない。
 
-defmodule Thaqqa.FontRegistryPrefab.ConstRegexKhhylTable do
+defmodule Thaqqa.Bundle.ConstRegexKhhylTable do
   alias Thaqqa.DataTable, as: DataTable
-  alias Thaqqa.FontRegistryPrefab, as: Prefab
+  alias Thaqqa.Bundle, as: Bundle
   alias Thaqqa.FontRegistry.Error, as: Error
   use Thaqqa.DataTable.Const
 
   @regex_const "REGEX_CONST"
 
   # 短絡評価用のmapを作る。
-  def set_datalist_hash(%Prefab{} = prefab) do
+  def set_datalist_hash(%Bundle{} = prefab) do
     case get_static_table(prefab) do
       {:error, reason} ->
         {:error, reason}
@@ -22,17 +22,17 @@ defmodule Thaqqa.FontRegistryPrefab.ConstRegexKhhylTable do
         dh =
           Map.new(dl, fn %Thaqqa.Data{value_map: vl} = table -> {Map.get(vl, @name), table} end)
 
-        Prefab.edit_static_table(prefab, @regex_const, %DataTable{table | data_hash: dh})
+        Bundle.edit_static_table(prefab, @regex_const, %DataTable{table | data_hash: dh})
     end
   end
 
-  def get_const_table_or_nil(%Prefab{} = prefab),
-    do: Prefab.get_static_table(prefab, @regex_const)
+  def get_const_table_or_nil(%Bundle{} = prefab),
+    do: Bundle.get_static_table(prefab, @regex_const)
 
-  def get_static_table(%Prefab{} = prefab),
-    do: Prefab.get_static_table_or_error(prefab, @regex_const)
+  def get_static_table(%Bundle{} = prefab),
+    do: Bundle.get_static_table_or_error(prefab, @regex_const)
 
-  def get_const(%Prefab{} = prefab, name) do
+  def get_const(%Bundle{} = prefab, name) do
     case get_static_table(prefab) do
       {:error, reason} ->
         {:error, reason}
@@ -50,7 +50,7 @@ defmodule Thaqqa.FontRegistryPrefab.ConstRegexKhhylTable do
     end
   end
 
-  def get_regex(%Prefab{} = prefab, name) do
+  def get_regex(%Bundle{} = prefab, name) do
     case get_const(prefab, name) do
       {:error, reason} -> {:error, reason}
       {:ok, nil} -> Error.data_not_found(@precompile, name, @regex_const, nil)
@@ -58,7 +58,7 @@ defmodule Thaqqa.FontRegistryPrefab.ConstRegexKhhylTable do
     end
   end
 
-  def whole_of_string_match_at_once?(%Prefab{} = prefab, name, string) do
+  def whole_of_string_match_at_once?(%Bundle{} = prefab, name, string) do
     case get_const(prefab, name) do
       {:error, reason} ->
         {:error, reason}
@@ -75,7 +75,7 @@ defmodule Thaqqa.FontRegistryPrefab.ConstRegexKhhylTable do
     end
   end
 
-  def whole_of_string_match?(%Prefab{} = prefab, name, string) do
+  def whole_of_string_match?(%Bundle{} = prefab, name, string) do
     case get_const(prefab, name) do
       {:error, reason} ->
         {:error, reason}
@@ -91,7 +91,7 @@ defmodule Thaqqa.FontRegistryPrefab.ConstRegexKhhylTable do
     end
   end
 
-  def match?(%Prefab{} = prefab, name, string) do
+  def match?(%Bundle{} = prefab, name, string) do
     case get_const(prefab, name) do
       {:error, reason} -> {:error, reason}
       {:ok, nil} -> Error.data_not_found(@precompile, name, @regex_const, nil)
@@ -99,6 +99,6 @@ defmodule Thaqqa.FontRegistryPrefab.ConstRegexKhhylTable do
     end
   end
 
-  def complement(%Prefab{} = prefab), do: Prefab.complement_by_static_table(prefab, @regex_const)
-  def sort_gsub(%Prefab{} = prefab), do: Prefab.sort_as_static(prefab, @regex_const)
+  def complement(%Bundle{} = prefab), do: Bundle.complement_by_static_table(prefab, @regex_const)
+  def sort_gsub(%Bundle{} = prefab), do: Bundle.sort_as_static(prefab, @regex_const)
 end

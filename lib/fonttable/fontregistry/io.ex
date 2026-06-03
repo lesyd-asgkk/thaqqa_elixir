@@ -4,35 +4,13 @@ defmodule Thaqqa.FontRegistry.IO do
 
   # import系統:jsonファイルを読み込み、FontやDataTableのMap構造体に変換したうえでFontRegistryに登録する。
   # export系統:FontRegitryのMap構造体をjson形式に変換した上で保存する。
-  # jsonデータ⇔Map構造への変換はPrefabIO内にて行われる。
+  # jsonデータ ⇔ Map構造への変換は Bundle.IO内にて行われる。
   #
 
   alias Thaqqa.FontRegistry, as: FontRegistry
-  alias Thaqqa.FontRegistryPrefab, as: Prefab
+  alias Thaqqa.Bundle, as: Bundle
   alias Thaqqa.Filename, as: Filename
 
-  def import_all() do
-    dir_name =
-      Path.wildcard(Filename.font_folder() <> "*")
-      |> Enum.filter(&File.dir?/1)
-      |> Enum.map(&Path.basename/1)
-
-    case import_as_root() do
-      {:error, _} = err ->
-        err
-
-      {:ok, _} ->
-        Enum.reduce_while(dir_name, {:ok, nil}, fn filename, {:ok, _} ->
-          case import_as_font(filename) do
-            {:error, _} = err -> {:halt, err}
-            {:ok, _} -> {:cont, {:ok, nil}}
-          end
-        end)
-    end
-  end
-
-  # json→mapの部分。
-  # ここはIOで処理。
   defp read_and_decode_json(file_path) do
     case File.read(file_path) do
       {:error, reason} -> {:error, reason}
@@ -40,34 +18,89 @@ defmodule Thaqqa.FontRegistry.IO do
     end
   end
 
-  def import_as_root() do
-    file_path = Filename.root_file()
+  # ここから旧関数
+  def import_bundle(uuid) do
+    dir_name =
+      Path.wildcard(Filename.root_folder() <> Filename.bundle_folder(uuid) <> "*")
+      |> Enum.filter(&File.dir?/1)
+      |> Enum.map(&Path.basename/1)
 
-    with {:ok, prefab} <- FontRegistry.create_prefab(),
-         {:ok, rootdata} <- read_and_decode_json(file_path),
-         {:ok, prefab} <- Prefab.import_as_root(prefab, rootdata),
-         :ok <- FontRegistry.apply_prefab(prefab),
-         :ok <- FontRegistry.commit() do
+    with :ok <- import_as_root(uuid),
+         :ok <-
+           Enum.reduce_while(dir_name, :ok, fn filename, :ok ->
+             case import_as_font(uuid, filename) do
+               {:error, _} = err -> {:halt, err}
+               :ok -> {:cont, :ok}
+             end
+           end) do
+      FontRegistry.commit_bundle(uuid)
       :ok
     else
       {:error, _} = err ->
-        FontRegistry.rollback()
+        FontRegistry.rollback_bundle(uuid)
         err
     end
   end
 
-  def import_as_font(filename) do
-    file_path = Filename.font_folder() <> filename <> Filename.font_file()
+  defp import_as_root(uuid) do
+    file_path = Filename.root_folder() <> Filename.bundle_folder(uuid) <> Filename.font_file()
 
-    with {:ok, prefab} <- FontRegistry.create_prefab(),
-         {:ok, fontdata} <- read_and_decode_json(file_path),
-         {:ok, prefab} <- Prefab.import_as_font(prefab, fontdata, filename),
-         :ok <- FontRegistry.apply_prefab(prefab),
-         :ok <- FontRegistry.commit() do
+    with {:ok, prefab} <- FontRegistry.create_prefab(uuid),
+         {:ok, rootdata} <- read_and_decode_json(file_path),
+         {:ok, prefab} <- Bundle.import_as_root(prefab, rootdata),
+         :ok <- FontRegistry.apply_bundle(prefab, prefab.uuid) do
       :ok
     else
       {:error, _} = err ->
-        FontRegistry.rollback()
+        err
+    end
+  end
+
+  defp import_as_font(uuid, filename) do
+    file_path =
+      Filename.root_folder() <>
+        Filename.bundle_folder(uuid) <> filename <> "/" <> Filename.font_file()
+
+    IO.inspect(file_path)
+
+    with {:ok, prefab} <- FontRegistry.create_prefab(uuid),
+         {:ok, fontdata} <- read_and_decode_json(file_path),
+         {:ok, prefab} <- Bundle.import_as_font(prefab, fontdata, filename) do
+      uuid = prefab.uuid
+
+      with :ok <- FontRegistry.apply_bundle(prefab, uuid),
+           :ok <- FontRegistry.commit_bundle(uuid) do
+        :ok
+      else
+        {:error, _} = err ->
+          FontRegistry.rollback_bundle(uuid)
+          err
+      end
+    else
+      {:error, _} = err -> err
+    end
+  end
+
+  # json→mapに変換する処理。
+  defp read_and_decode_json(file_path) do
+    case File.read(file_path) do
+      {:error, reason} -> {:error, reason}
+      {:ok, json} -> Jason.decode(json)
+    end
+  end
+
+  def import_const() do
+    file_path = Filename.root_folder() <> "/" <> Filename.root_file()
+
+    with {:ok, constdata} <- read_and_decode_json(file_path),
+         # Bundle.import_const(constdata),
+         {:ok, const_map} <- {:ok, constdata},
+         :ok <- FontRegistry.apply_const(const_map),
+         :ok <- FontRegistry.commit_const() do
+      :ok
+    else
+      {:error, _} = err ->
+        FontRegistry.rollback_const()
         err
     end
   end

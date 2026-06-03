@@ -1,14 +1,14 @@
 defmodule Thaqqa.Glyph.GlyphSpawner do
   alias Thaqqa.Render.Error, as: Error
   alias Thaqqa.Glyph, as: Glyph
-  alias Thaqqa.FontRegistryPrefab, as: Prefab
-  alias Thaqqa.FontRegistryPrefab.GlyphTable, as: GlyphTable
-  alias Thaqqa.FontRegistryPrefab.GposTable, as: GposTable
-  alias Thaqqa.FontRegistryPrefab.LetterTable, as: LetterTable
-  alias Thaqqa.FontRegistryPrefab.ConstRegexKhhylTable, as: ConstRegexKhhylTable
+  alias Thaqqa.Bundle, as: Bundle
+  alias Thaqqa.Bundle.GlyphTable, as: GlyphTable
+  alias Thaqqa.Bundle.GposTable, as: GposTable
+  alias Thaqqa.Bundle.LetterTable, as: LetterTable
+  alias Thaqqa.Bundle.ConstRegexKhhylTable, as: ConstRegexKhhylTable
   use Thaqqa.DataTable.Const
 
-  def new(%Prefab{} = prefab, fontname, glyphname, writing_direction, size) do
+  def new(%Bundle{} = prefab, fontname, glyphname, writing_direction, size) do
     case divide_name(glyphname) do
       {:error, _} = err ->
         err
@@ -22,7 +22,7 @@ defmodule Thaqqa.Glyph.GlyphSpawner do
   # create_glyphで用いられている「!系は後々通常verに戻してエラーハンドリングを付け加えるか
   # そもそも「実行時のみに使用Managerに異常がないかを判断する」で対処する。
   defp create_glyph(
-         %Prefab{} = prefab,
+         %Bundle{} = prefab,
          fontname,
          glyphname,
          _writing_direction,
@@ -52,7 +52,7 @@ defmodule Thaqqa.Glyph.GlyphSpawner do
            LetterTable.get_letter(prefab, fn %Thaqqa.Data{} = data ->
              Thaqqa.Data.get_value(data, @name) == name
            end),
-         {:ok, %{Height: font_height}} = Prefab.get_fontdata(prefab, fontname, ["Height"]) do
+         {:ok, %{Height: font_height}} = Bundle.get_fontdata(prefab, fontname, ["Height"]) do
       path =
         glyph_data
         |> Enum.at(0)
@@ -95,7 +95,7 @@ defmodule Thaqqa.Glyph.GlyphSpawner do
 
   # Sの場合
   defp create_glyph(
-         %Prefab{} = prefab,
+         %Bundle{} = prefab,
          fontname,
          glyphname,
          writing_direction,
@@ -122,7 +122,7 @@ defmodule Thaqqa.Glyph.GlyphSpawner do
          {:ok, %Glyph{} = onset_glyph} <- onset_glyph,
          {:ok, %Glyph{} = vowel_glyph} <- vowel_glyph,
          {:ok, %Glyph{} = coda_glyph} <- coda_glyph,
-         {:ok, %{Height: font_height}} = Prefab.get_fontdata(prefab, fontname, ["Height"]) do
+         {:ok, %{Height: font_height}} = Bundle.get_fontdata(prefab, fontname, ["Height"]) do
       is_null_vowel = vowel_glyph.internal_attribution.is_null
 
       off_onset = %{x: off_onset_x, y: off_onset_y}
@@ -170,7 +170,7 @@ defmodule Thaqqa.Glyph.GlyphSpawner do
   end
 
   defp create_glyph(
-         %Prefab{} = prefab,
+         %Bundle{} = prefab,
          fontname,
          glyphname,
          writing_direction,
@@ -234,7 +234,7 @@ defmodule Thaqqa.Glyph.GlyphSpawner do
 
     with {:ok, %Glyph{} = top_glyph} <- top_glyph,
          {:ok, %Glyph{} = child_glyph} <- child_glyph,
-         {:ok, %{Height: font_height}} = Prefab.get_fontdata(prefab, fontname, ["Height"]),
+         {:ok, %{Height: font_height}} = Bundle.get_fontdata(prefab, fontname, ["Height"]),
          {:ok, gpos_list} <- gpos_list_raw do
       glyph_name = %{top_glyph.name | glyph: glyphname}
 
@@ -250,9 +250,9 @@ defmodule Thaqqa.Glyph.GlyphSpawner do
     end
   end
 
-  defp create_glyph(%Prefab{} = prefab, fontname, _glyphname, _writing_direction, %{}, size) do
+  defp create_glyph(%Bundle{} = prefab, fontname, _glyphname, _writing_direction, %{}, size) do
     with {:ok, %{Height: font_height}} =
-           Prefab.get_fontdata(prefab, fontname, ["Height"]) do
+           Bundle.get_fontdata(prefab, fontname, ["Height"]) do
       {:ok, %Glyph{scale: size / font_height}}
     else
       {:error, _} = err -> err
