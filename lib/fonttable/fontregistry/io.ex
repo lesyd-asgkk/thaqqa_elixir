@@ -18,7 +18,6 @@ defmodule Thaqqa.FontRegistry.IO do
     end
   end
 
-  # ここから旧関数
   def import_bundle(uuid) do
     dir_name =
       Path.wildcard(Filename.root_folder() <> Filename.bundle_folder(uuid) <> "*")
@@ -43,7 +42,7 @@ defmodule Thaqqa.FontRegistry.IO do
   end
 
   defp import_as_root(uuid) do
-    file_path = Filename.root_folder() <> Filename.bundle_folder(uuid) <> Filename.font_file()
+    file_path = Filename.bundle_path(uuid)
 
     with {:ok, prefab} <- FontRegistry.create_prefab(uuid),
          {:ok, rootdata} <- read_and_decode_json(file_path),
@@ -51,30 +50,23 @@ defmodule Thaqqa.FontRegistry.IO do
          :ok <- FontRegistry.apply_bundle(prefab, prefab.uuid) do
       :ok
     else
-      {:error, _} = err ->
-        err
+      {:error, _} = err -> err
     end
   end
 
-  defp import_as_font(uuid, filename) do
-    file_path =
-      Filename.root_folder() <>
-        Filename.bundle_folder(uuid) <> filename <> "/" <> Filename.font_file()
-
-    IO.inspect(file_path)
+  defp import_as_font(uuid, foldername) do
+    file_path = Filename.font_path(uuid, foldername)
 
     with {:ok, prefab} <- FontRegistry.create_prefab(uuid),
          {:ok, fontdata} <- read_and_decode_json(file_path),
-         {:ok, prefab} <- Bundle.import_as_font(prefab, fontdata, filename) do
+         {:ok, prefab} <- Bundle.import_as_font(prefab, fontdata, foldername) do
       uuid = prefab.uuid
 
       with :ok <- FontRegistry.apply_bundle(prefab, uuid),
            :ok <- FontRegistry.commit_bundle(uuid) do
         :ok
       else
-        {:error, _} = err ->
-          FontRegistry.rollback_bundle(uuid)
-          err
+        {:error, _} = err -> err
       end
     else
       {:error, _} = err -> err

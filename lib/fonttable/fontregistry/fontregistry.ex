@@ -31,12 +31,10 @@ defmodule Thaqqa.FontRegistry do
   def import_as_root(), do: Thaqqa.FontRegistry.IO.import_as_root()
 
   def import_const(), do: Thaqqa.FontRegistry.IO.import_const()
+  @spec import_bundle(any()) :: :ok | {:error, any()}
   def import_bundle(uuid), do: Thaqqa.FontRegistry.IO.import_bundle(uuid)
-  # def import_as_font(filename), do: Thaqqa.FontRegistry.IO.import_as_font(filename)
 
-  defp safe_call(msg), do: safe_call(msg, @timeout_default)
-
-  defp safe_call(msg, timeout) do
+  defp safe_call(msg, timeout \\ @timeout_default) do
     try do
       GenServer.call(__MODULE__, msg, timeout)
     catch
