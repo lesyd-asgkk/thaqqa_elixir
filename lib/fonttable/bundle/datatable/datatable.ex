@@ -11,7 +11,7 @@ defmodule Thaqqa.DataTable do
   defstruct [
     :name,
     :global,
-    :parent,
+    :static,
     :compile_rule,
     column_list: [],
     data_list: [],
@@ -21,11 +21,11 @@ defmodule Thaqqa.DataTable do
   ]
 
   # DataTableを新たに作る関数。
-  def new(name, global \\ false, parent \\ nil, compile_rule \\ "none", single \\ false),
+  def new(name, global \\ false, static \\ false, compile_rule \\ "none", single \\ false),
     do: %__MODULE__{
       name: name,
       global: global,
-      parent: parent,
+      static: static,
       compile_rule: compile_rule,
       desc: "",
       column_list: [],

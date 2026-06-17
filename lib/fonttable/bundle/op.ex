@@ -1,20 +1,16 @@
 # Bundleに処理を加えるモジュール
 
 defmodule Thaqqa.Bundle.Op do
-  alias Thaqqa.Bundle.Complement, as: Complement
-  alias Thaqqa.Bundle.Compiler, as: Compiler
-
   alias Thaqqa.Bundle, as: Bundle
-  alias Thaqqa.Bundle.IO, as: IO
   alias Thaqqa.Font, as: Font
   alias Thaqqa.DataTable, as: DataTable
-  alias Thaqqa.Data, as: Data
+
   alias Thaqqa.Column, as: Column
   alias Thaqqa.FontRegistry.Error, as: Error
   defstruct fonts: %{}, static_tables: %{}
 
-  defp update_static_tables(%Bundle{} = self, st, st_name),
-    do: %Bundle{self | static_tables: st} |> complement_by_static_table(st_name)
+  defp update_static_tables(%Bundle{} = self, st, %DataTable{} = datatable),
+    do: %Bundle{self | static_tables: st} |> Bundle.complement_by_static_table(datatable)
 
   def update_fonts(%Bundle{} = self, f), do: %Bundle{self | fonts: f}
 
@@ -25,7 +21,7 @@ defmodule Thaqqa.Bundle.Op do
   end
 
   def init_font(%Bundle{} = self, %Thaqqa.Font{name: name} = font) do
-    update_fonts(self, Map.put(self.fonts, name, font)) |> complement_font(name)
+    update_fonts(self, Map.put(self.fonts, name, font)) |> Bundle.complement_font(font)
   end
 
   def add_font_if_enable(%Bundle{} = self, %Thaqqa.Font{} = font) do
@@ -37,12 +33,12 @@ defmodule Thaqqa.Bundle.Op do
 
   def add_font(%Bundle{} = self, %Thaqqa.Font{name: name} = font) do
     if Bundle.get_font(self, name) == nil,
-      do: {:ok, update_fonts(self, Map.put(self.fonts, name, font)) |> complement_font(name)},
+      do:
+        {:ok, update_fonts(self, Map.put(self.fonts, name, font)) |> Bundle.complement_font(font)},
       else: Error.nominal_conflict_font(name, :add)
   end
 
   def duplicate_font(%Bundle{} = self, name, fontname_duplication, filename) do
-    # TODO filename側の重複の方を確認する（むしろこっちのが大事）
     case Bundle.get_font(self, name) do
       nil ->
         Error.font_not_found(name)
@@ -85,7 +81,8 @@ defmodule Thaqqa.Bundle.Op do
 
   def edit_font(%Bundle{} = self, name, %Thaqqa.Font{} = font) do
     if Bundle.get_font(self, name) != nil,
-      do: {:ok, update_fonts(self, Map.put(self.fonts, name, font)) |> complement_font(name)},
+      do:
+        {:ok, update_fonts(self, Map.put(self.fonts, name, font)) |> Bundle.complement_font(font)},
       else: Error.font_not_found(name)
   end
 
@@ -94,7 +91,8 @@ defmodule Thaqqa.Bundle.Op do
   ## 以降、static_table系統の本体
 
   def init_static_table(%Bundle{} = self, %DataTable{name: name} = table),
-    do: update_static_tables(self, Map.put(Bundle.get_static_table_list(self), name, table), name)
+    do:
+      update_static_tables(self, Map.put(Bundle.get_static_table_list(self), name, table), table)
 
   def add_static_table_if_enable(%Bundle{} = self, %DataTable{} = table) do
     case add_static_table(self, table) do
@@ -105,7 +103,7 @@ defmodule Thaqqa.Bundle.Op do
 
   def add_static_table(%Bundle{} = self, %DataTable{name: name} = table) do
     if Bundle.get_static_table(self, name) == nil do
-      {:ok, update_static_tables(self, Map.put(self.static_tables, name, table), name)}
+      {:ok, update_static_tables(self, Map.put(self.static_tables, name, table), table)}
     else
       Error.nominal_conflict_datatable(name, :add)
     end
@@ -120,7 +118,7 @@ defmodule Thaqqa.Bundle.Op do
 
   def edit_static_table(%Bundle{} = self, name, %DataTable{} = table) do
     if Bundle.get_static_table(self, name) != nil do
-      {:ok, update_static_tables(self, Map.put(self.static_tables, name, table), name)}
+      {:ok, update_static_tables(self, Map.put(self.static_tables, name, table), table)}
     else
       Error.table_not_found(name)
     end
@@ -136,7 +134,7 @@ defmodule Thaqqa.Bundle.Op do
   def delete_static_table(%Bundle{} = self, name) do
     case Map.get(self.static_tables, name) do
       nil -> Error.table_not_found(name)
-      _ -> {:ok, update_static_tables(self, Map.delete(self.static_tables, name), name)}
+      table -> {:ok, update_static_tables(self, Map.delete(self.static_tables, name), table)}
     end
   end
 
@@ -199,51 +197,6 @@ defmodule Thaqqa.Bundle.Op do
         |> then(&edit_static_table(self, name, &1))
     end
   end
-
-  #
-
-  ## static_tableの設定に合わせてfontの仕様を同期させる
-  ## 本体は別モジュールで行っている
-
-  def complement_table_by_column(
-        %Bundle{} = self,
-        %DataTable{} = datatable,
-        column_name
-      ),
-      # Complement.complement_table_by_column(self, datatable, column_name)
-      do: self
-
-  def complement_table(%Bundle{} = self, font_name, table_name),
-    # Complement.complement_table(self, font_name, table_name)
-    do: self
-
-  ## 追加された(される)fontをstatic_tableの設定に合わせる
-  def complement_font(%Bundle{} = self, font_name),
-    # Complement.complement_font(self, font_name)
-    do: self
-
-  # static_tableの変更に伴ってfontテーブル側を変更する
-  def complement_by_static_table(%Bundle{} = self, table_name),
-    # Complement.complement_by_static_table(self, table_name)
-    do: self
-
-  def set_precompile_as_root(%Bundle{} = self),
-    do: Compiler.set_precompile_as_root(self)
-
-  def set_precompile_as_root_by_table(%Bundle{} = self, tablename),
-    do: Compiler.set_precompile_as_root_by_table(self, tablename)
-
-  def set_precompile_as_root_by_data(%Bundle{} = self, tablename, %Data{} = data),
-    do: Compiler.set_precompile_as_root_by_data(self, tablename, data)
-
-  def set_precompile_as_font(%Bundle{} = self, fontname),
-    do: Compiler.set_precompile_as_font(self, fontname)
-
-  def set_precompile_as_font_by_table(%Bundle{} = self, fontname, tablename),
-    do: Compiler.set_precompile_as_font_by_table(self, fontname, tablename)
-
-  def set_precompile_as_font_by_data(%Bundle{} = self, fontname, tablename, %Data{} = data),
-    do: Compiler.set_precompile_as_font_by_data(self, fontname, tablename, data)
 
   def sort_as_static(%Bundle{} = self, tablename) do
     case Bundle.get_static_table(self, tablename) do

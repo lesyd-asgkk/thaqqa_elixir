@@ -29,8 +29,8 @@ defmodule Thaqqa.Bundle do
   def update_fonts(%__MODULE__{} = self, f), do: Op.update_fonts(self, f)
 
   # ※complementは一旦要らない
-  defp update_static_tables(%__MODULE__{} = self, st, st_name),
-    do: %__MODULE__{self | static_tables: st} |> complement_by_static_table(st_name)
+  defp update_static_tables(%__MODULE__{} = self, st, datatable),
+    do: %__MODULE__{self | static_tables: st} |> complement_by_static_table(datatable)
 
   def overwrite_font(%__MODULE__{} = self, name, %Font{} = font),
     do: Op.overwrite_font(self, name, font)
@@ -38,7 +38,7 @@ defmodule Thaqqa.Bundle do
   def init_font(%__MODULE__{} = self, %Font{} = font), do: Op.init_font(self, font)
 
   def init_static_table(%__MODULE__{} = self, %DataTable{name: name} = table),
-    do: update_static_tables(self, Map.put(get_static_table_list(self), name, table), name)
+    do: update_static_tables(self, Map.put(get_static_table_list(self), name, table), table)
 
   # get系統
   def get_font(%__MODULE__{} = self, name), do: Query.get_font(self, name)
@@ -159,15 +159,9 @@ defmodule Thaqqa.Bundle do
   ## 本体は別モジュールで行っている
   ## ※ファイルシステムの改定に基づき、一番作り直すべき場所
 
-  def complement_table_by_column(%__MODULE__{} = self, %DataTable{} = datatable, column_name),
-    do: Complement.complement_table_by_column(self, datatable, column_name)
-
-  def complement_table(%__MODULE__{} = self, font_name, table_name),
-    do: Complement.complement_table(self, font_name, table_name)
-
   ## 追加された(される)fontをstatic_tableの設定に合わせる
-  def complement_font(%__MODULE__{} = self, font_name),
-    do: Complement.complement_font(self, font_name)
+  def complement_font(%__MODULE__{} = self, %Font{} = font),
+    do: Complement.complement_font(self, font)
 
   # 読み込み系
   def import_as_root(%__MODULE__{} = self, rootdata) when is_map(rootdata),
@@ -178,8 +172,7 @@ defmodule Thaqqa.Bundle do
 
   # static_tableの変更に伴ってfontテーブル側を変更する
   def complement_by_static_table(%__MODULE__{} = self, table_name),
-    # Complement.complement_by_static_table(self, table_name)
-    do: self
+    do: Complement.complement_by_static_table(self, table_name)
 
   def set_precompile_on_root(%__MODULE__{} = self),
     do: Compiler.set_precompile_on_root(self)

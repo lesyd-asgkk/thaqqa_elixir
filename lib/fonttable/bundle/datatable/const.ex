@@ -7,7 +7,7 @@ defmodule Thaqqa.DataTable.Const do
 
       # 予め「ソフトコーディング的」に変更しやすいようにすることで
       # 後の細かい仕様変更にも対応しやすい設計。
-      # 実際、:nameの派生で:token()を追加する際に役立った。
+      # 実際、:nameの派生で:tokenを追加する際に役立った。
 
       @id_subtype :id
       @unique_subtypes [:name, :id, :token]

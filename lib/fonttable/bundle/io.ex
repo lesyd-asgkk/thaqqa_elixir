@@ -145,10 +145,10 @@ defmodule Thaqqa.Bundle.IO do
     table =
       DataTable.new(
         name,
-        Map.get(struct, "global"),
-        nil,
-        Map.get(struct, "compile_rule"),
-        Map.get(struct, "single")
+        Map.get(struct, "global", false),
+        Map.get(struct, "static", false),
+        Map.get(struct, "compile_rule", "none"),
+        Map.get(struct, "single", false)
       )
 
     # ↓の順序を変える。かならずcolumnListが先に処理されるように。

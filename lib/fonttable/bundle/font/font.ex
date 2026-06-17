@@ -1,5 +1,6 @@
 defmodule Thaqqa.Font do
   alias Thaqqa.DataTable, as: DataTable
+
   defstruct [:filename, :name, table_list: []]
 
   def new(filename, name, t), do: %__MODULE__{table_list: t, name: name, filename: filename}
@@ -15,11 +16,10 @@ defmodule Thaqqa.Font do
   end
 
   def add_table(
-        %__MODULE__{table_list: tables, name: fontname} = font,
+        %__MODULE__{table_list: tables} = font,
         %DataTable{} = table
       ) do
-    table = %DataTable{table | parent: fontname}
-    %{font | table_list: tables ++ [table]}
+    %{font | table_list: [table | tables]}
   end
 
   def delete_table(%__MODULE__{table_list: tables} = font, table_name) do

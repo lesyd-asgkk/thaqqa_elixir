@@ -1,9 +1,7 @@
 defmodule Thaqqa.Bundle.Query do
   alias Thaqqa.Bundle, as: Bundle
   alias Thaqqa.Font, as: Font
-  alias Thaqqa.DataTable, as: DataTable
   alias Thaqqa.Data, as: Data
-  alias Thaqqa.Column, as: Column
   alias Thaqqa.FontRegistry.Error, as: Error
 
   def get_font(%Bundle{} = self, name), do: Map.get(self.fonts, name)
