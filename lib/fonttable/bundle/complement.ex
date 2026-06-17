@@ -98,9 +98,16 @@ defmodule Thaqqa.Bundle.Complement do
   # 追加された(される)fontをstatic_tableの設定に合わせる
   # TODO:font_nameをfontにするのと、帰り値もfont型にする
   def complement_font(%Bundle{} = self, %Font{name: font_name} = font) do
+    # この段階ではバグってない(読み込み自体は正常)
+    IO.inspect(font.table_list |> Enum.map(fn v -> v.data_list end))
+
+    # 以下の過程で何かしらのバグが
+    tablename_list = font.table_list |> Enum.map(fn v -> v.name end)
+
     table_list =
       ((Bundle.get_local_static_table_list(self)
-        |> Enum.map(fn {_k, v} -> v end)) ++ font.table_list)
+        |> Enum.map(fn {k, v} -> if k in tablename_list, do: nil, else: v end)) ++ font.table_list)
+      |> Enum.filter(fn v -> v != nil end)
       |> Enum.map(fn %DataTable{} = table ->
         complement_table(self, table)
       end)
