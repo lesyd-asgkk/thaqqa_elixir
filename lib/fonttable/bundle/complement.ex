@@ -15,6 +15,11 @@ defmodule Thaqqa.Bundle.Complement do
   # （json仕様側にdialect欄を付け加えることで、root側との重複が認められない限り削除処理を実行しない仕様を加えることは容易に可能。）
   # （現時点の当機能追加は未定。）
 
+  # なお、後から並列化可能な形としている。
+
+  @concurrency_percentage 50
+  @chunk_percentage 25
+
   alias Thaqqa.Bundle, as: Bundle
   alias Thaqqa.Font, as: Font
   alias Thaqqa.DataTable, as: DataTable
@@ -41,15 +46,12 @@ defmodule Thaqqa.Bundle.Complement do
       static_table_column != nil and font_column == nil ->
         DataTable.add_column!(datatable, static_table_column)
 
-      true ->
-        cond do
-          static_table_column.type != font_column.type ||
-              static_table_column.subtype != font_column.subtype ->
-            DataTable.edit_column!(datatable, column_name, static_table_column)
+      static_table_column.type != font_column.type ||
+          static_table_column.subtype != font_column.subtype ->
+        DataTable.edit_column!(datatable, column_name, static_table_column)
 
-          true ->
-            datatable
-        end
+      true ->
+        datatable
     end
   end
 
@@ -74,8 +76,6 @@ defmodule Thaqqa.Bundle.Complement do
   # bundle側にもfont側にも存在する場合はfont側をbundleと照らし合わせて
   # 過不足がない状態にする。
 
-  # TODO:帰り値はdatatable型にする
-
   defp complement_local_table(
          %Bundle{} = self,
          %DataTable{name: table_name} = table
@@ -96,12 +96,7 @@ defmodule Thaqqa.Bundle.Complement do
   end
 
   # 追加された(される)fontをstatic_tableの設定に合わせる
-  # TODO:font_nameをfontにするのと、帰り値もfont型にする
   def complement_font(%Bundle{} = self, %Font{name: font_name} = font) do
-    # この段階ではバグってない(読み込み自体は正常)
-    IO.inspect(font.table_list |> Enum.map(fn v -> v.data_list end))
-
-    # 以下の過程で何かしらのバグが
     tablename_list = font.table_list |> Enum.map(fn v -> v.name end)
 
     table_list =
@@ -128,6 +123,15 @@ defmodule Thaqqa.Bundle.Complement do
         }
 
         Map.put(acc, font_name, font)
+      end)
+
+    %Bundle{self | fonts: fonts}
+  end
+
+  def complement(%Bundle{} = self) do
+    fonts =
+      Enum.reduce(Bundle.get_font_list(self), %{}, fn {_, font}, acc ->
+        complement_font(acc, font)
       end)
 
     %Bundle{self | fonts: fonts}

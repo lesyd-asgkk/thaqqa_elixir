@@ -1,11 +1,15 @@
 defmodule Thaqqa.ConstTable do
   defstruct const_tables: %{}
 
+  alias Thaqqa.Bundle, as: Bundle
   alias Thaqqa.DataTable, as: DataTable
+  alias Thaqqa.ConstTable.Complement, as: Complement
   alias Thaqqa.ConstTable.Query, as: Query
   alias Thaqqa.ConstTable.Op, as: Op
+  alias Thaqqa.ConstTable.IO, as: IO
   alias Thaqqa.Column, as: Column
 
+  def new(), do: %__MODULE__{const_tables: %{}}
   def new(const_tables), do: %__MODULE__{const_tables: const_tables}
 
   defp update_const_tables(%__MODULE__{} = self, ct),
@@ -96,6 +100,17 @@ defmodule Thaqqa.ConstTable do
 
   def delete_column(%__MODULE__{} = self, name, column_name),
     do: Op.delete_column(self, name, column_name)
+
+  # complement系
+
+  def import_as_const(%__MODULE__{} = self, constdata) when is_map(constdata),
+    do: IO.import_as_const(self, constdata)
+
+  def complement(%__MODULE__{} = self, bundles) when is_map(bundles),
+    do: Complement.complement(self, bundles)
+
+  def complement_bundle(%__MODULE__{} = self, %Bundle{} = bundle),
+    do: Complement.complement_bundle(self, bundle)
 
   # def new_from_request(json) when is_map(json), do: IO.new_from_request(json)
 end

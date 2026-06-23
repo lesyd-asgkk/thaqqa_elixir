@@ -160,6 +160,9 @@ defmodule Thaqqa.Bundle do
   ## ※ファイルシステムの改定に基づき、一番作り直すべき場所
 
   ## 追加された(される)fontをstatic_tableの設定に合わせる
+  def complement(%__MODULE__{} = self),
+    do: Complement.complement(self)
+
   def complement_font(%__MODULE__{} = self, %Font{} = font),
     do: Complement.complement_font(self, font)
 

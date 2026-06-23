@@ -31,7 +31,7 @@ defmodule Thaqqa.FontRegistry do
   def import_as_root(), do: Thaqqa.FontRegistry.IO.import_as_root()
 
   def import_const(), do: Thaqqa.FontRegistry.IO.import_const()
-  @spec import_bundle(any()) :: :ok | {:error, any()}
+
   def import_bundle(uuid), do: Thaqqa.FontRegistry.IO.import_bundle(uuid)
 
   defp safe_call(msg, timeout \\ @timeout_default) do
@@ -70,6 +70,16 @@ defmodule Thaqqa.FontRegistry do
     end
   end
 
+  def create_const_table() do
+    case :ets.lookup(@const_tables_shadow, 0) |> Enum.at(0) do
+      nil -> {:ok, Thaqqa.ConstTable.new()}
+      {_, otherwize} -> {:ok, otherwize}
+    end
+  end
+
+  def create_const_table_managed(uuid, timeout \\ 5_000),
+    do: safe_call({:create_const_table, uuid}, timeout)
+
   def create_blank_prefab_managed(timeout \\ 5_000),
     do: safe_call({:create_blank_prefab}, timeout)
 
@@ -107,7 +117,7 @@ defmodule Thaqqa.FontRegistry do
   end
 
   def handle_call({:rollback_const}, _from, state) do
-    :ets.delete(@const_tables_shadow)
+    :ets.delete(@const_tables_shadow, 0)
 
     :ets.insert(
       @const_tables_shadow,
@@ -133,7 +143,7 @@ defmodule Thaqqa.FontRegistry do
   # commit系
 
   def handle_call({:commit_const}, _from, state) do
-    :ets.delete(@const_tables)
+    :ets.delete(@const_tables, 0)
 
     :ets.insert(
       @const_tables,
@@ -183,7 +193,7 @@ defmodule Thaqqa.FontRegistry do
         _from,
         state
       ) do
-    :ets.insert(@const_shadow, Map.to_list(const_map))
+    :ets.insert(@const_tables_shadow, {0, const_map})
     {:reply, :ok, state}
   end
 
@@ -197,6 +207,16 @@ defmodule Thaqqa.FontRegistry do
     result =
       case :ets.lookup(@bundles_shadow, uuid) |> Enum.at(0) do
         nil -> Thaqqa.Bundle.new(%{}, %{})
+        {_, otherwize} -> otherwize
+      end
+
+    {:reply, {:ok, result}, state}
+  end
+
+  def handle_call({:create_const_table}, _from, state) do
+    result =
+      case :ets.lookup(@const_tables_shadow, 0) |> Enum.at(0) do
+        nil -> Thaqqa.ConstTable.new()
         {_, otherwize} -> otherwize
       end
 

@@ -9,6 +9,7 @@ defmodule Thaqqa.FontRegistry.IO do
 
   alias Thaqqa.FontRegistry, as: FontRegistry
   alias Thaqqa.Bundle, as: Bundle
+  alias Thaqqa.ConstTable, as: ConstTable
   alias Thaqqa.Filename, as: Filename
 
   defp read_and_decode_json(file_path) do
@@ -84,10 +85,10 @@ defmodule Thaqqa.FontRegistry.IO do
   def import_const() do
     file_path = Filename.root_folder() <> "/" <> Filename.root_file()
 
-    with {:ok, constdata} <- read_and_decode_json(file_path),
-         # Bundle.import_const(constdata),
-         {:ok, const_map} <- {:ok, constdata},
-         :ok <- FontRegistry.apply_const(const_map),
+    with {:ok, consttable} <- FontRegistry.create_const_table(),
+         {:ok, constdata} <- read_and_decode_json(file_path),
+         {:ok, consttable} <- ConstTable.import_as_const(consttable, constdata),
+         :ok <- FontRegistry.apply_const(consttable),
          :ok <- FontRegistry.commit_const() do
       :ok
     else

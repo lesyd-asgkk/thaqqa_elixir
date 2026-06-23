@@ -5,6 +5,7 @@ defmodule Thaqqa.DataTable do
   alias Thaqqa.DataTable.Query, as: Query
   alias Thaqqa.DataTable.Op, as: Op
   alias Thaqqa.DataTable.DataMapModifier, as: Modifier
+  alias Thaqqa.DataTable.IO, as: IO
 
   use Thaqqa.DataTable.Const
 
@@ -150,6 +151,8 @@ defmodule Thaqqa.DataTable do
 
     %__MODULE__{dt | data_list: sorted}
   end
+
+  def import_table(name, struct), do: IO.import_table(name, struct)
 end
 
 #
