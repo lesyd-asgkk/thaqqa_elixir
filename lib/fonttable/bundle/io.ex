@@ -4,7 +4,6 @@ defmodule Thaqqa.Bundle.IO do
   alias Thaqqa.Font, as: Font
   alias Thaqqa.Bundle.ConstRegexKhhylTable, as: ConstRegexKhhylTable
   alias Thaqqa.FontRegistry.Error, as: Error
-  alias Thaqqa.ConstTable, as: ConstTable
 
   def new_from_request(json) when is_map(json) do
     case Bundle.new() |> import_as_root(json["static_tables"]) do
@@ -83,6 +82,6 @@ defmodule Thaqqa.Bundle.IO do
     end
   end
 
-  defp init_const_table(%Bundle{} = prefab),
+  def init_const_table(%Bundle{} = prefab),
     do: ConstRegexKhhylTable.set_datalist_hash(prefab)
 end

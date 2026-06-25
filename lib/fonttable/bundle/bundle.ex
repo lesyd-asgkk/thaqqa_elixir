@@ -177,6 +177,9 @@ defmodule Thaqqa.Bundle do
   def complement_by_static_table(%__MODULE__{} = self, table_name),
     do: Complement.complement_by_static_table(self, table_name)
 
+  def set_precompile_all(%__MODULE__{} = self),
+    do: Compiler.set_precompile_all(self)
+
   def set_precompile_on_root(%__MODULE__{} = self),
     do: Compiler.set_precompile_on_root(self)
 
@@ -184,6 +187,7 @@ defmodule Thaqqa.Bundle do
     do: Compiler.set_precompile_on_font(self, fontname)
 
   # {:ok/:error}バージョンも作る（要はnil対応）
+
   def sort_as_static_if_enable(%__MODULE__{} = self, tablename) do
     case sort_as_static(self, tablename) do
       {:ok, prefab} -> prefab
@@ -216,4 +220,6 @@ defmodule Thaqqa.Bundle do
         edit_font(self, tablename, font)
     end
   end
+
+  def init_const_table(%__MODULE__{} = self), do: IO.init_const_table(self)
 end

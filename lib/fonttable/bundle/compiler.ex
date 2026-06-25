@@ -99,7 +99,7 @@ defmodule Thaqqa.Bundle.Compiler do
       {:exit, reason}, _acc -> {:halt, {:error, reason}}
     end)
     |> case do
-      {:ok, data_list} -> {:ok, %DataTable{table | data_list: data_list}}
+      {:ok, data_list} -> {:ok, %DataTable{table | data_list: data_list} |> DataTable.sort()}
       {:error, _} = err -> err
     end
   end

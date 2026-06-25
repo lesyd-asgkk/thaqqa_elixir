@@ -218,7 +218,7 @@ defmodule Thaqqa.Render do
 
       {:ok, const} ->
         regex = const |> Thaqqa.Data.get_value(@precompile)
-
+        # あとはここだけ…の筈。
         string = Regex.replace(regex, string, "\\g{1}Sep()\\g{2}")
         string = Regex.replace(regex, string, "\\g{1}Sep()\\g{2}")
 

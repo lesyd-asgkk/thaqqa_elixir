@@ -50,8 +50,9 @@ defmodule Thaqqa.FontRegistry.IO do
          {:ok, bundle} <- Bundle.import_as_root(bundle, rootdata),
          {:ok, consttable} <- FontRegistry.create_const_table(),
          bundle <- ConstTable.complement_bundle(consttable, bundle),
-         :ok <-
-           FontRegistry.apply_bundle(bundle, bundle.uuid) do
+         {:ok, bundle} <- Bundle.set_precompile_all(bundle),
+         {:ok, bundle} <- Bundle.init_const_table(bundle),
+         :ok <- FontRegistry.apply_bundle(bundle, bundle.uuid) do
       :ok
     else
       {:error, _} = err -> err
