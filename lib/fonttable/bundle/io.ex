@@ -64,16 +64,16 @@ defmodule Thaqqa.Bundle.IO do
   end
 
   def import_as_font(%Bundle{} = self, fontdata, filename) when is_map(fontdata) do
-    with {:ok, prefab} <-
-           Enum.reduce_while(fontdata, {:ok, []}, fn {k, v}, {:ok, acc} ->
+    with {:ok, table_map} <-
+           Enum.reduce_while(fontdata, {:ok, %{}}, fn {k, v}, {:ok, acc} ->
              DataTable.import_table(k, v)
              |> case do
                {:error, _} = err -> {:halt, err}
-               {:ok, value} -> {:cont, {:ok, acc ++ [value]}}
+               {:ok, value} -> {:cont, {:ok, Map.put(acc, value.name, value)}}
              end
            end),
          {:ok, name} <- extract_datatable_name(fontdata),
-         {:ok, prefab_alter} <- {:ok, Bundle.init_font(self, Font.new(filename, name, prefab))},
+         {:ok, prefab_alter} <- {:ok, Bundle.init_font(self, Font.new(filename, name, table_map))},
          {:ok, font} <- Bundle.set_precompile_on_font(prefab_alter, name),
          {:ok, font} <- Bundle.edit_font(prefab_alter, name, font) do
       {:ok, font}
@@ -82,6 +82,6 @@ defmodule Thaqqa.Bundle.IO do
     end
   end
 
-  defp init_const_table(%Bundle{} = prefab),
+  def init_const_table(%Bundle{} = prefab),
     do: ConstRegexKhhylTable.set_datalist_hash(prefab)
 end

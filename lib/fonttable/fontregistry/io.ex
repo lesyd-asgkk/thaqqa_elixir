@@ -45,10 +45,14 @@ defmodule Thaqqa.FontRegistry.IO do
   defp import_as_root(uuid) do
     file_path = Filename.bundle_path(uuid)
 
-    with {:ok, prefab} <- FontRegistry.create_prefab(uuid),
+    with {:ok, bundle} <- FontRegistry.create_prefab(uuid),
          {:ok, rootdata} <- read_and_decode_json(file_path),
-         {:ok, prefab} <- Bundle.import_as_root(prefab, rootdata),
-         :ok <- FontRegistry.apply_bundle(prefab, prefab.uuid) do
+         {:ok, bundle} <- Bundle.import_as_root(bundle, rootdata),
+         {:ok, consttable} <- FontRegistry.create_const_table(),
+         bundle <- ConstTable.complement_bundle(consttable, bundle),
+         {:ok, bundle} <- Bundle.set_precompile_all(bundle),
+         {:ok, bundle} <- Bundle.init_const_table(bundle),
+         :ok <- FontRegistry.apply_bundle(bundle, bundle.uuid) do
       :ok
     else
       {:error, _} = err -> err

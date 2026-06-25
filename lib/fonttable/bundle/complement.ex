@@ -97,16 +97,19 @@ defmodule Thaqqa.Bundle.Complement do
 
   # 追加された(される)fontをstatic_tableの設定に合わせる
   def complement_font(%Bundle{} = self, %Font{name: font_name} = font) do
-    tablename_list = font.table_list |> Enum.map(fn v -> v.name end)
+    tablename_list = font.table_list |> Enum.map(fn {_, v} -> v.name end)
+    font_table_list = font.table_list |> Enum.map(fn {k, v} -> {k, v} end)
 
     table_list =
       ((Bundle.get_local_static_table_list(self)
-        |> Enum.map(fn {k, v} -> if k in tablename_list, do: nil, else: v end)) ++ font.table_list)
-      |> Enum.filter(fn v -> v != nil end)
-      |> Enum.map(fn %DataTable{} = table ->
-        complement_table(self, table)
+        |> Enum.map(fn {k, v} -> if k in tablename_list, do: {k, nil}, else: {k, v} end)) ++
+         font_table_list)
+      |> Enum.filter(fn {_, v} -> v != nil end)
+      |> Enum.map(fn {k, %DataTable{} = table} ->
+        {k, complement_table(self, table)}
       end)
-      |> Enum.filter(fn v -> v != nil end)
+      |> Enum.filter(fn {_, v} -> v != nil end)
+      |> Map.new(fn {k, v} -> {k, v} end)
 
     %Bundle{self | fonts: Map.put(self.fonts, font_name, %Font{font | table_list: table_list})}
   end

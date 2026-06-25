@@ -44,17 +44,17 @@ defmodule Thaqqa.Bundle.Compiler do
       ) do
     Enum.map(
       table_list,
-      fn table ->
-        {:ok, set_precompile_on_datatable(self, table)}
+      fn {k, table} ->
+        {k, set_precompile_on_datatable(self, table)}
       end
     )
     |> Enum.reduce_while({:ok, []}, fn
-      {:ok, {:ok, table}}, {:ok, acc} -> {:cont, {:ok, [table | acc]}}
-      {:ok, {:error, _} = err}, _acc -> {:halt, err}
+      {k, {:ok, table}}, {:ok, acc} -> {:cont, {:ok, [{k, table} | acc]}}
+      {_, {:error, _} = err}, _acc -> {:halt, err}
       {:exit, reason}, _acc -> {:halt, {:error, reason}}
     end)
     |> case do
-      {:ok, table_list} -> {:ok, %Font{font | table_list: table_list}}
+      {:ok, table_list} -> {:ok, %Font{font | table_list: Map.new(table_list)}}
       {:error, _} = err -> err
     end
   end
@@ -99,7 +99,7 @@ defmodule Thaqqa.Bundle.Compiler do
       {:exit, reason}, _acc -> {:halt, {:error, reason}}
     end)
     |> case do
-      {:ok, data_list} -> {:ok, %DataTable{table | data_list: data_list}}
+      {:ok, data_list} -> {:ok, %DataTable{table | data_list: data_list} |> DataTable.sort()}
       {:error, _} = err -> err
     end
   end

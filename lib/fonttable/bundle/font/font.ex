@@ -1,15 +1,13 @@
 defmodule Thaqqa.Font do
   alias Thaqqa.DataTable, as: DataTable
 
-  defstruct [:filename, :name, table_list: []]
+  defstruct [:filename, :name, table_list: %{}]
 
   def new(filename, name, t), do: %__MODULE__{table_list: t, name: name, filename: filename}
 
   def get_table_list(%__MODULE__{table_list: tables}), do: tables
 
-  def get_table(%__MODULE__{table_list: tables}, table_name) do
-    Enum.find(tables, fn table -> table.name == table_name end)
-  end
+  def get_table(%__MODULE__{table_list: tables}, table_name), do: Map.get(tables, table_name)
 
   def add_table!(%__MODULE__{} = font, %DataTable{} = table) do
     add_table(font, table)
@@ -17,23 +15,13 @@ defmodule Thaqqa.Font do
 
   def add_table(
         %__MODULE__{table_list: tables} = font,
-        %DataTable{} = table
-      ) do
-    %{font | table_list: [table | tables]}
-  end
+        %DataTable{name: table_name} = table
+      ),
+      do: %{font | table_list: Map.put(tables, table, table_name)}
 
-  def delete_table(%__MODULE__{table_list: tables} = font, table_name) do
-    new_tables = Enum.filter(tables, fn table -> table.name != table_name end)
-    %{font | table_list: new_tables}
-  end
+  def delete_table(%__MODULE__{table_list: tables} = font, table_name),
+    do: %{font | table_list: Map.delete(tables, table_name)}
 
-  def edit_table(%__MODULE__{table_list: tables} = font, table_name, %DataTable{} = new_table) do
-    new_tables =
-      Enum.map(tables, fn
-        table when table.name == table_name -> new_table
-        table -> table
-      end)
-
-    %{font | table_list: new_tables}
-  end
+  def edit_table(%__MODULE__{table_list: tables} = font, table_name, %DataTable{} = new_table),
+    do: %{font | table_list: Map.put(tables, new_table, table_name)}
 end

@@ -88,20 +88,19 @@ defmodule Thaqqa.ConstTable.Complement do
       Enum.reduce(
         column_list ++ table.column_list,
         table,
-        fn %Column{name: column_name}, acc ->
-          complement_table_by_column(self, acc, column_name)
-        end
+        fn %Column{} = column, acc -> complement_table_by_column(self, acc, column) end
       )
     end
   end
 
   def complement_bundle(%ConstTable{} = self, %Bundle{} = bundle) do
-    tablename_list = bundle.static_tables |> Enum.map(fn v -> v.name end)
+    tablename_list = bundle.static_tables |> Enum.map(fn {_, v} -> v.name end)
+    table_list = bundle.static_tables |> Enum.map(fn {_, v} -> v end)
+    IO.inspect(ConstTable.get_const_table_list(self))
 
     table_list =
       ((ConstTable.get_const_table_list(self)
-        |> Enum.map(fn {k, v} -> if k in tablename_list, do: nil, else: v end)) ++
-         bundle.static_tables)
+        |> Enum.map(fn {k, v} -> if k in tablename_list, do: nil, else: v end)) ++ table_list)
       |> Enum.filter(fn v -> v != nil end)
       |> Enum.map(fn %DataTable{} = table -> complement_table(self, table) end)
       |> Enum.filter(fn v -> v != nil end)

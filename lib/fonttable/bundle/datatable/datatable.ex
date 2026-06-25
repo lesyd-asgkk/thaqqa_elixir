@@ -144,8 +144,8 @@ defmodule Thaqqa.DataTable do
       Enum.sort(
         datas,
         &if(Thaqqa.Data.get_value(&1, "Order") == Thaqqa.Data.get_value(&2, "Order"),
-          do: Thaqqa.Data.get_value(&1, "Priority") >= Thaqqa.Data.get_value(&2, "Priority"),
-          else: Thaqqa.Data.get_value(&1, "Order") > Thaqqa.Data.get_value(&2, "Order")
+          do: Thaqqa.Data.get_value(&1, "Priority") <= Thaqqa.Data.get_value(&2, "Priority"),
+          else: Thaqqa.Data.get_value(&1, "Order") < Thaqqa.Data.get_value(&2, "Order")
         )
       )
 
