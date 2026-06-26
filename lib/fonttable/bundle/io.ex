@@ -69,13 +69,6 @@ defmodule Thaqqa.Bundle.IO do
     end
   end
 
-  defp extract_from_fontsysdata(data, column) do
-    case get_in(data, ["FONTSYSDATA", "dataList", "0", column]) do
-      nil -> Error.requried_data_not_found(column, "FONTSYSDATA")
-      name -> {:ok, name}
-    end
-  end
-
   def import_as_font(%Bundle{} = self, fontdata) when is_map(fontdata) do
     with {:ok, table_map} <-
            Enum.reduce_while(fontdata, {:ok, %{}}, fn {k, v}, {:ok, acc} ->

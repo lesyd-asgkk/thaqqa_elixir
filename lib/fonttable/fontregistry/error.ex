@@ -167,6 +167,10 @@ defmodule Thaqqa.FontRegistry.Error do
   def requried_information_not_found(data, tablename),
     do: error(:not_found, :import, %{data: data, table_name: tablename})
 
+  def invalid_uuid(where, in_file, in_folder),
+    do:
+      error(:invalid, :import, %{data: "uuid", at: where, in_file: in_file, in_folder: in_folder})
+
   def requried_status_not_found(status_list),
     do: error(:not_found, :import, %{status_list: status_list})
 end
