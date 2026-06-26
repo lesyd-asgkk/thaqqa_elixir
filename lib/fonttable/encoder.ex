@@ -58,7 +58,10 @@ end
 
 defimpl Jason.Encoder, for: Thaqqa.Font do
   def encode(font, opts) do
-    Jason.Encode.map(Enum.new(font.table_list, fn table -> {table.name, table} end), opts)
+    Jason.Encode.map(
+      Map.new(font.table_list, fn {_, _} = font_with_key -> font_with_key end),
+      opts
+    )
   end
 end
 

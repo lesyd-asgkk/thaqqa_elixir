@@ -268,7 +268,7 @@ defmodule Thaqqa.FontRegistry do
          :ok <- File.mkdir_p(bundle_folder_name),
          :ok <- File.write(bundle_folder_name <> Filename.bundle_file(), json_statics),
          :ok <- save_font_map(fonts, bundle_folder_name, opts) do
-      :ok
+      {:reply, :ok, state}
     else
       {:error, _} = err -> {:reply, err, state}
     end
