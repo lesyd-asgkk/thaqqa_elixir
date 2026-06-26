@@ -226,8 +226,9 @@ defmodule Thaqqa.FontRegistry do
   # ファイル保存系列
 
   def handle_call({:save_const, opts}, _from, state) do
-    with {:ok, json} <- Jason.encode(:ets.tab2list(@const_tables) |> Map.new(), opts),
-         :ok <- File.write(Filename.root_folder(), json) do
+    with [{_, const_table}] <- :ets.lookup(@const_tables, 0),
+         {:ok, json} <- Jason.encode(const_table, opts),
+         :ok <- File.write(Filename.root_folder() <> Filename.root_file(), json) do
       {:reply, :ok, state}
     else
       {:error, _} = err -> {:reply, err, state}
@@ -236,19 +237,22 @@ defmodule Thaqqa.FontRegistry do
 
   defp save_font_map(fonts, bundle_path, opts) do
     Enum.reduce_while(fonts, :ok, fn {_, v}, :ok ->
-      case save_font(v, bundle_path, opts) do
+      uuid = Thaqqa.Font.get_table(v, "FONTSYSDATA") |> Thaqqa.DataTable.get_data() |> Enum.at(0)
+      uuid = uuid.value_map |> Map.get("UUID")
+
+      case save_font(v, uuid, bundle_path, opts) do
         {:error, _} = err -> {:halt, err}
         :ok -> {:cont, :ok}
       end
     end)
   end
 
-  defp save_font(font, bundle_path, opts) do
-    font_folder_name = bundle_path <> "/" <> font.filename
+  defp save_font(font, uuid, bundle_path, opts) do
+    font_folder_name = bundle_path <> Filename.font_folder(uuid)
 
     with {:ok, json} <- Jason.encode(font, opts),
          :ok <- File.mkdir_p(font_folder_name),
-         :ok <- File.write(font_folder_name <> "/" <> Filename.font_file(), json) do
+         :ok <- File.write(font_folder_name <> Filename.font_file(), json) do
       :ok
     else
       {:error, _} = err -> err
@@ -262,7 +266,7 @@ defmodule Thaqqa.FontRegistry do
            :ets.lookup(@bundles_shadow, uuid),
          {:ok, json_statics} <- Jason.encode(static_tables, opts),
          :ok <- File.mkdir_p(bundle_folder_name),
-         :ok <- File.write(bundle_folder_name <> "/" <> Filename.bundle_file(), json_statics),
+         :ok <- File.write(bundle_folder_name <> Filename.bundle_file(), json_statics),
          :ok <- save_font_map(fonts, bundle_folder_name, opts) do
       :ok
     else

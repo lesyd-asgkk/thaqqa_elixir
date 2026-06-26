@@ -105,14 +105,6 @@ defmodule Thaqqa.FontRegistry.IO do
     end
   end
 
-  # json→mapに変換する処理。
-  defp read_and_decode_json(file_path) do
-    case File.read(file_path) do
-      {:error, reason} -> {:error, reason}
-      {:ok, json} -> Jason.decode(json)
-    end
-  end
-
   def import_const() do
     file_path = Filename.root_folder() <> "/" <> Filename.root_file()
 

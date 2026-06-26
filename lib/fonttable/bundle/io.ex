@@ -4,6 +4,7 @@ defmodule Thaqqa.Bundle.IO do
   alias Thaqqa.Font, as: Font
   alias Thaqqa.Bundle.ConstRegexKhhylTable, as: ConstRegexKhhylTable
   alias Thaqqa.FontRegistry.Error, as: Error
+  use Thaqqa.DataTable.Const
 
   def attach_id(value_map, %DataTable{} = table) when is_map(value_map) do
     if Map.has_key?(value_map, @id) and Map.get(value_map, @id) != nil,

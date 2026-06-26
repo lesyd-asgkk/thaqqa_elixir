@@ -6,6 +6,9 @@ defmodule Thaqqa.Filename do
   def bundle_folder(uuid),
     do: System.get_env("BUNDLEFOLDER") |> String.replace("{}", to_string(uuid))
 
+  def font_folder(uuid),
+    do: System.get_env("FONTFOLDER") |> String.replace("{}", to_string(uuid))
+
   def bundle_path(uuid),
     do: root_folder() <> bundle_folder(uuid) <> font_file()
 

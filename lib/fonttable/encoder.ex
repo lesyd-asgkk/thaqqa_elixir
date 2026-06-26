@@ -45,6 +45,7 @@ defimpl Jason.Encoder, for: Thaqqa.DataTable do
       %{
         name: datatable.name,
         global: datatable.global,
+        static: datatable.static,
         compile_rule: datatable.compile_rule,
         single: datatable.single,
         columnList: datatable.column_list |> Map.new(fn v -> {v.name, v} end),
@@ -57,7 +58,7 @@ end
 
 defimpl Jason.Encoder, for: Thaqqa.Font do
   def encode(font, opts) do
-    Jason.Encode.map(Map.new(font.table_list, fn table -> {table.name, table} end), opts)
+    Jason.Encode.map(Enum.new(font.table_list, fn table -> {table.name, table} end), opts)
   end
 end
 
@@ -84,10 +85,7 @@ end
 defimpl Jason.Encoder, for: Thaqqa.ConstTable do
   def encode(consttable, opts) do
     Jason.Encode.map(
-      %{
-        static_tables:
-          Map.new(consttable.const_tables, fn {_, _} = table_with_key -> table_with_key end)
-      },
+      Map.new(consttable.const_tables, fn {_, _} = table_with_key -> table_with_key end),
       opts
     )
   end
