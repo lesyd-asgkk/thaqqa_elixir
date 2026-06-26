@@ -24,6 +24,8 @@ defmodule Thaqqa.Bundle.Op do
     update_fonts(self, Map.put(self.fonts, name, font)) |> Bundle.complement_font(font)
   end
 
+  # todo:uuidの添付をここに追加する。
+
   def add_font_if_enable(%Bundle{} = self, %Thaqqa.Font{} = font) do
     case add_font(self, font) do
       {:error, _} -> self
@@ -38,7 +40,7 @@ defmodule Thaqqa.Bundle.Op do
       else: Error.nominal_conflict_font(name, :add)
   end
 
-  def duplicate_font(%Bundle{} = self, name, fontname_duplication, filename) do
+  def duplicate_font(%Bundle{} = self, name, fontname_duplication) do
     case Bundle.get_font(self, name) do
       nil ->
         Error.font_not_found(name)
@@ -48,11 +50,8 @@ defmodule Thaqqa.Bundle.Op do
           Bundle.get_font(self, fontname_duplication) != nil ->
             Error.nominal_conflict_font(name, :duplicate)
 
-          Bundle.get_font_from_filename(self, filename) != nil ->
-            Error.filename_conflict_font(name, :duplicate)
-
           true ->
-            font_alt = %Thaqqa.Font{font | filename: filename}
+            font_alt = font
             {:ok, update_fonts(self, Map.put(self.fonts, fontname_duplication, font_alt))}
         end
     end

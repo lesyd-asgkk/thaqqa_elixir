@@ -5,6 +5,12 @@ defmodule Thaqqa.Bundle.IO do
   alias Thaqqa.Bundle.ConstRegexKhhylTable, as: ConstRegexKhhylTable
   alias Thaqqa.FontRegistry.Error, as: Error
 
+  def attach_id(value_map, %DataTable{} = table) when is_map(value_map) do
+    if Map.has_key?(value_map, @id) and Map.get(value_map, @id) != nil,
+      do: value_map,
+      else: Map.put(value_map, @id, DataTable.get_least_available_id(table))
+  end
+
   def new_from_request(json) when is_map(json) do
     case Bundle.new() |> import_as_root(json["static_tables"]) do
       {:error, _} = err ->
@@ -14,7 +20,7 @@ defmodule Thaqqa.Bundle.IO do
         Enum.reduce_while(json["fonts"], {:ok, prefab}, fn {_, font}, {:ok, acc_prefab} ->
           # ニ度手間だが、filename情報は不要なのでこのような形としている。
 
-          case import_as_font(acc_prefab, font["table_list"], font["filename"]) do
+          case import_as_font(acc_prefab, font["table_list"]) do
             {:error, _} = err -> {:halt, err}
             {:ok, acc_prefab} -> {:cont, {:ok, acc_prefab}}
           end
@@ -63,7 +69,14 @@ defmodule Thaqqa.Bundle.IO do
     end
   end
 
-  def import_as_font(%Bundle{} = self, fontdata, filename) when is_map(fontdata) do
+  defp extract_from_fontsysdata(data, column) do
+    case get_in(data, ["FONTSYSDATA", "dataList", "0", column]) do
+      nil -> Error.requried_data_not_found(column, "FONTSYSDATA")
+      name -> {:ok, name}
+    end
+  end
+
+  def import_as_font(%Bundle{} = self, fontdata) when is_map(fontdata) do
     with {:ok, table_map} <-
            Enum.reduce_while(fontdata, {:ok, %{}}, fn {k, v}, {:ok, acc} ->
              DataTable.import_table(k, v)
@@ -73,7 +86,7 @@ defmodule Thaqqa.Bundle.IO do
              end
            end),
          {:ok, name} <- extract_datatable_name(fontdata),
-         {:ok, prefab_alter} <- {:ok, Bundle.init_font(self, Font.new(filename, name, table_map))},
+         {:ok, prefab_alter} <- {:ok, Bundle.init_font(self, Font.new(name, table_map))},
          {:ok, font} <- Bundle.set_precompile_on_font(prefab_alter, name),
          {:ok, font} <- Bundle.edit_font(prefab_alter, name, font) do
       {:ok, font}

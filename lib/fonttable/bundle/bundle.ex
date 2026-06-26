@@ -170,8 +170,8 @@ defmodule Thaqqa.Bundle do
   def import_as_root(%__MODULE__{} = self, rootdata) when is_map(rootdata),
     do: IO.import_as_root(self, rootdata)
 
-  def import_as_font(%__MODULE__{} = self, fontdata, filename) when is_map(fontdata),
-    do: IO.import_as_font(self, fontdata, filename)
+  def import_as_font(%__MODULE__{} = self, fontdata) when is_map(fontdata),
+    do: IO.import_as_font(self, fontdata)
 
   # static_tableの変更に伴ってfontテーブル側を変更する
   def complement_by_static_table(%__MODULE__{} = self, table_name),

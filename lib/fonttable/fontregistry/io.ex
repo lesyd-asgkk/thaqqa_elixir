@@ -64,7 +64,7 @@ defmodule Thaqqa.FontRegistry.IO do
 
     with {:ok, prefab} <- FontRegistry.create_prefab(uuid),
          {:ok, fontdata} <- read_and_decode_json(file_path),
-         {:ok, prefab} <- Bundle.import_as_font(prefab, fontdata, foldername) do
+         {:ok, prefab} <- Bundle.import_as_font(prefab, fontdata) do
       uuid = prefab.uuid
 
       with :ok <- FontRegistry.apply_bundle(prefab, uuid),

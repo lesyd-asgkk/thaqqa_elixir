@@ -1,9 +1,9 @@
 defmodule Thaqqa.Font do
   alias Thaqqa.DataTable, as: DataTable
 
-  defstruct [:filename, :name, table_list: %{}]
+  defstruct [:name, table_list: %{}]
 
-  def new(filename, name, t), do: %__MODULE__{table_list: t, name: name, filename: filename}
+  def new(name, t), do: %__MODULE__{table_list: t, name: name}
 
   def get_table_list(%__MODULE__{table_list: tables}), do: tables
 
