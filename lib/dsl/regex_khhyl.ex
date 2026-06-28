@@ -4,7 +4,7 @@ defmodule Thaqqa.Regex_Khhyl do
   alias Thaqqa.Regex_Khhyl.Translator, as: Translator
   alias Thaqqa.Regex_Khhyl.Normalizer, as: Normalizer
   alias Thaqqa.Regex_Khhyl.Tokenizer, as: Tokenizer
-  alias Thaqqa.FontRegistryPrefab, as: Prefab
+  alias Thaqqa.Bundle, as: Bundle
 
   @moduledoc """
   東果文字の処理に適したDSL(正規表現の糖衣構文)を通常の正規表現に変換するModuleである。
@@ -234,20 +234,20 @@ defmodule Thaqqa.Regex_Khhyl do
     list |> Enum.reverse() |> Enum.join("")
   end
 
-  def compile_as_regex!(string, %Prefab{} = prefab) when is_binary(string),
+  def compile_as_regex!(string, %Bundle{} = prefab) when is_binary(string),
     do: compile!(string, prefab)
 
-  def compile_as_regex(string, %Prefab{} = prefab) when is_binary(string),
+  def compile_as_regex(string, %Bundle{} = prefab) when is_binary(string),
     do: compile(string, prefab)
 
-  def compile!(string, %Prefab{} = prefab) when is_binary(string) do
+  def compile!(string, %Bundle{} = prefab) when is_binary(string) do
     case compile(string, prefab) do
       {:ok, val} -> val
       {:error, reason} -> raise reason
     end
   end
 
-  def compile(string, %Prefab{} = prefab) when is_binary(string) do
+  def compile(string, %Bundle{} = prefab) when is_binary(string) do
     case export(string, prefab) do
       {:ok, val} ->
         Regex.compile(val)
@@ -257,36 +257,36 @@ defmodule Thaqqa.Regex_Khhyl do
     end
   end
 
-  def compile_as_string!(string, %Prefab{} = prefab) when is_binary(string),
+  def compile_as_string!(string, %Bundle{} = prefab) when is_binary(string),
     do: export!(string, prefab)
 
-  def compile_as_string(string, %Prefab{} = prefab) when is_binary(string),
+  def compile_as_string(string, %Bundle{} = prefab) when is_binary(string),
     do: export(string, prefab)
 
-  def export_as_string!(string, %Prefab{} = prefab) when is_binary(string),
+  def export_as_string!(string, %Bundle{} = prefab) when is_binary(string),
     do: export!(string, prefab)
 
-  def export_as_string(string, %Prefab{} = prefab) when is_binary(string),
+  def export_as_string(string, %Bundle{} = prefab) when is_binary(string),
     do: export(string, prefab)
 
-  def export!(string, %Prefab{} = prefab) when is_binary(string) do
+  def export!(string, %Bundle{} = prefab) when is_binary(string) do
     case export(string, prefab) do
       {:ok, val} -> val
       {:error, reason} -> raise reason
     end
   end
 
-  def export(string, %Prefab{} = prefab) when is_binary(string) do
+  def export(string, %Bundle{} = prefab) when is_binary(string) do
     case string |> tokenize() |> normalize() do
       {:ok, val} -> translate(val, prefab)
       {:error, _} = err -> err
     end
   end
 
-  def translate!(ast, %Prefab{} = prefab) when is_list(ast),
+  def translate!(ast, %Bundle{} = prefab) when is_list(ast),
     do: Translator.translate!(ast, prefab)
 
-  def translate(ast, %Prefab{} = prefab) when is_list(ast), do: Translator.translate(ast, prefab)
+  def translate(ast, %Bundle{} = prefab) when is_list(ast), do: Translator.translate(ast, prefab)
 
   def normalize!(list) when is_list(list), do: Normalizer.normalize!(list)
   def normalize(list) when is_list(list), do: Normalizer.normalize(list)

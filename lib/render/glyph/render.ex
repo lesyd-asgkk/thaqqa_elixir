@@ -1,6 +1,6 @@
 defmodule Thaqqa.Glyph.GlyphRenderer do
   import SVG.Path
-  alias Thaqqa.FontRegistryPrefab, as: Prefab
+  alias Thaqqa.Bundle, as: Bundle
   alias Thaqqa.Glyph, as: Glyph
   alias Thaqqa.Render.Error, as: Error
 
@@ -23,7 +23,7 @@ defmodule Thaqqa.Glyph.GlyphRenderer do
   end
 
   def render_by_relative_height(
-        %Prefab{} = prefab,
+        %Bundle{} = prefab,
         %Glyph{
           name: %{type: "S", form: form},
           height: %{y0: y0, y1: y1, y2: y2, y3: y3},
@@ -35,7 +35,7 @@ defmodule Thaqqa.Glyph.GlyphRenderer do
         top_gap,
         bottom_gap
       ) do
-    case Prefab.get_fontdata(prefab, fontname, ["Thickness"]) do
+    case Bundle.get_fontdata(prefab, fontname, ["Thickness"]) do
       {:ok, %{Thickness: thickness_raw}} ->
         # 将来用。1のところに倍率指定を置く
         thickness = thickness_raw * scale
@@ -104,7 +104,7 @@ defmodule Thaqqa.Glyph.GlyphRenderer do
   end
 
   def render_by_relative_height(
-        %Prefab{} = prefab,
+        %Bundle{} = prefab,
         %Glyph{
           name: %{type: "S", form: form},
           height: %{y0: y0, y3: y3},
@@ -118,7 +118,7 @@ defmodule Thaqqa.Glyph.GlyphRenderer do
       ) do
     # 下からどれだけ、という値なのを、上からどれだけ、に換算する。
 
-    case Prefab.get_fontdata(prefab, fontname, ["Thickness"]) do
+    case Bundle.get_fontdata(prefab, fontname, ["Thickness"]) do
       {:ok, %{Thickness: thickness_raw}} ->
         # 将来用。1のところに倍率指定を置く
         thickness = thickness_raw * scale
@@ -157,7 +157,7 @@ defmodule Thaqqa.Glyph.GlyphRenderer do
 
   # そんなことはない場合
   def render_by_relative_height(
-        %Prefab{} = _prefab,
+        %Bundle{} = _prefab,
         %Glyph{name: %{form: form}, height: %{y0: _y0, y3: y3}, path: path, scale: _scale} = self,
         top_gap,
         bottom_gap
@@ -180,7 +180,7 @@ defmodule Thaqqa.Glyph.GlyphRenderer do
   # absoluteな高さにしたい場合の処理。
   # まずは音節の場合から
   def render_by_absolute_height(
-        %Prefab{} = prefab,
+        %Bundle{} = prefab,
         %Glyph{
           name: %{type: "S", form: form},
           font: fontname,
@@ -191,7 +191,7 @@ defmodule Thaqqa.Glyph.GlyphRenderer do
         height,
         vowel_height
       ) do
-    case Prefab.get_fontdata(prefab, fontname, ["Thickness"]) do
+    case Bundle.get_fontdata(prefab, fontname, ["Thickness"]) do
       {:ok, %{Thickness: thickness_raw}} ->
         # 将来用。1のところに倍率指定を置く
         thickness = thickness_raw * scale
@@ -261,7 +261,7 @@ defmodule Thaqqa.Glyph.GlyphRenderer do
 
   # その他の場合。
   def render_by_absolute_height(
-        %Prefab{} = prefab,
+        %Bundle{} = prefab,
         %Glyph{
           font: fontname,
           name: %{form: form},

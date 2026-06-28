@@ -2,7 +2,7 @@
 
 defmodule Thaqqa.Glyph do
   alias SVG.Path, as: Path
-  alias Thaqqa.FontRegistryPrefab, as: Prefab
+  alias Thaqqa.Bundle, as: Bundle
   use Thaqqa.DataTable.Const
 
   defstruct offset: %{x: 0, y: 0},
@@ -41,14 +41,14 @@ defmodule Thaqqa.Glyph do
   # path_raw(下位グリフの構成要素を含まないpathデータ)も予約済
   # （色変化対応ver用）
 
-  def new(%Prefab{} = prefab, font, glyphname, writing_direction, default_size),
+  def new(%Bundle{} = prefab, font, glyphname, writing_direction, default_size),
     do: Thaqqa.Glyph.GlyphSpawner.new(prefab, font, glyphname, writing_direction, default_size)
 
   def set_path(%__MODULE__{} = self), do: Thaqqa.Glyph.GlyphBuilder.set_path(self)
 
-  def render_by_relative_height(%Prefab{} = prefab, %__MODULE__{} = self, top_gap, bottom_gap),
+  def render_by_relative_height(%Bundle{} = prefab, %__MODULE__{} = self, top_gap, bottom_gap),
     do: Thaqqa.Glyph.GlyphRenderer.render_by_relative_height(prefab, self, top_gap, bottom_gap)
 
-  def render_by_absolute_height(%Prefab{} = prefab, %__MODULE__{} = self, height, vowel_height),
+  def render_by_absolute_height(%Bundle{} = prefab, %__MODULE__{} = self, height, vowel_height),
     do: Thaqqa.Glyph.GlyphRenderer.render_by_absolute_height(prefab, self, height, vowel_height)
 end

@@ -1,10 +1,10 @@
 defmodule Thaqqa.Render do
-  alias Thaqqa.FontRegistryPrefab, as: Prefab
+  alias Thaqqa.Bundle, as: Bundle
   alias Thaqqa.FontRegistry, as: FontRegistry
-  alias Thaqqa.FontRegistryPrefab.ParserTable, as: ParserTable
-  alias Thaqqa.FontRegistryPrefab.GsubTable, as: GsubTable
-  alias Thaqqa.FontRegistryPrefab.UniqueGsubTable, as: UniqueGsubTable
-  alias Thaqqa.FontRegistryPrefab.ConstRegexKhhylTable, as: ConstRegexKhhylTable
+  alias Thaqqa.Bundle.ParserTable, as: ParserTable
+  alias Thaqqa.Bundle.GsubTable, as: GsubTable
+  alias Thaqqa.Bundle.UniqueGsubTable, as: UniqueGsubTable
+  alias Thaqqa.Bundle.ConstRegexKhhylTable, as: ConstRegexKhhylTable
 
   alias Thaqqa.Render.Error, as: Error
   alias Thaqqa.Glyph, as: Glyph
@@ -130,17 +130,17 @@ defmodule Thaqqa.Render do
   # 単語毎に纏めているのを解いて行ごとの高さの指定を行う
   # 最後に行ごとにまとめているのも解き、全部のglyphにoffsetを適応する
 
-  def alignment_path_data_as_horizontal(%Prefab{} = prefab, glyph_list, %__MODULE__{} = render)
+  def alignment_path_data_as_horizontal(%Bundle{} = prefab, glyph_list, %__MODULE__{} = render)
       when is_list(glyph_list),
       do: Thaqqa.RenderHorizontal.alignment_path_data_as_horizontal(prefab, glyph_list, render)
 
-  def alignment_path_data_as_vertical(%Prefab{} = prefab, glyph_list, %__MODULE__{} = render)
+  def alignment_path_data_as_vertical(%Bundle{} = prefab, glyph_list, %__MODULE__{} = render)
       when is_list(glyph_list),
       do: Thaqqa.RenderVertical.alignment_path_data_as_vertical(prefab, glyph_list, render)
 
   # streamで処理する方式
   def build_path_data_stream(
-        %Prefab{} = prefab,
+        %Bundle{} = prefab,
         syllable_list,
         font,
         writing_direction,
@@ -169,7 +169,7 @@ defmodule Thaqqa.Render do
     end
   end
 
-  def build_path_data(%Prefab{} = prefab, syllable_list, font, writing_direction, default_scale)
+  def build_path_data(%Bundle{} = prefab, syllable_list, font, writing_direction, default_scale)
       when is_list(syllable_list) do
     # TODO Style()とマッチするSyllableだった場合は処理を変更する
     # _style_accはstyle適応の際の処理用。
@@ -188,7 +188,7 @@ defmodule Thaqqa.Render do
     end
   end
 
-  def verficate_syllable(%Prefab{} = prefab, syllable_list) when is_list(syllable_list) do
+  def verficate_syllable(%Bundle{} = prefab, syllable_list) when is_list(syllable_list) do
     Enum.reduce_while(syllable_list, nil, fn syl, _ ->
       case ConstRegexKhhylTable.whole_of_string_match_at_once?(prefab, "EverySingleLetter", syl) do
         {:error, _} = err ->
@@ -211,14 +211,14 @@ defmodule Thaqqa.Render do
     end
   end
 
-  def split_by_syllable(%Prefab{} = prefab, string) do
+  def split_by_syllable(%Bundle{} = prefab, string) do
     case ConstRegexKhhylTable.get_const(prefab, "EveryDoubleLetter") do
       {:error, _} = err ->
         err
 
       {:ok, const} ->
         regex = const |> Thaqqa.Data.get_value(@precompile)
-
+        # あとはここだけ…の筈。
         string = Regex.replace(regex, string, "\\g{1}Sep()\\g{2}")
         string = Regex.replace(regex, string, "\\g{1}Sep()\\g{2}")
 
@@ -226,7 +226,7 @@ defmodule Thaqqa.Render do
     end
   end
 
-  def convert_into_khhyl_letter(%Prefab{} = prefab, string, font, language, writing_direction)
+  def convert_into_khhyl_letter(%Bundle{} = prefab, string, font, language, writing_direction)
       when language in [@khehyelu, @samlhta] and writing_direction in [@vertical, @horizontal] do
     {:ok, p} = ParserTable.interpret(prefab, string, language)
 
