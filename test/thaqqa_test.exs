@@ -65,7 +65,8 @@ defmodule ThaqqaTest do
     glyph.path
     |> SVG.Path.export_as_string_mass!()
 
-    # |> IO.inspect()
+    Thaqqa.FontIO.export_as_font("Default", pretty: true)
+    |> IO.inspect()
 
     # def set_path(%__MODULE__{} = self), do: Thaqqa.Glyph.GlyphBuilder.set_path(self)
 

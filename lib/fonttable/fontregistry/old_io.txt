@@ -1,0 +1,64 @@
+  # ここから旧関数
+  def import_all() do
+    dir_name =
+      Path.wildcard(Filename.root_folder() <> "*")
+      |> Enum.filter(&File.dir?/1)
+      |> Enum.map(&Path.basename/1)
+
+    case import_as_root() do
+      {:error, _} = err ->
+        err
+
+      {:ok, _} ->
+        Enum.reduce_while(dir_name, {:ok, nil}, fn filename, {:ok, _} ->
+          case import_as_font(filename) do
+            {:error, _} = err -> {:halt, err}
+            {:ok, _} -> {:cont, {:ok, nil}}
+          end
+        end)
+    end
+  end
+
+  def import_as_root() do
+    file_path = Filename.root_folder() <> "/" <> Filename.root_file()
+
+    with {:ok, prefab} <- FontRegistry.create_prefab(),
+         {:ok, rootdata} <- read_and_decode_json(file_path),
+         {:ok, prefab} <- Bundle.import_as_root(prefab, rootdata) do
+      uuid = prefab.uuid
+
+      with :ok <- FontRegistry.apply_bundle(prefab, uuid),
+           :ok <- FontRegistry.commit_bundle(uuid) do
+        :ok
+      else
+        {:error, _} = err ->
+          FontRegistry.rollback_bundle(uuid)
+          err
+      end
+    else
+      {:error, _} = err -> err
+    end
+  end
+
+  def import_as_font(filename) do
+    file_path = Filename.root_folder() <> filename <> Filename.font_file()
+
+    with {:ok, prefab} <- FontRegistry.create_prefab(),
+         {:ok, fontdata} <- read_and_decode_json(file_path),
+         {:ok, prefab} <- Bundle.import_as_font(prefab, fontdata, filename) do
+      uuid = prefab.uuid
+
+      with :ok <- FontRegistry.apply_bundle(prefab, uuid),
+           :ok <- FontRegistry.commit_bundle(uuid) do
+        :ok
+      else
+        {:error, _} = err ->
+          FontRegistry.rollback_bundle(uuid)
+          err
+      end
+    else
+      {:error, _} = err -> err
+    end
+  end
+
+  # ここまで旧関数

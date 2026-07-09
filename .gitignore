@@ -22,3 +22,9 @@ erl_crash.dump
 # Ignore package tarball (built via "mix hex.build").
 thaqqa-*.tar
 
+# dataファイルについても基本無視。
+/data/fontdata/
+/data/font_old/
+# env系も。
+.env
+.env.local
