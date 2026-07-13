@@ -18,4 +18,16 @@ defmodule Thaqqa.Filename do
   def root_file, do: System.get_env("ROOTFILE")
   def bundle_file, do: System.get_env("BUNDLEFILE")
   def font_file, do: System.get_env("FONTFILE")
+
+  def version_file(major, minor, patch, prerelease),
+    do:
+      System.get_env("VERSIONFILE")
+      |> String.replace("{major}", to_string(major))
+      |> String.replace("{minor}", to_string(minor))
+      |> String.replace("{patch}", to_string(patch))
+      |> String.replace(
+        "{prerelease}",
+        if(prerelease != "", do: "{VERSIONSEPARATOR}" <> prerelease, else: "")
+      )
+      |> String.replace("{VERSIONSEPARATOR}", System.get_env("VERSIONSEPARATOR"))
 end

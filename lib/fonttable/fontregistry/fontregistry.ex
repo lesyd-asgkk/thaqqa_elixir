@@ -10,6 +10,7 @@ defmodule Thaqqa.FontRegistry do
   @commit_timeout 30_000
   @rollback_timeout 30_000
 
+  @import_timeout 30_000
   @export_timeout 30_000
 
   @bundles :bundles
@@ -27,8 +28,6 @@ defmodule Thaqqa.FontRegistry do
   def start_link(_opts) do
     GenServer.start_link(__MODULE__, :ok, name: __MODULE__)
   end
-
-  def import_as_root(), do: Thaqqa.FontRegistry.IO.import_as_root()
 
   def import_const(), do: Thaqqa.FontRegistry.IO.import_const()
 
@@ -65,8 +64,11 @@ defmodule Thaqqa.FontRegistry do
 
   def create_prefab(uuid) do
     case :ets.lookup(@bundles_shadow, uuid) |> Enum.at(0) do
-      nil -> {:ok, Thaqqa.Bundle.new(%{}, %{})}
-      {_, otherwize} -> {:ok, otherwize}
+      nil ->
+        {:ok, Thaqqa.Bundle.new(%{}, %{})}
+
+      {_, otherwize} ->
+        {:ok, otherwize}
     end
   end
 
@@ -252,11 +254,29 @@ defmodule Thaqqa.FontRegistry do
 
     with {:ok, json} <- Jason.encode(font, opts),
          :ok <- File.mkdir_p(font_folder_name),
-         :ok <- File.write(font_folder_name <> Filename.font_file(), json) do
+         :ok <- File.write(font_folder_name <> Filename.font_file(), json),
+         [major, minor, patch, pre] <-
+           get_version_data("FONTSYSDATA", font.table_list),
+         :ok <-
+           File.write(
+             font_folder_name <> Filename.version_file(major, minor, patch, pre),
+             json
+           ) do
       :ok
     else
       {:error, _} = err -> err
     end
+  end
+
+  defp get_version_data(tablename, data) do
+    data_list = (data[tablename].data_list |> Enum.at(0)).value_map
+
+    [
+      data_list["VersionMajor"],
+      data_list["VersionMinor"],
+      data_list["VersionPatch"],
+      data_list["VersionPreRelease"]
+    ]
   end
 
   def handle_call({:save_bundle, uuid, opts}, _from, state) do
@@ -267,6 +287,13 @@ defmodule Thaqqa.FontRegistry do
          {:ok, json_statics} <- Jason.encode(static_tables, opts),
          :ok <- File.mkdir_p(bundle_folder_name),
          :ok <- File.write(bundle_folder_name <> Filename.bundle_file(), json_statics),
+         [major, minor, patch, pre] <-
+           get_version_data("BUNDLESYSDATA", static_tables),
+         :ok <-
+           File.write(
+             bundle_folder_name <> Filename.version_file(major, minor, patch, pre),
+             json_statics
+           ),
          :ok <- save_font_map(fonts, bundle_folder_name, opts) do
       {:reply, :ok, state}
     else
