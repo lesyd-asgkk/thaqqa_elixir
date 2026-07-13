@@ -16,6 +16,9 @@ defmodule Thaqqa.FontRegistry do
   @bundles :bundles
   @bundles_shadow :bundles_shadow
 
+  @bundles_name_key :bundles_name_key
+  @bundles_shadow_name_key :bundles_shadow_name_key
+
   @bundle_uuid_to_commit :bundles_uuid_to_commit
   # shadowテーブルに保持されたbundleのうち
   # commitされる必要のあるuuidを{uuid,nil}の方式で保持するtable
@@ -99,6 +102,8 @@ defmodule Thaqqa.FontRegistry do
   def init(:ok) do
     :ets.new(@bundles, [:named_table, :protected, :set, read_concurrency: true])
     :ets.new(@bundles_shadow, [:named_table, :protected, :set, read_concurrency: true])
+    :ets.new(@bundles_name_key, [:named_table, :protected, :set, read_concurrency: true])
+    :ets.new(@bundles_shadow_name_key, [:named_table, :protected, :set, read_concurrency: true])
     :ets.new(@bundle_uuid_to_commit, [:named_table, :protected, :set, read_concurrency: true])
     :ets.new(@const_tables, [:named_table, :protected, :set, read_concurrency: true])
     :ets.new(@const_tables_shadow, [:named_table, :protected, :set, read_concurrency: true])
