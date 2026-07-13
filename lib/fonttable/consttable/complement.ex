@@ -96,7 +96,6 @@ defmodule Thaqqa.ConstTable.Complement do
   def complement_bundle(%ConstTable{} = self, %Bundle{} = bundle) do
     tablename_list = bundle.static_tables |> Enum.map(fn {_, v} -> v.name end)
     table_list = bundle.static_tables |> Enum.map(fn {_, v} -> v end)
-    IO.inspect(ConstTable.get_const_table_list(self))
 
     table_list =
       ((ConstTable.get_const_table_list(self)

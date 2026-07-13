@@ -254,11 +254,29 @@ defmodule Thaqqa.FontRegistry do
 
     with {:ok, json} <- Jason.encode(font, opts),
          :ok <- File.mkdir_p(font_folder_name),
-         :ok <- File.write(font_folder_name <> Filename.font_file(), json) do
+         :ok <- File.write(font_folder_name <> Filename.font_file(), json),
+         [major, minor, patch, pre] <-
+           get_version_data("FONTSYSDATA", font.table_list),
+         :ok <-
+           File.write(
+             font_folder_name <> Filename.version_file(major, minor, patch, pre),
+             json
+           ) do
       :ok
     else
       {:error, _} = err -> err
     end
+  end
+
+  defp get_version_data(tablename, data) do
+    data_list = (data[tablename].data_list |> Enum.at(0)).value_map
+
+    [
+      data_list["VersionMajor"],
+      data_list["VersionMinor"],
+      data_list["VersionPatch"],
+      data_list["VersionPreRelease"]
+    ]
   end
 
   def handle_call({:save_bundle, uuid, opts}, _from, state) do
@@ -269,13 +287,8 @@ defmodule Thaqqa.FontRegistry do
          {:ok, json_statics} <- Jason.encode(static_tables, opts),
          :ok <- File.mkdir_p(bundle_folder_name),
          :ok <- File.write(bundle_folder_name <> Filename.bundle_file(), json_statics),
-         data_list <- (static_tables["BUNDLESYSDATA"].data_list |> Enum.at(0)).value_map,
-         [major, minor, patch, pre] <- [
-           data_list["VersionMajor"],
-           data_list["VersionMinor"],
-           data_list["VersionPatch"],
-           data_list["VersionPreRelease"]
-         ],
+         [major, minor, patch, pre] <-
+           get_version_data("BUNDLESYSDATA", static_tables),
          :ok <-
            File.write(
              bundle_folder_name <> Filename.version_file(major, minor, patch, pre),
