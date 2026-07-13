@@ -35,6 +35,7 @@ defmodule Thaqqa.FontRegistry.IO do
                {:ok, _} = acc -> {:cont, acc}
              end
            end),
+         prefab <- Bundle.complement(prefab),
          :ok <- FontRegistry.apply_bundle(prefab, uuid),
          :ok <- FontRegistry.commit_bundle(uuid) do
       :ok

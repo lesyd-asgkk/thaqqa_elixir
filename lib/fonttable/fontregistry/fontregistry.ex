@@ -167,9 +167,7 @@ defmodule Thaqqa.FontRegistry do
   end
 
   def handle_call({:commit_bundle, uuid}, _from, state) do
-    IO.inspect(:ets.lookup(@bundles_shadow, uuid), label: "データだぞ")
     commit_bundle_internal(uuid)
-    IO.inspect(:ets.lookup(@bundles, uuid), label: "データだぞ")
     {:reply, :ok, state}
   end
 
@@ -271,6 +269,18 @@ defmodule Thaqqa.FontRegistry do
          {:ok, json_statics} <- Jason.encode(static_tables, opts),
          :ok <- File.mkdir_p(bundle_folder_name),
          :ok <- File.write(bundle_folder_name <> Filename.bundle_file(), json_statics),
+         data_list <- (static_tables["BUNDLESYSDATA"].data_list |> Enum.at(0)).value_map,
+         [major, minor, patch, pre] <- [
+           data_list["VersionMajor"],
+           data_list["VersionMinor"],
+           data_list["VersionPatch"],
+           data_list["VersionPreRelease"]
+         ],
+         :ok <-
+           File.write(
+             bundle_folder_name <> Filename.version_file(major, minor, patch, pre),
+             json_statics
+           ),
          :ok <- save_font_map(fonts, bundle_folder_name, opts) do
       {:reply, :ok, state}
     else

@@ -63,12 +63,16 @@ defmodule Thaqqa.Bundle.Complement do
         %Bundle{} = self,
         %DataTable{name: table_name} = table
       ) do
-    with true <- Bundle.static_table_exists?(self, table_name),
-         false <- Bundle.local_static_table_exists?(self, table_name) do
-      complement_local_table(self, table)
-    else
-      false -> nil
-      _ -> table
+    case Bundle.static_table_exists?(self, table_name) do
+      false ->
+        nil
+
+      _ ->
+        case Bundle.local_static_table_exists?(self, table_name) do
+          # そのまま復活させる
+          false -> table
+          _ -> complement_local_table(self, table)
+        end
     end
   end
 
@@ -88,15 +92,15 @@ defmodule Thaqqa.Bundle.Complement do
       Enum.reduce(
         column_list ++ table.column_list,
         table,
-        fn %Column{name: column_name}, acc ->
-          complement_table_by_column(self, acc, column_name)
+        fn %Column{} = column, acc ->
+          complement_table_by_column(self, acc, column)
         end
       )
     end
   end
 
   # 追加された(される)fontをstatic_tableの設定に合わせる
-  def complement_font(%Bundle{} = self, %Font{name: font_name} = font) do
+  def complement_font_internal(%Bundle{} = self, %Font{} = font) do
     tablename_list = font.table_list |> Enum.map(fn {_, v} -> v.name end)
     font_table_list = font.table_list |> Enum.map(fn {k, v} -> {k, v} end)
 
@@ -111,7 +115,11 @@ defmodule Thaqqa.Bundle.Complement do
       |> Enum.filter(fn {_, v} -> v != nil end)
       |> Map.new(fn {k, v} -> {k, v} end)
 
-    %Bundle{self | fonts: Map.put(self.fonts, font_name, %Font{font | table_list: table_list})}
+    %Font{font | table_list: table_list}
+  end
+
+  def complement_font(%Bundle{} = self, %Font{name: font_name} = font) do
+    %Bundle{self | fonts: Map.put(self.fonts, font_name, complement_font_internal(self, font))}
   end
 
   # static_tableの変更に伴ってfontテーブル側を変更する
@@ -133,8 +141,8 @@ defmodule Thaqqa.Bundle.Complement do
 
   def complement(%Bundle{} = self) do
     fonts =
-      Enum.reduce(Bundle.get_font_list(self), %{}, fn {_, font}, acc ->
-        complement_font(acc, font)
+      Enum.reduce(Bundle.get_font_list(self), %{}, fn {fontname, font}, acc ->
+        Map.put(acc, fontname, complement_font_internal(self, font))
       end)
 
     %Bundle{self | fonts: fonts}
