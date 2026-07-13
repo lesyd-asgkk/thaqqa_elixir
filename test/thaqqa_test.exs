@@ -7,12 +7,12 @@ defmodule ThaqqaTest do
     {:ok, _pid} = Thaqqa.FontRegistry.start_link([])
 
     # 0.1秒ほど
-    Thaqqa.FontIO.import_as_root()
+    Thaqqa.FontRegistry.import_const()
 
     # 0.5秒ほど　何かしらで結構ラグっているが割と早い部類
     # (complement、regex/path処理で相応に時間がかかるので当然ではある)
 
-    Thaqqa.FontIO.import_as_font("default")
+    Thaqqa.FontRegistry.import_bundle(0)
 
     {:ok, prefab} = Thaqqa.FontRegistry.create_prefab()
 
