@@ -35,7 +35,23 @@ defimpl Jason.Encoder, for: Thaqqa.DataTable do
       Enum.reduce(datalist_map, %{}, fn {k, v}, acc ->
         v =
           Enum.reduce(v, %{}, fn {k, v}, acc ->
-            if k in column_volatility, do: acc, else: Map.put(acc, k, v)
+            if k in column_volatility do
+              case Thaqqa.DataTable.get_column(datatable, k).subtype do
+                # 不要（まず変化しようがないので）
+                :path ->
+                  acc
+
+                # こっちは変化しうる
+                :regex ->
+                  Map.put(acc, k, inspect(v))
+
+                # 処理を一旦飛ばす
+                _ ->
+                  acc
+              end
+            else
+              Map.put(acc, k, v)
+            end
           end)
 
         Map.put(acc, k, v)

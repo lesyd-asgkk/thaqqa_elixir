@@ -27,17 +27,20 @@ defmodule Thaqqa.FontRegistry.IO do
       |> Enum.map(&Path.basename/1)
 
     with :ok <- import_as_root(uuid),
-         :ok <-
-           Enum.reduce_while(dir_name, :ok, fn filename, :ok ->
-             case import_as_font(uuid, filename) do
+         {:ok, prefab} <- FontRegistry.create_prefab(uuid),
+         {:ok, prefab} <-
+           Enum.reduce_while(dir_name, {:ok, prefab}, fn filename, {:ok, acc} ->
+             case import_as_font(acc, uuid, filename) do
                {:error, _} = err -> {:halt, err}
-               :ok -> {:cont, :ok}
+               {:ok, _} = acc -> {:cont, acc}
              end
-           end) do
-      FontRegistry.commit_bundle(uuid)
+           end),
+         :ok <- FontRegistry.apply_bundle(prefab, uuid),
+         :ok <- FontRegistry.commit_bundle(uuid) do
       :ok
     else
       {:error, _} = err ->
+        IO.inspect(err, label: "さめくん")
         FontRegistry.rollback_bundle(uuid)
         err
     end
@@ -85,21 +88,15 @@ defmodule Thaqqa.FontRegistry.IO do
           )
       )
 
-  defp import_as_font(uuid, folder_path) do
+  defp import_as_font(prefab, uuid, folder_path) do
     file_path = Filename.font_path(uuid, folder_path)
 
     {uuid_for_font, _} = String.split(folder_path, "-") |> Enum.at(1) |> Integer.parse()
 
-    with {:ok, prefab} <- FontRegistry.create_prefab(uuid),
-         {:ok, fontdata} <- read_and_decode_json(file_path),
+    with {:ok, fontdata} <- read_and_decode_json(file_path),
          {:ok, prefab} <- Bundle.import_as_font(prefab, fontdata),
          {:ok, _} <- validation_check_for_font(fontdata, uuid_for_font) do
-      with :ok <- FontRegistry.apply_bundle(prefab, uuid),
-           :ok <- FontRegistry.commit_bundle(uuid) do
-        :ok
-      else
-        {:error, _} = err -> err
-      end
+      {:ok, prefab}
     else
       {:error, _} = err -> err
     end
@@ -121,7 +118,7 @@ defmodule Thaqqa.FontRegistry.IO do
     end
   end
 
-  def export_as_root(opts), do: FontRegistry.export_as_root(opts)
+  def export_const(opts), do: FontRegistry.export_const(opts)
 
-  def export_as_font(fontname, opts), do: FontRegistry.export_as_font(fontname, opts)
+  def export_bundle(uuid, opts), do: FontRegistry.export_bundle(uuid, opts)
 end

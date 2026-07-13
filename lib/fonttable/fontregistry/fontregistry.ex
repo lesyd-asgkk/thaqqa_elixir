@@ -10,6 +10,7 @@ defmodule Thaqqa.FontRegistry do
   @commit_timeout 30_000
   @rollback_timeout 30_000
 
+  @import_timeout 30_000
   @export_timeout 30_000
 
   @bundles :bundles
@@ -27,8 +28,6 @@ defmodule Thaqqa.FontRegistry do
   def start_link(_opts) do
     GenServer.start_link(__MODULE__, :ok, name: __MODULE__)
   end
-
-  def import_as_root(), do: Thaqqa.FontRegistry.IO.import_as_root()
 
   def import_const(), do: Thaqqa.FontRegistry.IO.import_const()
 
@@ -65,8 +64,12 @@ defmodule Thaqqa.FontRegistry do
 
   def create_prefab(uuid) do
     case :ets.lookup(@bundles_shadow, uuid) |> Enum.at(0) do
-      nil -> {:ok, Thaqqa.Bundle.new(%{}, %{})}
-      {_, otherwize} -> {:ok, otherwize}
+      nil ->
+        {:ok, Thaqqa.Bundle.new(%{}, %{})}
+
+      {_, otherwize} ->
+        IO.inspect(otherwize, label: "さめくーん")
+        {:ok, otherwize}
     end
   end
 
@@ -165,7 +168,9 @@ defmodule Thaqqa.FontRegistry do
   end
 
   def handle_call({:commit_bundle, uuid}, _from, state) do
+    IO.inspect(:ets.lookup(@bundles_shadow, uuid), label: "データだぞ")
     commit_bundle_internal(uuid)
+    IO.inspect(:ets.lookup(@bundles, uuid), label: "データだぞ")
     {:reply, :ok, state}
   end
 
