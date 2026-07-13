@@ -68,7 +68,6 @@ defmodule Thaqqa.FontRegistry do
         {:ok, Thaqqa.Bundle.new(%{}, %{})}
 
       {_, otherwize} ->
-        IO.inspect(otherwize, label: "さめくーん")
         {:ok, otherwize}
     end
   end

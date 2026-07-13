@@ -40,7 +40,6 @@ defmodule Thaqqa.FontRegistry.IO do
       :ok
     else
       {:error, _} = err ->
-        IO.inspect(err, label: "さめくん")
         FontRegistry.rollback_bundle(uuid)
         err
     end
