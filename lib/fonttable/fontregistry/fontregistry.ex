@@ -13,8 +13,14 @@ defmodule Thaqqa.FontRegistry do
   @import_timeout 30_000
   @export_timeout 30_000
 
+  @bundles_stable :bundles_stable
   @bundles :bundles
   @bundles_shadow :bundles_shadow
+
+  @bundles_name_key :bundles_name_key
+  @bundles_shadow_name_key :bundles_shadow_name_key
+  @bundles_name_key_reverse :bundles_name_key_reverse
+  @bundles_shadow_name_key_reverse :bundles_shadow_name_key_reverse
 
   @bundle_uuid_to_commit :bundles_uuid_to_commit
   # shadowテーブルに保持されたbundleのうち
@@ -29,10 +35,6 @@ defmodule Thaqqa.FontRegistry do
     GenServer.start_link(__MODULE__, :ok, name: __MODULE__)
   end
 
-  def import_const(), do: Thaqqa.FontRegistry.IO.import_const()
-
-  def import_bundle(uuid), do: Thaqqa.FontRegistry.IO.import_bundle(uuid)
-
   defp safe_call(msg, timeout \\ @timeout_default) do
     try do
       GenServer.call(__MODULE__, msg, timeout)
@@ -42,6 +44,10 @@ defmodule Thaqqa.FontRegistry do
       :exit, reason -> {:error, {:font_registry_exit, reason}}
     end
   end
+
+  def import_const(), do: Thaqqa.FontRegistry.IO.import_const()
+
+  def import_bundle(uuid), do: Thaqqa.FontRegistry.IO.import_bundle(uuid)
 
   def rollback_const(timeout \\ @rollback_timeout), do: safe_call({:rollback_const}, timeout)
 
@@ -62,13 +68,20 @@ defmodule Thaqqa.FontRegistry do
   def create_blank_prefab(), do: {:ok, Thaqqa.Bundle.new(%{}, %{})}
   def create_prefab(), do: create_blank_prefab()
 
-  def create_prefab(uuid) do
+  def create_prefab(uuid) when is_integer(uuid) do
     case :ets.lookup(@bundles_shadow, uuid) |> Enum.at(0) do
+      nil -> {:ok, Thaqqa.Bundle.new(%{}, %{})}
+      {_, otherwize} -> {:ok, otherwize}
+    end
+  end
+
+  def create_prefab({owner, bundlename} = key) when is_binary(owner) and is_binary(bundlename) do
+    case :ets.lookup(@bundles_shadow_name_key_reverse, key) |> Enum.at(0) do
       nil ->
         {:ok, Thaqqa.Bundle.new(%{}, %{})}
 
-      {_, otherwize} ->
-        {:ok, otherwize}
+      {_, uuid} ->
+        create_prefab(uuid)
     end
   end
 
@@ -97,8 +110,21 @@ defmodule Thaqqa.FontRegistry do
   ## 以下はCallbacks
 
   def init(:ok) do
+    :ets.new(@bundles_stable, [:named_table, :protected, :set, read_concurrency: true])
+    # ↑は将来予約
     :ets.new(@bundles, [:named_table, :protected, :set, read_concurrency: true])
     :ets.new(@bundles_shadow, [:named_table, :protected, :set, read_concurrency: true])
+    :ets.new(@bundles_name_key, [:named_table, :protected, :set, read_concurrency: true])
+    :ets.new(@bundles_shadow_name_key, [:named_table, :protected, :set, read_concurrency: true])
+    :ets.new(@bundles_name_key_reverse, [:named_table, :protected, :set, read_concurrency: true])
+
+    :ets.new(@bundles_shadow_name_key_reverse, [
+      :named_table,
+      :protected,
+      :set,
+      read_concurrency: true
+    ])
+
     :ets.new(@bundle_uuid_to_commit, [:named_table, :protected, :set, read_concurrency: true])
     :ets.new(@const_tables, [:named_table, :protected, :set, read_concurrency: true])
     :ets.new(@const_tables_shadow, [:named_table, :protected, :set, read_concurrency: true])
@@ -161,6 +187,21 @@ defmodule Thaqqa.FontRegistry do
         nil
 
       bundles when not is_nil(bundles) ->
+        # uuid交換設定をここに
+        case :ets.lookup(@bundles_name_key, uuid) |> Enum.at(0) do
+          nil ->
+            {_, bundlename} = :ets.lookup(@bundles_shadow_name_key, uuid) |> Enum.at(0)
+            :ets.insert(@bundles_name_key, {uuid, bundlename})
+            :ets.insert(@bundles_name_key_reverse, {bundlename, uuid})
+
+          {_, bundlename_old} when not is_nil(bundlename_old) ->
+            {_, bundlename} = :ets.lookup(@bundles_shadow_name_key, uuid) |> Enum.at(0)
+            :ets.delete(@bundles_name_key, uuid)
+            :ets.delete(@bundles_name_key_reverse, bundlename_old)
+            :ets.insert(@bundles_name_key, {uuid, bundlename})
+            :ets.insert(@bundles_name_key_reverse, {bundlename, uuid})
+        end
+
         :ets.insert(@bundles, bundles)
         :ets.delete(@bundle_uuid_to_commit, uuid)
     end
@@ -180,6 +221,12 @@ defmodule Thaqqa.FontRegistry do
   end
 
   # apply系列
+  defp get_bundlename(bundle),
+    do:
+      {(bundle.static_tables["BUNDLESYSDATA"].data_list |> Enum.at(0)).value_map["Owner"],
+       (bundle.static_tables["BUNDLEDATA"].data_list |> Enum.at(0)).value_map["Bundlename"]}
+
+  # get_bundlename
   def handle_call(
         {:apply_bundle, %Thaqqa.Bundle{} = bundle, uuid},
         _from,
@@ -187,6 +234,17 @@ defmodule Thaqqa.FontRegistry do
       ) do
     :ets.insert(@bundles_shadow, {uuid, bundle})
     :ets.insert(@bundle_uuid_to_commit, {uuid, nil})
+
+    bundlename = get_bundlename(bundle)
+
+    case :ets.lookup(@bundles_shadow_name_key, uuid) |> Enum.at(0) do
+      nil -> nil
+      {_, bundlename_old} -> :ets.delete(@bundles_shadow_name_key_reverse, bundlename_old)
+    end
+
+    :ets.insert(@bundles_shadow_name_key, {uuid, bundlename})
+    :ets.insert(@bundles_shadow_name_key_reverse, {bundlename, uuid})
+
     {:reply, :ok, state}
   end
 
