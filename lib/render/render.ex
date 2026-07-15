@@ -26,28 +26,23 @@ defmodule Thaqqa.Render do
   # |> Enum.zip(list, tl(list), tl(tl(list))) (Enum.chunk_every(list, 3, 1, :discard)と等価。高速なので採用）
   # |> Stream.map(&calc_kerning/1)
   # のような形。
-  def build_render(
-        width,
-        height,
-        # normal break_all keep_all break_word
-        line_break \\ :normal,
-        # px単位指定
-        line_height \\ 0,
-        # start end left right up down center justify
-        text_align \\ :start,
-        text_align_last \\ :start,
-        word_spacing \\ 0,
-        letter_spacing \\ 0
-      ) do
-    %__MODULE__{
-      boundry: %{width: width, height: height},
-      line_break: line_break,
-      line_height: line_height,
-      text_align: text_align,
-      text_align_last: text_align_last,
-      word_spacing: word_spacing,
-      letter_spacing: letter_spacing
-    }
+  # opts \\ []
+  def build_render(width, height, opts \\ []) do
+    struct!(
+      __MODULE__,
+      Keyword.merge(
+        [
+          boundry: %{width: width, height: height},
+          line_break: :normal,
+          line_height: 0,
+          text_align: :start,
+          text_align_last: :start,
+          word_spacing: 0,
+          letter_spacing: 0
+        ],
+        opts
+      )
+    )
   end
 
   def build_none() do
