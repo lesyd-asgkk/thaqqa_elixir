@@ -13,11 +13,14 @@ defmodule Thaqqa.FontRegistry do
   @import_timeout 30_000
   @export_timeout 30_000
 
+  @bundles_stable :bundles_stable
   @bundles :bundles
   @bundles_shadow :bundles_shadow
 
   @bundles_name_key :bundles_name_key
   @bundles_shadow_name_key :bundles_shadow_name_key
+  @bundles_name_key_reverse :bundles_name_key_reverse
+  @bundles_shadow_name_key_reverse :bundles_shadow_name_key_reverse
 
   @bundle_uuid_to_commit :bundles_uuid_to_commit
   # shadowテーブルに保持されたbundleのうち
@@ -100,10 +103,21 @@ defmodule Thaqqa.FontRegistry do
   ## 以下はCallbacks
 
   def init(:ok) do
+    :ets.new(@bundles_stable, [:named_table, :protected, :set, read_concurrency: true])
+    # ↑は将来予約
     :ets.new(@bundles, [:named_table, :protected, :set, read_concurrency: true])
     :ets.new(@bundles_shadow, [:named_table, :protected, :set, read_concurrency: true])
     :ets.new(@bundles_name_key, [:named_table, :protected, :set, read_concurrency: true])
     :ets.new(@bundles_shadow_name_key, [:named_table, :protected, :set, read_concurrency: true])
+    :ets.new(@bundles_name_key_reverse, [:named_table, :protected, :set, read_concurrency: true])
+
+    :ets.new(@bundles_shadow_name_key_reverse, [
+      :named_table,
+      :protected,
+      :set,
+      read_concurrency: true
+    ])
+
     :ets.new(@bundle_uuid_to_commit, [:named_table, :protected, :set, read_concurrency: true])
     :ets.new(@const_tables, [:named_table, :protected, :set, read_concurrency: true])
     :ets.new(@const_tables_shadow, [:named_table, :protected, :set, read_concurrency: true])
@@ -166,6 +180,24 @@ defmodule Thaqqa.FontRegistry do
         nil
 
       bundles when not is_nil(bundles) ->
+        # uuid交換設定をここに
+        case :ets.lookup(@bundles_name_key, uuid) |> Enum.at(0) do
+          nil ->
+            {_, bundlename} = :ets.lookup(@bundles_shadow_name_key, uuid) |> Enum.at(0)
+            :ets.insert(@bundles_name_key, {uuid, bundlename})
+            :ets.insert(@bundles_name_key_reverse, {bundlename, uuid})
+            :ets.delete(@bundles_shadow_name_key, uuid)
+            :ets.delete(@bundles_shadow_name_key_reverse, bundlename)
+
+          {_, bundlename_old} when not is_nil(bundlename_old) ->
+            {_, bundlename} = :ets.lookup(@bundles_shadow_name_key, uuid) |> Enum.at(0)
+            :ets.delete(@bundles_name_key_reverse, bundlename)
+            :ets.insert(@bundles_name_key, {uuid, bundlename})
+            :ets.insert(@bundles_name_key_reverse, {bundlename, uuid})
+            :ets.delete(@bundles_shadow_name_key, uuid)
+            :ets.delete(@bundles_shadow_name_key_reverse, bundlename)
+        end
+
         :ets.insert(@bundles, bundles)
         :ets.delete(@bundle_uuid_to_commit, uuid)
     end
@@ -185,6 +217,10 @@ defmodule Thaqqa.FontRegistry do
   end
 
   # apply系列
+  defp get_bundlename(bundle),
+    do: (bundle.static_tables["BUNDLEDATA"].data_list |> Enum.at(0)).value_map["Bundlename"]
+
+  # get_bundlename
   def handle_call(
         {:apply_bundle, %Thaqqa.Bundle{} = bundle, uuid},
         _from,
@@ -192,6 +228,11 @@ defmodule Thaqqa.FontRegistry do
       ) do
     :ets.insert(@bundles_shadow, {uuid, bundle})
     :ets.insert(@bundle_uuid_to_commit, {uuid, nil})
+
+    bundlename = get_bundlename(bundle)
+    :ets.insert(@bundles_shadow_name_key, {uuid, bundlename})
+    :ets.insert(@bundles_shadow_name_key_reverse, {bundlename, uuid})
+
     {:reply, :ok, state}
   end
 
