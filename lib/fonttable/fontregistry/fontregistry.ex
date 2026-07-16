@@ -77,11 +77,8 @@ defmodule Thaqqa.FontRegistry do
 
   def create_prefab({owner, bundlename} = key) when is_binary(owner) and is_binary(bundlename) do
     case :ets.lookup(@bundles_shadow_name_key_reverse, key) |> Enum.at(0) do
-      nil ->
-        {:ok, Thaqqa.Bundle.new(%{}, %{})}
-
-      {_, uuid} ->
-        create_prefab(uuid)
+      nil -> {:ok, Thaqqa.Bundle.new(%{}, %{})}
+      {_, uuid} -> create_prefab(uuid)
     end
   end
 

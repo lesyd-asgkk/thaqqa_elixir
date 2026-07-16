@@ -14,7 +14,7 @@ defmodule ThaqqaTest do
 
     Thaqqa.FontRegistry.import_bundle(0)
 
-    {:ok, prefab} = Thaqqa.FontRegistry.create_prefab()
+    {:ok, prefab} = Thaqqa.FontRegistry.create_prefab({"asagikaki", "Default"})
 
     # 0.1秒ほど
     # kako karutaraa qahhowe uzhute kaghangetlaa. ittlutu kadha, eqhoghi reewe qarhilas.
@@ -40,7 +40,12 @@ defmodule ThaqqaTest do
       Thaqqa.Render.alignment_path_data_as_vertical(
         prefab,
         pd,
-        Thaqqa.Render.build_render(200, 600, :normal, 0, :center, :center)
+        Thaqqa.Render.build_render(200, 600,
+          text_align: :normal,
+          line_height: 0,
+          text_align: :center,
+          text_align_last: :center
+        )
       )
       |> Thaqqa.Render.concat_path_data()
 
@@ -65,7 +70,7 @@ defmodule ThaqqaTest do
     glyph.path
     |> SVG.Path.export_as_string_mass!()
 
-    Thaqqa.FontIO.export_as_font("Default", pretty: true)
+    Thaqqa.FontRegistry.export_bundle(0, pretty: true)
     |> IO.inspect()
 
     # def set_path(%__MODULE__{} = self), do: Thaqqa.Glyph.GlyphBuilder.set_path(self)
