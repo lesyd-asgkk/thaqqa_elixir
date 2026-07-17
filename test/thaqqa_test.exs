@@ -16,6 +16,8 @@ defmodule ThaqqaTest do
 
     {:ok, prefab} = Thaqqa.FontRegistry.create_prefab({"asagikaki", "Default"})
 
+    # {:ok, pre_} = prefab |> Jason.encode!() |> Jason.decode!() |> Thaqqa.Bundle.new_from_request()
+
     # 0.1秒ほど
     # kako karutaraa qahhowe uzhute kaghangetlaa. ittlutu kadha, eqhoghi reewe qarhilas.
     {:ok, string} =
@@ -55,11 +57,6 @@ defmodule ThaqqaTest do
 
     # この辺の変換は誤差
     # Supervisor.start_link(Thaqqa.FontRegistry, strategy: :one_for_one)
-
-    # Thaqqa.Regex_Khhyl.tokenize("S(mid,,a0,)")
-    # |> Thaqqa.Regex_Khhyl.normalize!()
-    # |> Thaqqa.Regex_Khhyl.translate!(prefab)
-    # |> IO.inspect()
 
     {:ok, glyph} = Thaqqa.Glyph.new(prefab, "Default", "S(init,r0,a0,th0)", "vertical", 16)
 

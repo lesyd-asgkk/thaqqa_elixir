@@ -91,8 +91,8 @@ defimpl Jason.Encoder, for: Thaqqa.Bundle do
           Map.new(bundle.fonts, fn {key, font} ->
             {key,
              %{
-               table_list: Map.new(font.table_list, fn table -> {table.name, table} end),
-               filename: font.filename
+               table_list:
+                 Map.new(font.table_list, fn {_, _} = table_with_key -> table_with_key end)
              }}
           end)
       },
