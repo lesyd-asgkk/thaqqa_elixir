@@ -131,12 +131,12 @@ defmodule Thaqqa.DataTable do
   # 指定したデータを書き換えたDataTableを{:ok,%DataTable{}}の形で返す関数。
   # 新たなデータがvalidate_dataの要件を満たさない場合は{:error,%Error{}}
   def edit_data(%__MODULE__{} = table, %Data{} = data, %Data{} = new_data),
-    do: edit_data(table, data, new_data)
+    do: Op.edit_data(table, data, new_data)
 
   # 指定したデータを書き換えたDataTableを返す関数。
   # エラーが生じた場合はraise。
   def edit_data!(%__MODULE__{} = table, %Data{} = data, %Data{} = new_data),
-    do: edit_data!(table, data, new_data)
+    do: Op.edit_data!(table, data, new_data)
 
   # Order,Priorityの値に応じて昇順で並び替える。
   def sort(%__MODULE__{data_list: datas} = dt) do
