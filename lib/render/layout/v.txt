@@ -1,76 +1,8 @@
+  defp render_all(glyph_list, %Bundle{} = prefab) do
+    Enum.map(glyph_list, fn glyph_and_kern ->
+      %{glyph: glyph, gap_top: gap_top, gap_bottom: gap_bottom} = glyph_and_kern
+      {:ok, glyph_new} = Glyph.render_by_relative_height(prefab, glyph, gap_top, gap_bottom)
 
-  defp adjust_position_in_line(oneline, text_align, box_height) do
-    # ここに邪魔なspaceをどかす処理も（将来的には）入れる
-    # 「isSpace」＋「強制改行によるものか」の２軸で判定。
-    # 強制改行だったらisSpace依存で一つ（または全部）削除。
-    # 強制改行じゃないなら削除判定を～と
-    word_num = length(oneline)
-
-    top = Enum.map(oneline, fn {_, top, _, _} -> top end) |> Enum.min()
-    bottom = Enum.map(oneline, fn {_, _, bottom, _} -> bottom end) |> Enum.max()
-
-    top_calc = -top
-    bottom_calc = box_height - bottom
-
-    {enum_num, enum_list} =
-      Enum.map(oneline, fn {glyph_list, _, _, _} ->
-        [glyph_top | _] = glyph_list
-        length(glyph_list) == 1 and (glyph_top.new_line or glyph_top.word_breaker)
-      end)
-      |> Enum.reduce({0, []}, fn is_null, {acc_num, acc_list} ->
-        if is_null do
-          {acc_num, [acc_num | acc_list]}
-        else
-          {acc_num + 1, [acc_num | acc_list]}
-        end
-      end)
-
-    enum_list = Enum.reverse(enum_list)
-
-    gap_list =
-      case text_align do
-        k when k in [:start, :left, :up] ->
-          List.duplicate(top_calc, word_num)
-
-        k when k in [:end, :right, :down] ->
-          List.duplicate(bottom_calc, word_num)
-
-        :center ->
-          List.duplicate((top_calc + bottom_calc) / 2, word_num)
-
-        :justify ->
-          case word_num do
-            0 ->
-              []
-
-            1 ->
-              [top_calc]
-
-            _ ->
-              gap = (top_calc + bottom_calc) / (enum_num - 1)
-
-              Enum.map(enum_list, fn n -> top_calc + gap * n end)
-          end
-      end
-
-    Enum.zip(oneline, gap_list)
-    |> Enum.map(fn {{word_list, top, _, _}, gap} ->
-      {word_list, top + gap}
+      %{glyph_and_kern | glyph: glyph_new}
     end)
-    |> Enum.reduce(
-      [],
-      fn {glyph_list, gap_from_top}, acc_glyph_list ->
-        glyph_list_alt =
-          Enum.map(glyph_list, fn glyph_and_kern ->
-            glyph_and_kern
-            |> Map.put(:y, glyph_and_kern.y + gap_from_top)
-            |> Map.put(:border, %{
-              top: glyph_and_kern.border.top + gap_from_top,
-              bottom: glyph_and_kern.border.bottom + gap_from_top
-            })
-          end)
-
-        [glyph_list_alt | acc_glyph_list] |> List.flatten()
-      end
-    )
   end

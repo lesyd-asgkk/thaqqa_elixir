@@ -185,9 +185,6 @@ defmodule Thaqqa.RenderCommon do
 
   # 条件依存で改行する
 
-  def set_oneline() do
-  end
-
   defp set_position_and_wrapped(sentence, %Render{} = render_config, direction)
        when direction in [@vertical, @horizontal] do
     word_spacing = render_config.word_spacing
@@ -305,6 +302,8 @@ defmodule Thaqqa.RenderCommon do
                       # 改行処理部分。一回でも改行処理判定に引っかかったら以降はtrueになる
                       # TODO：,といった約物を改行判定から無視する
                       # ※is_wrappedの初期値はfalseなのでこれで一回でもtrueになったかは判定できる
+                      # というか、「何文字目で強制改行を挟むことになったか」を記録することにする
+                      # (その方が中折れするタイプの改行設定にした場合に都合が良い)
                       cond_wrap =
                         if direction == @horizontal,
                           do: acc_right > box_width,
@@ -376,28 +375,25 @@ defmodule Thaqqa.RenderCommon do
       word_list
       |> Enum.reduce({[], 0}, fn %{word: word, top: top, bottom: bottom, row: row},
                                  {acc, acc_raw} ->
-        {[%{word: word, top: top, bottom: bottom, row: row != acc_raw} | acc], row}
+        {[%{word: word, top: top, bottom: bottom, is_newline: row != acc_raw} | acc], row}
       end)
 
-    sentence =
-      sentence
-      |> Enum.chunk_while(
-        [],
-        fn %{glyph_list: glyph_list, top: top, bottom: bottom, row: row} = word, acc_word ->
-          cond do
-            true ->
-              if row,
-                do: {:cont, Enum.reverse([word | acc_word]), []},
-                else: {:cont, [word | acc_word]}
-          end
-        end,
-        fn
-          [] -> {:cont, []}
-          acc_word -> {:cont, Enum.reverse(acc_word), []}
+    sentence
+    |> Enum.chunk_while(
+      [],
+      fn %{is_newline: is_newline} = word, acc_word ->
+        cond do
+          true ->
+            if is_newline,
+              do: {:cont, Enum.reverse([word | acc_word]), []},
+              else: {:cont, [word | acc_word]}
         end
-      )
-
-    [first_line | rest_line] = sentence
+      end,
+      fn
+        [] -> {:cont, []}
+        acc_word -> {:cont, Enum.reverse(acc_word), []}
+      end
+    )
   end
 
   defp adjust_position_in_line(oneline, text_align, box_boundery, direction) do
@@ -507,7 +503,7 @@ defmodule Thaqqa.RenderCommon do
     {sentence_alt, _} =
       Enum.reduce(
         sentence,
-        {[], line_height},
+        {[], width, line_height},
         fn oneline, {acc_oneline_list, acc_x, acc_y} ->
           {max_height, max_gap_top} =
             Enum.reduce(oneline, {0, 0}, fn g, {acc_height, acc_gap_top} ->
@@ -543,5 +539,54 @@ defmodule Thaqqa.RenderCommon do
       )
 
     sentence_alt
+  end
+
+  defp render_all_for_vertical(glyph_list, %Bundle{} = prefab, direction) do
+    if direction == @horizontal do
+      glyph_list
+    else
+      Enum.map(glyph_list, fn glyph_and_kern ->
+        %{glyph: glyph, gap_top: gap_top, gap_bottom: gap_bottom} = glyph_and_kern
+        {:ok, glyph_new} = Glyph.render_by_relative_height(prefab, glyph, gap_top, gap_bottom)
+
+        %{glyph_and_kern | glyph: glyph_new}
+      end)
+    end
+  end
+
+  defp adjust_position(sentence, %Render{} = render_config, direction) do
+    adjust_position_along(sentence, render_config, direction)
+    |> adjust_position_normal(render_config.boundry.width, render_config.line_height, direction)
+  end
+
+  defp set_position(sentence, %Render{} = render_config, direction) do
+    {word_list, _} = set_position_and_wrapped(sentence, render_config, direction)
+    Render.alter_newline(word_list) |> adjust_position(render_config, direction)
+  end
+
+  def alignment_path_data(%Bundle{} = prefab, glyph_list, %Render{} = render, direction)
+      when is_list(glyph_list) do
+    none = Render.build_none()
+
+    glyph_and_kern_list =
+      [none | glyph_list ++ [none]]
+      |> Enum.chunk_every(3, 1, :discard)
+      |> Enum.map(&calc_kerning(&1, prefab, direction))
+
+    Enum.reduce_while(glyph_and_kern_list, {:ok, []}, fn
+      {:ok, str}, {:ok, acc} -> {:cont, {:ok, [str | acc]}}
+      {:error, _} = err, _acc -> {:halt, err}
+    end)
+    |> case do
+      {:error, _} = err ->
+        err
+
+      {:ok, g_a_k_l} ->
+        # px単位指定
+        Enum.reverse(g_a_k_l, direction)
+        |> Render.parse_word()
+        |> set_position(render, direction)
+        |> render_all_for_vertical(prefab, direction)
+    end
   end
 end
