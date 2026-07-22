@@ -194,6 +194,10 @@ defmodule Thaqqa.RenderVertical do
   end
 
   defp adjust_position_in_line(oneline, text_align, box_height) do
+    # ここに邪魔なspaceをどかす処理も（将来的には）入れる
+    # 「isSpace」＋「強制改行によるものか」の２軸で判定。
+    # 強制改行だったらisSpace依存で一つ（または全部）削除。
+    # 強制改行じゃないなら削除判定を～と
     word_num = length(oneline)
 
     top = Enum.map(oneline, fn {_, top, _, _} -> top end) |> Enum.min()

@@ -1,0 +1,73 @@
+  defp adjust_position_in_line(oneline, text_align, box_width) do
+    word_num = length(oneline)
+
+    left = Enum.map(oneline, fn {_, left, _, _} -> left end) |> Enum.min()
+    right = Enum.map(oneline, fn {_, _, right, _} -> right end) |> Enum.max()
+
+    {enum_num, enum_list} =
+      Enum.map(oneline, fn {glyph_list, _, _, _} ->
+        [glyph_top | _] = glyph_list
+        length(glyph_list) == 1 and (glyph_top.new_line or glyph_top.word_breaker)
+      end)
+      |> Enum.reduce({0, []}, fn is_null, {acc_num, acc_list} ->
+        if is_null do
+          {acc_num, [acc_num | acc_list]}
+        else
+          {acc_num + 1, [acc_num | acc_list]}
+        end
+      end)
+
+    enum_list = Enum.reverse(enum_list)
+
+    left_calc = -left
+    right_calc = box_width - right
+
+    gap_list =
+      case text_align do
+        k when k in [:start, :left, :up] ->
+          List.duplicate(left_calc, word_num)
+
+        k when k in [:end, :right, :down] ->
+          List.duplicate(right_calc, word_num)
+
+        :center ->
+          List.duplicate((left_calc + right_calc) / 2, word_num)
+
+        :justify ->
+          case word_num do
+            0 ->
+              []
+
+            1 ->
+              [left_calc]
+
+            _ ->
+              gap = (left_calc + right_calc) / (enum_num - 1)
+
+              Enum.map(enum_list, fn n ->
+                left_calc + gap * n
+              end)
+          end
+      end
+
+    Enum.zip(oneline, gap_list)
+    |> Enum.map(fn {{word_list, left, _, _}, gap} ->
+      {word_list, left + gap}
+    end)
+    |> Enum.reduce(
+      [],
+      fn {glyph_list, gap_from_left}, acc_glyph_list ->
+        glyph_list_alt =
+          Enum.map(glyph_list, fn glyph_and_kern ->
+            glyph_and_kern
+            |> Map.put(:x, glyph_and_kern.x + gap_from_left)
+            |> Map.put(:border, %{
+              left: glyph_and_kern.border.left + gap_from_left,
+              right: glyph_and_kern.border.right + gap_from_left
+            })
+          end)
+
+        [glyph_list_alt | acc_glyph_list] |> List.flatten()
+      end
+    )
+  end
