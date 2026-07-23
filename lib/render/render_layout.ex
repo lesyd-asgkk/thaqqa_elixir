@@ -1,5 +1,5 @@
 # 処理で共通に出来るところを共通化していくぞ～ついでに見やすくする
-defmodule Thaqqa.RenderCommon do
+defmodule Thaqqa.RenderLayout do
   alias Thaqqa.Bundle, as: Bundle
 
   alias Thaqqa.Render, as: Render
@@ -122,13 +122,15 @@ defmodule Thaqqa.RenderCommon do
         top: gap_top * scale,
         left: x0_internal * scale + x1_ex_prev * prev_scale,
         right: x1_internal * scale + x0_ex_next * next_scale,
-        center: y1_internal * scale
+        center: y1_internal * scale,
+        bottom: 0
       }
 
       gap_v = %{
         top: y0_internal * scale + y1_ex_prev * prev_scale,
         left: 0,
         right: 0,
+        center: 0,
         bottom: y1_internal * scale + y0_ex_next * next_scale
       }
 
@@ -136,13 +138,15 @@ defmodule Thaqqa.RenderCommon do
         top: gap_top * scale,
         left: x0_internal * scale + x1_ex_prev_nl * prev_scale,
         right: x1_internal * scale + x0_ex_next_nl * next_scale,
-        center: y1_internal * scale
+        center: y1_internal * scale,
+        bottom: 0
       }
 
       gap_wn_v = %{
         top: y0_internal * scale + y1_ex_prev_nl * prev_scale,
         left: 0,
         right: 0,
+        center: 0,
         bottom: y1_internal * scale + y0_ex_next_nl * next_scale
       }
 
@@ -196,7 +200,7 @@ defmodule Thaqqa.RenderCommon do
     sentence_alt =
       Enum.reduce(
         sentence,
-        %{word_list: [], acc_row: 0},
+        %{word_list: [], row: 0},
         fn oneline, %{word_list: acc_word_list, row: acc_row} ->
           oneline_alt =
             Enum.reduce(
@@ -254,12 +258,13 @@ defmodule Thaqqa.RenderCommon do
                         gap: %{
                           top: gap_top,
                           bottom: gap_bottom,
+                          center: gap_center,
                           left: gap_left,
                           right: gap_right
                         },
                         gap_when_newline: %{
                           top: gap_top_nl,
-                          bottom: gap_bottom_nl,
+                          center: gap_center_nl,
                           left: gap_left_nl,
                           right: gap_right_nl
                         }
@@ -312,6 +317,7 @@ defmodule Thaqqa.RenderCommon do
                       is_wrapped = cond_wrap || is_wrapped
 
                       acc_x = next_x
+                      acc_y = next_y
 
                       %{
                         glyph_list: [glyph_and_kern | acc_glyph],
@@ -361,7 +367,7 @@ defmodule Thaqqa.RenderCommon do
               end
             )
 
-          %{word_list: word_list, row: acc_row} = oneline_alt
+          %{word: word_list, row: acc_row} = oneline_alt
           %{word_list: [word_list | acc_word_list] |> List.flatten(), row: acc_row + 1}
         end
       )
@@ -373,9 +379,26 @@ defmodule Thaqqa.RenderCommon do
   def alter_newline(word_list) do
     {sentence, _} =
       word_list
-      |> Enum.reduce({[], 0}, fn %{word: word, top: top, bottom: bottom, row: row},
+      |> Enum.reduce({[], 0}, fn %{
+                                   glyph_list: glyph_list,
+                                   top: top,
+                                   bottom: bottom,
+                                   left: left,
+                                   right: right,
+                                   row: row
+                                 },
                                  {acc, acc_raw} ->
-        {[%{word: word, top: top, bottom: bottom, is_newline: row != acc_raw} | acc], row}
+        {[
+           %{
+             glyph_list: glyph_list,
+             top: top,
+             bottom: bottom,
+             left: left,
+             right: right,
+             is_newline: row != acc_raw
+           }
+           | acc
+         ], row}
       end)
 
     sentence
@@ -399,10 +422,10 @@ defmodule Thaqqa.RenderCommon do
   defp adjust_position_in_line(oneline, text_align, box_boundery, direction) do
     word_num = length(oneline)
 
-    left = Enum.map(oneline, fn {_, left, _, _} -> left end) |> Enum.min()
-    right = Enum.map(oneline, fn {_, _, right, _} -> right end) |> Enum.max()
-    top = Enum.map(oneline, fn {_, top, _, _} -> top end) |> Enum.min()
-    bottom = Enum.map(oneline, fn {_, _, bottom, _} -> bottom end) |> Enum.max()
+    left = Enum.map(oneline, fn %{left: left} -> left end) |> Enum.min()
+    right = Enum.map(oneline, fn %{right: right} -> right end) |> Enum.max()
+    top = Enum.map(oneline, fn %{top: top} -> top end) |> Enum.min()
+    bottom = Enum.map(oneline, fn %{bottom: bottom} -> bottom end) |> Enum.max()
 
     left_calc = -left
     right_calc = box_boundery.width - right
@@ -415,7 +438,8 @@ defmodule Thaqqa.RenderCommon do
     # 強制改行じゃないなら削除判定を～と
 
     {enum_num, enum_list} =
-      Enum.map(oneline, fn {glyph_list, _, _, _} ->
+      Enum.map(oneline, fn word ->
+        %{glyph_list: glyph_list} = word
         [glyph_top | _] = glyph_list
         length(glyph_list) == 1 and (glyph_top.new_line or glyph_top.word_breaker)
       end)
@@ -461,20 +485,29 @@ defmodule Thaqqa.RenderCommon do
       end
 
     Enum.zip(oneline, gap_list)
-    |> Enum.map(fn {%{word_list: word_list, left: left, top: top}, gap} ->
-      {word_list, if(direction == @horizontal, do: left + gap, else: top + gap)}
+    |> Enum.map(fn {%{glyph_list: glyph_list, left: left, top: top}, gap} ->
+      {glyph_list, if(direction == @horizontal, do: left + gap, else: top + gap)}
     end)
     |> Enum.reduce(
       [],
-      fn {glyph_list, gap_from_left}, acc_glyph_list ->
+      fn {glyph_list, gap}, acc_glyph_list ->
         glyph_list_alt =
           Enum.map(glyph_list, fn glyph_and_kern ->
-            glyph_and_kern
-            |> Map.put(:x, glyph_and_kern.x + gap_from_left)
-            |> Map.put(:border, %{
-              left: glyph_and_kern.border.left + gap_from_left,
-              right: glyph_and_kern.border.right + gap_from_left
-            })
+            if direction == @horizontal do
+              glyph_and_kern
+              |> Map.put(:x, glyph_and_kern.x + gap)
+              |> Map.put(:border, %{
+                left: glyph_and_kern.border.left + gap,
+                right: glyph_and_kern.border.right + gap
+              })
+            else
+              glyph_and_kern
+              |> Map.put(:y, glyph_and_kern.y + gap)
+              |> Map.put(:border, %{
+                top: glyph_and_kern.border.top + gap,
+                bottom: glyph_and_kern.border.bottom + gap
+              })
+            end
           end)
 
         [glyph_list_alt | acc_glyph_list] |> List.flatten()
@@ -500,7 +533,7 @@ defmodule Thaqqa.RenderCommon do
   end
 
   defp adjust_position_normal(sentence, width, line_height, direction) do
-    {sentence_alt, _} =
+    {sentence_alt, _, _} =
       Enum.reduce(
         sentence,
         {[], width, line_height},
@@ -520,10 +553,10 @@ defmodule Thaqqa.RenderCommon do
 
           oneline_alt =
             case direction do
-              @horizontal ->
+              @vertical ->
                 Enum.map(oneline, fn g -> Map.put(g, :x, acc_x - right) end)
 
-              @vertical ->
+              @horizontal ->
                 Enum.map(oneline, fn g ->
                   top_gap = max_height - g.height
                   Map.put(g, :y, acc_y + max_gap_top + top_gap)
@@ -560,8 +593,8 @@ defmodule Thaqqa.RenderCommon do
   end
 
   defp set_position(sentence, %Render{} = render_config, direction) do
-    {word_list, _} = set_position_and_wrapped(sentence, render_config, direction)
-    Render.alter_newline(word_list) |> adjust_position(render_config, direction)
+    word_list = set_position_and_wrapped(sentence, render_config, direction)
+    alter_newline(word_list) |> adjust_position(render_config, direction)
   end
 
   def alignment_path_data(%Bundle{} = prefab, glyph_list, %Render{} = render, direction)
@@ -583,8 +616,8 @@ defmodule Thaqqa.RenderCommon do
 
       {:ok, g_a_k_l} ->
         # px単位指定
-        Enum.reverse(g_a_k_l, direction)
-        |> Render.parse_word()
+        Enum.reverse(g_a_k_l)
+        |> parse_word()
         |> set_position(render, direction)
         |> render_all_for_vertical(prefab, direction)
     end
