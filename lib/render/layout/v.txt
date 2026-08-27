@@ -1,8 +1,0 @@
-  defp render_all(glyph_list, %Bundle{} = prefab) do
-    Enum.map(glyph_list, fn glyph_and_kern ->
-      %{glyph: glyph, gap_top: gap_top, gap_bottom: gap_bottom} = glyph_and_kern
-      {:ok, glyph_new} = Glyph.render_by_relative_height(prefab, glyph, gap_top, gap_bottom)
-
-      %{glyph_and_kern | glyph: glyph_new}
-    end)
-  end

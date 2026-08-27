@@ -6,20 +6,20 @@ defmodule Thaqqa.RenderLayout do
   alias Thaqqa.Glyph, as: Glyph
   alias Thaqqa.Bundle.GposTable, as: GposTable
   alias Thaqqa.Bundle.ConstRegexKhhylTable, as: ConstRegexKhhylTable
+
+  alias Thaqqa.Render.Box, as: Box
+  alias Thaqqa.Render.GlyphData, as: GlyphData
+  alias %Thaqqa.Render.Coordinate{}, as: Coordinate
+
   use Thaqqa.DataTable.Const
 
   # 第一段階、kerningデータの計算
-  defp calc_kerning(
-         [
-           %Glyph{name: %{glyph: prev_glyph_name}} = prev_glyph,
-           %Glyph{name: %{glyph: glyph_name}, font: fontname, path: path} = glyph,
-           %Glyph{name: %{glyph: next_glyph_name}} = next_glyph
-         ],
-         %Bundle{} = prefab,
-         direction
-       )
+  defp calc_kerning([prev_glyph, glyph, next_glyph], %Bundle{} = prefab, direction)
        when direction in [@vertical, @horizontal] do
     newline_as_regex_khhyl = "P([_.IsNewline]_-*)"
+    %Glyph{name: %{glyph: prev_glyph_name}} = prev_glyph
+    %Glyph{name: %{glyph: glyph_name}, font: fontname} = glyph
+    %Glyph{name: %{glyph: next_glyph_name}} = next_glyph
 
     with {:ok,
           %{
@@ -104,54 +104,54 @@ defmodule Thaqqa.RenderLayout do
 
       %{top: t, bottom: b, left: l, right: r} = SVG.Path.get_border(glyph_for_meassure.path)
 
-      box_h = %{
+      box_h = %Box{
         top: 0,
         bottom: height * scale,
         left: if(is_width_relative, do: -l + width / 2 * scale, else: width / 2 * scale),
         right: if(is_width_relative, do: r + width / 2 * scale, else: width / 2 * scale)
       }
 
-      box_v = %{
+      box_v = %Box{
         top: t,
         bottom: b,
         left: if(is_width_relative, do: -l + width / 2 * scale, else: width / 2 * scale),
         right: if(is_width_relative, do: r + width / 2 * scale, else: width / 2 * scale)
       }
 
-      gap_h = %{
+      gap_h = %Box{
         top: gap_top * scale,
         left: x0_internal * scale + x1_ex_prev * prev_scale,
         right: x1_internal * scale + x0_ex_next * next_scale,
-        center: y1_internal * scale,
+        # center: y1_internal * scale,
         bottom: 0
       }
 
-      gap_v = %{
+      gap_v = %Box{
         top: y0_internal * scale + y1_ex_prev * prev_scale,
         left: 0,
         right: 0,
-        center: 0,
+        # center: 0,
         bottom: y1_internal * scale + y0_ex_next * next_scale
       }
 
-      gap_wn_h = %{
+      gap_wn_h = %Box{
         top: gap_top * scale,
         left: x0_internal * scale + x1_ex_prev_nl * prev_scale,
         right: x1_internal * scale + x0_ex_next_nl * next_scale,
-        center: y1_internal * scale,
+        # center: y1_internal * scale,
         bottom: 0
       }
 
-      gap_wn_v = %{
+      gap_wn_v = %Box{
         top: y0_internal * scale + y1_ex_prev_nl * prev_scale,
         left: 0,
         right: 0,
-        center: 0,
+        # center: 0,
         bottom: y1_internal * scale + y0_ex_next_nl * next_scale
       }
 
       {:ok,
-       %{
+       %GlyphData{
          glyph: if(direction == @horizontal, do: new_glyph_for_h, else: glyph),
          new_line: is_newline,
          word_breaker: is_wordbreaker,
@@ -159,7 +159,8 @@ defmodule Thaqqa.RenderLayout do
          prohibit_line_end: false,
          box: if(direction == @horizontal, do: box_h, else: box_v),
          gap: if(direction == @horizontal, do: gap_h, else: gap_v),
-         gap_when_newline: if(direction == @horizontal, do: gap_wn_h, else: gap_wn_v)
+         gap_when_newline: if(direction == @horizontal, do: gap_wn_h, else: gap_wn_v),
+         coordinate: %Coordinate{}
        }}
     else
       {:error, _} = err -> err
@@ -168,6 +169,8 @@ defmodule Thaqqa.RenderLayout do
 
   # newline単位/word単位でparseする
   # [i行目の行][jつ目の単語]
+
+  # ※Thaqqa.Render.Sentenceに代行してもらう。
   def parse_word(glyph_and_kern_list) do
     syd =
       Enum.chunk_while(
@@ -196,23 +199,22 @@ defmodule Thaqqa.RenderLayout do
     box_width = render_config.boundry.width
     box_height = render_config.boundry.height
 
+    #
+    # 通常強制改行時の判定
+    # 強制改行された場合、「最初と最後のスペース」を削除する。
+    # 強制改行の判定
+    # defp is_start_initial_space(i, j, k), do: j != 0 && render_config.line_break == :normal
+
     # [行（仮）][単語][単語の何文字めか]　…なんだけど、行が変動するので行(仮)としている。
     sentence_alt =
       Enum.reduce(
         sentence,
-        %{word_list: [], row: 0},
-        fn oneline, %{word_list: acc_word_list, row: acc_row} ->
+        %{word_list: [], i: 0},
+        fn oneline, %{word_list: acc_word_list, i: i} ->
           oneline_alt =
             Enum.reduce(
               oneline,
-              %{
-                word: [],
-                left: 0,
-                right: 0,
-                top: 0,
-                bottom: 0,
-                row: acc_row
-              },
+              %{word: [], left: 0, right: 0, top: 0, bottom: 0, i: 0, j: 0},
               fn word,
                  %{
                    word: acc_word,
@@ -220,7 +222,8 @@ defmodule Thaqqa.RenderLayout do
                    right: acc_right,
                    top: acc_top,
                    bottom: acc_bottom,
-                   row: acc_row
+                   i: i,
+                   j: j
                  } ->
                 # 右から書くのを実装する時に使う
                 # acc_left_start = acc_left
@@ -239,7 +242,10 @@ defmodule Thaqqa.RenderLayout do
                       top: acc_bottom_start,
                       y: acc_bottom_start,
                       bottom: acc_bottom_start,
-                      is_wrapped: false
+                      is_wrapped: false,
+                      wrapped_letter_list: [],
+                      # 文字数カウンタ用
+                      k: 0
                     },
                     fn glyph_and_kern,
                        %{
@@ -250,7 +256,9 @@ defmodule Thaqqa.RenderLayout do
                          top: acc_top,
                          y: acc_y,
                          bottom: acc_bottom,
-                         is_wrapped: is_wrapped
+                         is_wrapped: is_wrapped,
+                         wrapped_letter_list: wrapped_letter_list,
+                         k: k
                        } ->
                       %{
                         word_breaker: is_wordbreaker,
@@ -316,6 +324,9 @@ defmodule Thaqqa.RenderLayout do
 
                       is_wrapped = cond_wrap || is_wrapped
 
+                      wrapped_letter_list =
+                        if cond_wrap, do: [k | wrapped_letter_list], else: wrapped_letter_list
+
                       acc_x = next_x
                       acc_y = next_y
 
@@ -327,7 +338,9 @@ defmodule Thaqqa.RenderLayout do
                         top: acc_top,
                         y: acc_y,
                         bottom: acc_bottom,
-                        is_wrapped: is_wrapped
+                        is_wrapped: is_wrapped,
+                        wrapped_letter_list: wrapped_letter_list,
+                        k: k + 1
                       }
                     end
                   )
@@ -338,10 +351,15 @@ defmodule Thaqqa.RenderLayout do
                   right: right,
                   top: top,
                   bottom: bottom,
-                  is_wrapped: is_wrapped
+                  is_wrapped: is_wrapped,
+                  wrapped_letter_list: wrapped_letter_list
                 } = word_alt
 
-                acc_row = if is_wrapped, do: acc_row + 1, else: acc_row
+                # 中折れ系のときは
+                # wrapped_letter_listを参照して
+                # ボキッ！とword自体が折れる処理をする
+                # (要するにそもそも同一単語扱いしない)
+                acc_row = if is_wrapped, do: i + 1, else: i
                 acc_left = if is_wrapped, do: left - acc_right, else: left
                 acc_right = if is_wrapped, do: right - acc_right, else: right
                 acc_top = if is_wrapped, do: top - acc_bottom, else: top
@@ -362,13 +380,14 @@ defmodule Thaqqa.RenderLayout do
                   right: acc_right,
                   top: acc_top,
                   bottom: acc_bottom,
-                  row: acc_row
+                  i: i,
+                  j: j + 1
                 }
               end
             )
 
-          %{word: word_list, row: acc_row} = oneline_alt
-          %{word_list: [word_list | acc_word_list] |> List.flatten(), row: acc_row + 1}
+          %{word: word_list, i: i} = oneline_alt
+          %{word_list: [word_list | acc_word_list] |> List.flatten(), i: i + 1}
         end
       )
 
@@ -420,8 +439,6 @@ defmodule Thaqqa.RenderLayout do
   end
 
   defp adjust_position_in_line(oneline, text_align, box_boundery, direction) do
-    word_num = length(oneline)
-
     left = Enum.map(oneline, fn %{left: left} -> left end) |> Enum.min()
     right = Enum.map(oneline, fn %{right: right} -> right end) |> Enum.max()
     top = Enum.map(oneline, fn %{top: top} -> top end) |> Enum.min()
@@ -436,6 +453,8 @@ defmodule Thaqqa.RenderLayout do
     # 「isSpace」＋「強制改行によるものか」の２軸で判定。
     # 強制改行だったらisSpace依存で一つ（または全部）削除。
     # 強制改行じゃないなら削除判定を～と
+
+    word_num = length(oneline)
 
     {enum_num, enum_list} =
       Enum.map(oneline, fn word ->
