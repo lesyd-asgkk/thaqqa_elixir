@@ -14,6 +14,9 @@ defmodule Thaqqa.Render.GlyphData do
             word_breaker: false,
             prohibit_line_start: false,
             prohibit_line_end: false,
+            height: 0,
+            gap_top: 0,
+            gap_bottom: 0,
             box: %Thaqqa.Render.Box{},
             gap: %Thaqqa.Render.Box{},
             gap_when_newline: %Thaqqa.Render.Box{},
@@ -23,7 +26,8 @@ end
 defmodule Thaqqa.Render.Word do
   # GlyphDataのarray
   defstruct glyph_list: [],
-            box: %Thaqqa.Render.Box{}
+            box: %Thaqqa.Render.Box{},
+            row: 0
 end
 
 defmodule Thaqqa.Render.Oneline do
@@ -38,32 +42,35 @@ defmodule Thaqqa.Render.Sentence do
             box: %Thaqqa.Render.Box{}
 
   def parse_sentence(array_of_glyphdata) do
-    Enum.chunk_while(
-      array_of_glyphdata,
-      [],
-      fn %Thaqqa.Render.GlyphData{} = glyphdata, acc ->
-        if glyphdata.new_line,
-          do: {:cont, Enum.reverse([glyphdata | acc]), []},
-          else: {:cont, [glyphdata | acc]}
-      end,
-      fn
-        [] -> {:cont, []}
-        acc -> {:cont, Enum.reverse(acc), []}
-      end
-    )
-    |> Enum.map(fn oneline ->
-      Enum.chunk_by(oneline, fn %Thaqqa.Render.GlyphData{} = glyphdata ->
-        glyphdata.word_breaker
+    oneline_list =
+      Enum.chunk_while(
+        array_of_glyphdata,
+        [],
+        fn %Thaqqa.Render.GlyphData{} = glyphdata, acc ->
+          if glyphdata.new_line,
+            do: {:cont, Enum.reverse([glyphdata | acc]), []},
+            else: {:cont, [glyphdata | acc]}
+        end,
+        fn
+          [] -> {:cont, []}
+          acc -> {:cont, Enum.reverse(acc), []}
+        end
+      )
+      |> Enum.map(fn oneline ->
+        Enum.chunk_by(oneline, fn %Thaqqa.Render.GlyphData{} = glyphdata ->
+          glyphdata.word_breaker
+        end)
       end)
-    end)
-    |> Enum.map(fn oneline ->
-      %Thaqqa.Render.Oneline{
-        word_list:
-          Enum.map(oneline, fn word ->
-            %Thaqqa.Render.Word{glyph_list: word, box: %Thaqqa.Render.Box{}}
-          end),
-        box: %Thaqqa.Render.Box{}
-      }
-    end)
+      |> Enum.map(fn oneline ->
+        %Thaqqa.Render.Oneline{
+          word_list:
+            Enum.map(oneline, fn word ->
+              %Thaqqa.Render.Word{glyph_list: word, box: %Thaqqa.Render.Box{}}
+            end),
+          box: %Thaqqa.Render.Box{}
+        }
+      end)
+
+    %Thaqqa.Render.Sentence{oneline_list: oneline_list}
   end
 end

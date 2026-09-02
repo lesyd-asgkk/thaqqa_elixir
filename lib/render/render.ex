@@ -8,6 +8,8 @@ defmodule Thaqqa.Render do
 
   alias Thaqqa.Render.Error, as: Error
   alias Thaqqa.Glyph, as: Glyph
+  alias Thaqqa.Render.GlyphData, as: GlyphData
+  alias Thaqqa.Render.Coordinate, as: Coordinate
   use Thaqqa.DataTable.Const
 
   defstruct boundry: %{width: 0, height: 0},
@@ -58,9 +60,12 @@ defmodule Thaqqa.Render do
   end
 
   def concat_path_data(glyph_list) when is_list(glyph_list) do
-    Enum.map(glyph_list, fn glyph_and_kern ->
-      %{x: x, y: y, glyph: %Glyph{offset: %{x: off_x, y: off_y}, path: path, name: name}} =
-        glyph_and_kern
+    Enum.map(glyph_list, fn %GlyphData{} = glyphdata ->
+      %{
+        coordinate: %Coordinate{x: x, y: y},
+        glyph: %Glyph{offset: %{x: off_x, y: off_y}, path: path}
+      } =
+        glyphdata
 
       SVG.Path.set_start_position(path, x + off_x, y + off_y) |> SVG.Path.export_as_string_mass!()
     end)

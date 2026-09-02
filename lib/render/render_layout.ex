@@ -9,7 +9,10 @@ defmodule Thaqqa.RenderLayout do
 
   alias Thaqqa.Render.Box, as: Box
   alias Thaqqa.Render.GlyphData, as: GlyphData
-  alias %Thaqqa.Render.Coordinate{}, as: Coordinate
+  alias Thaqqa.Render.Word, as: Word
+  alias Thaqqa.Render.Oneline, as: Oneline
+  alias Thaqqa.Render.Sentence, as: Sentence
+  alias Thaqqa.Render.Coordinate, as: Coordinate
 
   use Thaqqa.DataTable.Const
 
@@ -167,32 +170,7 @@ defmodule Thaqqa.RenderLayout do
     end
   end
 
-  # newline単位/word単位でparseする
-  # [i行目の行][jつ目の単語]
-
-  # ※Thaqqa.Render.Sentenceに代行してもらう。
-  def parse_word(glyph_and_kern_list) do
-    syd =
-      Enum.chunk_while(
-        glyph_and_kern_list,
-        [],
-        fn glyph, acc ->
-          if glyph.new_line,
-            do: {:cont, Enum.reverse([glyph | acc]), []},
-            else: {:cont, [glyph | acc]}
-        end,
-        fn
-          [] -> {:cont, []}
-          acc -> {:cont, Enum.reverse(acc), []}
-        end
-      )
-
-    syd |> Enum.map(fn l -> Enum.chunk_by(l, fn glyph -> glyph.word_breaker end) end)
-  end
-
-  # 条件依存で改行する
-
-  defp set_position_and_wrapped(sentence, %Render{} = render_config, direction)
+  defp set_position_and_wrapped(%Sentence{} = sentence, %Render{} = render_config, direction)
        when direction in [@vertical, @horizontal] do
     word_spacing = render_config.word_spacing
     letter_spacing = render_config.letter_spacing
@@ -206,22 +184,23 @@ defmodule Thaqqa.RenderLayout do
     # defp is_start_initial_space(i, j, k), do: j != 0 && render_config.line_break == :normal
 
     # [行（仮）][単語][単語の何文字めか]　…なんだけど、行が変動するので行(仮)としている。
-    sentence_alt =
+
+    # ※便宜上、Sentence内部のoneline_list[0]に全部ぶち込むこととした。
+
+    %{sentence: sentence_alt} =
       Enum.reduce(
-        sentence,
-        %{word_list: [], i: 0},
-        fn oneline, %{word_list: acc_word_list, i: i} ->
+        sentence.oneline_list,
+        %{sentence: %Sentence{oneline_list: [%Oneline{word_list: []}]}, i: 0},
+        fn oneline,
+           %{sentence: %Sentence{oneline_list: [%Oneline{word_list: acc_word_list}]}, i: i} ->
           oneline_alt =
             Enum.reduce(
-              oneline,
-              %{word: [], left: 0, right: 0, top: 0, bottom: 0, i: 0, j: 0},
+              oneline.word_list,
+              %{word: [], box: %Box{left: 0, right: 0, top: 0, bottom: 0}, i: i, j: 0},
               fn word,
                  %{
                    word: acc_word,
-                   left: acc_left,
-                   right: acc_right,
-                   top: acc_top,
-                   bottom: acc_bottom,
+                   box: %Box{left: acc_left, right: acc_right, top: acc_top, bottom: acc_bottom},
                    i: i,
                    j: j
                  } ->
@@ -233,58 +212,52 @@ defmodule Thaqqa.RenderLayout do
 
                 word_alt =
                   Enum.reduce(
-                    word,
+                    word.glyph_list,
                     %{
-                      glyph_list: [],
-                      left: acc_right_start,
-                      x: acc_right_start,
-                      right: acc_right_start,
-                      top: acc_bottom_start,
-                      y: acc_bottom_start,
-                      bottom: acc_bottom_start,
+                      word: %Word{glyph_list: []},
+                      box: %Box{
+                        left: acc_right_start,
+                        right: acc_right_start,
+                        top: acc_bottom_start,
+                        bottom: acc_bottom_start
+                      },
+                      coordinate: %Coordinate{x: acc_right_start, y: acc_bottom_start},
                       is_wrapped: false,
                       wrapped_letter_list: [],
                       # 文字数カウンタ用
                       k: 0
                     },
-                    fn glyph_and_kern,
+                    fn glyph,
                        %{
-                         glyph_list: acc_glyph,
-                         left: acc_left,
-                         x: acc_x,
-                         right: acc_right,
-                         top: acc_top,
-                         y: acc_y,
-                         bottom: acc_bottom,
+                         word: %Word{glyph_list: acc_glyph} = acc_word,
+                         box: %Box{
+                           left: acc_left,
+                           right: acc_right,
+                           top: acc_top,
+                           bottom: acc_bottom
+                         },
+                         coordinate: %Coordinate{x: acc_x, y: acc_y},
                          is_wrapped: is_wrapped,
                          wrapped_letter_list: wrapped_letter_list,
                          k: k
                        } ->
-                      %{
+                      %GlyphData{
                         word_breaker: is_wordbreaker,
-                        box: %{top: top, bottom: bottom, left: left, right: right},
-                        gap: %{
-                          top: gap_top,
-                          bottom: gap_bottom,
-                          center: gap_center,
-                          left: gap_left,
-                          right: gap_right
-                        },
-                        gap_when_newline: %{
-                          top: gap_top_nl,
-                          center: gap_center_nl,
-                          left: gap_left_nl,
-                          right: gap_right_nl
-                        }
-                      } = glyph_and_kern
+                        box: %Box{top: top, bottom: bottom, left: left, right: right} = box,
+                        gap: %Box{} = gap,
+                        gap_when_newline: %Box{} = gap_with_newline
+                      } = glyph
+
+                      %Box{top: gap_top, bottom: gap_bottom, left: gap_left, right: gap_right} =
+                        gap
 
                       blank_space =
                         if is_wordbreaker,
                           do: word_spacing + letter_spacing,
                           else: letter_spacing
 
+                      # ※どの道もう片方の情報は以降で使わないのでcoordinate,boxで代用していい。
                       glyph_x = acc_x + gap_left + left + blank_space / 2
-
                       glyph_y = acc_y - top + blank_space / 2
 
                       next_x = acc_x + gap_left + left + gap_right + right + blank_space
@@ -293,19 +266,40 @@ defmodule Thaqqa.RenderLayout do
                       gap_top_actual =
                         if direction == @horizontal, do: gap_top, else: +gap_top + blank_space / 2
 
-                      glyph_and_kern =
-                        glyph_and_kern
-                        |> Map.put(:y, glyph_y - acc_bottom_start)
-                        |> Map.put(:gap_top, gap_top_actual)
-                        |> Map.put(:gap_bottom, gap_bottom + blank_space / 2)
-                        |> Map.put(:x, glyph_x - acc_right_start)
-                        |> Map.put(:height, bottom)
-                        |> Map.put(:border, %{
-                          left: acc_x - acc_right_start,
-                          right: next_x - acc_right_start,
-                          top: acc_y - acc_bottom_start,
-                          bottom: next_y - acc_bottom_start
-                        })
+                      # ↓は相対座標で保持
+                      # todo:絶対座標に変換
+
+                      box_v = %Box{
+                        left: left,
+                        right: right,
+                        top: acc_y - acc_bottom_start,
+                        bottom: next_y - acc_bottom_start
+                      }
+
+                      box_h = %Box{
+                        left: acc_x - acc_right_start,
+                        right: next_x - acc_right_start,
+                        top: top,
+                        bottom: bottom
+                      }
+
+                      glyph =
+                        %GlyphData{
+                          glyph
+                          | coordinate: %Coordinate{
+                              x: glyph_x - acc_right_start,
+                              y: glyph_y - acc_bottom_start
+                            },
+                            box: if(direction == @horizontal, do: box_h, else: box_v),
+                            gap_top: gap_top_actual,
+                            gap_bottom: gap_bottom + blank_space / 2,
+                            height: bottom
+                        }
+
+                      # |> Map.put(:gap_top, gap_top_actual)
+                      #  |> Map.put(:gap_bottom, gap_bottom + blank_space / 2)
+
+                      # |> Map.put(:height, bottom)
 
                       acc_left = min(acc_left, acc_x)
                       acc_right = max(acc_right, next_x)
@@ -331,13 +325,14 @@ defmodule Thaqqa.RenderLayout do
                       acc_y = next_y
 
                       %{
-                        glyph_list: [glyph_and_kern | acc_glyph],
-                        left: acc_left,
-                        x: acc_x,
-                        right: acc_right,
-                        top: acc_top,
-                        y: acc_y,
-                        bottom: acc_bottom,
+                        word: %Word{acc_word | glyph_list: [glyph | acc_glyph]},
+                        box: %Box{
+                          left: acc_left,
+                          right: acc_right,
+                          top: acc_top,
+                          bottom: acc_bottom
+                        },
+                        coordinate: %Coordinate{x: acc_x, y: acc_y},
                         is_wrapped: is_wrapped,
                         wrapped_letter_list: wrapped_letter_list,
                         k: k + 1
@@ -346,103 +341,106 @@ defmodule Thaqqa.RenderLayout do
                   )
 
                 %{
-                  glyph_list: glyph_list,
-                  left: left,
-                  right: right,
-                  top: top,
-                  bottom: bottom,
+                  word: %Word{glyph_list: glyph_list},
+                  box: %Box{left: left, right: right, top: top, bottom: bottom},
                   is_wrapped: is_wrapped,
                   wrapped_letter_list: wrapped_letter_list
                 } = word_alt
+
+                # 条件依存で改行する為に一応用意
+                #  boundaries = [0 | wrapped_letter_list] ++ [length(list)]
+
+                #  boundaries
+                #  |> Enum.chunk_every(2, 1, :discard)
+                #  |> Enum.map(fn [start, finish] ->
+                #    Enum.slice(list, start, finish - start)
+                #  end)
 
                 # 中折れ系のときは
                 # wrapped_letter_listを参照して
                 # ボキッ！とword自体が折れる処理をする
                 # (要するにそもそも同一単語扱いしない)
+                # 要は改行するときは「最初の文字の位置」へと補正している
+                # （改行処理は後でやるので）
+
+                # leftとかそういう奴もWordじゃなくてGlyphの方で判定
                 acc_row = if is_wrapped, do: i + 1, else: i
                 acc_left = if is_wrapped, do: left - acc_right, else: left
                 acc_right = if is_wrapped, do: right - acc_right, else: right
                 acc_top = if is_wrapped, do: top - acc_bottom, else: top
                 acc_bottom = if is_wrapped, do: bottom - acc_bottom, else: bottom
+                acc_box = %Box{left: acc_left, right: acc_right, top: acc_top, bottom: acc_bottom}
 
-                word = %{
+                word = %Word{
                   glyph_list: Enum.reverse(glyph_list),
-                  left: acc_left,
-                  right: acc_right,
-                  top: acc_top,
-                  bottom: acc_bottom,
+                  box: acc_box,
                   row: acc_row
                 }
 
                 %{
                   word: [word | acc_word],
-                  left: acc_left,
-                  right: acc_right,
-                  top: acc_top,
-                  bottom: acc_bottom,
+                  box: %Box{left: acc_left, right: acc_right, top: acc_top, bottom: acc_bottom},
                   i: i,
                   j: j + 1
                 }
               end
             )
 
+          # %{sentence: %Sentence{oneline_list: [%Oneline{word_list: []}]}, i: 0}
           %{word: word_list, i: i} = oneline_alt
-          %{word_list: [word_list | acc_word_list] |> List.flatten(), i: i + 1}
+
+          %{
+            sentence: %Sentence{
+              oneline_list: [%Oneline{word_list: [word_list | acc_word_list] |> List.flatten()}]
+            },
+            i: i + 1
+          }
         end
       )
 
     # row情報は要らないのでwordlist部分だけ返す
-    sentence_alt.word_list
+    sentence_alt
   end
 
-  def alter_newline(word_list) do
-    {sentence, _} =
+  def alter_newline(%Sentence{oneline_list: [%Oneline{word_list: word_list}]} = sentence_alt) do
+    {word_list, _} =
       word_list
-      |> Enum.reduce({[], 0}, fn %{
-                                   glyph_list: glyph_list,
-                                   top: top,
-                                   bottom: bottom,
-                                   left: left,
-                                   right: right,
-                                   row: row
-                                 },
-                                 {acc, acc_raw} ->
-        {[
-           %{
-             glyph_list: glyph_list,
-             top: top,
-             bottom: bottom,
-             left: left,
-             right: right,
-             is_newline: row != acc_raw
-           }
-           | acc
-         ], row}
+      |> Enum.reduce({[], 0}, fn %Word{row: row} = word, {acc, acc_raw} ->
+        {[%{word: word, is_newline: row != acc_raw} | acc], row}
       end)
 
-    sentence
-    |> Enum.chunk_while(
-      [],
-      fn %{is_newline: is_newline} = word, acc_word ->
-        cond do
-          true ->
-            if is_newline,
-              do: {:cont, Enum.reverse([word | acc_word]), []},
-              else: {:cont, [word | acc_word]}
+    oneline_list =
+      word_list
+      |> Enum.chunk_while(
+        [],
+        fn %{word: word, is_newline: is_newline}, acc_word ->
+          cond do
+            true ->
+              if is_newline,
+                do: {:cont, Enum.reverse([word | acc_word]), []},
+                else: {:cont, [word | acc_word]}
+          end
+        end,
+        fn
+          [] -> {:cont, []}
+          acc_word -> {:cont, Enum.reverse(acc_word), []}
         end
-      end,
-      fn
-        [] -> {:cont, []}
-        acc_word -> {:cont, Enum.reverse(acc_word), []}
-      end
-    )
+      )
+      |> Enum.map(fn wordlist_oneliner -> %Oneline{word_list: wordlist_oneliner} end)
+
+    %Sentence{oneline_list: oneline_list}
   end
 
-  defp adjust_position_in_line(oneline, text_align, box_boundery, direction) do
-    left = Enum.map(oneline, fn %{left: left} -> left end) |> Enum.min()
-    right = Enum.map(oneline, fn %{right: right} -> right end) |> Enum.max()
-    top = Enum.map(oneline, fn %{top: top} -> top end) |> Enum.min()
-    bottom = Enum.map(oneline, fn %{bottom: bottom} -> bottom end) |> Enum.max()
+  defp adjust_position_in_line(
+         %Oneline{word_list: word_list} = oneline,
+         text_align,
+         box_boundery,
+         direction
+       ) do
+    left = Enum.map(word_list, fn %{box: %Box{left: left}} -> left end) |> Enum.min()
+    right = Enum.map(word_list, fn %{box: %Box{right: right}} -> right end) |> Enum.max()
+    top = Enum.map(word_list, fn %{box: %Box{top: top}} -> top end) |> Enum.min()
+    bottom = Enum.map(word_list, fn %{box: %Box{bottom: bottom}} -> bottom end) |> Enum.max()
 
     left_calc = -left
     right_calc = box_boundery.width - right
@@ -454,11 +452,11 @@ defmodule Thaqqa.RenderLayout do
     # 強制改行だったらisSpace依存で一つ（または全部）削除。
     # 強制改行じゃないなら削除判定を～と
 
-    word_num = length(oneline)
+    word_num = length(word_list)
 
     {enum_num, enum_list} =
-      Enum.map(oneline, fn word ->
-        %{glyph_list: glyph_list} = word
+      Enum.map(word_list, fn word ->
+        %Word{glyph_list: glyph_list} = word
         [glyph_top | _] = glyph_list
         length(glyph_list) == 1 and (glyph_top.new_line or glyph_top.word_breaker)
       end)
@@ -503,117 +501,171 @@ defmodule Thaqqa.RenderLayout do
           end
       end
 
-    Enum.zip(oneline, gap_list)
-    |> Enum.map(fn {%{glyph_list: glyph_list, left: left, top: top}, gap} ->
-      {glyph_list, if(direction == @horizontal, do: left + gap, else: top + gap)}
-    end)
-    |> Enum.reduce(
-      [],
-      fn {glyph_list, gap}, acc_glyph_list ->
-        glyph_list_alt =
-          Enum.map(glyph_list, fn glyph_and_kern ->
-            if direction == @horizontal do
-              glyph_and_kern
-              |> Map.put(:x, glyph_and_kern.x + gap)
-              |> Map.put(:border, %{
-                left: glyph_and_kern.border.left + gap,
-                right: glyph_and_kern.border.right + gap
-              })
-            else
-              glyph_and_kern
-              |> Map.put(:y, glyph_and_kern.y + gap)
-              |> Map.put(:border, %{
-                top: glyph_and_kern.border.top + gap,
-                bottom: glyph_and_kern.border.bottom + gap
-              })
-            end
-          end)
-
-        [glyph_list_alt | acc_glyph_list] |> List.flatten()
-      end
-    )
-  end
-
-  defp adjust_position_along(sentence, %Render{} = render_config, direction) do
-    box_boundry = render_config.boundry
-    text_align = render_config.text_align
-    text_align_last = render_config.text_align_last
-    [last_line | rest_line] = Enum.reverse(sentence)
-
-    #
-    Enum.reduce(
-      rest_line,
-      [adjust_position_in_line(last_line, text_align_last, box_boundry, direction)],
-      fn oneline, acc_oneline_list ->
-        oneline_alt = adjust_position_in_line(oneline, text_align, box_boundry, direction)
-        [oneline_alt | acc_oneline_list]
-      end
-    )
-  end
-
-  defp adjust_position_normal(sentence, width, line_height, direction) do
-    {sentence_alt, _, _} =
-      Enum.reduce(
-        sentence,
-        {[], width, line_height},
-        fn oneline, {acc_oneline_list, acc_x, acc_y} ->
-          {max_height, max_gap_top} =
-            Enum.reduce(oneline, {0, 0}, fn g, {acc_height, acc_gap_top} ->
-              {max(acc_height, g.height), max(acc_gap_top, g.gap_top)}
+    word_list_alt =
+      Enum.zip(oneline.word_list, gap_list)
+      |> Enum.map(fn {%Word{box: %Box{left: left, top: top}} = word, gap} ->
+        {word, if(direction == @horizontal, do: left + gap, else: top + gap)}
+      end)
+      |> Enum.reduce(
+        [],
+        fn {word, gap}, acc_word_list ->
+          glyph_list_alt =
+            Enum.map(word.glyph_list, fn %GlyphData{} = glyphdata ->
+              if direction == @horizontal do
+                %GlyphData{
+                  glyphdata
+                  | coordinate: %Coordinate{
+                      glyphdata.coordinate
+                      | x: glyphdata.coordinate.x + gap
+                    },
+                    box: %Box{
+                      glyphdata.box
+                      | left: glyphdata.box.left + gap,
+                        right: glyphdata.box.right + gap
+                    }
+                }
+              else
+                %GlyphData{
+                  glyphdata
+                  | coordinate: %Coordinate{
+                      glyphdata.coordinate
+                      | y: glyphdata.coordinate.y + gap
+                    },
+                    box: %Box{
+                      glyphdata.box
+                      | top: glyphdata.box.top + gap,
+                        bottom: glyphdata.box.bottom + gap
+                    }
+                }
+              end
             end)
 
-          {left, right} =
-            Enum.reduce(oneline, {0, 0}, fn g, {acc_left, acc_right} ->
-              {max(acc_left, g.box.left), max(acc_right, g.box.right)}
-            end)
-
-          left = left + line_height / 2
-          right = right + line_height / 2
-
-          oneline_alt =
-            case direction do
-              @vertical ->
-                Enum.map(oneline, fn g -> Map.put(g, :x, acc_x - right) end)
-
-              @horizontal ->
-                Enum.map(oneline, fn g ->
-                  top_gap = max_height - g.height
-                  Map.put(g, :y, acc_y + max_gap_top + top_gap)
-                end)
-            end
-
-          Enum.reverse(oneline_alt)
-          #
-
-          {[oneline_alt | acc_oneline_list] |> List.flatten(), acc_x - left - right,
-           acc_y + max_height + max_gap_top + line_height}
+          [%Word{word | glyph_list: glyph_list_alt} | acc_word_list]
         end
       )
 
-    sentence_alt
+    %Oneline{oneline | word_list: word_list_alt}
   end
 
-  defp render_all_for_vertical(glyph_list, %Bundle{} = prefab, direction) do
+  defp adjust_position_along(
+         %Sentence{oneline_list: oneline_list} = sentence,
+         %Render{} = render_config,
+         direction
+       ) do
+    box_boundry = render_config.boundry
+    text_align = render_config.text_align
+    text_align_last = render_config.text_align_last
+    [%Oneline{} = last_line | rest_line] = Enum.reverse(oneline_list)
+
+    #
+    oneline_list_alt =
+      Enum.reduce(
+        rest_line,
+        [adjust_position_in_line(last_line, text_align_last, box_boundry, direction)],
+        fn %Oneline{} = oneline, acc_oneline_list ->
+          oneline_alt = adjust_position_in_line(oneline, text_align, box_boundry, direction)
+          [oneline_alt | acc_oneline_list]
+        end
+      )
+
+    %Sentence{sentence | oneline_list: oneline_list_alt}
+  end
+
+  defp adjust_position_normal(
+         %Sentence{oneline_list: oneline_list} = sentence,
+         width,
+         line_height,
+         direction
+       ) do
+    {oneline_list_alt, _, _} =
+      Enum.reduce(
+        oneline_list,
+        {[], width, line_height},
+        fn %Oneline{} = oneline, {acc_glyph_list_alt, acc_x, acc_y} ->
+          glyph_list =
+            Enum.reduce(oneline.word_list, [], fn %Word{glyph_list: glyph_list}, acc_glyph_list ->
+              IO.inspect(glyph_list |> length())
+              glyph_list ++ acc_glyph_list
+            end)
+
+          [glyph_list_first | glyph_list_rest] = glyph_list
+
+          {max_height, max_gap_top} =
+            Enum.reduce(
+              glyph_list_rest,
+              {glyph_list_first.height, glyph_list_first.gap_top},
+              fn %GlyphData{} = g, {acc_height, acc_gap_top} ->
+                # IO.inspect(g.glyph.name.glyph)
+                # IO.inspect(g.box)
+                {max(acc_height, g.height), max(acc_gap_top, g.gap_top)}
+              end
+            )
+
+          {left, right} =
+            Enum.reduce(
+              glyph_list_rest,
+              {glyph_list_first.box.left, glyph_list_first.box.right},
+              fn %GlyphData{} = g, {acc_left, acc_right} ->
+                {max(acc_left, g.box.left), max(acc_right, g.box.right)}
+              end
+            )
+
+          row_width = right + left
+          IO.inspect(row_width)
+
+          glyph_list_alt =
+            case direction do
+              @vertical ->
+                Enum.map(glyph_list, fn %GlyphData{} = g ->
+                  %GlyphData{
+                    g
+                    | coordinate: %Coordinate{g.coordinate | x: acc_x - line_height / 2 - right}
+                  }
+                end)
+
+              @horizontal ->
+                Enum.map(glyph_list, fn %GlyphData{} = g ->
+                  top_gap = max_height - g.height
+
+                  %GlyphData{
+                    g
+                    | coordinate: %Coordinate{g.coordinate | y: acc_y + max_gap_top + top_gap}
+                  }
+                end)
+            end
+
+          Enum.reverse(glyph_list_alt)
+          #
+
+          {[glyph_list_alt | acc_glyph_list_alt] |> List.flatten(),
+           acc_x - row_width - line_height, acc_y + max_height + max_gap_top + line_height}
+        end
+      )
+
+    oneline_list_alt
+  end
+
+  defp render_all(glyph_list, %Bundle{} = prefab, direction) do
     if direction == @horizontal do
       glyph_list
     else
-      Enum.map(glyph_list, fn glyph_and_kern ->
-        %{glyph: glyph, gap_top: gap_top, gap_bottom: gap_bottom} = glyph_and_kern
+      Enum.map(glyph_list, fn %GlyphData{} = glyphdata ->
+        %GlyphData{glyph: glyph, gap_top: gap_top, gap_bottom: gap_bottom} = glyphdata
         {:ok, glyph_new} = Glyph.render_by_relative_height(prefab, glyph, gap_top, gap_bottom)
 
-        %{glyph_and_kern | glyph: glyph_new}
+        %GlyphData{glyphdata | glyph: glyph_new}
       end)
     end
   end
 
-  defp adjust_position(sentence, %Render{} = render_config, direction) do
+  defp adjust_position(%Sentence{} = sentence, %Render{} = render_config, direction) do
     adjust_position_along(sentence, render_config, direction)
     |> adjust_position_normal(render_config.boundry.width, render_config.line_height, direction)
   end
 
-  defp set_position(sentence, %Render{} = render_config, direction) do
-    word_list = set_position_and_wrapped(sentence, render_config, direction)
-    alter_newline(word_list) |> adjust_position(render_config, direction)
+  defp set_position(%Sentence{} = sentence, %Render{} = render_config, direction) do
+    sentence_alt = set_position_and_wrapped(sentence, render_config, direction)
+    alter_newline(sentence_alt) |> adjust_position(render_config, direction)
   end
 
   def alignment_path_data(%Bundle{} = prefab, glyph_list, %Render{} = render, direction)
@@ -636,9 +688,9 @@ defmodule Thaqqa.RenderLayout do
       {:ok, g_a_k_l} ->
         # px単位指定
         Enum.reverse(g_a_k_l)
-        |> parse_word()
+        |> Sentence.parse_sentence()
         |> set_position(render, direction)
-        |> render_all_for_vertical(prefab, direction)
+        |> render_all(prefab, direction)
     end
   end
 end
