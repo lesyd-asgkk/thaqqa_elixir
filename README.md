@@ -10,9 +10,6 @@
 今後のチーム開発も見据え、段階的に仕様書を書き留めることとしている。
 本実装を元としたAPI開発も進めている。
 
-https://qiita.com/asagikaki/items/0bd95438fa0c6339856a
-詳しい話はこちらで。
-
 ## Installation
 
 If [available in Hex](https://hex.pm/docs/publish), the package can be installed
