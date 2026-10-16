@@ -1,0 +1,40 @@
+# 今後、自動でアップデート処理をすることを鑑みてシステムを予約。
+#
+
+defmodule Thaqqa.FontUpdater do
+  alias Thaqqa.Bundle, as: Bundle
+  alias Thaqqa.Font, as: Font
+  alias Thaqqa.DataTable, as: DataTable
+  alias Thaqqa.Data, as: Data
+  alias Thaqqa.Column, as: Column
+
+  def update(%Bundle{} = prefab, x, y, z) do
+    # ※major,minor,patchはfontデータから取得すること。
+    major = 0
+    minor = 0
+    patch = 0
+
+    {prefab, major, minor, patch, x, y, z}
+    |> update_ver_0_0_1()
+    |> update_ver_0_1_0()
+    |> extract_updated_prefab()
+  end
+
+  defp extract_updated_prefab({%Bundle{} = prefab, _, _, _, _x_cond, _y_cond, _z_cond}),
+    do: prefab
+
+  defp update_ver_0_1_0({%Bundle{} = prefab, x, y, z, x_cond, y_cond, z_cond})
+       when x <= 0 and y <= 0,
+       do: {prefab, x, y, z, x_cond, y_cond, z_cond}
+
+  defp update_ver_0_1_0({%Bundle{} = prefab, x, y, z, x_cond, y_cond, z_cond}),
+    do: {prefab, x, y, z, x_cond, y_cond, z_cond}
+
+  defp update_ver_0_0_1({%Bundle{} = prefab, x, y, z, x_cond, y_cond, z_cond})
+       when x <= 0 and y <= 0 and z <= 0 do
+    {prefab, x, y, z, x_cond, y_cond, z_cond}
+  end
+
+  defp update_ver_0_0_1({%Bundle{} = prefab, x, y, z, x_cond, y_cond, z_cond}),
+    do: {prefab, x, y, z, x_cond, y_cond, z_cond}
+end

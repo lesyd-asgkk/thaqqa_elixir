@@ -43,7 +43,7 @@ defmodule Thaqqa.RenderLayout do
            ]),
          {:ok, %{x0: x0_internal, y0: y0_internal, x1: x1_internal, y1: y1_internal}} <-
            GposTable.gpos(prefab, fontname, glyph_name, direction, @internal),
-         {:ok, %{x0: x0_ex_prev, y0: y0_ex_prev, x1: x1_ex_prev, y1: y1_ex_prev}} <-
+         {:ok, %{x1: x1_ex_prev, y1: y1_ex_prev}} <-
            GposTable.gpos(
              prefab,
              fontname,
@@ -51,7 +51,7 @@ defmodule Thaqqa.RenderLayout do
              direction,
              @external
            ),
-         {:ok, %{x0: x0_ex_next, y0: y0_ex_next, x1: x1_ex_next, y1: y1_ex_next}} <-
+         {:ok, %{x0: x0_ex_next, y0: y0_ex_next}} <-
            GposTable.gpos(
              prefab,
              fontname,
@@ -60,7 +60,7 @@ defmodule Thaqqa.RenderLayout do
              @external
            ),
          GposTable.gpos(prefab, fontname, glyph_name, direction, @internal),
-         {:ok, %{x0: x0_ex_prev_nl, y0: y0_ex_prev_nl, x1: x1_ex_prev_nl, y1: y1_ex_prev_nl}} <-
+         {:ok, %{x1: x1_ex_prev_nl, y1: y1_ex_prev_nl}} <-
            GposTable.gpos(
              prefab,
              fontname,
@@ -68,7 +68,7 @@ defmodule Thaqqa.RenderLayout do
              direction,
              @external
            ),
-         {:ok, %{x0: x0_ex_next_nl, y0: y0_ex_next_nl, x1: x1_ex_next_nl, y1: y1_ex_next_nl}} <-
+         {:ok, %{x0: x0_ex_next_nl, y0: y0_ex_next_nl}} <-
            GposTable.gpos(
              prefab,
              fontname,
@@ -110,14 +110,14 @@ defmodule Thaqqa.RenderLayout do
       box_h = %Box{
         top: 0,
         bottom: height * scale,
-        left: if(is_width_relative, do: -l + width / 2 * scale, else: width / 2 * scale),
+        left: if(is_width_relative, do: l - width / 2 * scale, else: -width / 2 * scale),
         right: if(is_width_relative, do: r + width / 2 * scale, else: width / 2 * scale)
       }
 
       box_v = %Box{
         top: t,
         bottom: b,
-        left: if(is_width_relative, do: -l + width / 2 * scale, else: width / 2 * scale),
+        left: if(is_width_relative, do: l - width / 2 * scale, else: -width / 2 * scale),
         right: if(is_width_relative, do: r + width / 2 * scale, else: width / 2 * scale)
       }
 
@@ -257,18 +257,20 @@ defmodule Thaqqa.RenderLayout do
                           else: letter_spacing
 
                       # ※どの道もう片方の情報は以降で使わないのでcoordinate,boxで代用していい。
-                      glyph_x = acc_x + gap_left + left + blank_space / 2
+                      glyph_x = acc_x + gap_left - left + blank_space / 2
                       glyph_y = acc_y - top + blank_space / 2
 
-                      next_x = acc_x + gap_left + left + gap_right + right + blank_space
+                      next_x = acc_x + gap_left - left + gap_right + right + blank_space
                       next_y = acc_y + gap_top - top + gap_bottom + bottom + blank_space
                       # スタート位置からの相対座標に換算
                       gap_top_actual =
-                        if direction == @horizontal, do: gap_top, else: +gap_top + blank_space / 2
+                        if direction == @horizontal,
+                          do: gap_top,
+                          else: gap_top + letter_spacing / 2
 
                       # ↓は相対座標で保持
-                      # todo:絶対座標に変換
-
+                      # ※いっそ「ちゃんとした形で」保持できないか？
+                      # こっちでifしてるのがキモい
                       box_v = %Box{
                         left: left,
                         right: right,
@@ -495,9 +497,7 @@ defmodule Thaqqa.RenderLayout do
             _ ->
               gap = (start_calc + end_calc) / (enum_num - 1)
 
-              Enum.map(enum_list, fn n ->
-                start_calc + gap * n
-              end)
+              Enum.map(enum_list, fn n -> start_calc + gap * n end)
           end
       end
 
@@ -520,7 +520,7 @@ defmodule Thaqqa.RenderLayout do
                     },
                     box: %Box{
                       glyphdata.box
-                      | left: glyphdata.box.left + gap,
+                      | left: glyphdata.box.left - gap,
                         right: glyphdata.box.right + gap
                     }
                 }
@@ -572,7 +572,7 @@ defmodule Thaqqa.RenderLayout do
   end
 
   defp adjust_position_normal(
-         %Sentence{oneline_list: oneline_list} = sentence,
+         %Sentence{oneline_list: oneline_list},
          width,
          line_height,
          direction
@@ -584,7 +584,6 @@ defmodule Thaqqa.RenderLayout do
         fn %Oneline{} = oneline, {acc_glyph_list_alt, acc_x, acc_y} ->
           glyph_list =
             Enum.reduce(oneline.word_list, [], fn %Word{glyph_list: glyph_list}, acc_glyph_list ->
-              IO.inspect(glyph_list |> length())
               glyph_list ++ acc_glyph_list
             end)
 
@@ -595,8 +594,6 @@ defmodule Thaqqa.RenderLayout do
               glyph_list_rest,
               {glyph_list_first.height, glyph_list_first.gap_top},
               fn %GlyphData{} = g, {acc_height, acc_gap_top} ->
-                # IO.inspect(g.glyph.name.glyph)
-                # IO.inspect(g.box)
                 {max(acc_height, g.height), max(acc_gap_top, g.gap_top)}
               end
             )
@@ -606,12 +603,11 @@ defmodule Thaqqa.RenderLayout do
               glyph_list_rest,
               {glyph_list_first.box.left, glyph_list_first.box.right},
               fn %GlyphData{} = g, {acc_left, acc_right} ->
-                {max(acc_left, g.box.left), max(acc_right, g.box.right)}
+                {min(acc_left, g.box.left), max(acc_right, g.box.right)}
               end
             )
 
-          row_width = right + left
-          IO.inspect(row_width)
+          row_width = right - left
 
           glyph_list_alt =
             case direction do
@@ -672,12 +668,10 @@ defmodule Thaqqa.RenderLayout do
       when is_list(glyph_list) do
     none = Render.build_none()
 
-    glyph_and_kern_list =
-      [none | glyph_list ++ [none]]
-      |> Enum.chunk_every(3, 1, :discard)
-      |> Enum.map(&calc_kerning(&1, prefab, direction))
-
-    Enum.reduce_while(glyph_and_kern_list, {:ok, []}, fn
+    [none | glyph_list ++ [none]]
+    |> Enum.chunk_every(3, 1, :discard)
+    |> Enum.map(&calc_kerning(&1, prefab, direction))
+    |> Enum.reduce_while({:ok, []}, fn
       {:ok, str}, {:ok, acc} -> {:cont, {:ok, [str | acc]}}
       {:error, _} = err, _acc -> {:halt, err}
     end)
@@ -685,9 +679,9 @@ defmodule Thaqqa.RenderLayout do
       {:error, _} = err ->
         err
 
-      {:ok, g_a_k_l} ->
+      {:ok, glyphdata_list} ->
         # px単位指定
-        Enum.reverse(g_a_k_l)
+        Enum.reverse(glyphdata_list)
         |> Sentence.parse_sentence()
         |> set_position(render, direction)
         |> render_all(prefab, direction)
