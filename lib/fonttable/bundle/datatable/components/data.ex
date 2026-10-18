@@ -21,9 +21,11 @@ defmodule Thaqqa.Data do
 
   # さらにBundleを第3引数として渡した場合はVolatility column用のprecompileも済ませる。
   def new(v, %DataTable{} = table, %Bundle{} = prefab) when is_map(v),
-    do: %__MODULE__{
-      value_map: v |> modify_value_map(table) |> attach_id(table) |> set_precompile(table, prefab)
-    }
+    do:
+      %__MODULE__{
+        value_map: v |> modify_value_map(table) |> attach_id(table)
+      }
+      |> set_precompile(table, prefab)
 
   # value_mapに、DataTableのdata_list上で使用されていない最小のIDを付加する。
   # 返り値はmap。
