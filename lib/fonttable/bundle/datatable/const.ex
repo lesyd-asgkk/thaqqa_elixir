@@ -10,6 +10,9 @@ defmodule Thaqqa.DataTable.Const do
       # 実際、:nameの派生で:tokenを追加する際に役立った。
 
       @id_subtype :id
+      @ineditable_subtypes [:id]
+      @immutable_subtypes [:id, :path, :regex]
+
       @unique_subtypes [:name, :id, :token]
       @valid_type [:string, :bool, :float, :int, :volatility]
       @primal_type [:string, :bool, :float, :int]

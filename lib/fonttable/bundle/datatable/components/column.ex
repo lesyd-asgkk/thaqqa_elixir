@@ -48,7 +48,7 @@ defmodule Thaqqa.Column do
   def is_unique?(%__MODULE__{subtype: subtype}), do: subtype in @unique_subtypes
 
   # システム上で使用可能なtypeであるかどうか。
-  def is_available_type(type) when is_binary(type), do: type in @valid_type_as_string
+  def is_available_type(type) when is_binary(type), do: String.to_atom(type) in @valid_type
   def is_available_type(type) when is_atom(type), do: type in @valid_type
 
   # 初期値設定のための関数。columnに応じた初期値を返す。

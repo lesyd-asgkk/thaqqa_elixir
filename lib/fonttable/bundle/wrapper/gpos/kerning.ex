@@ -16,7 +16,7 @@ defmodule Thaqqa.Bundle.GposTable.Kerning do
   def gpos(%Bundle{} = prefab, fontname, string, writing_direction, gpos_type)
       when writing_direction in [@vertical, @horizontal] and gpos_type in @gpos_list do
     GposTable.get_gpos(prefab, fontname, fn %Data{} = data ->
-      Data.get_value(data, @writing_direction) in [writing_direction, @universal_language] and
+      Data.get_value(data, @writing_direction) in [writing_direction, @universal_direction] and
         Data.get_value(data, @gpos_type) == gpos_type
     end)
     |> case do

@@ -37,13 +37,15 @@ defimpl Jason.Encoder, for: Thaqqa.DataTable do
           Enum.reduce(v, %{}, fn {k, v}, acc ->
             if k in column_volatility do
               case Thaqqa.DataTable.get_column(datatable, k).subtype do
-                # 不要（まず変化しようがないので）
+                # ぶっちゃけ不要（まず変化しようがないので）
                 :path ->
                   acc
 
                 # こっちは変化しうる
                 :regex ->
-                  Map.put(acc, k, inspect(v))
+                  acc
+
+                # Map.put(acc, k, inspect(v))
 
                 # 処理を一旦飛ばす
                 _ ->

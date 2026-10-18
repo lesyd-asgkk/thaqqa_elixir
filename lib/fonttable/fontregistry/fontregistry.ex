@@ -17,6 +17,10 @@ defmodule Thaqqa.FontRegistry do
   @bundles :bundles
   @bundles_shadow :bundles_shadow
 
+  # bundle-id ↔️ {owner, bundlename}
+  #
+  # bundle-id ↔️ {owner, bundlename}(編集対象)
+  # または{bundle-id,version} ↔️ {owner, bundlename} と変更する予定。
   @bundles_name_key :bundles_name_key
   @bundles_shadow_name_key :bundles_shadow_name_key
   @bundles_name_key_reverse :bundles_name_key_reverse
