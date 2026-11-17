@@ -119,7 +119,7 @@ defmodule Thaqqa.DataTable do
 
   def add_data!(%__MODULE__{} = table, %Data{} = data), do: Op.add_data!(table, data)
 
-  def add_data(%__MODULE__{data_list: datas} = table, %Data{} = data),
+  def add_data(%__MODULE__{} = table, %Data{} = data),
     do: Op.add_data(table, data)
 
   def delete_data!(%__MODULE__{} = table, %Data{} = data), do: Op.delete_data!(table, data)
