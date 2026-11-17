@@ -167,9 +167,9 @@ defmodule Thaqqa.DataTable.Op do
         %Data{value_map: new_value_map} = new_data
       ) do
     if !DataTable.has_data?(table, data) do
-      Error.data_struct_not_found(data, tablename, nil)
+      Error.data_not_found(data, tablename, nil)
     else
-      case DataMapValidator.validate_data(table, new_value_map, :edit, data) do
+      case Validator.validate_data(table, new_value_map, :edit, data) do
         {:error, _} = err -> err
         :ok -> {:ok, %{table | data_list: [new_data | List.delete(data_list, data)]}}
       end
